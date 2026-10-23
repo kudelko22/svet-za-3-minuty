@@ -144,6 +144,18 @@ svg .swap { animation: bob 1.4s ease-in-out infinite; }
 svg .snip { animation: snip .6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 20% 50%; }
 svg .beam { animation: beam 2s ease-in-out infinite; }
 svg .waves, svg .birds { animation: cloudDrift 3s ease-in-out infinite alternate; }
+svg .svetlo { animation: semafor 6s linear infinite; }
+svg .bzz { animation: bzz 3s ease-in-out infinite; }
+svg .kridla { animation: kridla .12s linear infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+svg .brush { animation: brush .45s ease-in-out infinite alternate; }
+svg .utek { animation: utek 1.4s ease-in-out infinite; }
+svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 30% 100%; }
+@keyframes semafor { 0%, 32% { opacity: 1; } 34%, 100% { opacity: .2; } }
+@keyframes bzz { 0%, 100% { transform: translate(0, 0) rotate(0); } 25% { transform: translate(14px, -10px) rotate(10deg); } 50% { transform: translate(22px, 4px) rotate(-6deg); } 75% { transform: translate(6px, 9px) rotate(8deg); } }
+@keyframes kridla { to { transform: scaleY(.45); } }
+@keyframes brush { to { transform: translateX(-14px); } }
+@keyframes utek { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px) rotate(10deg); } }
+@keyframes krid2 { from { transform: rotate(-12deg); } to { transform: rotate(14deg); } }
 .thumb *, .cc .scene * { animation: none !important; }
 .ow-wl, .ow-wr { transform-box: fill-box; }
 .ow-wl { transform-origin: 90% 85%; } .ow-wr { transform-origin: 10% 85%; }
@@ -412,9 +424,12 @@ const S = {
 /* Zvuky: všetky sa skladajú priamo v prehliadači, žiadne súbory */
 const Zvuk = (() => {
   let ctx = null, out = null, on = S.get('zvuk', true);
+  // iPhone: bez typu „playback“ Safari stíši zvuky, keď je telefón v tichom režime
+  const relacia = typ => { try { if (navigator.audioSession) navigator.audioSession.type = typ; } catch (e) {} };
   function ac() {
     if (!on) return null;
     try {
+      relacia('playback');
       if (!ctx) {
         const C = window.AudioContext || window.webkitAudioContext;
         if (!C) return null;
@@ -422,11 +437,22 @@ const Zvuk = (() => {
         const comp = ctx.createDynamicsCompressor();
         out = ctx.createGain(); out.gain.value = .75;
         out.connect(comp); comp.connect(ctx.destination);
+        // tiché „odomknutie“ zvuku hneď pri prvom ťuknutí (staršie iPhony to potrebujú)
+        const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
       }
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx.state !== 'running') {
+        // iPhone po zamknutí, telefonáte alebo čítaní nahlas zvuk preruší a niekedy ho už neobnoví.
+        // Skúsime ho prebudiť, a keď sa to do chvíle nepodarí, pri ďalšom ťuknutí vytvoríme nový.
+        const c = ctx;
+        try { const p = c.resume(); if (p) p.catch(() => {}); } catch (e) {}
+        setTimeout(() => { if (c === ctx && c.state !== 'running') { try { c.close(); } catch (e) {} ctx = null; } }, 600);
+      }
       return ctx;
-    } catch (e) { return null; }
+    } catch (e) { ctx = null; return null; }
   }
+  document.addEventListener('touchend', () => { if (on && ctx && ctx.state !== 'running') ac(); }, { passive: true });
+  // iPhone preruší zvuk pri prepnutí do inej appky, po návrate ho obnovíme
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && ctx && on && ctx.state !== 'running') try { ctx.resume(); } catch (e) {} });
   function tone(c, f, t, d, type = 'sine', v = .2, f2) {
     const o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + t;
     o.type = type; o.frequency.setValueAtTime(f, t0);
@@ -466,7 +492,12 @@ const Zvuk = (() => {
   return {
     play(n) { const c = ac(); if (c && zvuky[n]) try { zvuky[n](c); } catch (e) {} },
     get on() { return on; },
-    toggle() { on = !on; S.set('zvuk', on); if (on) this.play('pop'); return on; },
+    stav() { return ctx ? ctx.state : 'zatiaľ nespustený'; },
+    toggle() {
+      on = !on; S.set('zvuk', on);
+      if (on) this.play('pop'); else { relacia('auto'); try { if (ctx) ctx.suspend(); } catch (e) {} }
+      return on;
+    },
   };
 })();
 const vibruj = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
@@ -484,7 +515,9 @@ const Hlas = {
       if (!v && s.getVoices().length) toast('Slovenský hlas v telefóne chýba, číta sa iným hlasom.');
       u.onend = u.onerror = () => { this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); };
       this.hovori = true; if (btn) btn.classList.add('on');
-      s.cancel(); s.speak(u);
+      // Safari na iPhone niekedy nič neprečíta, keď sa cancel() zavolá tesne pred speak()
+      if (s.speaking || s.pending) s.cancel();
+      s.speak(u);
     } catch (e) { toast('Čítanie nahlas sa nepodarilo spustiť.'); }
   },
   stop() { try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); },
@@ -611,6 +644,11 @@ const views = {
         <div class="seg2"><button data-vek="mladsi" aria-pressed="${st.vek === 'mladsi'}">5–8 rokov</button><button data-vek="starsi" aria-pressed="${st.vek === 'starsi'}">9–12 rokov</button></div>
         <p class="muted">Pri 9–12 rokoch má každá téma odsek navyše a ťažšie otázky v kvíze.</p>
       </section>
+      <section class="card prof">
+        <span class="lbl">Zvuky</span>
+        <button class="btn blue" data-test-zvuk>🔊 Vyskúšať zvuk</button>
+        <p class="muted">Keď nič nepočuť, zvýšte hlasitosť a skontrolujte, či zvuky nie sú vypnuté reproduktorom hore. Ak zvuky zmiznú, stačí ťuknúť sem.</p>
+      </section>
       <section class="stats">
         <div class="card ringc">
           <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--ink)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / T.length * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${T.length}</b></div>
@@ -634,7 +672,8 @@ function fillTemy() {
   f.innerHTML = [{ id: '', nazov: 'Všetko', e: '✨', c: '#2B2240' }, { id: 'fav', nazov: 'Uložené', e: '♥', c: '#FF5A5F' }, ...kats()].map(k =>
     `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${k.e} ${k.nazov}</button>`).join('');
   const q = bez(st.q.trim());
-  const list = T.filter(t => (!st.kat || t.k === st.kat || (st.kat === 'fav' && st.fav.includes(t.id))) && (!q || bez(t.t + ' ' + t.m).includes(q)));
+  const poradie = Object.keys(KAT);
+  const list = [...T].sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k)).filter(t => (!st.kat || t.k === st.kat || (st.kat === 'fav' && st.fav.includes(t.id))) && (!q || bez(t.t + ' ' + t.m).includes(q)));
   z.innerHTML = list.length ? list.map(row).join('') : `<div class="empty">${owl('oops')}<span>Takú tému zatiaľ nemáme.</span></div>`;
 }
 
@@ -815,6 +854,13 @@ document.addEventListener('click', e => {
   if (!b || b.disabled) return;
   const d = b.dataset, f = st.flow;
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
+  if (d.testZvuk !== undefined) {
+    if (!Zvuk.on) Zvuk.toggle();
+    Hlas.stop(); paintHead(); Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260);
+    const [x, y] = stred(b); FX.burst(x, y, 20, ['star', 'dot'], 7);
+    setTimeout(() => toast(Zvuk.stav() === 'running' ? 'Zvuk hrá 🎵 Ak nič nepočuť, zvýšte hlasitosť.' : 'Zvuk sa ešte nerozbehol, ťuknite ešte raz.'), 700);
+    return;
+  }
   if (d.start) startTema(d.start);
   else if (d.go) { Zvuk.play('whoosh'); go(d.go); }
   else if (d.kviz !== undefined) startKviz();
@@ -864,8 +910,13 @@ document.getElementById('star-ico').innerHTML = STAR();
 render();
 </script>
 <script>
-// Offline: appka sa pri prvom otvorení uloží do telefónu
-if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+// Offline: appka sa pri prvom otvorení uloží do telefónu.
+// Keď príde nová verzia, stránka sa raz sama obnoví, aby ju bolo hneď vidieť.
+if ('serviceWorker' in navigator) {
+  const mal = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (mal) location.reload(); });
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 </script>
 </body>
 </html>

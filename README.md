@@ -16,7 +16,7 @@ Body, prebraté a uložené témy si pamätá telefón, nikam sa neposielajú.
 
 ## Čo v nej je
 
-- 23 tém v 11 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
+- 33 tém v 11 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
   ľudské telo, geografia, psychológia, kultúra), téma dňa a náhodná téma
 - dva vekové stupne: 5–8 rokov a 9–12 rokov (odsek navyše a ťažšie otázky)
 - kvíz s obrázkovými odpoveďami, rýchly kvíz z rôznych tém, body, hviezdy a séria dní

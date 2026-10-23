@@ -48,6 +48,12 @@ function jezko(x, y) {
   return `<g transform="translate(${x} ${y})"><g class="hop"><path d="${sp}" fill="#6B4226"/><path d="M-32 0 A32 30 0 0 1 32 0Z" fill="#8B5A2B"/><ellipse cx="30" cy="-6" rx="14" ry="10" fill="#F4C58C"/>${dot(44, -7, 3)}<g class="blink">${dot(31, -10, 2)}</g><circle cx="-6" cy="-24" r="6" fill="#FF5A5F"/></g></g>`;
 }
 
+// fáza Mesiaca: k > 0 rožok, k < 0 viac ako polovica, k = 0 polovica; smer 1 = svieti sprava
+const faza = (x, y, r, k, smer) => `<g transform="translate(${x} ${y})"><circle r="${r}" fill="#3A3F7A" stroke-width="2"/><path d="M0 ${-r} A${r} ${r} 0 0 ${smer} 0 ${r} A${Math.abs(k)} ${r} 0 0 ${k < 0 ? smer : 1 - smer} 0 ${-r}Z" fill="#FFF3B0" stroke-width="2"/></g>`;
+const kvet = (x, h, c) => `<g transform="translate(${x} 150)"><path d="M0 0 V${-h}" stroke="${INK}" stroke-width="7"/><path d="M0 0 V${-h}" stroke="#2FB36A" stroke-width="3.5"/><g transform="translate(0 ${-h})"><g class="breathe">${[0, 72, 144, 216, 288].map(a => `<circle cx="0" cy="-9" r="7" fill="${c}" transform="rotate(${a})"/>`).join('')}<circle r="6" fill="#FFD23F"/></g></g></g>`;
+const vcela = (x, y, d) => `<g transform="translate(${x} ${y})"><g class="bzz" style="animation-delay:${d}s"><ellipse class="kridla" cx="-3" cy="-9" rx="5" ry="8" fill="#fff" opacity=".9" stroke-width="2"/><ellipse class="kridla" cx="5" cy="-9" rx="5" ry="8" fill="#fff" opacity=".9" stroke-width="2"/><ellipse rx="12" ry="9" fill="#FFD23F" stroke-width="2.5"/><path d="M-3 -8 V8 M4 -8 V8" stroke-width="3.5"/><g class="blink">${dot(9, -2, 1.6)}</g></g></g>`;
+const bacil = (x, y, c, d) => `<g transform="translate(${x} ${y})"><g class="utek" style="animation-delay:${d}s">${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<path d="M0 -12 V-19" transform="rotate(${a})" stroke-width="2.5"/>`).join('')}<circle r="13" fill="${c}"/>${face(0, -1, .6, 'angry')}</g></g>`;
+
 const ART = {
   manufaktura: () => `${bg('#FFE3BD')}
     <path d="M0 34 H320 M0 68 H320 M0 102 H320 M40 0 V34 M120 0 V34 M200 0 V34 M280 0 V34 M80 34 V68 M160 34 V68 M240 34 V68 M40 68 V102 M120 68 V102 M200 68 V102 M280 68 V102" stroke="#F5C78F" stroke-width="2.5"/>
@@ -285,6 +291,110 @@ const ART = {
     ${kid(120, 112, '#4C7DFF', { arm: -10, s: .72, d: -.3 })}${kid(160, 98, '#FF5A5F', { arm: 20, s: .8, hair: '#F2B33D', extra: '<circle cx="0" cy="-22" r="7" fill="#FFD23F"/>' })}${kid(200, 122, '#2FBF71', { arm: 10, s: .68, skin: '#C98B62', hair: INK, d: -.8 })}
     <g transform="translate(46 150)"><path d="M-8 -50 H8 L4 0 H-4Z" fill="#C9C3E8"/><g transform="translate(0 -52)"><g class="flame"><path d="M0 -30 C14 -14 12 0 0 0 C-12 0 -14 -14 0 -30Z" fill="#FF9F1C"/><path d="M0 -16 C6 -8 5 0 0 0 C-5 0 -6 -8 0 -16Z" fill="#FFD23F"/></g></g></g>
     <g transform="translate(272 150)"><g class="pulse"><path d="M-16 -50 H16 Q16 -24 0 -20 Q-16 -24 -16 -50Z" fill="#FFD23F"/><path d="M-16 -44 q-10 0 -10 8 q0 8 12 10 M16 -44 q10 0 10 8 q0 8 -12 10" fill="none"/><rect x="-4" y="-20" width="8" height="10" fill="#FFD23F"/><rect x="-12" y="-10" width="24" height="10" rx="2" fill="#9A6234"/></g></g>`,
+
+  pravek: () => `${bg('#FFD9A8')}${sun(282, 42, 17)}${cloud(150, 14, .6)}
+    <path d="M0 150 Q160 128 320 150 V180 H0Z" fill="#D9B27A"/>
+    <path d="M-4 180 V64 Q16 26 70 30 Q122 28 138 82 L142 180Z" fill="#A3939F"/>
+    <path d="M22 180 V112 Q28 78 62 78 Q98 80 106 114 V180Z" fill="#4A3D52"/>
+    <path d="M74 56 q10 -10 22 0 v8 M78 58 v7 M92 60 v6 M74 56 q-6 3 -5 9 M96 56 l6 -4" fill="none" stroke="#D2452B" stroke-width="2.5"/>
+    <g transform="translate(138 166)"><path d="M-18 6 L18 -2 M-18 -2 L18 6" stroke="${INK}" stroke-width="11"/><path d="M-18 6 L18 -2 M-18 -2 L18 6" stroke="#8B5A2B" stroke-width="6"/>
+      <g transform="translate(0 -2)"><g class="flame"><path d="M0 -36 C17 -17 15 0 0 0 C-15 0 -17 -17 0 -36Z" fill="#FF7A1F"/><path d="M0 -19 C7 -9 6 0 0 0 C-6 0 -7 -9 0 -19Z" fill="#FFD23F"/></g></g></g>
+    ${kid(186, 170, '#C98A4B', { arm: -35, hair: '#3A2A1A' })}
+    <g transform="translate(266 128)"><g class="bob">
+      <rect x="-30" y="16" width="14" height="28" rx="5" fill="#7A4B30"/><rect x="-4" y="18" width="14" height="26" rx="5" fill="#7A4B30"/><rect x="20" y="16" width="14" height="28" rx="5" fill="#7A4B30"/>
+      <ellipse rx="40" ry="30" fill="#8B5A3C"/><path d="M-24 -20 q6 -10 12 -2 q6 -10 12 -2 q6 -10 12 -2" fill="none" stroke-width="2.5"/>
+      <circle cx="-36" cy="-10" r="22" fill="#8B5A3C"/>
+      <path d="M-54 0 q-8 18 2 30 q6 4 8 -2 q-8 -10 2 -24" fill="#8B5A3C"/>
+      <path d="M-46 8 q-14 12 -2 22" fill="none" stroke="${INK}" stroke-width="9"/><path d="M-46 8 q-14 12 -2 22" fill="none" stroke="#FFF8E0" stroke-width="4.5"/>
+      <ellipse cx="-24" cy="-8" rx="9" ry="13" fill="#7A4B30"/><g class="blink">${dot(-44, -16, 2.6)}</g></g></g>`,
+
+  zakony: () => `${bg('#CDEBFF')}${cloud(110, 16, .7)}${cloud(230, 24, .6, -2)}
+    <rect y="132" width="320" height="48" fill="#8E8AA0" ${N}/><path d="M0 132 H320 M0 178 H320"/>
+    ${[0, 1, 2, 3, 4, 5].map(i => `<rect x="${118 + i * 16}" y="137" width="10" height="38" fill="#fff" ${N}/>`).join('')}
+    <rect x="44" y="70" width="8" height="64" fill="#6B6B7B"/><rect x="30" y="20" width="36" height="58" rx="8" fill="${INK}"/>
+    ${[['#FF5A5F', 34, 0], ['#FFD23F', 49, -2], ['#2FBF71', 64, -4]].map(([c, y, d]) => `<circle cx="48" cy="${y}" r="7" fill="${c}" class="svetlo" style="animation-delay:${d}s" ${N}/>`).join('')}
+    ${kid(166, 168, '#FF6FA8', { arm: 20 })}
+    <g transform="translate(262 90)"><g class="bob"><path d="M-40 -30 Q-20 -38 0 -30 V36 Q-20 28 -40 36Z" fill="#fff"/><path d="M40 -30 Q20 -38 0 -30 V36 Q20 28 40 36Z" fill="#fff"/>
+      <text x="-20" y="14" ${TXT} fill="#4C7DFF" font-size="34">§</text><path d="M8 -14 H32 M8 -4 H32 M8 6 H28 M8 16 H30" stroke-width="2.5"/></g></g>`,
+
+  setrenie: () => `${bg('#E9E0FF')}${plus(26, 26, '#B36BFF')}${plus(298, 150, '#FF9EC7', .6)}
+    <rect y="152" width="320" height="28" fill="#C9A6FF" ${N}/><path d="M0 152 H320"/>
+    <g transform="translate(118 40)"><g class="coin"><circle r="11" fill="#FFD23F"/><text y="4" ${TXT} fill="${INK}" font-size="12">€</text></g></g>
+    <g transform="translate(118 152)"><rect x="-40" y="-82" width="80" height="82" rx="16" fill="#D6F0FF"/>
+      ${[[-20, -12], [0, -12], [20, -12], [-10, -25], [10, -25], [0, -38]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="11" ry="6" fill="#FFD23F" stroke-width="2"/>`).join('')}
+      <path d="M-28 -70 q4 -6 10 -6" fill="none" stroke="#fff" stroke-width="4"/>
+      <rect x="-34" y="-94" width="68" height="14" rx="5" fill="#FF8A3D"/><rect x="-12" y="-90" width="24" height="5" rx="2.5" fill="${INK}" ${N}/></g>
+    ${kid(204, 170, '#2FBF71', { arm: -20 })}
+    <circle cx="222" cy="100" r="4" fill="#fff"/><circle cx="232" cy="88" r="6" fill="#fff"/>
+    <g transform="translate(270 54)"><g class="bob"><ellipse rx="44" ry="30" fill="#fff"/><circle cx="-16" cy="8" r="10" fill="none" stroke-width="2.5"/><circle cx="16" cy="8" r="10" fill="none" stroke-width="2.5"/><path d="M-16 8 L-4 -8 L16 8 M-4 -8 H10 L16 8 M-8 -12 h8" fill="none" stroke="#FF5A5F" stroke-width="3"/></g></g>`,
+
+  ruky: () => `${bg('#D9F4FF')}
+    <path d="M0 40 H320 M0 80 H320 M60 0 V130 M120 0 V130 M180 0 V130 M240 0 V130" stroke="#BCE6F7" stroke-width="2"/>
+    <rect y="130" width="320" height="50" fill="#fff" ${N}/><path d="M0 130 H320"/>
+    <path d="M30 130 Q30 166 90 166 Q150 166 150 130Z" fill="#E8F4FA"/>
+    <path d="M86 130 V96 Q86 80 102 80 H120 V92 H104 Q100 92 100 98 V130Z" fill="#C9D1E3"/>
+    <path d="M113 94 V128" stroke="#3D8BFF" stroke-width="5" stroke-dasharray="6 5" class="dash"/>
+    ${[[170, 92, 9, 0], [206, 74, 12, .6], [232, 98, 7, 1.2], [150, 70, 6, 1.8], [128, 58, 10, .9]].map(([x, y, r, d]) => `<g transform="translate(${x} ${y})"><g class="rise" style="animation-delay:${d}s"><circle r="${r}" fill="#fff" opacity=".9" stroke-width="2"/><circle cx="${-r * .35}" cy="${-r * .35}" r="${r * .25}" fill="#BFE7FF" ${N}/></g></g>`).join('')}
+    <g transform="translate(196 118)"><g class="bob"><rect x="-30" y="-18" width="60" height="34" rx="14" fill="#FF9EC7"/>${face(0, -2, .9)}</g></g>
+    ${bacil(266, 58, '#8BD450', 0)}${bacil(296, 104, '#B36BFF', -.5)}${bacil(284, 154, '#FFB020', -1)}`,
+
+  elektrina: () => `${bg('#CDEBFF')}
+    <path d="M0 150 Q160 136 320 150 V180 H0Z" fill="#6FD68F"/>
+    <g transform="translate(36 36)"><g class="steam">${cloud(0, 0, .8)}</g></g><g transform="translate(58 22)"><g class="steam" style="animation-delay:-1.1s">${cloud(0, 0, .6)}</g></g>
+    <path d="M22 150 Q34 112 30 72 H86 Q82 112 94 150Z" fill="#E0E4EE"/><path d="M30 84 H86" stroke="#FF8A3D" stroke-width="5"/>
+    <path d="M90 78 Q118 96 138 82 M182 82 Q214 100 238 96" fill="none" stroke-width="2.5"/>
+    <g transform="translate(160 150)"><path d="M-16 0 L-4 -86 H4 L16 0 M-12 -30 H12 M-9 -54 H9 M-14 -12 L10 -40 M14 -12 L-10 -40" fill="none" stroke-width="3"/><path d="M-26 -68 H26 M-20 -80 H20" stroke-width="3.5"/></g>
+    <g transform="translate(206 70)"><g class="twinkle"><path d="M0 -10 L-5 0 H2 L-3 10" fill="none" stroke="#FFB300" stroke-width="3"/></g></g>
+    <g transform="translate(264 150)"><rect x="-30" y="-46" width="60" height="46" fill="#FFD9A0"/><path d="M-36 -44 L0 -72 L36 -44Z" fill="#4C7DFF"/><g class="pulse"><rect x="-20" y="-34" width="16" height="14" fill="#FFE27A"/></g><rect x="6" y="-28" width="14" height="28" fill="#9A6234"/></g>
+    <g transform="translate(264 40)"><g class="spin">${[0, 45, 90, 135, 180, 225, 270, 315].map(a => `<path d="M0 -24 V-32" stroke="#FFB300" stroke-width="4" transform="rotate(${a})"/>`).join('')}</g><g class="pulse"><rect x="-7" y="14" width="14" height="10" rx="2" fill="#B8C2D6"/><circle r="18" fill="#FFE27A"/>${face(0, -2, .8)}</g></g>`,
+
+  mesiac: () => `${bg('#22285E')}
+    ${[[110, 22], [150, 52], [290, 120], [24, 96], [250, 18], [130, 96]].map(([x, y], i) => hviezdicka(x, y, .7, '#FFE27A', i * .3)).join('')}
+    ${sun(34, 38, 15)}<path d="M54 44 L156 64" stroke="#FFE27A" stroke-width="3" stroke-dasharray="6 6" class="dash"/>
+    <g transform="translate(206 70)"><g class="bob"><circle r="44" fill="#FFF3B0"/><circle cx="-18" cy="-18" r="8" fill="#F4DC7A" stroke-width="2"/><circle cx="22" cy="18" r="6" fill="#F4DC7A" stroke-width="2"/><circle cx="24" cy="-20" r="4" fill="#F4DC7A" stroke-width="2"/>${face(0, 4, 1.3)}</g></g>
+    <g transform="translate(52 146)"><circle r="20" fill="#4FC3F7"/><path d="M-12 -8 q8 -6 14 2 q-6 6 -14 -2z M2 6 q10 -2 10 8 q-8 4 -10 -8z" fill="#4CD07D" stroke-width="2"/></g>
+    <g transform="translate(112 118) rotate(40)"><g class="fly"><path d="M0 -24 C10 -14 10 6 8 14 H-8 C-10 6 -10 -14 0 -24Z" fill="#fff"/><circle cy="-6" r="4" fill="#4FC3F7" stroke-width="2"/><path d="M-8 6 L-16 18 H-8Z M8 6 L16 18 H8Z" fill="#FF5A5F"/><g transform="translate(0 15)"><g class="flame"><path d="M-5 0 Q0 16 5 0Z" fill="#FF9F1C"/></g></g></g></g>
+    ${faza(160, 162, 9, 5, 1)}${faza(192, 162, 9, 0, 1)}${faza(224, 162, 9, -5, 1)}<g transform="translate(256 162)"><circle r="9" fill="#FFF3B0" stroke-width="2"/></g>${faza(288, 162, 9, 0, 0)}`,
+
+  vcely: () => `${bg('#DDF5D0')}${sun(284, 32, 15)}${cloud(150, 14, .6)}
+    <path d="M0 150 Q160 138 320 150 V180 H0Z" fill="#6FD68F"/>
+    <g transform="translate(66 150)"><path d="M-44 0 Q-46 -70 0 -76 Q46 -70 44 0Z" fill="#F4B860"/><path d="M-43 -18 H43 M-39 -36 H39 M-31 -54 H31" fill="none" stroke-width="2.5"/><path d="M-12 0 V-12 Q0 -22 12 -12 V0Z" fill="#6B4226"/></g>
+    <g transform="translate(132 158)"><path d="M-16 0 Q-22 -20 -12 -28 H12 Q22 -20 16 0Z" fill="#FFB020"/><rect x="-14" y="-34" width="28" height="8" rx="3" fill="#C98A4B"/><text y="-9" ${TXT} fill="${INK}" font-size="9">MED</text></g>
+    ${kvet(194, 46, '#FF6FA8')}${kvet(238, 62, '#B36BFF')}${kvet(282, 40, '#FF5A5F')}
+    <path d="M100 112 Q150 50 200 62 T276 86" fill="none" stroke-dasharray="4 6" opacity=".45" stroke-width="2"/>
+    ${vcela(112, 104, 0)}${vcela(158, 58, -1)}${vcela(214, 74, -2)}${vcela(262, 96, -.5)}`,
+
+  zuby: () => `${bg('#D6F3FF')}${plus(30, 30, '#4FC3F7')}${plus(290, 40, '#FF9EC7', .5)}${hviezdicka(98, 40, .9, '#FFE27A', 0)}${hviezdicka(214, 26, .7, '#FFE27A', .6)}
+    <rect y="160" width="320" height="20" fill="#BFE7FF" ${N}/><path d="M0 160 H320"/>
+    <g transform="translate(150 96)"><g class="bob"><path d="M-40 -40 Q-40 -60 -18 -58 Q0 -54 0 -50 Q0 -54 18 -58 Q40 -60 40 -40 Q42 -10 30 20 Q26 46 16 48 Q8 48 6 30 Q4 18 0 18 Q-4 18 -6 30 Q-8 48 -16 48 Q-26 46 -30 20 Q-42 -10 -40 -40Z" fill="#fff"/>
+      <path d="M-28 -40 q4 -10 14 -10" fill="none" stroke="#BFE7FF" stroke-width="4"/>${face(0, -14, 1.2)}</g></g>
+    ${[[214, 70, 6, 0], [230, 54, 8, .7], [206, 46, 5, 1.3]].map(([x, y, r, d]) => `<g transform="translate(${x} ${y})"><g class="rise" style="animation-delay:${d}s"><circle r="${r}" fill="#fff" stroke-width="2"/></g></g>`).join('')}
+    <g transform="translate(244 112) rotate(-30)"><g class="brush"><rect x="-10" y="-6" width="80" height="12" rx="6" fill="#4C7DFF"/><rect x="-34" y="-8" width="26" height="14" rx="4" fill="#fff"/>
+      <path d="M-31 -8 V-18 M-25 -8 V-18 M-19 -8 V-18 M-13 -8 V-18" stroke="#4FC3F7" stroke-width="3"/><circle cx="-22" cy="-24" r="7" fill="#fff" stroke-width="2"/></g></g>
+    <g transform="translate(56 150) rotate(-10)"><path d="M-30 -10 H22 L30 -4 V4 L22 10 H-30Z" fill="#fff"/><rect x="30" y="-6" width="10" height="12" fill="#FF5A5F"/><path d="M-26 -1 H14" stroke="#2FBF71" stroke-width="4"/></g>`,
+
+  strach: () => `${bg('#3B2F6E')}
+    <rect y="150" width="320" height="30" fill="#5B4FA8" ${N}/><path d="M0 150 H320"/>
+    <rect x="20" y="20" width="56" height="50" rx="6" fill="#22285E"/><circle cx="48" cy="44" r="10" fill="#FFF3B0"/><path d="M48 20 V70 M20 45 H76"/>
+    <g transform="translate(252 84)"><path d="M-48 66 Q-52 -8 -22 -38 Q-16 -58 -6 -42 Q0 -62 10 -42 Q22 -58 28 -38 Q56 -8 48 66Z" fill="#251C4A" ${N}/>
+      <g class="blink"><circle cx="-34" cy="-18" r="5" fill="#FFE27A" ${N}/><circle cx="34" cy="-18" r="5" fill="#FFE27A" ${N}/></g></g>
+    <polygon points="122,118 228,40 248,134" fill="#FFF3B0" opacity=".5" class="beam" ${N}/>
+    <g transform="translate(252 48)"><path d="M0 0 q0 -8 6 -8 q6 0 6 6" fill="none" stroke-width="2.5"/><path d="M-26 16 L0 2 L26 16" fill="none"/><path d="M-22 16 H22 L28 92 H-28Z" fill="#FF8A3D"/><path d="M0 16 V92" stroke-width="2.5"/>${dot(-6, 40, 2.5)}${dot(-6, 58, 2.5)}${dot(-6, 76, 2.5)}</g>
+    ${kid(80, 170, '#4C7DFF', { arm: 62, extra: '<rect x="30" y="-52" width="18" height="11" rx="3" fill="#FFD23F" transform="rotate(-28 37 -46)"/>' })}`,
+
+  rozpravky: () => `${bg('#FFE6F2')}
+    ${[[30, 30, '#FFD23F'], [292, 26, '#B36BFF'], [176, 20, '#FF6FA8'], [20, 110, '#4FC3F7'], [300, 112, '#2FBF71']].map(([x, y, c], i) => hviezdicka(x, y, .9, c, i * .35)).join('')}
+    <g transform="translate(110 96)"><g class="bob"><rect x="-26" y="-20" width="52" height="40" fill="#FFB3D1"/><rect x="-38" y="-36" width="16" height="56" fill="#FF9EC7"/><rect x="22" y="-36" width="16" height="56" fill="#FF9EC7"/>
+      <path d="M-41 -34 L-30 -56 L-19 -34Z M19 -34 L30 -56 L41 -34Z" fill="#B36BFF"/><path d="M-8 20 V6 q8 -10 16 0 V20Z" fill="#B36BFF"/><path d="M-30 -56 V-66"/><g transform="translate(-30 -66)"><g class="flag"><path d="M0 0 L14 3 L0 7Z" fill="#FFD23F"/></g></g></g></g>
+    <g transform="translate(232 86)"><g class="fly">
+      <path d="M24 4 Q48 8 54 -12" fill="none" stroke="${INK}" stroke-width="11"/><path d="M24 4 Q48 8 54 -12" fill="none" stroke="#4CD07D" stroke-width="6"/>
+      <g class="krid2"><path d="M-4 -14 L12 -46 L26 -18Z" fill="#9BE3B4"/></g>
+      <ellipse rx="30" ry="20" fill="#4CD07D"/><path d="M-10 -18 l5 -8 l5 8 M4 -19 l5 -8 l5 8" fill="#2FB36A"/>
+      <rect x="-20" y="14" width="9" height="12" rx="4" fill="#4CD07D"/><rect x="8" y="14" width="9" height="12" rx="4" fill="#4CD07D"/>
+      <circle cx="-30" cy="-14" r="16" fill="#4CD07D"/><path d="M-38 -28 l-2 -9 l7 5 M-26 -29 l2 -9 l4 8" fill="#FFD23F"/>
+      <g class="blink">${dot(-34, -16, 2.6)}</g><path d="M-44 -6 q6 5 12 0" fill="none" stroke-width="2.5"/><circle cx="-24" cy="-8" r="3.5" fill="#FF8FB1" opacity=".8" ${N}/></g></g>
+    <g transform="translate(160 162)"><path d="M-124 -30 Q-62 -44 0 -30 V14 Q-62 0 -124 14Z" fill="#fff"/><path d="M124 -30 Q62 -44 0 -30 V14 Q62 0 124 14Z" fill="#fff"/>
+      <text x="-62" y="-6" ${TXT} fill="${INK}" font-size="14">Kde bolo,</text><text x="62" y="-6" ${TXT} fill="${INK}" font-size="14">tam bolo…</text></g>`,
 };
 
 const svg = t => `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Obrázok: ${t.t}"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${ART[t.id]()}</g></svg>`;
