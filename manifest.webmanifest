@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Svet za 3 minúty",
+  "short_name": "Svet za 3 min",
+  "description": "Krátke témy o svete na rozhovor rodiča s dieťaťom, aj cestou autom.",
+  "lang": "sk",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E3F4FF",
+  "theme_color": "#E3F4FF",
+  "categories": ["education", "kids"],
+  "icons": [
+    { "src": "ikony/ikona-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "ikony/ikona-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "ikony/ikona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
