@@ -408,6 +408,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
+const VERZIA_APPKY = 4; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -424,12 +425,14 @@ const S = {
 /* Zvuky: všetky sa skladajú priamo v prehliadači, žiadne súbory */
 const Zvuk = (() => {
   let ctx = null, out = null, on = S.get('zvuk', true);
-  // iPhone: bez typu „playback“ Safari stíši zvuky, keď je telefón v tichom režime
-  const relacia = typ => { try { if (navigator.audioSession) navigator.audioSession.type = typ; } catch (e) {} };
+  // iPhone a iPad: Web Audio tam po zamknutí displeja, prepnutí appky či čítaní nahlas často stíchne.
+  // Preto sa tam zvuky hneď na začiatku „nahrajú“ do krátkych súborov a hrajú ako bežné audio.
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const urly = {}, banka = {};
+  let odomknute = false;
   function ac() {
     if (!on) return null;
     try {
-      relacia('playback');
       if (!ctx) {
         const C = window.AudioContext || window.webkitAudioContext;
         if (!C) return null;
@@ -437,12 +440,9 @@ const Zvuk = (() => {
         const comp = ctx.createDynamicsCompressor();
         out = ctx.createGain(); out.gain.value = .75;
         out.connect(comp); comp.connect(ctx.destination);
-        // tiché „odomknutie“ zvuku hneď pri prvom ťuknutí (staršie iPhony to potrebujú)
-        const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
       }
       if (ctx.state !== 'running') {
-        // iPhone po zamknutí, telefonáte alebo čítaní nahlas zvuk preruší a niekedy ho už neobnoví.
-        // Skúsime ho prebudiť, a keď sa to do chvíle nepodarí, pri ďalšom ťuknutí vytvoríme nový.
+        // prerušený zvuk skúsime prebudiť; keď sa to do chvíle nepodarí, pri ďalšom ťuknutí vytvoríme nový
         const c = ctx;
         try { const p = c.resume(); if (p) p.catch(() => {}); } catch (e) {}
         setTimeout(() => { if (c === ctx && c.state !== 'running') { try { c.close(); } catch (e) {} ctx = null; } }, 600);
@@ -450,9 +450,12 @@ const Zvuk = (() => {
       return ctx;
     } catch (e) { ctx = null; return null; }
   }
-  document.addEventListener('touchend', () => { if (on && ctx && ctx.state !== 'running') ac(); }, { passive: true });
-  // iPhone preruší zvuk pri prepnutí do inej appky, po návrate ho obnovíme
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && ctx && on && ctx.state !== 'running') try { ctx.resume(); } catch (e) {} });
+  // po návrate do appky začneme so svežím zvukom: starý môže byť „mŕtvy“, hoci tvrdí, že hrá
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !ctx) return;
+    try { ctx.close(); } catch (e) {}
+    ctx = null;
+  });
   function tone(c, f, t, d, type = 'sine', v = .2, f2) {
     const o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + t;
     o.type = type; o.frequency.setValueAtTime(f, t0);
@@ -489,13 +492,66 @@ const Zvuk = (() => {
     heart: c => { tone(c, 660, 0, .1, 'sine', .22, 990); tone(c, 990, .09, .2, 'sine', .2, 1480); },
     bum: c => { tone(c, 160, 0, .3, 'sine', .35, 50); sum(c, 0, .35, .25, 2500, 400); },
   };
+  // --- iPhone: zvuky ako krátke súbory WAV ---
+  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55 };
+  function wav(buf) {
+    const d = buf.getChannelData(0), n = d.length, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+    const s = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    s(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); s(8, 'WAVE'); s(12, 'fmt '); v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, buf.sampleRate, true); v.setUint32(28, buf.sampleRate * 2, true);
+    v.setUint16(32, 2, true); v.setUint16(34, 16, true); s(36, 'data'); v.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) { const x = Math.max(-1, Math.min(1, d[i])); v.setInt16(44 + i * 2, x < 0 ? x * 0x8000 : x * 0x7FFF, true); }
+    return b;
+  }
+  const nahraj = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
+  async function priprav() {
+    const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!OC) return;
+    for (const [n, d] of Object.entries(DLZKA)) {
+      try {
+        const oc = new OC(1, Math.ceil(44100 * d), 44100), comp = oc.createDynamicsCompressor(), g = oc.createGain();
+        g.gain.value = .75; g.connect(comp); comp.connect(oc.destination);
+        const zivy = out; out = g;
+        try { zvuky[n](oc); } finally { out = zivy; }
+        urly[n] = URL.createObjectURL(new Blob([wav(await nahraj(oc))], { type: 'audio/wav' }));
+      } catch (e) {}
+    }
+  }
+  // iPhone pustí zvuk len vtedy, keď prehrávač vznikol pri ťuknutí: pri prvom ťuknutí ich pripravíme všetky
+  function odomkni() {
+    if (odomknute || !urly.tap) return;
+    for (const n of Object.keys(urly)) banka[n] = [0, 1].map(() => { const a = new Audio(); a.preload = 'auto'; a.src = urly[n]; a.load(); return a; });
+    odomknute = true;
+  }
+  function hraj(n) {
+    const zoz = banka[n];
+    const a = zoz.find(x => x.paused || x.ended) || zoz[0];
+    try { a.currentTime = 0; } catch (e) {}
+    const p = a.play(); if (p) p.catch(() => {});
+  }
+  if (ios) {
+    priprav();
+    ['touchend', 'click'].forEach(t => document.addEventListener(t, odomkni, { capture: true, passive: true }));
+  }
+
   return {
-    play(n) { const c = ac(); if (c && zvuky[n]) try { zvuky[n](c); } catch (e) {} },
+    play(n) {
+      if (!on || !zvuky[n]) return;
+      if (ios && banka[n]) { hraj(n); return; }
+      const c = ac(); if (c) try { zvuky[n](c); } catch (e) {}
+    },
     get on() { return on; },
-    stav() { return ctx ? ctx.state : 'zatiaľ nespustený'; },
+    stav() {
+      if (ios) return odomknute ? 'running' : urly.tap ? 'čaká na prvé ťuknutie' : 'pripravuje sa';
+      return ctx ? ctx.state : 'zatiaľ nespustený';
+    },
     toggle() {
       on = !on; S.set('zvuk', on);
-      if (on) this.play('pop'); else { relacia('auto'); try { if (ctx) ctx.suspend(); } catch (e) {} }
+      if (on) this.play('pop');
+      else {
+        Object.values(banka).flat().forEach(a => { try { a.pause(); } catch (e) {} });
+        try { if (ctx) ctx.suspend(); } catch (e) {}
+      }
       return on;
     },
   };
@@ -663,7 +719,7 @@ const views = {
       <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
         ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťuknite na ♡ a nájdete ju tu.</span></div>`}
       </section>
-      <p class="muted" style="font-size:.85rem">Ukážka prvej verzie s ${T.length} témami. Body a pokrok si pamätá tento telefón. Zvuky vypnete reproduktorom hore.</p>`;
+      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${T.length} tém. Body a pokrok si pamätá tento telefón. Zvuky vypnete reproduktorom hore.</p>`;
   },
 };
 
