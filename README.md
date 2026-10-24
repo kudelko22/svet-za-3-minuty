@@ -38,6 +38,17 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 - Na konci appka pripíše body, oznámi nové odznaky a o 10 sekúnd sama spustí ďalšiu neprebratú tému
   (dá sa vypnúť prepínačom).
 - Obrazovka počas čítania nezhasne. Keď sa appka schová (iná aplikácia, zamknutý telefón), čítanie sa pozastaví.
+- Hlas: appka vyberie najkrajší slovenský hlas v telefóne. V profile (Ja → Hlas na čítanie) sa dá vybrať iný
+  a appka poradí, ako si stiahnuť krajší hlas zadarmo (iPhone: Laura vylepšený).
+
+## Hry
+
+Za body z tém sa odomykajú hry (karta **Hry** v spodnom menu). Hraním sa body neminú, rekordy sa pamätajú
+v telefóne pre každé dieťa zvlášť.
+
+- **Pexeso** (od 60 bodov): dvojice obrázkov z tém, 12 kariet pre menšie deti, 16 pre väčšie.
+- **Chytaj hviezdičky** (od 150 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
+- **Skladačka** (od 300 bodov): poprehadzovaný obrázok z témy, ťuknutím sa vymenia dva dieliky.
 
 ## Firebase
 
