@@ -386,6 +386,42 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .nav button[aria-current="page"] { color: var(--ink); }
 .nav button[aria-current="page"] .ni { background: var(--nc); border-color: var(--ink); animation: jelly .6s; }
 
+/* Brána: prihlásenie, výber dieťaťa, tvorba postavičky */
+.brana { display: grid; gap: 16px; justify-items: center; text-align: center; padding-top: 12px; }
+.brana > .card, .brana > .btn { width: 100%; text-align: left; }
+.brana > .btn { text-align: center; }
+.brana-owl { width: 150px; animation: bob 3s ease-in-out infinite; }
+.kruh-av { display: grid; align-items: end; overflow: hidden; border-radius: 50%; background: var(--bg); border: 3px solid var(--ink); }
+.kruh-av svg { display: block; width: 92%; height: auto; margin: 0 auto; }
+.deti { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
+.dieta { display: grid; justify-items: center; gap: 2px; padding: 14px 8px 12px; border: 3px solid var(--ink); border-radius: 24px; background: var(--paper); box-shadow: var(--sh); }
+.dieta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.dieta .kruh-av { width: min(118px, 100%); aspect-ratio: 1; animation: tileBob 3s ease-in-out infinite; }
+.dieta:nth-child(2) .kruh-av { animation-delay: -1s; } .dieta:nth-child(3) .kruh-av { animation-delay: -2s; }
+.dieta b { margin-top: 6px; font: 700 1.35rem/1.15 var(--f-display); }
+.dieta small { color: var(--muted); font-weight: 800; }
+.dieta.nove { border-style: dashed; background: rgb(255 255 255 / .6); box-shadow: none; }
+.dieta .plus { width: min(118px, 100%); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; border: 3px dashed var(--ink); background: var(--soft); font: 700 3.6rem/1 var(--f-display); }
+.tvorba { justify-items: stretch; text-align: left; }
+.tvorba > .h1 { text-align: center; }
+.av-wrap { position: relative; justify-self: center; }
+.av-nahlad { width: 210px; aspect-ratio: 1; border-width: 4px; box-shadow: 0 6px 0 var(--ink); transition: background-color .3s; }
+.av-nahlad.hopni #av-velky { animation: jelly .5s; }
+.kocka { position: absolute; right: -10px; top: 6px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); box-shadow: 0 4px 0 var(--ink); font-size: 1.7rem; padding: 0; }
+.kocka:active { transform: translateY(3px) rotate(90deg); box-shadow: 0 1px 0 var(--ink); }
+.av-tabs { justify-content: center; }
+.av-moznosti { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.av-opt { aspect-ratio: 1; padding: 0; box-shadow: 0 3px 0 var(--ink); }
+.av-opt.farba { border-radius: 50%; border: 3px solid var(--ink); background: var(--f); display: grid; place-items: center; }
+.av-opt[aria-pressed="true"] { outline: 4px solid var(--blue); outline-offset: 3px; }
+.av-opt.farba[aria-pressed="true"]::after { content: "✓"; color: #fff; font: 700 1.5rem/1 var(--f-display); text-shadow: 0 2px 0 var(--ink); }
+.btn.red { background: var(--coral); }
+.link.center { justify-self: center; }
+.potvrd { border-color: var(--coral); }
+.prof-meno { display: grid; gap: 6px; justify-items: start; }
+.av-ja { flex: none; width: 104px; aspect-ratio: 1; padding: 0; box-shadow: 0 4px 0 var(--ink); }
+.av.kruh-av { border-width: 2.5px; height: 58px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -396,7 +432,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 
 <header class="top" id="top">
   <div class="gut">
-    <div class="hi"><button class="av" id="av" data-sova aria-label="Sovička Múdra"></button><div><small>Svet za 3 minúty</small><b id="pozdrav">Ahoj!</b></div></div>
+    <div class="hi"><button class="av" id="av" data-deti aria-label="Zmeniť dieťa"></button><div><small>Svet za 3 minúty</small><b id="pozdrav">Ahoj!</b></div></div>
     <div class="top-r"><button class="snd" id="snd" aria-label="Zvuky" aria-pressed="true">🔊</button><span class="stars" id="stars" aria-label="Body"><span id="star-ico"></span><span id="body">0</span></span></div>
   </div>
 </header>
@@ -417,7 +453,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 5; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 6; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -426,13 +462,13 @@ const TBG = ['#D6E6FF', '#D9F8E6', '#FFE3C7'];
 const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovný!', 'Bomba!'];
 const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Pokrok sa ukladá v telefóne; po prihlásení ho Cloud (modul Firebase dole) pošle aj do cloudu
+// Pokrok dieťaťa ukladá Cloud (modul Firebase dole) do jeho profilu; v telefóne ostávajú len nastavenia
 const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni'];
 const S = {
   get(k, d) { try { const v = localStorage.getItem('svet3:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) {
+    if (SYNC.includes(k)) { if (window.Cloud && !window.Cloud.ticho) window.Cloud.naplanuj(); return; }
     try { localStorage.setItem('svet3:' + k, JSON.stringify(v)); } catch (e) {}
-    if (SYNC.includes(k) && window.Cloud && !window.Cloud.ticho) window.Cloud.naplanuj();
   },
 };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -687,9 +723,11 @@ function zablesk(farba) { if (tiche) return; const d = document.createElement('d
 let toastT;
 function toast(text) { const t = document.getElementById('toast'); t.textContent = text; t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
 
+// pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
+const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
 const st = {
-  meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), fav: S.get('fav', []), done: S.get('done', []),
-  dni: S.get('dni', []), body: S.get('body', 0), view: 'domov', kat: '', q: '', flow: null,
+  meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, dietaId: null, avatar: null,
+  faza: 'nacitava', upravuje: null, view: 'domov', kat: '', q: '', flow: null,
 };
 const main = document.getElementById('main');
 const byId = id => T.find(t => t.id === id);
@@ -717,22 +755,111 @@ function row(t) {
     ${st.done.includes(t.id) ? '<span class="badge ok" aria-label="Hotovo">✓</span>' : '<span class="badge new">Nová</span>'}</button>`;
 }
 
-function uctovaKarta() {
-  const C = window.Cloud;
-  if (!C) return `<section class="card prof"><span class="lbl">☁️ Ukladanie do cloudu</span><p class="muted">Načítava sa… Bez internetu sa prihlásiť nedá, pokrok sa zatiaľ ukladá v tomto telefóne.</p></section>`;
-  const u = C.pouzivatel;
-  if (u) return `<section class="card prof ucet"><span class="lbl">☁️ Pokrok sa ukladá do cloudu</span>
-      <p class="muted">Prihlásený účet: <b>${esc(u.email || u.displayName || 'bez e-mailu')}</b><br><span id="cloud-stav">${esc(C.stavUlozenia)}</span></p>
-      <button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></section>`;
-  return `<section class="card prof ucet"><span class="lbl">☁️ Uložiť pokrok do cloudu</span>
-      <p class="muted">Po prihlásení sa body, prebraté a uložené témy uložia do cloudu a uvidíte ich aj na inom mobile.</p>
-      <button class="btn google" data-ucet="google"><span class="g">G</span>Prihlásiť sa cez Google</button>
-      <div class="alebo"><span>alebo e-mailom</span></div>
-      <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false">
-      <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password">
-      <div class="tests"><button class="btn blue" data-ucet="prihlas">Prihlásiť sa</button><button class="btn ghost" data-ucet="registruj">Nový účet</button></div>
-      <button class="link" data-ucet="zabudol">Zabudli ste heslo?</button>
-      ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}</section>`;
+/* Brána pred appkou: prihlásenie rodiča, výber dieťaťa a tvorba postavičky */
+const vekText = v => v === 'starsi' ? '9–12 rokov' : '5–8 rokov';
+function noveUpravovanie(prve) {
+  return { id: null, meno: prve ? STARY.meno : '', vek: prve ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(), kat: 'vlasy', novy: true, prve, potvrd: false };
+}
+const brany = {
+  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted">Načítava sa…</p></div>`,
+  bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
+      <p class="muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>Skúsiť znova</button></div>`,
+  prihlasenie: () => {
+    const C = window.Cloud || {};
+    return `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1>
+      <p class="muted">Krátke témy o svete na rozhovor s deťmi. Prihláste sa, aby sa pokrok každého dieťaťa ukladal.</p>
+      <div class="card prof">
+        <button class="btn google" data-ucet="google"><span class="g">G</span>Prihlásiť sa cez Google</button>
+        <div class="alebo"><span>alebo e-mailom</span></div>
+        <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false">
+        <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password">
+        <div class="tests"><button class="btn blue" data-ucet="prihlas">Prihlásiť sa</button><button class="btn ghost" data-ucet="registruj">Nový účet</button></div>
+        <button class="link" data-ucet="zabudol">Zabudli ste heslo?</button>
+        ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}
+      </div></div>`;
+  },
+  vyber: () => {
+    const C = window.Cloud, deti = C ? C.deti : [];
+    return `<div class="brana"><h1 class="h1">Kto sa dnes učí?</h1>
+      <div class="deti">${deti.map(d => `<button class="dieta" data-dieta="${d.id}"><span class="kruh-av" style="--bg:${d.avatar.pozadie}">${postavicka(d.avatar)}</span>
+          <b>${esc(d.meno)}</b><small>${vekText(d.vek)} · ⭐ ${d.body || 0}</small></button>`).join('')}
+        ${deti.length < 4 ? '<button class="dieta nove" data-nove-dieta><span class="plus">+</span><b>Pridať dieťa</b><small>najviac 4 deti</small></button>' : ''}</div>
+      <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b></p>
+      <button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa</button></div>`;
+  },
+  tvorba: () => {
+    const u = st.upravuje, maDeti = window.Cloud && window.Cloud.deti.length;
+    return `<div class="brana tvorba"><h1 class="h1">${u.novy ? 'Nové dieťa' : 'Moja postavička'}</h1>
+      <div class="av-wrap"><div class="av-nahlad kruh-av" id="av-nahlad" style="--bg:${u.avatar.pozadie}"><div id="av-velky">${postavicka(u.avatar)}</div></div>
+        <button class="kocka" data-nahodne aria-label="Náhodná postavička">🎲</button></div>
+      <div class="card prof">
+        <label class="lbl" for="meno-dietata">Meno</label>
+        <input id="meno-dietata" class="input" maxlength="20" placeholder="Napríklad Emka" autocomplete="off">
+        <span class="lbl">Vek</span>
+        <div class="seg2"><button data-uvek="mladsi" aria-pressed="${u.vek === 'mladsi'}">5–8 rokov</button><button data-uvek="starsi" aria-pressed="${u.vek === 'starsi'}">9–12 rokov</button></div>
+      </div>
+      <div class="chips av-tabs" id="av-tabs">${avTaby()}</div>
+      <div class="av-moznosti" id="av-moznosti">${avMoznosti()}</div>
+      <button class="btn wide cta" data-ulozit-dieta>Uložiť ✓</button>
+      ${u.novy ? '' : u.potvrd
+        ? `<div class="card prof potvrd"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="muted">Body a prebraté témy tohto dieťaťa sa stratia.</p>
+            <div class="tests"><button class="btn red" data-zmazat-ano>Áno, odstrániť</button><button class="btn ghost" data-zmazat-nie>Nie</button></div></div>`
+        : '<button class="link center" data-zmazat>Odstrániť tento profil</button>'}
+      ${maDeti ? '<button class="btn ghost wide" data-spat>Späť</button>' : ''}</div>`;
+  },
+};
+function avTaby() { return AV_KAT.map(([k, n]) => `<button class="chip" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}" style="--c:#4C7DFF">${n}</button>`).join(''); }
+function avMoznosti() {
+  const u = st.upravuje, k = u.kat, farba = AV_FARBY.includes(k);
+  return AV[k].map(v => farba
+    ? `<button class="av-opt farba" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--f:${v}" aria-label="farba"></button>`
+    // pri účese bez čiapky, inak by pod ňou všetky účesy vyzerali rovnako
+    : `<button class="av-opt kruh-av" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--bg:${u.avatar.pozadie}" aria-label="${v}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</button>`).join('');
+}
+function renderBrana() {
+  document.body.classList.remove('tinted');
+  main.classList.add('anim');
+  main.innerHTML = brany[st.faza]();
+  ocisluj();
+  if (st.faza === 'tvorba') {
+    const inp = document.getElementById('meno-dietata');
+    inp.value = st.upravuje.meno;
+    inp.addEventListener('input', () => { st.upravuje.meno = inp.value; });
+  }
+}
+// po zmene dielu prekreslíme len náhľad a možnosti, stránka neskáče
+function obnovTvorbu() {
+  const u = st.upravuje, n = document.getElementById('av-nahlad');
+  document.getElementById('av-velky').innerHTML = postavicka(u.avatar);
+  n.style.setProperty('--bg', u.avatar.pozadie);
+  document.getElementById('av-moznosti').innerHTML = avMoznosti();
+  document.getElementById('av-tabs').innerHTML = avTaby();
+  n.classList.remove('hopni'); void n.offsetWidth; n.classList.add('hopni');
+}
+function tvorbaKlik(b, d) {
+  const u = st.upravuje;
+  if (d.avkat) { u.kat = d.avkat; Zvuk.play('tap'); obnovTvorbu(); return true; }
+  if (d.avvol) { u.avatar[u.kat] = d.avvol; Zvuk.play('pop'); obnovTvorbu(); return true; }
+  if (d.nahodne !== undefined) { u.avatar = nahodnyAvatar(); Zvuk.play('boing'); obnovTvorbu(); const [x, y] = stred(b); FX.burst(x, y, 16, ['star', 'dot'], 6); return true; }
+  if (d.uvek) { u.vek = d.uvek; Zvuk.play('pop'); document.querySelectorAll('[data-uvek]').forEach(x => x.setAttribute('aria-pressed', x.dataset.uvek === u.vek)); return true; }
+  if (d.ulozitDieta !== undefined) {
+    u.meno = u.meno.trim();
+    if (!u.meno) { Zvuk.play('bad'); toast('Napíšte meno dieťaťa.'); document.getElementById('meno-dietata').focus(); return true; }
+    if (!window.Cloud) { toast('Ešte sa pripája, skúste o chvíľu.'); return true; }
+    const [x, y] = stred(document.getElementById('av-nahlad'));
+    Zvuk.play('win'); FX.burst(x, y, 30); FX.rain(60);
+    window.Cloud.ulozDieta(u);
+    return true;
+  }
+  if (d.zmazat !== undefined) { u.potvrd = true; render(); return true; }
+  if (d.zmazatNie !== undefined) { u.potvrd = false; render(); return true; }
+  if (d.zmazatAno !== undefined) { Zvuk.play('bad'); window.Cloud.zmazDieta(u.id); return true; }
+  if (d.spat !== undefined) {
+    Zvuk.play('whoosh');
+    if (!u.novy && st.dietaId) { st.faza = 'appka'; st.view = 'ja'; } else st.faza = 'vyber';
+    render(); scrollTo(0, 0); return true;
+  }
+  return false;
 }
 
 const views = {
@@ -776,16 +903,24 @@ const views = {
   },
   ja() {
     const h = st.done.filter(byId).length, s = seria(), obvod = 326.7;
-    const f = st.fav.map(byId).filter(Boolean);
-    return `<div class="prof-top"><button class="owlw" data-sova aria-label="Sovička Múdra">${owl('happy')}</button><h1 class="h1">Môj profil</h1></div>
-      <section class="card prof">
-        <label class="lbl" for="meno">Meno dieťaťa</label>
-        <input id="meno" class="input" maxlength="20" placeholder="Napríklad Emka" autocomplete="off">
-        <span class="lbl">Vek dieťaťa</span>
-        <div class="seg2"><button data-vek="mladsi" aria-pressed="${st.vek === 'mladsi'}">5–8 rokov</button><button data-vek="starsi" aria-pressed="${st.vek === 'starsi'}">9–12 rokov</button></div>
-        <p class="muted">Pri 9–12 rokoch má každá téma odsek navyše a ťažšie otázky v kvíze.</p>
+    const f = st.fav.map(byId).filter(Boolean), C = window.Cloud;
+    return `<div class="prof-top"><button class="av-ja kruh-av" data-upravit aria-label="Upraviť postavičku" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</button>
+        <div class="prof-meno"><h1 class="h1">${esc(st.meno)}</h1><span class="chip" style="--c:#4C7DFF">${vekText(st.vek)}</span></div></div>
+      <button class="btn wide" data-upravit>✏️ Upraviť postavičku, meno a vek</button>
+      <section class="stats">
+        <div class="card ringc">
+          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--ink)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / T.length * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${T.length}</b></div>
+          <div><b class="lbl" style="font-size:1.3rem">Prebraté témy</b><br><small>${h === T.length ? 'Všetky! Si skvelý.' : 'Každá téma pridá body a kúsok kruhu.'}</small></div>
+        </div>
+        <div class="card mini" style="--c:#FFF0B3"><b>⭐ ${st.body}</b><small>bodov</small></div>
+        <div class="card mini" style="--c:#FFE3C7"><b>🔥 ${s}</b><small>${dni(s)} po sebe</small></div>
       </section>
-      ${uctovaKarta()}
+      <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
+        <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${k.e}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
+      </section>
+      <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
+        ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ♡ a nájdeš ju tu.</span></div>`}
+      </section>
       <section class="card prof">
         <span class="lbl">Zvuky</span>
         ${Zvuk.ios ? `<div class="tests"><button class="btn blue" data-test-zvuk="web">🔊 Test 1</button><button class="btn" data-test-zvuk="subor">🔊 Test 2</button></div>
@@ -795,21 +930,11 @@ const views = {
         <p class="muted">Keď nič nepočuť, zvýšte hlasitosť a skontrolujte, či zvuky nie sú vypnuté reproduktorom hore.</p>
         <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
       </section>
-      <section class="stats">
-        <div class="card ringc">
-          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--ink)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / T.length * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${T.length}</b></div>
-          <div><b class="lbl" style="font-size:1.3rem">Prebraté témy</b><br><small>${h === T.length ? 'Všetky! Ste skvelí.' : 'Každá téma pridá body a kúsok kruhu.'}</small></div>
-        </div>
-        <div class="card mini" style="--c:#FFF0B3"><b>⭐ ${st.body}</b><small>bodov</small></div>
-        <div class="card mini" style="--c:#FFE3C7"><b>🔥 ${s}</b><small>${dni(s)} po sebe</small></div>
+      <section class="card prof"><span class="lbl">👨‍👩‍👧 Rodina</span>
+        <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
+        <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
       </section>
-      <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
-        <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${k.e}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
-      </section>
-      <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
-        ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťuknite na ♡ a nájdete ju tu.</span></div>`}
-      </section>
-      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${T.length} tém. Body a pokrok si pamätá tento telefón. Zvuky vypnete reproduktorom hore.</p>`;
+      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${T.length} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.</p>`;
   },
 };
 
@@ -882,7 +1007,7 @@ function krok(f, k) {
   const rel = t ? t.r.map(byId).filter(Boolean) : [];
   return `<div class="win">
       <div class="win-hero"><div class="burst"></div><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl(c ? 'cheer' : 'hi')}</button></div>
-      <h1 class="h1">${c === qn ? 'Skvelá práca!' : c ? 'Výborne!' : 'Dobrý pokus!'}</h1>
+      <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? '#FFD23F' : '#E4E0EE')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
       ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov</div>` : '<div class="earn plain">Body za túto tému už máte. Opakovanie je matka múdrosti.</div>'}
@@ -953,6 +1078,11 @@ function paintHead() {
   const b = document.getElementById('body');
   if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
   const z = document.getElementById('snd'); z.textContent = Zvuk.on ? '🔊' : '🔇'; z.setAttribute('aria-pressed', Zvuk.on);
+  const av = document.getElementById('av'), k = JSON.stringify(st.avatar);
+  if (av.dataset.k !== k) {
+    av.dataset.k = k; av.innerHTML = st.avatar ? postavicka(st.avatar) : owl('hi');
+    av.classList.toggle('kruh-av', !!st.avatar); av.style.setProperty('--bg', st.avatar ? st.avatar.pozadie : 'transparent');
+  }
 }
 function ocisluj() {
   [...main.children].forEach((el, i) => el.style.setProperty('--i', i));
@@ -960,9 +1090,10 @@ function ocisluj() {
 }
 
 function render() {
-  const flow = !!st.flow;
-  document.getElementById('top').hidden = flow;
-  document.getElementById('nav').hidden = flow;
+  const brana = st.faza !== 'appka', flow = !brana && !!st.flow;
+  document.getElementById('top').hidden = brana || flow;
+  document.getElementById('nav').hidden = brana || flow;
+  if (brana) { renderBrana(); return; }
   if (flow) { renderFlow(); return; }
   document.body.classList.remove('tinted');
   main.classList.add('anim');
@@ -973,11 +1104,6 @@ function render() {
     inp.value = st.q;
     inp.addEventListener('input', () => { st.q = inp.value; fillTemy(); });
     fillTemy();
-  }
-  if (st.view === 'ja') {
-    const inp = document.getElementById('meno');
-    inp.value = st.meno;
-    inp.addEventListener('input', () => { st.meno = inp.value.trim(); S.set('meno', st.meno); paintHead(); });
   }
   ['domov', 'temy', 'ja'].forEach(v => {
     const b = document.getElementById('nav-' + v);
@@ -1000,6 +1126,19 @@ document.addEventListener('click', e => {
   if (!b || b.disabled) return;
   const d = b.dataset, f = st.flow;
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
+  if (d.reload !== undefined) { location.reload(); return; }
+  if (d.deti !== undefined) {
+    Hlas.stop(); Zvuk.play('whoosh'); if (window.Cloud) window.Cloud.ulozHned();
+    Object.assign(st, { flow: null, faza: 'vyber' }); render(); scrollTo(0, 0); return;
+  }
+  if (d.dieta) { Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
+  if (d.noveDieta !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); return; }
+  if (d.upravit !== undefined) {
+    Zvuk.play('pop');
+    st.upravuje = { id: st.dietaId, meno: st.meno, vek: st.vek, avatar: { ...st.avatar }, kat: 'vlasy', novy: false, potvrd: false };
+    st.faza = 'tvorba'; render(); scrollTo(0, 0); return;
+  }
+  if (st.faza === 'tvorba' && tvorbaKlik(b, d)) return;
   if (d.testZvuk !== undefined) {
     Hlas.stop(); Zvuk.test(d.testZvuk || 'web'); paintHead();
     const [x, y] = stred(b); FX.burst(x, y, 20, ['star', 'dot'], 7);
@@ -1064,17 +1203,20 @@ document.addEventListener('click', e => {
 document.getElementById('av').innerHTML = owl('hi');
 document.getElementById('star-ico').innerHTML = STAR();
 render();
+// keď sa Firebase do chvíle nenačíta (prvé spustenie bez internetu), povieme to
+setTimeout(() => { if (!window.Cloud && st.faza === 'nacitava') { st.faza = 'bezNetu'; render(); } }, 9000);
 </script>
 <script type="module">
-// Prihlásenie a ukladanie pokroku do Firebase (projekt svet-za-3-minuty).
-// Appka funguje aj bez toho: keď sa knižnica nenačíta (napríklad bez internetu), pokrok ostáva v telefóne.
+// Prihlásenie rodiča a profily detí vo Firebase (projekt svet-za-3-minuty).
+// Každé dieťa má vlastný dokument rodiny/<uid>/deti/<id>: meno, vek, postavička a pokrok.
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
   getAuth, connectAuthEmulator, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-  initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache, doc, onSnapshot, setDoc, serverTimestamp,
+  initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache,
+  collection, doc, onSnapshot, getDoc, setDoc, deleteDoc, serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname); // skúšanie na emulátore, nie ostré dáta
@@ -1117,18 +1259,21 @@ const CHYBY = {
   'unavailable': 'Cloud je teraz nedostupný, uloží sa neskôr.',
 };
 const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
-
-const KLUCE = ['meno', 'vek', 'body', 'done', 'fav', 'dni'];
-let odber = null, casovac = null, zlucene = false;
+const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
+const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene(d.avatar), d.body || 0, d.done || [], d.fav || [], d.dni || []]);
+let odber = null, casovac = null;
 
 const Cloud = {
-  pouzivatel: null, chyba: '', stavUlozenia: '', ticho: false,
+  pouzivatel: null, deti: [], nacitane: false, chyba: '', stavUlozenia: '', ticho: false,
+  // zmena pokroku aktívneho dieťaťa: uložíme o chvíľu (viac zmien naraz = jeden zápis)
   naplanuj() {
-    if (!this.pouzivatel || !zlucene) return;
+    if (!this.pouzivatel || !st.dietaId) return;
     clearTimeout(casovac);
     this.stavUlozenia = 'Ukladá sa…'; obnovStav();
-    casovac = setTimeout(uloz, 800);
+    casovac = setTimeout(ulozAktivne, 800);
   },
+  ulozHned() { if (casovac) { clearTimeout(casovac); ulozAktivne(); } },
   async akcia(co, email, heslo) {
     this.chyba = '';
     try {
@@ -1151,84 +1296,133 @@ const Cloud = {
         toast('Poslali sme vám e-mail na zmenu hesla.');
         return;
       } else if (co === 'odhlas') {
+        this.ulozHned();
         await signOut(auth);
-        toast('Odhlásené. Pokrok ostáva aj v tomto telefóne.');
+        toast('Odhlásené.');
         return;
       }
-      Zvuk.play('ok'); toast('Prihlásené ☁️ Pokrok sa ukladá do cloudu.');
+      Zvuk.play('ok');
     } catch (e) {
-      this.chyba = chybaText(e); Zvuk.play('bad'); obnovProfil();
+      this.chyba = chybaText(e); Zvuk.play('bad');
+      if (st.faza === 'prihlasenie') obnovPrihlasenie();
     }
+  },
+  vyber(id, pohlad = 'domov') {
+    this.ulozHned();
+    const d = this.deti.find(x => x.id === id);
+    if (!d) return;
+    nastavAktivne(d); S.set('aktivne', id);
+    Object.assign(st, { flow: null, faza: 'appka', view: pohlad });
+    render(); scrollTo(0, 0);
+  },
+  // uloženie z tvorby postavičky (nové dieťa alebo úprava existujúceho)
+  ulozDieta(u) {
+    const id = u.id || noveId(), stare = this.deti.find(x => x.id === id);
+    const prazdne = { body: 0, done: [], fav: [], dni: [] };
+    const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
+    const d = {
+      meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
+      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60),
+      poradie: stare ? stare.poradie : Date.now(),
+    };
+    if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
+    zapis(id, d);
+    this.vyber(id, stare ? 'ja' : 'domov');
+  },
+  zmazDieta(id) {
+    this.deti = this.deti.filter(x => x.id !== id);
+    deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'deti', id)).catch(e => toast('Nepodarilo sa odstrániť: ' + chybaText(e)));
+    if (st.dietaId === id) { st.dietaId = null; S.set('aktivne', null); }
+    st.faza = this.deti.length ? 'vyber' : 'tvorba';
+    if (st.faza === 'tvorba') st.upravuje = noveUpravovanie(false);
+    render(); toast('Profil je odstránený.');
   },
 };
 window.Cloud = Cloud;
 
-const data = () => ({
-  meno: (st.meno || '').slice(0, 20), vek: st.vek === 'starsi' ? 'starsi' : 'mladsi',
-  body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60),
-  verzia: 1, upravene: serverTimestamp(),
-});
-function zapisLokalne() { Cloud.ticho = true; try { KLUCE.forEach(k => S.set(k, st[k])); } finally { Cloud.ticho = false; } }
+function nastavAktivne(d) {
+  Object.assign(st, {
+    dietaId: d.id, meno: d.meno || '', vek: d.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: d.avatar || nahodnyAvatar(),
+    body: d.body || 0, done: [...(d.done || [])], fav: [...(d.fav || [])], dni: [...(d.dni || [])],
+  });
+}
+function zapis(id, d) {
+  const z = setDoc(doc(db, 'rodiny', Cloud.pouzivatel.uid, 'deti', id), {
+    meno: d.meno, vek: d.vek, avatar: d.avatar, body: d.body, done: d.done, fav: d.fav, dni: d.dni,
+    poradie: d.poradie, verzia: 2, upravene: serverTimestamp(),
+  });
+  if (!navigator.onLine) { Cloud.stavUlozenia = 'Uložené v telefóne, do cloudu sa pošle, keď bude internet.'; obnovStav(); }
+  z.then(() => { Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; obnovStav(); },
+    e => { Cloud.stavUlozenia = 'Neuložené: ' + chybaText(e); obnovStav(); });
+}
+function ulozAktivne() {
+  casovac = null;
+  const d = Cloud.deti.find(x => x.id === st.dietaId);
+  if (!d || !Cloud.pouzivatel) return;
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60) });
+  zapis(d.id, d);
+}
 function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
-// Profil prekreslíme bez skákania a bez straty napísaného e-mailu a hesla
-function obnovProfil() {
-  if (st.flow || st.view !== 'ja') return;
-  const pise = document.activeElement && document.activeElement.id === 'meno';
-  if (pise) { obnovStav(); return; }
-  const em = (document.getElementById('email') || {}).value, he = (document.getElementById('heslo') || {}).value, y = scrollY;
-  render(); main.classList.remove('anim'); scrollTo(0, y);
+function obnovPrihlasenie() {
+  const em = (document.getElementById('email') || {}).value, he = (document.getElementById('heslo') || {}).value;
+  render(); main.classList.remove('anim');
   if (em) document.getElementById('email').value = em;
   if (he) document.getElementById('heslo').value = he;
 }
-function prekresli() { if (st.flow) paintHead(); else if (st.view === 'ja') obnovProfil(); else { render(); main.classList.remove('anim'); } }
-
-async function uloz() {
-  const u = Cloud.pouzivatel;
-  if (!u) return;
-  const zapis = setDoc(doc(db, 'pokrok', u.uid), data());
-  if (!navigator.onLine) { Cloud.stavUlozenia = 'Uložené v telefóne. Do cloudu sa pošle, keď bude internet.'; obnovStav(); }
-  try { await zapis; Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; }
-  catch (e) { Cloud.stavUlozenia = 'Neuložené: ' + chybaText(e); }
-  obnovStav();
+// zmena aktívneho dieťaťa z iného telefónu
+function prevezmi(a) {
+  if (casovac || otlacok(a) === otlacok(st)) return; // vlastné neuložené zmeny majú prednosť
+  nastavAktivne(a);
+  if (st.flow) paintHead(); else { render(); main.classList.remove('anim'); }
 }
-// Prvé prihlásenie na tomto telefóne: spojíme pokrok z telefónu a z cloudu, nič sa nestratí
-function zluc(c) {
-  if (c) {
-    st.done = [...new Set([...(c.done || []), ...st.done])];
-    st.fav = [...new Set([...(c.fav || []), ...st.fav])];
-    st.dni = [...new Set([...(c.dni || []), ...st.dni])].sort().slice(-60);
-    st.body = Math.max(st.body || 0, c.body || 0);
-    if (!st.meno && c.meno) st.meno = c.meno;
-    if (c.vek) st.vek = c.vek;
-    zapisLokalne();
-  }
-  zlucene = true;
-  uloz(); prekresli();
+function zobrazPoNacitani() {
+  const a = Cloud.deti.find(x => x.id === S.get('aktivne', null));
+  if (a) { nastavAktivne(a); Object.assign(st, { faza: 'appka', view: 'domov' }); }
+  else if (Cloud.deti.length) st.faza = 'vyber';
+  else { st.faza = 'tvorba'; st.upravuje = noveUpravovanie(true); }
+  render();
 }
-// Zmena z iného telefónu
-function prevezmi(c) {
-  const nove = { meno: c.meno || '', vek: c.vek || 'mladsi', body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: c.dni || [] };
-  if (JSON.stringify(KLUCE.map(k => nove[k])) === JSON.stringify(KLUCE.map(k => st[k]))) return;
-  Object.assign(st, nove); zapisLokalne(); prekresli();
+// pokrok z verzie 5 (dokument pokrok/<uid>) sa prenesie ako prvé dieťa
+async function prevodStareho(u) {
+  try {
+    const s = await getDoc(doc(db, 'pokrok', u.uid));
+    if (s.exists() && !Cloud.deti.length) {
+      const c = s.data(), id = noveId();
+      const d = { meno: (c.meno || 'Dieťa').slice(0, 20), vek: c.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: nahodnyAvatar(),
+        body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-60), poradie: Date.now() };
+      Cloud.deti = [{ id, ...d }]; zapis(id, d); S.set('aktivne', id);
+    }
+  } catch (e) { /* bez starého pokroku pokračujeme ďalej */ }
+  zobrazPoNacitani();
 }
 
 onAuthStateChanged(auth, u => {
-  Cloud.pouzivatel = u; zlucene = false;
+  Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = '';
   if (odber) { odber(); odber = null; }
-  if (u) {
-    Cloud.stavUlozenia = 'Načítava sa pokrok z cloudu…';
-    odber = onSnapshot(doc(db, 'pokrok', u.uid), { includeMetadataChanges: true }, snap => {
-      if (snap.metadata.hasPendingWrites) return;
-      if (!zlucene) { if (!snap.metadata.fromCache) zluc(snap.exists() ? snap.data() : null); return; }
-      if (snap.exists() && !snap.metadata.fromCache) prevezmi(snap.data());
-    }, e => { Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav(); });
-  } else {
-    Cloud.stavUlozenia = '';
-  }
-  obnovProfil();
+  clearTimeout(casovac); casovac = null;
+  if (!u) { Object.assign(st, { dietaId: null, avatar: null, flow: null, faza: 'prihlasenie' }); render(); return; }
+  st.faza = 'nacitava'; render();
+  odber = onSnapshot(collection(db, 'rodiny', u.uid, 'deti'), { includeMetadataChanges: true }, snap => {
+    const deti = snap.docs.map(x => ({ id: x.id, ...x.data() })).sort((a, b) => (a.poradie || 0) - (b.poradie || 0));
+    if (!Cloud.nacitane) {
+      if (snap.empty && snap.metadata.fromCache) return; // prvé spustenie: počkáme na odpoveď z cloudu
+      Cloud.nacitane = true; Cloud.deti = deti;
+      if (deti.length) zobrazPoNacitani(); else prevodStareho(u);
+      return;
+    }
+    Cloud.deti = deti;
+    const a = deti.find(x => x.id === st.dietaId);
+    if (st.faza === 'appka' && st.dietaId && !a && !snap.metadata.hasPendingWrites) {
+      // dieťa odstránené na inom telefóne
+      Object.assign(st, { dietaId: null, flow: null, faza: deti.length ? 'vyber' : 'tvorba' });
+      if (!deti.length) st.upravuje = noveUpravovanie(false);
+      render(); return;
+    }
+    if (a && st.faza === 'appka' && !snap.metadata.hasPendingWrites && !snap.metadata.fromCache) prevezmi(a);
+    if (st.faza === 'vyber') render();
+  }, e => { Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav(); });
 });
-getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); obnovProfil(); });
-obnovProfil();
+getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); if (st.faza === 'prihlasenie') obnovPrihlasenie(); });
 </script>
 <script>
 // Offline: appka sa pri prvom otvorení uloží do telefónu.

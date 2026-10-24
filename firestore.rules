@@ -1,5 +1,5 @@
 rules_version = '2';
-// Svet za 3 minúty: každý prihlásený rodič vidí a mení len svoj vlastný pokrok.
+// Svet za 3 minúty: každý prihlásený rodič vidí a mení len svoju rodinu.
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -7,6 +7,27 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    // Profil dieťaťa: meno, vek, postavička a pokrok (od verzie 6)
+    function platneDieta(d) {
+      return d.keys().hasOnly(['meno', 'vek', 'avatar', 'body', 'done', 'fav', 'dni', 'poradie', 'verzia', 'upravene'])
+        && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
+        && d.vek in ['mladsi', 'starsi']
+        && d.avatar is map
+        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'pozadie'])
+        && d.body is int && d.body >= 0 && d.body <= 1000000
+        && d.done is list && d.done.size() <= 500
+        && d.fav is list && d.fav.size() <= 500
+        && d.dni is list && d.dni.size() <= 400
+        && d.poradie is int && d.verzia is int
+        && d.upravene == request.time;
+    }
+
+    match /rodiny/{uid}/deti/{dieta} {
+      allow read, delete: if jeMoj(uid);
+      allow create, update: if jeMoj(uid) && dieta.matches('^[a-z0-9]{6,32}$') && platneDieta(request.resource.data);
+    }
+
+    // Pokrok z verzie 5 (jedno dieťa na účet): appka ho pri prvom prihlásení prevedie na profil dieťaťa
     function platnyPokrok(d) {
       return d.keys().hasOnly(['meno', 'vek', 'body', 'done', 'fav', 'dni', 'upravene', 'verzia'])
         && d.meno is string && d.meno.size() <= 20

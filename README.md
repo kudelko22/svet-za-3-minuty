@@ -11,15 +11,22 @@ otázky na rozhovor a kvíz. Text vie appka aj prečítať nahlas.
 - **Android (Chrome):** otvor odkaz, ťukni na ⋮ vpravo hore a vyber **Inštalovať aplikáciu** alebo **Pridať na plochu**.
 - **iPhone (Safari):** otvor odkaz, ťukni na tlačidlo **Zdieľať** a vyber **Pridať na plochu**.
 
-Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom otvorení funguje aj bez internetu.
-Body, prebraté a uložené témy si pamätá telefón. Keď sa rodič v profile prihlási (Google účtom alebo e-mailom
-a heslom), pokrok sa uloží aj do cloudu (Firebase, databáza v Európe) a je dostupný na každom jeho mobile.
+Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom prihlásení funguje aj bez internetu.
+
+## Rodina a deti
+
+- Na začiatku sa prihlási rodič (Google účtom alebo e-mailom a heslom). Bez prihlásenia sa appka nedá použiť.
+- Na jednom účte môžu byť až 4 deti. Každé má vlastný vek (5–8 alebo 9–12 rokov), body, prebraté a uložené témy a sériu dní.
+- Každé dieťa si poskladá kreslenú postavičku: účes, farbu vlasov, pleť, oči, úsmev, okuliare, tričko s obrázkom,
+  doplnok a pozadie. Postavička je v hlavičke appky a v profile; ťuknutím na ňu sa mení dieťa.
+- Pokrok sa ukladá do cloudu (Firebase, databáza v Európe), takže je rovnaký na každom mobile rodiča.
 
 ## Firebase
 
 Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Firestore a hosting.
 
-- Pokrok je v kolekcii `pokrok/<uid>`; podľa `firestore.rules` vidí a mení každý len svoj dokument.
+- Profily detí sú v `rodiny/<uid>/deti/<id>`; podľa `firestore.rules` vidí a mení každý rodič len svoju rodinu.
+  Starý dokument `pokrok/<uid>` z verzie 5 appka pri prvom prihlásení prevedie na prvé dieťa.
 - Nasadenie (Firebase CLI): `firebase deploy --only hosting,firestore:rules,auth`
 - Skúšanie bez ostrých účtov: `firebase emulators:start --only auth,firestore,hosting --project demo-svet-za-3-minuty`
   a otvoriť http://127.0.0.1:5050 (appka sa na localhoste sama pripojí na emulátor).
