@@ -23,8 +23,7 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 
 ## Odmeny
 
-- **24 odznakov** za úspechy: počet tém, séria dní, body, téma bez chyby, rýchly kvíz 5 z 5, obľúbené témy
-  a „Majster“ za každú kategóriu. Zbierka je v profile.
+- **64 odznakov** za témy, sériu dní, body, hry, obľúbené témy a „Majster“ za každú kategóriu (podrobne nižšie).
 - **Diely postavičky za body:** veselé farby vlasov, okuliare, obrázky na tričko, klobúky a zvieratko na pleci
   (od 60 do 1350 bodov, cenník je `ODOMKNI` v `obrazky.js`). Domovská obrazovka ukazuje ďalšiu odmenu
   a na konci témy sa oslavujú nové odznaky aj odomknuté veci.
@@ -46,11 +45,18 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 Za body z tém sa odomykajú hry (karta **Hry** v spodnom menu). Hraním sa body neminú, rekordy sa pamätajú
 v telefóne pre každé dieťa zvlášť.
 
-- **Pexeso** (od 90 bodov): dvojice obrázkov z tém, 12 kariet pre menšie deti, 16 pre väčšie.
-- **Hádaj tému** (od 160 bodov): 8 obrázkov, ku každému sa vyberá správny názov témy.
-- **Chytaj hviezdičky** (od 230 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
-- **Bubliny s počtami** (od 330 bodov): minúta príkladov, menšie deti do 10, väčšie do 50 a malá násobilka.
-- **Skladačka** (od 450 bodov): poprehadzovaný obrázok z témy, ťuknutím sa vymenia dva dieliky.
+- **Pexeso** (od 150 bodov): dvojice obrázkov z tém, 12 kariet pre menšie deti, 16 pre väčšie.
+- **Hádaj tému** (od 250 bodov): 8 obrázkov, ku každému sa vyberá správny názov témy.
+- **Chytaj hviezdičky** (od 400 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
+- **Opakuj po mne** (od 550 bodov): farby zasvietia a zahrajú tón, dieťa ich zopakuje; každé kolo o jednu viac.
+- **Bubliny s počtami** (od 700 bodov): minúta príkladov, menšie deti do 10, väčšie do 50 a malá násobilka.
+- **Skladačka** (od 900 bodov): poprehadzovaný obrázok z témy, ťuknutím sa vymenia dva dieliky.
+
+## Odznaky
+
+64 odznakov v skupinách Témy, Dni a séria, Body, Hry, Rôzne a Majster kategórie (zoznam `ODZNAKY` v index.html).
+Za hry sa dávajú po dohraní hry (prvá hra, 10 a 50 hier, výsledky v jednotlivých hrách). V profile je len karta
+„Moje odznaky“ s poslednými odznakmi, celá zbierka sa otvorí ťuknutím.
 
 ## Pre rodiča
 
