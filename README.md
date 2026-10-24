@@ -26,7 +26,7 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 - **24 odznakov** za úspechy: počet tém, séria dní, body, téma bez chyby, rýchly kvíz 5 z 5, obľúbené témy
   a „Majster“ za každú kategóriu. Zbierka je v profile.
 - **Diely postavičky za body:** veselé farby vlasov, okuliare, obrázky na tričko, klobúky a zvieratko na pleci
-  (od 40 do 900 bodov, cenník je `ODOMKNI` v `obrazky.js`). Domovská obrazovka ukazuje ďalšiu odmenu
+  (od 60 do 1350 bodov, cenník je `ODOMKNI` v `obrazky.js`). Domovská obrazovka ukazuje ďalšiu odmenu
   a na konci témy sa oslavujú nové odznaky aj odomknuté veci.
 
 ## Režim do auta
@@ -46,9 +46,17 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 Za body z tém sa odomykajú hry (karta **Hry** v spodnom menu). Hraním sa body neminú, rekordy sa pamätajú
 v telefóne pre každé dieťa zvlášť.
 
-- **Pexeso** (od 60 bodov): dvojice obrázkov z tém, 12 kariet pre menšie deti, 16 pre väčšie.
-- **Chytaj hviezdičky** (od 150 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
-- **Skladačka** (od 300 bodov): poprehadzovaný obrázok z témy, ťuknutím sa vymenia dva dieliky.
+- **Pexeso** (od 90 bodov): dvojice obrázkov z tém, 12 kariet pre menšie deti, 16 pre väčšie.
+- **Hádaj tému** (od 160 bodov): 8 obrázkov, ku každému sa vyberá správny názov témy.
+- **Chytaj hviezdičky** (od 230 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
+- **Bubliny s počtami** (od 330 bodov): minúta príkladov, menšie deti do 10, väčšie do 50 a malá násobilka.
+- **Skladačka** (od 450 bodov): poprehadzovaný obrázok z témy, ťuknutím sa vymenia dva dieliky.
+
+## Pre rodiča
+
+V profile (Ja → Pre rodiča) je zoznam tém prebratých tento týždeň a otázky z kvízov, v ktorých dieťa
+chybovalo, aj so správnou odpoveďou. Keď dieťa otázku neskôr zodpovie správne, zo zoznamu zmizne.
+Ukladá sa k dieťaťu do cloudu (polia `kedy` a `chyby`).
 
 ## Firebase
 
@@ -62,7 +70,7 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
-- 33 tém v 11 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
+- 44 tém v 11 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
   ľudské telo, geografia, psychológia, kultúra), téma dňa a náhodná téma
 - dva vekové stupne: 5–8 rokov a 9–12 rokov (odsek navyše a ťažšie otázky)
 - kvíz s obrázkovými odpoveďami, rýchly kvíz z rôznych tém, body, hviezdy a séria dní

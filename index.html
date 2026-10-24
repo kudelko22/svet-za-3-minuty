@@ -580,6 +580,31 @@ body.auto-rezim .blobs { opacity: .3; }
 .sklad.hotova .diel { border-radius: 0; }
 .sklad.hotova .diel::after { display: none; }
 
+/* Prehľad pre rodiča */
+.prehlad { display: grid; gap: 8px; }
+.prehlad ul { display: grid; gap: 6px; margin: 0 0 6px; padding: 0; list-style: none; }
+.prehlad li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 14px; background: var(--soft); }
+.prehlad li > span:nth-child(2) { flex: 1; min-width: 0; }
+.prehlad li small { display: block; color: var(--muted); font-weight: 800; }
+/* hádaj tému */
+.hadaj { display: grid; gap: 12px; }
+.hadaj-obr svg { display: block; width: 100%; aspect-ratio: 16 / 9; }
+.hadaj-otazka { margin: 0; text-align: center; font: 700 1.25rem/1.2 var(--f-display); }
+.hadaj-moz { display: grid; gap: 10px; }
+.btn.hadaj-btn { font-size: 1.05rem; }
+.btn.hadaj-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
+.btn.hadaj-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+/* bubliny s počtami */
+.priklad { text-align: center; font: 700 2.4rem/1.1 var(--f-display); }
+.more { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, #8ED6FF); }
+.bublina { position: absolute; display: grid; place-items: center; width: 84px; height: 84px; padding: 0; border: 3px solid var(--ink); border-radius: 50%; color: var(--ink); font: 800 1.9rem/1 var(--f-display);
+  background: radial-gradient(circle at 32% 28%, #fff 0 10%, rgb(255 255 255 / .5) 11% 26%, transparent 27%), radial-gradient(circle at 50% 60%, #C8F1FF, #73C6FF); box-shadow: 0 4px 0 rgb(43 34 64 / .3);
+  animation: pop .35s var(--spring) both, tileBob 2.4s ease-in-out var(--d, 0s) infinite; }
+.more.styri .bublina { width: 74px; height: 74px; font-size: 1.6rem; }
+.bublina.zle { animation: shake .4s; background: #FFC2C4; }
+.bublina.praskla { animation: prask .3s forwards; pointer-events: none; }
+@keyframes prask { to { transform: scale(1.6); opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -612,7 +637,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 10; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 11; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -622,7 +647,7 @@ const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovn�
 const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Pokrok dieťaťa ukladá Cloud (modul Firebase dole) do jeho profilu; v telefóne ostávajú len nastavenia
-const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky'];
+const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby'];
 const S = {
   get(k, d) { try { const v = localStorage.getItem('svet3:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) {
@@ -885,7 +910,7 @@ function toast(text) { const t = document.getElementById('toast'); t.textContent
 // pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
 const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
 const st = {
-  meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], dietaId: null, avatar: null,
+  meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], dietaId: null, avatar: null,
   faza: 'nacitava', upravuje: null, view: 'domov', kat: '', q: '', flow: null,
 };
 const main = document.getElementById('main');
@@ -1178,6 +1203,7 @@ function dokonciAuto(t) {
   const qn = t.z.filter(pre).length, bodyPred = st.body, dnes = key(new Date()), prvy = !st.done.includes(t.id);
   const zisk = prvy ? qn * 10 + 10 : 0;
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
+  zapisPrebrate(t.id);
   st.body += zisk; S.set('body', st.body);
   if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
   return { zisk, noveOdznaky: noveOdznaky(), noveOdmeny: noveOdmeny(bodyPred, st.body), noveHry: noveHry(bodyPred, st.body) };
@@ -1369,9 +1395,11 @@ try { speechSynthesis.addEventListener('voiceschanged', () => { const el = docum
 
 /* Hry: odomykajú sa za body z tém (hraním sa body neminú) */
 const HRY = [
-  { id: 'pexeso', n: 'Pexeso', p: 'Nájdi dvojice rovnakých obrázkov.', cena: 60, c: '#FFB3D1' },
-  { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 150, c: '#FFE27A' },
-  { id: 'skladacka', n: 'Skladačka', p: 'Poprehadzovaný obrázok poskladaj späť.', cena: 300, c: '#9FE8DF' },
+  { id: 'pexeso', n: 'Pexeso', p: 'Nájdi dvojice rovnakých obrázkov.', cena: 90, c: '#FFB3D1' },
+  { id: 'hadaj', n: 'Hádaj tému', p: 'Podľa obrázka uhádni, o ktorej téme je.', cena: 160, c: '#CDEBFF' },
+  { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 230, c: '#FFE27A' },
+  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom.', cena: 330, c: '#BDE9FF' },
+  { id: 'skladacka', n: 'Skladačka', p: 'Poprehadzovaný obrázok poskladaj späť.', cena: 450, c: '#9FE8DF' },
 ];
 const noveHry = (pred, po) => HRY.filter(h => h.cena > pred && h.cena <= po);
 const HVIEZDA = 'M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z';
@@ -1379,15 +1407,18 @@ const OBLAK = `<svg viewBox="0 0 48 42" aria-hidden="true"><g stroke="${INK}" st
 const OBR_HRY = {
   pexeso: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="8" y="10" width="30" height="42" rx="7" fill="#B36BFF" transform="rotate(-10 23 31)"/><path d="M18 26a5 5 0 1 1 7 4.6c-1.4.7-2 1.6-2 3.4" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" transform="rotate(-10 23 31)"/><circle cx="24" cy="40" r="2" fill="#fff" stroke="none" transform="rotate(-10 23 31)"/><rect x="42" y="12" width="30" height="42" rx="7" fill="#fff" transform="rotate(8 57 33)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(44 18) scale(1.1) rotate(8 12 12)"/></g></svg>`,
   hviezdy: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#2E3A87"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(10 10) scale(1.3)"/><path d="${HVIEZDA}" fill="#FF9F1C" transform="translate(44 28) scale(1.1)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(50 6) scale(.8)"/><circle cx="16" cy="48" r="2" fill="#fff" stroke="none"/><circle cx="36" cy="16" r="1.5" fill="#fff" stroke="none"/></g></svg>`,
+  hadaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="6" y="8" width="52" height="40" rx="6" fill="#fff"/><path d="M8 44 L22 30 L34 40 L42 34 L56 44Z" fill="#4CD07D"/><circle cx="44" cy="20" r="5" fill="#FFD23F"/><circle cx="55" cy="42" r="12" fill="#fff" fill-opacity=".55"/><path d="M64 51l9 9" stroke-width="6" stroke-linecap="round"/></g></svg>`,
+  bubliny: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3"><circle cx="24" cy="38" r="16" fill="#9FE8FF"/><circle cx="52" cy="24" r="18" fill="#C8F1FF"/><circle cx="64" cy="52" r="8" fill="#9FE8FF"/></g><text x="24" y="45" font-size="19" ${TXT} fill="${INK}">7</text><text x="52" y="31" font-size="20" ${TXT} fill="${INK}">5</text></svg>`,
   skladacka: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="10" y="8" width="26" height="22" rx="5" fill="#4C7DFF"/><rect x="40" y="8" width="26" height="22" rx="5" fill="#2FBF71"/><rect x="10" y="34" width="26" height="22" rx="5" fill="#FF9F1C"/><rect x="46" y="38" width="26" height="22" rx="5" fill="#FF5A5F" transform="rotate(14 59 49)"/><path d="M58 31l3 6" stroke-dasharray="2 3"/></g></svg>`,
 };
 const rekordKluc = id => `hra-${id}-${st.dietaId || 'x'}`;
 const slovoTahy = n => n === 1 ? 'ťah' : n >= 2 && n <= 4 ? 'ťahy' : 'ťahov';
 const slovoHviezdy = n => n === 1 ? 'hviezda' : n >= 2 && n <= 4 ? 'hviezdy' : 'hviezd';
-const rekordText = (id, r) => id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : `${r} ${slovoTahy(r)}`;
+const slovoPriklady = n => n === 1 ? 'príklad' : n >= 2 && n <= 4 ? 'príklady' : 'príkladov';
+const rekordText = (id, r) => id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
 // obrázky do hier: najprv z prebratých tém, tie dieťa pozná
 const temyDoHry = n => { const d = mix(T.length).map(i => T[i]); return [...d.filter(t => st.done.includes(t.id)), ...d.filter(t => !st.done.includes(t.id))].slice(0, n); };
-const stavHry = h => h.id === 'hviezdy' ? `⭐ ${h.skore} · ${h.zostava} s` : `${h.tahy} ${slovoTahy(h.tahy)}`;
+const stavHry = h => h.id === 'hviezdy' ? `⭐ ${h.skore} · ${h.zostava} s` : h.id === 'bubliny' ? `✓ ${h.skore} · ${h.zostava} s` : h.id === 'hadaj' ? `✓ ${h.spravne} z ${h.kola.length}` : `${h.tahy} ${slovoTahy(h.tahy)}`;
 const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if (el && st.hra) el.textContent = stavHry(st.hra); };
 
 const Hra = {
@@ -1403,6 +1434,11 @@ const Hra = {
       st.hra = { id, karty: mix(t.length * 2).map(i => t[i % t.length].id), otocene: [], najdene: [], tahy: 0 };
     } else if (id === 'hviezdy') {
       st.hra = { id, skore: 0, zostava: 30, beh: false, mal };
+    } else if (id === 'hadaj') {
+      st.hra = { id, kola: temyDoHry(8).map(t => t.id), i: 0, spravne: 0, n: mal ? 3 : 4, odp: null };
+      st.hra.moznosti = moznostiHadaj(st.hra);
+    } else if (id === 'bubliny') {
+      st.hra = { id, skore: 0, zostava: 60, beh: false, mal };
     } else {
       const [sl, ri] = mal ? [3, 3] : [4, 3];
       let p; do p = mix(sl * ri); while (p.every((x, i) => x === i));
@@ -1494,6 +1530,57 @@ const Hra = {
     s.style.left = b.style.left; s.style.top = b.style.top;
     b.replaceWith(s); setTimeout(() => s.remove(), 700);
   },
+  // Hádaj tému: obrázok a tri alebo štyri názvy tém
+  hadaj(id) {
+    const h = st.hra;
+    if (!h || h.id !== 'hadaj' || h.odp || h.hotovo) return;
+    const ok = id === h.kola[h.i];
+    h.odp = id;
+    if (ok) { h.spravne++; Zvuk.play('ok'); } else { Zvuk.play('bad'); vibruj(60); }
+    obnovStavHry(); obnovHadaj();
+    h.dalsia = setTimeout(() => {
+      if (st.hra !== h) return;
+      h.i++; h.odp = null;
+      if (h.i >= h.kola.length) { this.koniec(false, h.spravne); return; }
+      h.moznosti = moznostiHadaj(h); obnovHadaj();
+    }, ok ? 900 : 1800);
+  },
+  // Bubliny s počtami: minúta, praskni bublinu so správnym výsledkom
+  bublinyStart() {
+    const h = st.hra;
+    if (!h || h.id !== 'bubliny' || h.beh || h.hotovo) return;
+    h.beh = true; Zvuk.play('start'); this.novyPriklad(h);
+    h.casovac = setInterval(() => {
+      if (st.hra !== h) { clearInterval(h.casovac); return; }
+      h.zostava--; obnovStavHry();
+      if (h.zostava > 0 && h.zostava <= 3) Zvuk.play('tick');
+      if (h.zostava <= 0) {
+        clearInterval(h.casovac); clearTimeout(h.dalsia); h.beh = false;
+        const el = document.getElementById('bubliny'), p = document.getElementById('priklad');
+        if (el) el.innerHTML = '';
+        if (p) p.textContent = 'Čas vypršal!';
+        this.koniec(false, h.skore);
+      }
+    }, 1000);
+  },
+  novyPriklad(h) {
+    const [text, vysl] = priklad(h.mal), n = h.mal ? 3 : 4, moz = new Set([vysl]), posun = h.mal ? [1, 2, 3] : [1, 2, 3, 10];
+    while (moz.size < n) { const x = vysl + (Math.random() < .5 ? -1 : 1) * posun[Math.floor(Math.random() * posun.length)]; if (x >= 0) moz.add(x); }
+    h.vysl = vysl; h.priklad = text; h.moznosti = [...moz].sort(() => Math.random() - .5);
+    const p = document.getElementById('priklad'), el = document.getElementById('bubliny');
+    if (p) p.textContent = text + ' = ?';
+    if (el) el.innerHTML = h.moznosti.map((x, i) => `<button class="bublina" data-bub="${x}" style="left:${(3 + i * 94 / n + Math.random() * Math.max(0, 94 / n - 25)).toFixed(1)}%;top:${(8 + Math.random() * 50).toFixed(1)}%;--d:${(-Math.random() * 2).toFixed(2)}s"><span>${x}</span></button>`).join('');
+  },
+  bub(b) {
+    const h = st.hra;
+    if (!h || !h.beh || b.classList.contains('praskla')) return;
+    const [x, y] = stred(b);
+    if (Number(b.dataset.bub) === h.vysl) {
+      h.skore++; obnovStavHry(); b.classList.add('praskla');
+      Zvuk.play('pop'); setTimeout(() => Zvuk.play('coin'), 120); FX.burst(x, y, 14, ['dot', 'star'], 6);
+      clearTimeout(h.dalsia); h.dalsia = setTimeout(() => { if (st.hra === h && h.beh) this.novyPriklad(h); }, 380);
+    } else { Zvuk.play('bad'); vibruj(60); b.classList.remove('zle'); void b.offsetWidth; b.classList.add('zle'); }
+  },
   // Skladačka: ťukni na dva dieliky a vymenia sa
   diel(poz) {
     const h = st.hra;
@@ -1510,6 +1597,25 @@ const Hra = {
   },
 };
 
+// príklad na počítanie: menšie deti do 10, väčšie do 50 a malá násobilka
+function priklad(mal) {
+  const r = (od, po) => od + Math.floor(Math.random() * (po - od + 1)), druh = Math.random();
+  if (mal) {
+    if (druh < .6) { const a = r(1, 9), b = r(0, 10 - a); return [`${a} + ${b}`, a + b]; }
+    const a = r(2, 10), b = r(0, a); return [`${a} − ${b}`, a - b];
+  }
+  if (druh < .35) { const a = r(6, 30), b = r(3, 20); return [`${a} + ${b}`, a + b]; }
+  if (druh < .7) { const a = r(10, 40), b = r(2, Math.min(20, a)); return [`${a} − ${b}`, a - b]; }
+  const a = r(2, 9), b = r(2, 10); return [`${a} × ${b}`, a * b];
+}
+const moznostiHadaj = h => { const sp = h.kola[h.i], ine = mix(T.length).map(i => T[i].id).filter(id => id !== sp).slice(0, h.n - 1); return [sp, ...ine].sort(() => Math.random() - .5); };
+function hadajHtml(h) {
+  const t = byId(h.kola[h.i]);
+  return `<div class="frame hadaj-obr">${svg(t)}</div>
+    <p class="hadaj-otazka">O ktorej téme je tento obrázok?</p>
+    <div class="hadaj-moz">${h.moznosti.map(id => `<button class="btn ghost hadaj-btn${h.odp ? (id === t.id ? ' ok' : id === h.odp ? ' zle' : '') : ''}" data-hadaj="${id}">${esc(byId(id).t)}</button>`).join('')}</div>`;
+}
+const obnovHadaj = () => { const el = document.getElementById('hadaj'); if (el && st.hra) el.innerHTML = hadajHtml(st.hra); };
 function skladHtml(h) {
   const obr = svg(byId(h.t));
   return h.p.map((kus, poz) => `<button class="diel${h.vyber === poz ? ' vybraty' : ''}${kus === poz ? ' sedi' : ''}" data-diel="${poz}" aria-label="Dielik ${poz + 1}"><span class="diel-obr" style="--x:${kus % h.sl};--y:${Math.floor(kus / h.sl)}">${obr}</span></button>`).join('');
@@ -1521,7 +1627,7 @@ function obnovSklad() {
 }
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null;
-  const nadpis = h.id === 'hviezdy' ? `Super! ⭐ ${rekordText('hviezdy', v.hodnota)}` : `Hotovo! ${rekordText(h.id, v.hodnota)}`;
+  const nadpis = `${['hviezdy', 'bubliny'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
   return `<div class="card hra-vysledok"><div class="win-owl">${owl('cheer')}</div>
     <h2 class="h2" style="--hc:#FFC233">${nadpis}</h2>
     ${t ? `<p class="muted">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}
@@ -1537,6 +1643,12 @@ function renderHra() {
   } else if (h.id === 'hviezdy') {
     telo = `<div class="nebo" id="nebo">${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
       <p class="muted hra-pomoc">${STAR()} +1 &nbsp; ${STAR('#FF9F1C')} +3 &nbsp; búrka −2</p>`;
+  } else if (h.id === 'hadaj') {
+    telo = `<div id="hadaj" class="hadaj">${hadajHtml(h)}</div>`;
+  } else if (h.id === 'bubliny') {
+    telo = `<div class="card priklad" id="priklad">${h.beh ? h.priklad + ' = ?' : h.hotovo ? 'Čas vypršal!' : 'Koľko je…?'}</div>
+      <div class="more${h.mal ? '' : ' styri'}" id="bubliny">${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
+      <p class="muted hra-pomoc">Praskni bublinu so správnym výsledkom. Máš na to minútu.</p>`;
   } else {
     telo = `<div class="sklad${h.hotovo ? ' hotova' : ''}" id="sklad" style="--sl:${h.sl};--ri:${h.ri}">${skladHtml(h)}</div>
       <p class="muted hra-pomoc">Ťukni na dva dieliky a vymenia sa. Zelený rámik = dielik je na správnom mieste.</p>`;
@@ -1548,6 +1660,30 @@ function renderHra() {
   ocisluj();
 }
 
+/* Prehľad pre rodiča: čo dieťa prebralo tento týždeň a v ktorých otázkach chybovalo */
+function zapisChybu(k, ok) {
+  const t = k && byId(k.tid);
+  if (!t) return;
+  const kl = t.id + ':' + t.z.indexOf(k.q), bola = st.chyby.includes(kl);
+  if (ok && bola) st.chyby = st.chyby.filter(x => x !== kl);
+  else if (!ok && !bola) st.chyby = [...st.chyby, kl].slice(-60);
+  else return;
+  S.set('chyby', st.chyby);
+}
+function zapisPrebrate(id) { st.kedy = { ...st.kedy, [id]: key(new Date()) }; S.set('kedy', st.kedy); }
+function prehladRodica() {
+  const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
+  const od = key(pon), dnes = key(new Date());
+  const den = d => d === dnes ? 'dnes' : DNI[(new Date(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8)).getDay() + 6) % 7];
+  const tyzden = Object.entries(st.kedy).filter(([id, d]) => d >= od && byId(id)).sort((a, b) => a[1] < b[1] ? -1 : 1);
+  const chyby = st.chyby.map(x => { const [id, i] = x.split(':'), t = byId(id), q = t && t.z[+i]; return q && { t, q }; }).filter(Boolean).slice(-6).reverse();
+  return `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Pre rodiča</h2>
+    <div class="card prehlad"><b>Tento týždeň prebraté</b>
+      ${tyzden.length ? `<ul>${tyzden.map(([id, d]) => `<li><span>${KAT[byId(id).k].e}</span><span>${esc(byId(id).t)}</span><small>${den(d)}</small></li>`).join('')}</ul>` : '<p class="muted">Tento týždeň zatiaľ nič.</p>'}
+      <b>Na čo sa ešte pozrieť</b>
+      ${chyby.length ? `<ul>${chyby.map(c => `<li><span>${KAT[c.t.k].e}</span><span>${esc(c.q.q)}<small>Správne: ${esc(c.q.a[0][1])}</small></span></li>`).join('')}</ul>` : '<p class="muted">Žiadne chyby v kvízoch. Výborne!</p>'}
+    </div></section>`;
+}
 const views = {
   domov() {
     const t = temaDna(), k = KAT[t.k], hot = st.done.includes(t.id), s = seria(), dnes = key(new Date());
@@ -1615,6 +1751,7 @@ const views = {
         <div class="card mini" style="--c:#FFF0B3"><b>⭐ ${st.body}</b><small>bodov</small></div>
         <div class="card mini" style="--c:#FFE3C7"><b>🔥 ${s}</b><small>${dni(s)} po sebe</small></div>
       </section>
+      ${prehladRodica()}
       ${zbierkaOdznakov()}
       <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
         <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${k.e}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
@@ -1769,6 +1906,7 @@ function dokonci(f) {
     const prvy = !st.done.includes(f.id);
     f.zisk = prvy ? c * 10 + 10 : 0;
     if (prvy) { st.done.push(f.id); S.set('done', st.done); }
+    zapisPrebrate(f.id);
   } else {
     f.zisk = c * 10;
   }
@@ -1847,7 +1985,9 @@ document.addEventListener('click', e => {
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
   if (d.pex) { Hra.pex(+d.pex, b); return; }
   if (d.hv) { Hra.chyt(b); return; }
-  if (d.hvStart !== undefined) { Hra.hviezdyStart(); return; }
+  if (d.hvStart !== undefined) { if (st.hra && st.hra.id === 'bubliny') Hra.bublinyStart(); else Hra.hviezdyStart(); return; }
+  if (d.hadaj) { Hra.hadaj(d.hadaj); return; }
+  if (d.bub !== undefined) { Hra.bub(b); return; }
   if (d.diel) { Hra.diel(+d.diel); return; }
   if (d.hlas !== undefined) {
     S.set('hlas', d.hlas);
@@ -1916,6 +2056,7 @@ document.addEventListener('click', e => {
     const v = Number(d.ans), ok = v === 0, [x, y] = stred(b);
     Hlas.stop();
     f.odp[f.i] = { v, ok, p: pick(POCHVALA) };
+    zapisChybu(f.kroky[f.i], ok);
     renderFlow(false);
     if (ok) {
       Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); vibruj(40);
@@ -1994,7 +2135,7 @@ const CHYBY = {
 const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
 const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
-const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || []]);
+const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || [], zoradene(d.kedy), d.chyby || []]);
 let odber = null, casovac = null;
 // prihlásenie cez Google v appke na ploche odchádza na stránku Googlu a vracia sa späť (do 3 minút)
 let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
@@ -2062,7 +2203,7 @@ const Cloud = {
     const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
-      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])],
+      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])],
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
@@ -2084,12 +2225,13 @@ function nastavAktivne(d) {
   Object.assign(st, {
     dietaId: d.id, meno: d.meno || '', vek: d.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: { ...AV_ZAKLAD, ...(d.avatar || nahodnyAvatar()) },
     body: d.body || 0, done: [...(d.done || [])], fav: [...(d.fav || [])], dni: [...(d.dni || [])], odznaky: [...(d.odznaky || [])],
+    kedy: { ...(d.kedy || {}) }, chyby: [...(d.chyby || [])],
   });
 }
 function zapis(id, d) {
   const z = setDoc(doc(db, 'rodiny', Cloud.pouzivatel.uid, 'deti', id), {
-    meno: d.meno, vek: d.vek, avatar: d.avatar, body: d.body, done: d.done, fav: d.fav, dni: d.dni, odznaky: d.odznaky || [],
-    poradie: d.poradie, verzia: 3, upravene: serverTimestamp(),
+    meno: d.meno, vek: d.vek, avatar: d.avatar, body: d.body, done: d.done, fav: d.fav, dni: d.dni, odznaky: d.odznaky || [], kedy: d.kedy || {}, chyby: d.chyby || [],
+    poradie: d.poradie, verzia: 4, upravene: serverTimestamp(),
   });
   if (!navigator.onLine) { Cloud.stavUlozenia = 'Uložené v telefóne, do cloudu sa pošle, keď bude internet.'; obnovStav(); }
   z.then(() => { Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; obnovStav(); },
@@ -2099,7 +2241,7 @@ function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
   if (!d || !Cloud.pouzivatel) return;
-  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100) });
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60) });
   zapis(d.id, d);
 }
 function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
