@@ -90,7 +90,10 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 | Súbor | Čo je v ňom |
 | --- | --- |
-| `index.html` | vzhľad a správanie appky |
+| `zdroj/appka.html` | zdroj appky (vzhľad a správanie); upravuje sa tento súbor, nie `index.html` |
+| `zdroj/zostav.js` | zo zdroja zostaví `index.html` (hlava, manifest, offline) |
+| `zdroj/test.js` | testy logiky bez prehliadača |
+| `index.html` | zostavená appka, ktorú hosting posiela do telefónov |
 | `temy.js` | kategórie a texty tém, otázky a kvízy |
 | `obrazky.js` | kreslené obrázky k témam a sovička |
 | `manifest.webmanifest`, `ikony/` | názov a ikona appky v mobile |
@@ -102,7 +105,15 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
    vysvetlenie `m` (pre všetkých) a `s` (navyše pre staršie deti), príklad `p`, otázky `o` a kvíz `z`.
    V kvíze je správna vždy prvá odpoveď, appka ich poradie zamieša sama.
 2. Do `obrazky.js` pridaj do `ART` obrázok s rovnakým `id`.
-3. V `index.html` zvýš `VERZIA_APPKY` (vidno ju v profile) a nasaď. Telefóny si novú verziu stiahnu pri ďalšom otvorení.
+3. V `zdroj/appka.html` zvýš `VERZIA_APPKY` (vidno ju v profile), spusti testy a zostavenie a nasaď.
+   Telefóny si novú verziu stiahnu pri ďalšom otvorení.
+
+## Úpravy appky
+
+1. Upraviť `zdroj/appka.html` (prípadne `temy.js` a `obrazky.js`).
+2. `node zdroj/test.js` – testy musia skončiť riadkom `OK …`.
+3. `node zdroj/zostav.js` – vytvorí nový `index.html`.
+4. Vyskúšať na emulátore a nasadiť (pozri Firebase vyššie).
 
 Fakty v témach treba pred pridaním skontrolovať.
 

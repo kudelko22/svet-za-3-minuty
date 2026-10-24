@@ -1,0 +1,2434 @@
+<title>Svet za 3 minúty</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Kreslený svet: farebné plávajúce škvrny a čmáranice, hrubé tmavé obrysy, šťavnaté farby, tlačidlá ako v hre.
+   Zámerne jeden svetlý vzhľad (ako detská knižka), preto bez tmavého režimu. */
+:root {
+  --ink: #2B2240; --paper: #FFFFFF; --sky: #E3F4FF; --muted: #5F587A; --soft: #F3EFFF;
+  --sun: #FFD23F; --grass: #2FBF71; --grass-d: #1E9A57; --blue: #4C7DFF; --coral: #FF5A5F; --orange: #FF9F1C; --pink: #FF6FA8;
+  --ok-bg: #D9F8E6; --bad-bg: #FFE1E1;
+  --sh: 0 5px 0 var(--ink);
+  --spring: cubic-bezier(.25, 1.55, .5, 1);
+  --f-display: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { color: var(--ink); font: 700 16px/1.55 var(--f-body); -webkit-text-size-adjust: 100%; background-color: var(--sky); transition: background-color .5s; }
+body.tinted { background-color: color-mix(in srgb, var(--kc) 22%, #fff); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.koliesko { display: inline-block; width: 1em; height: 1em; margin-right: 8px; vertical-align: -.15em; border: 3px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+:focus-visible { outline: 3px dashed var(--blue); outline-offset: 3px; }
+.gut { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.h1 { margin: 0; font: 700 clamp(1.9rem, 7.5vw, 2.3rem)/1.08 var(--f-display); text-wrap: balance; }
+.h2 { margin: 0; font: 700 1.4rem/1.3 var(--f-display); text-decoration: underline wavy var(--hc, var(--pink)); text-decoration-thickness: 3px; text-underline-offset: 7px; text-decoration-skip-ink: none; }
+.muted { margin: 0; color: var(--muted); }
+.card { background: var(--paper); border: 3px solid var(--ink); border-radius: 24px; padding: 16px; box-shadow: var(--sh); }
+.sec { display: grid; gap: 14px; }
+.owl { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Pozadie: plávajúce farebné škvrny a čmáranice */
+.blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.blobs i { position: absolute; width: 75vmax; height: 75vmax; border-radius: 50%; animation: drift 22s ease-in-out infinite alternate; transition: opacity .5s; }
+.blobs i:nth-child(1) { left: -32vmax; top: -30vmax; background: radial-gradient(circle, rgb(255 111 168 / .45), transparent 62%); }
+.blobs i:nth-child(2) { right: -38vmax; top: 8vh; background: radial-gradient(circle, rgb(255 210 63 / .55), transparent 62%); animation-duration: 26s; animation-delay: -6s; }
+.blobs i:nth-child(3) { left: -26vmax; bottom: -38vmax; background: radial-gradient(circle, rgb(47 191 113 / .4), transparent 62%); animation-duration: 30s; }
+.blobs i:nth-child(4) { right: -30vmax; bottom: -32vmax; background: radial-gradient(circle, rgb(124 108 255 / .4), transparent 62%); animation-duration: 24s; animation-delay: -12s; }
+.blobs::after { content: ""; position: absolute; inset: -180px 0 0 -180px; animation: doodle 40s linear infinite;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' opacity='.5'%3E%3Cpath d='M18 30l6-6 6 6 6-6' stroke='%23B9A6FF'/%3E%3Ccircle cx='132' cy='28' r='6' stroke='%23FF9EC7'/%3E%3Cpath d='M78 92v14M71 99h14' stroke='%2389B4FF'/%3E%3Cpath d='M140 118l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z' stroke='%23FFC94A'/%3E%3Ccircle cx='32' cy='140' r='3.5' fill='%237FDBA6' stroke='none'/%3E%3Cpath d='M98 164q6-8 12 0t12 0' stroke='%23FFB36B'/%3E%3C/g%3E%3C/svg%3E"); }
+@keyframes drift { to { transform: translate(9vmax, 7vmax) scale(1.2); } }
+@keyframes doodle { to { transform: translate(180px, 180px); } }
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 61; translate: -50% 0; max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 18px; background: var(--paper); border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); font: 600 1rem/1.3 var(--f-display); animation: rise .45s var(--spring) both; }
+.float-pts { position: fixed; z-index: 61; translate: -50% -50%; pointer-events: none; font: 700 2rem/1 var(--f-display); color: #FFD23F; -webkit-text-stroke: 2.5px var(--ink); paint-order: stroke fill; text-shadow: 0 3px 0 var(--ink); animation: ptsUp 1.1s ease-out forwards; }
+@keyframes ptsUp { 0% { transform: scale(.4); opacity: 0; } 25% { transform: scale(1.35); opacity: 1; } 100% { transform: translateY(-80px) scale(1); opacity: 0; } }
+
+/* Hlavička */
+.top .gut { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 14px 6px; }
+.hi { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.av { flex: none; width: 60px; padding: 0; border: 0; background: none; animation: wiggle 4s ease-in-out infinite; transform-origin: 50% 90%; }
+.hi small { display: block; font-size: .8rem; color: var(--muted); font-weight: 800; }
+.hi b { display: block; font: 700 1.55rem/1.15 var(--f-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#pozdrav span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
+.top-r { flex: none; display: flex; align-items: center; gap: 8px; }
+.snd { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--ink); background: var(--paper); box-shadow: 0 3px 0 var(--ink); font-size: 1.2rem; padding: 0; }
+.snd[aria-pressed="false"] { background: #E4E0EE; }
+.stars { display: flex; align-items: center; gap: 6px; padding: 5px 14px 5px 8px; border-radius: 999px; background: var(--paper); border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); font: 700 1.2rem/1 var(--f-display); }
+.stars svg { width: 26px; height: 26px; animation: spinSlow 6s linear infinite; }
+.stars.bump { animation: jelly .7s; }
+
+main.gut { display: grid; gap: 24px; padding-block: 10px 120px; }
+.anim > * { animation: rise .6s var(--spring) both; animation-delay: calc(var(--i, 0) * 70ms); }
+.anim .step > * { animation: rise .55s var(--spring) both; animation-delay: calc(var(--j, 0) * 80ms + 80ms); }
+
+/* Tlačidlá a štítky */
+.btn { position: relative; overflow: hidden; border: 3px solid var(--ink); border-radius: 18px; padding: 13px 18px; font: 700 1.2rem/1.2 var(--f-display); letter-spacing: .01em; color: #fff; text-shadow: 0 2px 0 var(--ink); background: var(--grass); box-shadow: var(--sh); transition: transform .08s, box-shadow .08s; }
+.btn:active, .act:active, .tile:active, .row:active, .cc:active, .ans:active:not(:disabled), .read:active, .snd:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.btn.blue { background: var(--blue); }
+.btn.ghost { background: var(--paper); color: var(--ink); text-shadow: none; }
+.btn.cta { animation: pulse 1.7s ease-in-out infinite; }
+.btn.cta::after { content: ""; position: absolute; top: -10%; bottom: -10%; left: 0; width: 35%; background: linear-gradient(100deg, transparent, rgb(255 255 255 / .6), transparent); transform: translateX(-160%) skewX(-20deg); animation: shine 2.6s ease-in-out infinite; }
+.btn:disabled { background: #E4E0EE; color: var(--muted); text-shadow: none; box-shadow: 0 5px 0 #C9C3D9; border-color: #C9C3D9; transform: none; cursor: default; animation: none; }
+.wide { width: 100%; }
+.sticker { display: inline-block; background: var(--sun); border: 3px solid var(--ink); border-radius: 14px; padding: 3px 12px; font: 700 1rem/1.3 var(--f-display); box-shadow: 0 3px 0 var(--ink); rotate: -4deg; }
+.sticker.sm { font-size: .9rem; padding: 2px 10px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 2.5px solid var(--ink); border-radius: 999px; font: 600 .95rem/1.3 var(--f-display); color: #fff; text-shadow: 0 1.5px 0 var(--ink); background: var(--c, var(--muted)); }
+.read { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 5px 13px; border: 2.5px solid var(--ink); border-radius: 999px; background: var(--paper); box-shadow: 0 3px 0 var(--ink); font: 600 .95rem/1.2 var(--f-display); }
+.read.on { background: var(--sun); animation: pulse 1s ease-in-out infinite; }
+
+/* Obrázky a ich pohyb */
+.scene svg, .frame svg { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
+.scene.sm svg { aspect-ratio: 2 / 1; }
+.frame { border: 3px solid var(--ink); border-radius: 26px; overflow: hidden; box-shadow: var(--sh); background: var(--paper); }
+svg .spin, svg .twinkle, svg .beat, svg .pulse, svg .steam, svg .flame, svg .breathe, svg .spinY, svg .grow, svg .zzz, svg .blink, svg .ow-blink, svg .ring, svg .needle, svg .shakeX { transform-box: fill-box; transform-origin: center; }
+svg .spin { animation: spin 14s linear infinite; }
+svg .bob { animation: bob 3s ease-in-out infinite; }
+svg .hop { animation: hop 1.8s ease-in-out infinite; }
+svg .drift { animation: cloudDrift 6s ease-in-out infinite alternate; }
+svg .blink, svg .ow-blink { animation: blink 4.2s infinite; }
+svg .beat { animation: beat 1.1s ease-in-out infinite; }
+svg .pulse { animation: beat 1.8s ease-in-out infinite; }
+svg .ballot { animation: ballot 2.4s ease-in infinite; }
+svg .coin { animation: coin 2.2s ease-in infinite; }
+svg .rain { animation: rain 1.3s linear infinite; }
+svg .rise { animation: riseUp 2.6s ease-in-out infinite; }
+svg .flag { animation: flag 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: left center; }
+svg .pk1 { animation: pk1 2.2s linear infinite; }
+svg .pk2 { animation: pk2 2.2s linear 1.1s infinite; opacity: 0; }
+svg .ecg { stroke-dasharray: 100; animation: ecg 2.2s linear infinite; }
+svg .dash { animation: dash 1s linear infinite; }
+svg .steam { animation: steam 2.2s ease-out infinite; }
+svg .twinkle { animation: twinkle 1.8s ease-in-out infinite; }
+svg .heartup { animation: heartUp 3s ease-out infinite; }
+svg .leaf { animation: leaf 4.2s ease-in-out infinite; }
+svg .fall { animation: apple 2.6s cubic-bezier(.5, 0, .9, .6) infinite; }
+svg .fall2 { animation: fall2 3.2s ease-in infinite; }
+svg .bounce { animation: ball .9s cubic-bezier(.5, 0, .5, 1) infinite alternate; }
+svg .zzz { animation: zzz 2.2s ease-out infinite; }
+svg .flame { animation: flame .5s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+svg .fly { animation: fly 3s ease-in-out infinite; }
+svg .speed { animation: speed .6s linear infinite; }
+svg .lift { animation: lift 1.2s ease-in-out infinite; }
+svg .breathe { animation: breathe 3s ease-in-out infinite; }
+svg .shakeX { animation: angry .5s ease-in-out infinite; }
+svg .sign { stroke-dasharray: 100; animation: sign 3s ease-in-out infinite; }
+svg .pen { animation: pen 3s ease-in-out infinite; }
+svg .write { animation: pen 2s ease-in-out infinite; }
+svg .gate { animation: gate 3s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 50%; }
+svg .needle { animation: needle 3s ease-in-out infinite; }
+svg .ring { animation: ringBell 1.6s ease-in-out infinite; transform-origin: 50% 0%; }
+svg .spinY { animation: spinY 1.4s linear infinite; }
+svg .grow { animation: grow 2s var(--spring) infinite; transform-origin: 50% 100%; }
+svg .swap { animation: bob 1.4s ease-in-out infinite; }
+svg .snip { animation: snip .6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 20% 50%; }
+svg .beam { animation: beam 2s ease-in-out infinite; }
+svg .waves, svg .birds { animation: cloudDrift 3s ease-in-out infinite alternate; }
+svg .svetlo { animation: semafor 6s linear infinite; }
+svg .bzz { animation: bzz 3s ease-in-out infinite; }
+svg .kridla { animation: kridla .12s linear infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+svg .brush { animation: brush .45s ease-in-out infinite alternate; }
+svg .utek { animation: utek 1.4s ease-in-out infinite; }
+svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 30% 100%; }
+@keyframes semafor { 0%, 32% { opacity: 1; } 34%, 100% { opacity: .2; } }
+@keyframes bzz { 0%, 100% { transform: translate(0, 0) rotate(0); } 25% { transform: translate(14px, -10px) rotate(10deg); } 50% { transform: translate(22px, 4px) rotate(-6deg); } 75% { transform: translate(6px, 9px) rotate(8deg); } }
+@keyframes kridla { to { transform: scaleY(.45); } }
+@keyframes brush { to { transform: translateX(-14px); } }
+@keyframes utek { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px) rotate(10deg); } }
+@keyframes krid2 { from { transform: rotate(-12deg); } to { transform: rotate(14deg); } }
+.thumb *, .cc .scene * { animation: none !important; }
+.ow-wl, .ow-wr { transform-box: fill-box; }
+.ow-wl { transform-origin: 90% 85%; } .ow-wr { transform-origin: 10% 85%; }
+.owl[data-m="hi"] .ow-wr { animation: owlWave 1.3s ease-in-out infinite; }
+.owl[data-m="cheer"] .ow-wl { animation: flapL .32s ease-in-out infinite alternate; }
+.owl[data-m="cheer"] .ow-wr { animation: flapR .32s ease-in-out infinite alternate; }
+.jump { animation: owlJump .9s var(--spring); }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinSlow { 0%, 85% { rotate: 0deg; } 100% { rotate: 360deg; } }
+@keyframes bob { 50% { transform: translateY(-6px); } }
+@keyframes hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-5px); } 55% { transform: translateY(0) scaleY(.96); } }
+@keyframes cloudDrift { to { transform: translateX(12px); } }
+@keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.1); } }
+@keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.1); } 30% { transform: scale(.97); } 45% { transform: scale(1.06); } }
+@keyframes ballot { 0% { transform: translateY(-6px); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(30px); opacity: 1; } }
+@keyframes coin { 0% { transform: translateY(-14px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(34px); opacity: 1; } }
+@keyframes rain { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(34px); opacity: 0; } }
+@keyframes riseUp { 0% { transform: translateY(8px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-10px); opacity: 0; } }
+@keyframes flag { 50% { transform: scaleX(.75) skewY(10deg); } }
+@keyframes pk1 { 0% { transform: translate(0, 0); opacity: 0; } 10%, 90% { opacity: 1; } 50% { transform: translate(30px, -27px); } 100% { transform: translate(60px, -26px); opacity: 0; } }
+@keyframes pk2 { 0% { transform: translate(0, 0); opacity: 0; } 10%, 90% { opacity: 1; } 50% { transform: translate(30px, -2px); } 100% { transform: translate(56px, 22px); opacity: 0; } }
+@keyframes ecg { from { stroke-dashoffset: 100; } to { stroke-dashoffset: -100; } }
+@keyframes dash { to { stroke-dashoffset: -26; } }
+@keyframes steam { 0% { transform: translateY(6px) scale(.7); opacity: 0; } 40% { opacity: 1; } 100% { transform: translateY(-14px) scale(1.1); opacity: 0; } }
+@keyframes twinkle { 50% { transform: scale(.4) rotate(45deg); opacity: .4; } }
+@keyframes heartUp { 0% { transform: translateY(10px) scale(.4); opacity: 0; } 25% { opacity: 1; transform: translateY(0) scale(1); } 100% { transform: translateY(-50px) scale(.8); opacity: 0; } }
+@keyframes leaf { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 10% { opacity: 1; } 30% { transform: translate(14px, 18px) rotate(80deg); } 60% { transform: translate(-10px, 42px) rotate(-40deg); } 90% { opacity: 1; } 100% { transform: translate(8px, 70px) rotate(60deg); opacity: 0; } }
+@keyframes apple { 0%, 30% { transform: translateY(0); } 80% { transform: translateY(58px); } 88% { transform: translateY(48px); } 100% { transform: translateY(58px); } }
+@keyframes fall2 { 0% { transform: translateY(-10px) rotate(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(50px) rotate(25deg); opacity: 1; } }
+@keyframes ball { from { transform: translateY(0) scale(1.15, .85); } 20% { transform: translateY(-4px) scale(1); } to { transform: translateY(-38px); } }
+@keyframes zzz { 0% { transform: translate(0, 0) scale(.5); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(18px, -26px) scale(1.2); opacity: 0; } }
+@keyframes flame { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(.9, 1.15) rotate(3deg); } }
+@keyframes fly { 0%, 100% { transform: translate(0, 0) rotate(-2deg); } 50% { transform: translate(6px, -10px) rotate(3deg); } }
+@keyframes speed { from { transform: translateX(10px); opacity: 1; } to { transform: translateX(-16px); opacity: .2; } }
+@keyframes lift { 50% { transform: translateY(-8px); } }
+@keyframes breathe { 50% { transform: scale(1.08); } }
+@keyframes angry { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px) rotate(-2deg); } 75% { transform: translateX(3px) rotate(2deg); } }
+@keyframes sign { 0% { stroke-dashoffset: 100; } 60%, 100% { stroke-dashoffset: 0; } }
+@keyframes pen { 0%, 100% { transform: translate(0, 0); } 30% { transform: translate(-14px, 4px); } 60% { transform: translate(6px, -2px); } }
+@keyframes gate { 0%, 30%, 100% { transform: rotate(0); } 50%, 80% { transform: rotate(-60deg); } }
+@keyframes needle { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
+@keyframes ringBell { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(25deg); } 40% { transform: rotate(-25deg); } 60% { transform: rotate(12deg); } }
+@keyframes spinY { 0% { transform: scaleX(1); } 50% { transform: scaleX(.1); } 100% { transform: scaleX(1); } }
+@keyframes grow { 0% { transform: scaleY(.6); } 50%, 100% { transform: scaleY(1); } }
+@keyframes snip { to { transform: rotate(10deg); } }
+@keyframes beam { 50% { opacity: .55; } }
+@keyframes owlWave { 50% { transform: rotate(-22deg); } }
+@keyframes flapL { from { transform: rotate(14deg); } to { transform: rotate(-14deg); } }
+@keyframes flapR { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+@keyframes owlJump { 0% { transform: none; } 40% { transform: translateY(-34px) rotate(-200deg) scale(1.15); } 100% { transform: rotate(-360deg); } }
+@keyframes wiggle { 0%, 80%, 100% { rotate: 0deg; } 85% { rotate: -9deg; } 90% { rotate: 8deg; } 95% { rotate: -4deg; } }
+@keyframes wav { 0%, 60%, 100% { translate: 0 0; } 30% { translate: 0 -5px; } }
+@keyframes rise { from { opacity: 0; transform: translateY(28px) scale(.92); } }
+@keyframes pulse { 50% { scale: 1.04; } }
+@keyframes shine { 0%, 55% { transform: translateX(-160%) skewX(-20deg); } 100% { transform: translateX(420%) skewX(-20deg); } }
+@keyframes jelly { 0% { scale: 1; } 30% { scale: 1.3 .8; } 50% { scale: .85 1.15; } 70% { scale: 1.08 .95; } 100% { scale: 1; } }
+@keyframes swing { 0%, 100% { rotate: -5deg; } 50% { rotate: 4deg; } }
+@keyframes tileBob { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: 0 -4px; rotate: -8deg; } }
+@keyframes pop { from { transform: scale(.2) rotate(-25deg); } to { transform: scale(1) rotate(0); } }
+@keyframes shake { 15% { translate: -10px 0; } 30% { translate: 9px 0; } 45% { translate: -7px 0; } 60% { translate: 5px 0; } 75% { translate: -3px 0; } }
+@keyframes okPop { 0% { scale: 1; } 40% { scale: 1.07; } 100% { scale: 1; } }
+@keyframes up { from { transform: translateY(14px) scale(.9); opacity: 0; } }
+@keyframes stripes { to { background-position: 28px 0; } }
+@keyframes flash { from { opacity: .55; } to { opacity: 0; } }
+
+/* Domov */
+.hero { background: var(--paper); border: 3px solid var(--ink); border-radius: 28px; overflow: hidden; box-shadow: 0 6px 0 var(--ink); }
+.hero-art { position: relative; border-bottom: 3px solid var(--ink); }
+.hero-art .sticker { position: absolute; left: 12px; top: 12px; animation: swing 2.6s ease-in-out infinite; }
+.hero-art .sticker.done { left: auto; right: 12px; background: var(--grass); color: #fff; text-shadow: 0 2px 0 var(--ink); animation-delay: -1.3s; }
+.hero-in { display: grid; gap: 10px; justify-items: start; padding: 16px 16px 20px; background: color-mix(in srgb, var(--c) 12%, #fff); }
+.tt { margin: 0; font: 700 1.85rem/1.08 var(--f-display); text-wrap: balance; }
+.row-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.streak { font: 700 .95rem/1.2 var(--f-display); padding: 4px 10px; border-radius: 999px; background: #FFE7C2; border: 2.5px solid var(--ink); }
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.day { display: grid; justify-items: center; gap: 4px; font: 600 .85rem/1 var(--f-display); color: var(--muted); }
+.day i { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-style: normal; background: var(--d); border: 2.5px solid var(--ink); color: var(--ink); font-size: .95rem; }
+.day i svg { width: 24px; height: 24px; animation: pop .8s var(--spring) both; }
+.day.done i { background: var(--sun); }
+.day.today { color: var(--blue); }
+.day.today i { outline: 3px solid var(--blue); outline-offset: 2px; }
+.acts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.act { position: relative; overflow: hidden; display: grid; gap: 4px; justify-items: start; text-align: left; border: 3px solid var(--ink); border-radius: 24px; padding: 14px; color: #fff; text-shadow: 0 2px 0 var(--ink); background: var(--c); box-shadow: var(--sh); }
+.act::after { content: ""; position: absolute; width: 90px; height: 90px; right: -26px; bottom: -30px; border-radius: 50%; background: rgb(255 255 255 / .25); }
+.act-e, .tile-e { display: grid; place-items: center; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--ink); text-shadow: none; animation: tileBob 2.4s ease-in-out infinite; animation-delay: calc(var(--j, 0) * -.35s); }
+.act-e { width: 48px; height: 48px; font-size: 1.6rem; margin-bottom: 4px; }
+.act b { font: 700 1.3rem/1.1 var(--f-display); }
+.act small { font-weight: 800; font-size: .85rem; }
+.carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 4px 12px; margin: -2px -4px 0; scrollbar-width: none; }
+.carousel::-webkit-scrollbar { display: none; }
+.cc { flex: none; width: 170px; scroll-snap-align: start; display: grid; padding: 0; text-align: left; border: 3px solid var(--ink); border-radius: 22px; overflow: hidden; background: var(--c); box-shadow: var(--sh); }
+.cc b { padding: 8px 10px 10px; font: 600 1rem/1.15 var(--f-display); color: #fff; text-shadow: 0 1.5px 0 var(--ink); border-top: 3px solid var(--ink); }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tile { display: grid; justify-items: start; gap: 6px; text-align: left; border: 3px solid var(--ink); border-radius: 22px; padding: 10px; min-height: 120px; color: #fff; text-shadow: 0 1.5px 0 var(--ink); background: var(--c); box-shadow: var(--sh); }
+.tile-e { width: 42px; height: 42px; font-size: 1.35rem; }
+.tile b { font: 600 .98rem/1.15 var(--f-display); hyphens: manual; }
+.tile small { margin-top: auto; padding: 0 8px; border-radius: 999px; background: var(--paper); color: var(--ink); border: 2px solid var(--ink); text-shadow: none; font-weight: 900; font-size: .8rem; }
+.tile.all { background: repeating-linear-gradient(-45deg, #FF6FA8 0 14px, #FF8FBF 14px 28px); }
+.tip { display: flex; align-items: flex-start; gap: 12px; }
+.tip-owl { flex: none; width: 74px; padding: 0; border: 0; background: none; }
+.bubble { position: relative; margin: 0; background: var(--paper); border: 3px solid var(--ink); border-radius: 22px; padding: 12px 16px; box-shadow: 0 4px 0 var(--ink); }
+.bubble::before { content: ""; position: absolute; width: 18px; height: 18px; background: inherit; border-left: 3px solid var(--ink); border-top: 3px solid var(--ink); }
+.tip .bubble { flex: 1; min-width: 0; margin-top: 10px; }
+.tip .bubble::before { left: -11px; top: 18px; transform: rotate(-45deg); }
+
+/* Zoznam tém */
+.search { width: 100%; padding: 13px 16px; border-radius: 18px; border: 3px solid var(--ink); background: var(--paper); color: var(--ink); font: 700 1rem var(--f-body); box-shadow: 0 4px 0 var(--ink); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips .chip { color: var(--ink); text-shadow: none; background: var(--paper); padding: 6px 13px; }
+.chips .chip[aria-pressed="true"] { background: var(--c, var(--ink)); color: #fff; text-shadow: 0 1.5px 0 var(--ink); animation: jelly .5s; }
+.list { display: grid; gap: 14px; }
+.row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 10px; border-radius: 22px; border: 3px solid var(--ink); background: color-mix(in srgb, var(--c) 13%, #fff); box-shadow: var(--sh); }
+.thumb { flex: none; width: 88px; height: 64px; border-radius: 14px; border: 2.5px solid var(--ink); overflow: hidden; }
+.thumb svg { display: block; width: 100%; height: 100%; }
+.row-main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.row-t { font: 600 1.1rem/1.2 var(--f-display); }
+.row-s { font-size: .85rem; font-weight: 800; color: color-mix(in srgb, var(--c) 75%, #000); }
+.badge { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2.5px solid var(--ink); font: 700 1rem/1 var(--f-display); }
+.badge.ok { background: var(--grass); color: #fff; text-shadow: 0 1.5px 0 var(--ink); }
+.badge.new { width: auto; padding: 0 10px; border-radius: 999px; background: var(--sun); font-size: .8rem; }
+.empty { display: grid; justify-items: center; gap: 8px; padding: 22px; border-radius: 24px; border: 3px dashed var(--ink); background: rgb(255 255 255 / .7); color: var(--muted); text-align: center; }
+.empty .owl { width: 80px; }
+
+/* Profil */
+.prof-top { display: flex; align-items: center; gap: 14px; }
+.prof-top .owlw { flex: none; width: 82px; padding: 0; border: 0; background: none; }
+.prof { display: grid; gap: 10px; }
+.lbl { font: 600 1rem/1.2 var(--f-display); }
+.input { width: 100%; padding: 12px 14px; border-radius: 16px; border: 3px solid var(--ink); background: var(--sky); color: var(--ink); font: 700 1.15rem var(--f-display); }
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seg2 button { padding: 10px; border-radius: 16px; border: 3px solid var(--ink); background: var(--paper); font: 600 1.05rem/1.2 var(--f-display); box-shadow: 0 4px 0 var(--ink); }
+.seg2 button[aria-pressed="true"] { background: var(--blue); color: #fff; text-shadow: 0 2px 0 var(--ink); animation: jelly .5s; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tests { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.diag { margin: 0; padding: 8px 10px; border-radius: 12px; background: var(--soft); color: var(--muted); font: 600 .78rem/1.45 var(--f-body); overflow-wrap: anywhere; }
+.btn.google { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--paper); color: var(--ink); text-shadow: none; }
+.btn.google .g { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(#EA4335 0 25%, #FBBC05 0 50%, #34A853 0 75%, #4285F4 0); color: #fff; font: 800 1rem/1 var(--f-body); text-shadow: 0 1px 0 rgb(0 0 0 / .3); }
+.alebo { display: flex; align-items: center; gap: 10px; color: var(--muted); font: 600 .9rem/1 var(--f-display); }
+.alebo::before, .alebo::after { content: ""; flex: 1; height: 2px; background: var(--soft); }
+.link { justify-self: start; border: 0; background: none; padding: 2px 0; color: var(--blue); font: 700 .95rem/1.3 var(--f-body); text-decoration: underline; }
+.chyba { margin: 0; padding: 8px 12px; border-radius: 12px; background: var(--bad-bg); color: #B4232A; font-weight: 800; }
+.presun { display: block; padding: 12px 16px; border-radius: 18px; border: 3px solid var(--ink); background: var(--sun); box-shadow: 0 4px 0 var(--ink); color: var(--ink); text-decoration: none; font-weight: 800; }
+.ringc { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; }
+.ring { position: relative; flex: none; width: 116px; height: 116px; }
+.ring svg { width: 100%; height: 100%; rotate: -90deg; }
+.ring b { position: absolute; inset: 0; display: grid; place-items: center; font: 700 1.7rem/1 var(--f-display); }
+.mini { display: grid; gap: 2px; background: var(--c); }
+.mini b { font: 700 1.8rem/1.1 var(--f-display); }
+.mini small, .ringc small { font-weight: 800; color: var(--muted); }
+.prog { display: grid; gap: 14px; }
+.prog-r { display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: 10px; row-gap: 6px; font-weight: 800; }
+.prog-r .ico { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 1.05rem; background: var(--c); border: 2.5px solid var(--ink); }
+.prog-r span { min-width: 0; }
+.bar { grid-column: 2 / -1; height: 14px; border-radius: 99px; background: var(--soft); border: 2.5px solid var(--ink); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--c); }
+
+/* Téma krok za krokom */
+.ftop { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; align-items: center; gap: 10px; padding-block: 12px; background: rgb(255 255 255 / .6); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 100vmax rgb(255 255 255 / .6); clip-path: inset(0 -100vmax); }
+.tinted .blobs i { opacity: .45; }
+.ib { flex: none; width: 44px; height: 44px; border-radius: 14px; border: 3px solid var(--ink); background: var(--paper); font: 700 1.2rem/1 var(--f-display); box-shadow: 0 3px 0 var(--ink); }
+.ib.heart[aria-pressed="true"] { background: #FFD6DE; color: var(--coral); animation: jelly .6s; }
+.fbar { flex: 1; height: 24px; border-radius: 99px; background: var(--paper); border: 3px solid var(--ink); overflow: hidden; }
+.fbar i { display: block; height: 100%; border-radius: 99px; background: repeating-linear-gradient(-45deg, #2FBF71 0 10px, #5BD98F 10px 20px); background-size: 28px 28px; box-shadow: inset 0 -4px 0 rgb(0 0 0 / .12), inset 0 4px 0 rgb(255 255 255 / .4); transition: width .5s var(--spring); animation: stripes .7s linear infinite; }
+.fnum { font: 700 1.05rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.step { display: grid; gap: 18px; }
+.step.shake { animation: shake .5s; }
+.say { display: grid; gap: 4px; }
+.say-head { display: flex; align-items: flex-end; gap: 8px; flex-wrap: wrap; font: 700 1.15rem/1.2 var(--f-display); }
+.say-owl { width: 64px; flex: none; padding: 0; border: 0; background: none; }
+.say-head .read { margin: 0 0 4px auto; }
+.say .bubble { padding: 16px 18px; }
+.say .bubble::before { left: 22px; top: -11px; transform: rotate(45deg); }
+.say p, .more p, .note-card p, .tb p { margin: 0; max-width: 62ch; }
+.say p { font-size: 1.15rem; line-height: 1.6; }
+.more { display: grid; gap: 8px; padding: 16px 18px; border-radius: 22px; background: #DDEBFF; border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); }
+.more b { font: 700 1.1rem/1.2 var(--f-display); }
+.st-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.big-st { flex: none; width: 80px; height: 80px; border-radius: 26px; display: grid; place-items: center; font-size: 2.7rem; background: var(--c); border: 3px solid var(--ink); box-shadow: var(--sh); rotate: -6deg; animation: tileBob 2.2s ease-in-out infinite; }
+.note-card { position: relative; padding: 26px 20px 20px; border-radius: 6px 6px 22px 22px; background: #FFF3B0; border: 3px solid var(--ink); box-shadow: var(--sh); rotate: -1deg; font-size: 1.12rem; }
+.note-card::before { content: ""; position: absolute; top: -14px; left: 50%; width: 92px; height: 26px; translate: -50% 0; rotate: 3deg; background: rgb(255 158 199 / .75); border: 2px solid rgb(43 34 64 / .25); }
+.talk { display: grid; gap: 14px; }
+.tb { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 22px 22px 22px 6px; background: var(--c); border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); margin-right: 24px; font-size: 1.05rem; }
+.tb.r { margin: 0 0 0 24px; border-radius: 22px 22px 6px 22px; }
+.tb-q { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); border: 2.5px solid var(--ink); font: 700 1.1rem/1 var(--f-display); }
+.qhead { display: grid; gap: 10px; justify-items: start; }
+.qhead-r { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.qt { margin: 0; font: 700 1.75rem/1.12 var(--f-display); text-wrap: balance; }
+.answers { display: grid; gap: 14px; }
+.ans { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 10px 14px 10px 10px; border-radius: 22px; border: 3px solid var(--ink); background: var(--paper); box-shadow: var(--sh); font: 600 1.15rem/1.25 var(--f-display); }
+.ans .em { flex: none; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; font-size: 1.9rem; background: var(--e); border: 2.5px solid var(--ink); }
+.ans:disabled { cursor: default; }
+.ans:disabled:not(.ok):not(.bad) > * { opacity: .45; }
+.ans.ok { background: var(--ok-bg); animation: okPop .5s var(--spring); }
+.ans.bad { background: var(--bad-bg); }
+.ans.ok::after, .ans.bad::after { position: absolute; right: -10px; top: -12px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--ink); color: #fff; text-shadow: 0 1.5px 0 var(--ink); font: 700 1.15rem/1 var(--f-display); animation: pop .45s var(--spring) both; }
+.ans.ok::after { content: "✓"; background: var(--grass); }
+.ans.bad::after { content: "✗"; background: var(--coral); }
+.fbk { display: flex; gap: 12px; align-items: center; padding: 12px 16px 12px 10px; border-radius: 22px; border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); animation: up .4s var(--spring) both; }
+.fbk.ok { background: var(--ok-bg); } .fbk.bad { background: var(--bad-bg); }
+.fbk-owl { flex: none; width: 64px; }
+.fbk b { font: 700 1.35rem/1.2 var(--f-display); }
+.fbk.ok b { color: var(--grass-d); } .fbk.bad b { color: #D63A3F; }
+.fbk p { margin: 2px 0 0; }
+.flash { position: fixed; inset: 0; z-index: 59; pointer-events: none; animation: flash .5s ease-out forwards; }
+.fnext { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding-top: 22px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--kc, var(--blue)) 22%, #fff) 45%); }
+.flow-pad { height: 74px; }
+.win { position: relative; display: grid; justify-items: center; gap: 10px; text-align: center; padding-block: 8px; }
+.win-hero { position: relative; width: 260px; height: 220px; display: grid; place-items: center; }
+.burst { position: absolute; inset: -40px; border-radius: 50%; background: repeating-conic-gradient(#FFE27A 0 12deg, #FFF6CC 12deg 24deg, #FFB3D1 24deg 36deg, #FFF6CC 36deg 48deg); -webkit-mask: radial-gradient(circle, #000 35%, transparent 70%); mask: radial-gradient(circle, #000 35%, transparent 70%); animation: spin 18s linear infinite; }
+.win-owl { position: relative; width: 170px; padding: 0; border: 0; background: none; animation: pop .7s var(--spring) both; }
+.win .h1 { font-size: 2.7rem; animation: jelly .8s .3s both; }
+.stars3 { display: flex; gap: 6px; align-items: flex-end; }
+.stars3 svg { width: 50px; height: 50px; animation: pop .55s var(--spring) both; animation-delay: .5s; }
+.stars3 svg:nth-child(2) { width: 66px; height: 66px; animation-delay: .8s; }
+.stars3 svg:nth-child(3) { animation-delay: 1.1s; }
+.earn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; background: var(--paper); border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink); font: 700 1.4rem/1.2 var(--f-display); animation: pop .5s 1.3s var(--spring) both; }
+.earn svg { width: 28px; height: 28px; }
+.earn.plain { font: 700 1rem/1.4 var(--f-body); border-radius: 20px; }
+.win-acts { display: grid; gap: 16px; width: 100%; margin-top: 14px; text-align: left; }
+
+/* Spodné menu */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--paper); border-top: 3px solid var(--ink); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.nav .gut { display: grid; grid-template-columns: repeat(4, 1fr); padding-block: 6px; }
+.nav button { display: grid; justify-items: center; gap: 1px; border: 0; background: none; padding: 2px 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
+.ni { display: grid; place-items: center; width: 56px; height: 34px; border-radius: 999px; border: 2.5px solid transparent; }
+.nav svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nav button[aria-current="page"] { color: var(--ink); }
+.nav button[aria-current="page"] .ni { background: var(--nc); border-color: var(--ink); animation: jelly .6s; }
+
+/* Brána: prihlásenie, výber dieťaťa, tvorba postavičky */
+.brana { display: grid; gap: 16px; justify-items: center; text-align: center; padding-top: 12px; }
+.brana > .card, .brana > .btn { width: 100%; text-align: left; }
+.brana > .btn { text-align: center; }
+.brana-owl { width: 150px; animation: bob 3s ease-in-out infinite; }
+.kruh-av { display: grid; align-items: end; overflow: hidden; border-radius: 50%; background: var(--bg); border: 3px solid var(--ink); }
+.kruh-av svg { display: block; width: 92%; height: auto; margin: 0 auto; }
+.deti { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
+.dieta { display: grid; justify-items: center; gap: 2px; padding: 14px 8px 12px; border: 3px solid var(--ink); border-radius: 24px; background: var(--paper); box-shadow: var(--sh); }
+.dieta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.dieta .kruh-av { width: min(118px, 100%); aspect-ratio: 1; animation: tileBob 3s ease-in-out infinite; }
+.dieta:nth-child(2) .kruh-av { animation-delay: -1s; } .dieta:nth-child(3) .kruh-av { animation-delay: -2s; }
+.dieta b { margin-top: 6px; font: 700 1.35rem/1.15 var(--f-display); }
+.dieta small { color: var(--muted); font-weight: 800; }
+.dieta.nove { border-style: dashed; background: rgb(255 255 255 / .6); box-shadow: none; }
+.dieta .plus { width: min(118px, 100%); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; border: 3px dashed var(--ink); background: var(--soft); font: 700 3.6rem/1 var(--f-display); }
+.tvorba { justify-items: stretch; text-align: left; }
+.tvorba > .h1 { text-align: center; }
+.av-wrap { position: relative; justify-self: center; }
+.av-nahlad { width: 210px; aspect-ratio: 1; border-width: 4px; box-shadow: 0 6px 0 var(--ink); transition: background-color .3s; }
+.av-nahlad.hopni #av-velky { animation: jelly .5s; }
+.kocka { position: absolute; right: -10px; top: 6px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); box-shadow: 0 4px 0 var(--ink); font-size: 1.7rem; padding: 0; }
+.kocka:active { transform: translateY(3px) rotate(90deg); box-shadow: 0 1px 0 var(--ink); }
+.av-tabs { justify-content: center; }
+.av-moznosti { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.av-opt { aspect-ratio: 1; padding: 0; box-shadow: 0 3px 0 var(--ink); }
+.av-opt.farba { border-radius: 50%; border: 3px solid var(--ink); background: var(--f); display: grid; place-items: center; }
+.av-opt[aria-pressed="true"] { outline: 4px solid var(--blue); outline-offset: 3px; }
+.av-opt.farba[aria-pressed="true"]::after { content: "✓"; color: #fff; font: 700 1.5rem/1 var(--f-display); text-shadow: 0 2px 0 var(--ink); }
+.btn.red { background: var(--coral); }
+.link.center { justify-self: center; }
+.potvrd { border-color: var(--coral); }
+.prof-meno { display: grid; gap: 6px; justify-items: start; }
+.av-ja { flex: none; width: 104px; aspect-ratio: 1; padding: 0; box-shadow: 0 4px 0 var(--ink); }
+.av.kruh-av { border-width: 2.5px; height: 58px; }
+
+/* Odznaky a odmeny */
+.mini-av { flex: none; width: 74px; aspect-ratio: 1; }
+.dalsia { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, #FFF6CC, #FFE3EE); }
+.dalsia > div { display: grid; gap: 6px; min-width: 0; flex: 1; }
+.dalsia b { font: 700 1.1rem/1.2 var(--f-display); }
+.dalsia small { color: var(--muted); font-weight: 800; }
+.dalsia .bar { grid-column: auto; margin: 2px 0 0; height: 16px; }
+.dalsia .bar i { background: repeating-linear-gradient(-45deg, #FFC233 0 10px, #FFD966 10px 20px); background-size: 28px 28px; animation: stripes .7s linear infinite; }
+.lbl-mala { font: 600 .8rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.h2 .pocet { font: 700 .9rem/1 var(--f-body); color: var(--muted); text-decoration: none; display: inline-block; margin-left: 6px; }
+.odznaky { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.odznak { display: grid; justify-items: center; gap: 4px; padding: 10px 6px; border-radius: 20px; border: 3px dashed #C9C3D9; background: rgb(255 255 255 / .6); text-align: center; color: var(--muted); }
+.odznak b { font: 600 .9rem/1.15 var(--f-display); }
+.odznak small { font-size: .72rem; line-height: 1.25; font-weight: 700; }
+.odznak .medaila { width: 52px; height: 52px; font-size: 1.6rem; background: #E4E0EE; filter: grayscale(1); opacity: .7; }
+.odznak.ma { border: 3px solid var(--ink); background: var(--paper); color: var(--ink); box-shadow: 0 4px 0 var(--ink); }
+.odznak.ma .medaila { background: radial-gradient(circle at 35% 30%, #FFF3B0, #FFC233); filter: none; opacity: 1; animation: tileBob 3s ease-in-out infinite; }
+.medaila { display: grid; place-items: center; border-radius: 50%; border: 3px solid var(--ink); }
+.nove-odmeny { display: grid; gap: 12px; width: 100%; text-align: left; }
+.odmena-karta { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 22px; border: 3px solid var(--ink); background: linear-gradient(135deg, #FFF6CC, #FFE3EE); box-shadow: 0 4px 0 var(--ink); animation: pop .6s var(--spring) both; animation-delay: var(--d, 0s); }
+.odmena-karta .medaila { flex: none; width: 64px; height: 64px; font-size: 2rem; background: radial-gradient(circle at 35% 30%, #FFF3B0, #FFC233); }
+.odmena-karta .mini-av { width: 64px; }
+.odmena-karta > div { display: grid; }
+.odmena-karta b { font: 700 1.25rem/1.15 var(--f-display); color: #D06A00; }
+.odmena-karta span:not(.medaila):not(.mini-av) { font-weight: 800; }
+.av-opt { position: relative; }
+.av-opt.zamknute > svg { filter: grayscale(.85); opacity: .55; }
+.av-opt.zamknute::after { content: "🔒 " attr(data-cena); position: absolute; inset: auto 0 10% 0; text-align: center; font: 700 .8rem/1 var(--f-display); color: #fff; text-shadow: 0 1px 0 var(--ink), 0 0 4px var(--ink); }
+.av-opt.farba.zamknute { filter: saturate(.4); }
+.av-opt.farba.zamknute::after { inset: auto 0 22% 0; }
+.av-opt.trasie { animation: shake .4s; }
+
+/* Režim do auta: tmavšie farby (neoslňujú), veľké písmo a tlačidlá */
+body.auto-rezim { background-color: #1D2557; }
+body.auto-rezim .blobs { opacity: .3; }
+.auto { display: grid; gap: 16px; color: #fff; padding-top: 4px; }
+.auto-top { display: flex; align-items: center; justify-content: space-between; }
+.auto .frame { border-color: #0E1330; box-shadow: 0 6px 0 #0E1330; }
+.auto .ib { color: var(--ink); }
+.auto-scena svg { aspect-ratio: 2 / 1; }
+.auto-t { margin: 0; font: 700 1.9rem/1.1 var(--f-display); text-wrap: balance; }
+.auto-body { display: grid; gap: 12px; justify-items: start; min-height: 10em; align-content: start; }
+.auto-text { margin: 0; font: 700 1.45rem/1.5 var(--f-body); }
+.auto-text .minula { opacity: .6; }
+.auto-text .teraz { scroll-margin: 80px 0 150px; color: #FFE27A; background: rgb(255 210 63 / .16); border-radius: 8px; box-shadow: 0 0 0 4px rgb(255 210 63 / .16); }
+.auto-cas { display: flex; align-items: center; gap: 12px; font: 700 1.25rem/1.2 var(--f-display); color: #FFE27A; }
+.odpocet-kruh { position: relative; width: 64px; height: 64px; display: grid; place-items: center; }
+.odpocet-kruh svg { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.odpocet-kruh circle { fill: none; stroke: rgb(255 255 255 / .2); stroke-width: 7; }
+.odpocet-kruh .ostava { stroke: #FFD23F; stroke-linecap: round; stroke-dasharray: 170; animation: odpocet var(--s) linear forwards; }
+.odpocet-kruh b { position: relative; font-size: 1.4rem; }
+@keyframes odpocet { to { stroke-dashoffset: 170; } }
+.auto-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.auto-dots i { width: 10px; height: 10px; border-radius: 50%; background: rgb(255 255 255 / .22); transition: transform .3s; }
+.auto-dots i.hotovo { background: #2FBF71; }
+.auto-dots i.teraz { background: #FFD23F; transform: scale(1.45); }
+.auto-ovl { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2; display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: center; gap: 14px; }
+.auto-btn { display: grid; place-items: center; align-content: center; gap: 3px; height: 84px; border-radius: 24px; border: 3px solid #0E1330; background: #fff; color: var(--ink); font: 700 .95rem/1 var(--f-display); box-shadow: 0 5px 0 #0E1330; }
+.auto-btn svg { width: 34px; height: 34px; fill: #8FD3FF; stroke: var(--ink); stroke-width: 3.5; stroke-linejoin: round; }
+.auto-btn.velke { height: 104px; font-size: 1.05rem; background: var(--sun); }
+.auto-btn.velke svg { width: 46px; height: 46px; fill: #fff; }
+.auto-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #0E1330; }
+.auto-prepinac { display: flex; align-items: center; gap: 10px; font-weight: 800; color: rgb(255 255 255 / .85); }
+.auto-prepinac input { width: 26px; height: 26px; accent-color: #2FBF71; }
+.auto-koniec { justify-items: center; text-align: center; }
+.auto-koniec .auto-top, .auto-koniec .btn, .auto-koniec .nove-odmeny { width: 100%; }
+.auto-koniec .earn, .auto-koniec .nove-odmeny { color: var(--ink); }
+.auto-odpocet { margin: 0; color: #FFE27A; font-weight: 800; }
+.auto-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; text-align: left; border-radius: 24px; border: 3px solid var(--ink); background: linear-gradient(135deg, #2E3A87, #4C7DFF); color: #fff; box-shadow: var(--sh); }
+.auto-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.auto-karta > div { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.auto-karta b { font: 700 1.35rem/1.15 var(--f-display); text-shadow: 0 2px 0 var(--ink); }
+.auto-karta small { font-weight: 800; opacity: .92; }
+.auto-ikona { flex: none; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--ink); background: #fff; font-size: 2rem; animation: tileBob 2.6s ease-in-out infinite; }
+.auto-play { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); color: var(--ink); font-size: 1.4rem; animation: pulse 1.6s ease-in-out infinite; }
+.btn.auto-mini { background: #2E3A87; }
+
+/* Kreslené ikony */
+.ib svg { display: block; width: 22px; height: 22px; margin: auto; }
+.iko-x { fill: none; stroke: var(--ink); stroke-width: 7; stroke-linecap: round; }
+.auto-chip svg { width: 26px; height: 18px; margin-right: 4px; vertical-align: -4px; }
+.auto-ikona svg { width: 46px; height: 32px; }
+.auto-play svg { width: 26px; height: 26px; margin-left: 3px; fill: #fff; stroke: var(--ink); stroke-width: 4; stroke-linejoin: round; }
+.btn.auto-mini { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn.auto-mini svg { flex: none; width: 40px; height: 28px; }
+
+/* Výber hlasu v profile */
+.hlasy { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 8px; }
+.hlas { display: grid; gap: 2px; padding: 10px 12px; text-align: left; border: 3px solid var(--ink); border-radius: 16px; background: var(--paper); box-shadow: 0 3px 0 var(--ink); }
+.hlas small { color: var(--muted); font-weight: 800; }
+.hlas[aria-pressed="true"] { background: #D9F8E6; animation: jelly .5s; }
+.rada { margin: 8px 0 0; padding: 10px 12px; border: 2px dashed var(--ink); border-radius: 14px; background: #FFF6D6; font-weight: 700; }
+
+/* Hry */
+.hry { display: grid; gap: 14px; }
+.hra-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px; text-align: left; border: 3px solid var(--ink); border-radius: 24px; background: var(--paper); box-shadow: var(--sh); }
+.hra-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.hra-obr { flex: none; display: grid; place-items: center; width: 92px; height: 76px; border: 3px solid var(--ink); border-radius: 18px; background: var(--c); }
+.hra-obr svg { width: 80px; height: 64px; }
+.hra-karta:not(.zamknuta) .hra-obr svg { animation: tileBob 2.6s ease-in-out infinite; }
+.hra-karta.zamknuta .hra-obr { filter: grayscale(1); opacity: .5; }
+.hra-info { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.hra-info b { font: 700 1.3rem/1.15 var(--f-display); }
+.hra-info small { color: var(--muted); font-weight: 700; line-height: 1.3; }
+.hra-info .chip { justify-self: start; }
+.zamok { color: var(--muted); font-weight: 800; font-size: .92rem; }
+.hra-mini { flex: none; display: grid; place-items: center; width: 58px; height: 50px; border: 3px solid var(--ink); border-radius: 14px; background: var(--c); }
+.hra-mini svg { width: 50px; height: 40px; }
+.hra { display: grid; gap: 14px; padding-top: 4px; }
+.hra-top { display: flex; align-items: center; gap: 10px; }
+.hra-nazov { flex: 1; min-width: 0; font: 700 1.35rem/1.1 var(--f-display); }
+.hra-pomoc { text-align: center; font-size: .92rem; }
+.hra-pomoc svg { width: 18px; height: 18px; vertical-align: -3px; }
+.hra-vysledok { display: grid; justify-items: center; gap: 10px; text-align: center; animation: up .5s var(--spring) both; }
+.hra-vysledok .win-owl { width: 120px; }
+.hra-vysledok .tests { width: 100%; }
+/* pexeso */
+.pexeso { display: grid; grid-template-columns: repeat(var(--st, 4), 1fr); gap: 8px; }
+.pex { aspect-ratio: 1; padding: 0; border: 0; background: none; perspective: 600px; }
+.pex-in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .45s var(--spring); }
+.pex.otocena .pex-in { transform: rotateY(180deg); }
+.pex-rub, .pex-lic { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 0 3px 0 var(--ink); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.pex-rub { background: repeating-linear-gradient(45deg, #B36BFF 0 9px, #A057F0 9px 18px); }
+.pex-rub svg { width: 48%; height: 48%; }
+.pex-lic { transform: rotateY(180deg); background: #fff; }
+.pex-lic svg { display: block; width: 100%; height: 100%; }
+.pex.najdena .pex-lic { box-shadow: 0 0 0 4px var(--grass), 0 3px 0 var(--ink); }
+.pex.najdena .pex-in { animation: okPop .5s; }
+/* chytaj hviezdičky */
+.nebo { position: relative; height: min(60vh, 480px); overflow: hidden; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh);
+  background: radial-gradient(2px 2px at 18% 24%, #fff, transparent), radial-gradient(2px 2px at 72% 14%, #fff, transparent), radial-gradient(2px 2px at 44% 66%, #fffa, transparent),
+    radial-gradient(2px 2px at 86% 78%, #fffa, transparent), radial-gradient(circle at 30% 20%, #3B4AA8, #1D2557 72%); }
+.hv { position: absolute; width: 66px; height: 66px; padding: 0; border: 0; background: none; animation: pop .3s var(--spring) both; }
+.hv svg { width: 100%; height: 100%; pointer-events: none; }
+.hv.hviezda svg { animation: tileBob 1.2s ease-in-out infinite; }
+.hv.velka { width: 82px; height: 82px; }
+.hv.velka svg { animation: spin 3s linear infinite; }
+.hv.burka { width: 74px; height: 66px; }
+.hv.prec { animation: hvPrec .25s forwards; }
+@keyframes hvPrec { to { transform: scale(0); opacity: 0; } }
+.hv-plus { position: absolute; margin: 14px 0 0 14px; font: 800 1.9rem/1 var(--f-display); color: #FFE27A; text-shadow: 0 2px 0 var(--ink); pointer-events: none; animation: hvPlus .7s forwards; }
+.hv-plus.minus { color: #FF9EA1; }
+@keyframes hvPlus { to { transform: translateY(-44px); opacity: 0; } }
+.hv-start { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 2px; width: 150px; height: 150px; margin: auto; border: 4px solid var(--ink); border-radius: 50%; background: var(--sun); box-shadow: 0 6px 0 var(--ink); font: 700 1.4rem/1 var(--f-display); animation: pulse 1.6s ease-in-out infinite; }
+.hv-start svg { width: 58px; height: 58px; fill: #fff; stroke: var(--ink); stroke-width: 3.5; stroke-linejoin: round; }
+/* skladačka */
+.sklad { display: grid; grid-template-columns: repeat(var(--sl), 1fr); gap: 5px; aspect-ratio: 16 / 9; padding: 5px; border: 3px solid var(--ink); border-radius: 18px; background: var(--ink); box-shadow: var(--sh); transition: gap .5s, padding .5s; }
+.diel { position: relative; overflow: hidden; padding: 0; border: 0; border-radius: 8px; background: #fff; transition: border-radius .5s; }
+.diel-obr { position: absolute; left: calc(var(--x) * -100%); top: calc(var(--y) * -100%); width: calc(var(--sl) * 100%); height: calc(var(--ri) * 100%); pointer-events: none; }
+.diel-obr svg { display: block; width: 100%; height: 100%; }
+.diel.sedi::after, .diel.vybraty::before { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 3px var(--grass); }
+.diel.vybraty { z-index: 1; animation: jelly .45s; }
+.diel.vybraty::before { box-shadow: inset 0 0 0 5px var(--sun), inset 0 0 0 7px var(--ink); }
+.sklad.hotova { gap: 0; padding: 0; }
+.sklad.hotova .diel { border-radius: 0; }
+.sklad.hotova .diel::after { display: none; }
+
+/* Prehľad pre rodiča */
+.prehlad { display: grid; gap: 8px; }
+.prehlad ul { display: grid; gap: 6px; margin: 0 0 6px; padding: 0; list-style: none; }
+.prehlad li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 14px; background: var(--soft); }
+.prehlad li > span:nth-child(2) { flex: 1; min-width: 0; }
+.prehlad li small { display: block; color: var(--muted); font-weight: 800; }
+/* hádaj tému */
+.hadaj { display: grid; gap: 12px; }
+.hadaj-obr svg { display: block; width: 100%; aspect-ratio: 16 / 9; }
+.hadaj-otazka { margin: 0; text-align: center; font: 700 1.25rem/1.2 var(--f-display); }
+.hadaj-moz { display: grid; gap: 10px; }
+.btn.hadaj-btn { font-size: 1.05rem; }
+.btn.hadaj-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
+.btn.hadaj-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+/* bubliny s počtami */
+.priklad { text-align: center; font: 700 2.4rem/1.1 var(--f-display); }
+.more { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, #8ED6FF); }
+.bublina { position: absolute; display: grid; place-items: center; width: 84px; height: 84px; padding: 0; border: 3px solid var(--ink); border-radius: 50%; color: var(--ink); font: 800 1.9rem/1 var(--f-display);
+  background: radial-gradient(circle at 32% 28%, #fff 0 10%, rgb(255 255 255 / .5) 11% 26%, transparent 27%), radial-gradient(circle at 50% 60%, #C8F1FF, #73C6FF); box-shadow: 0 4px 0 rgb(43 34 64 / .3);
+  animation: pop .35s var(--spring) both, tileBob 2.4s ease-in-out var(--d, 0s) infinite; }
+.more.styri .bublina { width: 74px; height: 74px; font-size: 1.6rem; }
+.bublina.zle { animation: shake .4s; background: #FFC2C4; }
+.bublina.praskla { animation: prask .3s forwards; pointer-events: none; }
+@keyframes prask { to { transform: scale(1.6); opacity: 0; } }
+
+/* karta odznakov v profile */
+.odznaky-karta { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; }
+.odznaky-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.medaila.velka { flex: none; width: 64px; height: 64px; font-size: 2rem; background: radial-gradient(circle at 35% 30%, #FFF3B0, #FFC233); animation: tileBob 3s ease-in-out infinite; }
+.ok-info { display: grid; gap: 5px; flex: 1; min-width: 0; }
+.ok-info b { font: 700 1.3rem/1.1 var(--f-display); }
+.ok-info small { color: var(--muted); font-weight: 800; }
+.posledne { display: flex; flex-wrap: wrap; gap: 6px; }
+.medaila.mala { width: 34px; height: 34px; font-size: 1.05rem; border-width: 2px; background: #FFF3B0; }
+.sipka { flex: none; font: 700 2.2rem/1 var(--f-display); color: var(--muted); }
+
+/* text na svetlých štítkoch hier a odznakov musí byť tmavý */
+.hra-info .chip, .hra-top .chip { color: var(--ink); text-shadow: none; }
+/* opakuj po mne */
+.simon-stav { margin: 0; min-height: 1.4em; text-align: center; font: 700 1.35rem/1.2 var(--f-display); }
+.simon { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px; aspect-ratio: 1; margin: 0 auto; }
+.pad { display: grid; place-items: center; padding: 0; border: 4px solid var(--ink); border-radius: 30px; background: var(--c); box-shadow: 0 6px 0 var(--ink); opacity: .5; transition: opacity .12s, transform .12s; }
+.pad svg { width: 48%; height: 48%; }
+.pad.svieti { opacity: 1; transform: scale(1.05); box-shadow: 0 0 0 6px #fff, 0 0 34px var(--c), 0 6px 0 var(--ink); }
+.simon .hv-start { z-index: 2; width: 124px; height: 124px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="blobs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<header class="top" id="top">
+  <div class="gut">
+    <div class="hi"><button class="av" id="av" data-deti aria-label="Zmeniť dieťa"></button><div><small>Svet za 3 minúty</small><b id="pozdrav">Ahoj!</b></div></div>
+    <div class="top-r"><button class="snd" id="snd" aria-label="Zvuky" aria-pressed="true">🔊</button><span class="stars" id="stars" aria-label="Body"><span id="star-ico"></span><span id="body">0</span></span></div>
+  </div>
+</header>
+
+<main id="main" class="gut"></main>
+
+<nav class="nav" id="nav" aria-label="Menu">
+  <div class="gut">
+    <button id="nav-domov" data-go="domov" style="--nc:#FFD23F"><span class="ni"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8.5a1 1 0 0 1-1 1h-4.5V15h-5v5.5H5a1 1 0 0 1-1-1z"/></svg></span>Domov</button>
+    <button id="nav-temy" data-go="temy" style="--nc:#8FD3FF"><span class="ni"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg></span>Témy</button>
+    <button id="nav-hry" data-go="hry" style="--nc:#B6F0C8"><span class="ni"><svg viewBox="0 0 24 24"><path d="M7 8h10a5 5 0 0 1 4.8 6.3l-1 3.8a2.6 2.6 0 0 1-4.4 1.1L14 17h-4l-2.4 2.2a2.6 2.6 0 0 1-4.4-1.1l-1-3.8A5 5 0 0 1 7 8z"/><path d="M7.5 11v4M5.5 13h4"/><path d="M15.5 12h.01M17.5 14h.01"/></svg></span>Hry</button>
+    <button id="nav-ja" data-go="ja" style="--nc:#FFB3D1"><span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg></span>Ja</button>
+  </div>
+</nav>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="temy.js"></script>
+<script src="obrazky.js"></script>
+<script>
+const VERZIA_APPKY = 13; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
+const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
+const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
+const EMBG = ['#FFF0B3', '#D6E6FF', '#FFD9EA'];
+const TBG = ['#D6E6FF', '#D9F8E6', '#FFE3C7'];
+const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovný!', 'Bomba!'];
+const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Pokrok dieťaťa ukladá Cloud (modul Firebase dole) do jeho profilu; v telefóne ostávajú len nastavenia
+const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby'];
+const S = {
+  get(k, d) { try { const v = localStorage.getItem('svet3:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) {
+    if (SYNC.includes(k)) { if (window.Cloud && !window.Cloud.ticho) window.Cloud.naplanuj(); return; }
+    try { localStorage.setItem('svet3:' + k, JSON.stringify(v)); } catch (e) {}
+  },
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* Zvuky: všetky sa skladajú priamo v prehliadači, nič sa nesťahuje */
+const Zvuk = (() => {
+  let ctx = null, out = null, on = S.get('zvuk', true);
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let sposob = S.get('zvuk-sposob', 'web'); // na iPhone: 'web' (Web Audio) alebo 'subor' (krátke súbory)
+  const D = { chyba: '', slucka: 'nespustená', posledny: '' };
+
+  function ac() {
+    if (!on) return null;
+    try {
+      if (!ctx) {
+        const C = window.AudioContext || window.webkitAudioContext;
+        if (!C) { D.chyba = 'Web Audio v prehliadači chýba'; return null; }
+        ctx = new C();
+        const comp = ctx.createDynamicsCompressor();
+        out = ctx.createGain(); out.gain.value = .75;
+        out.connect(comp); comp.connect(ctx.destination);
+        const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
+      }
+      if (ctx.state !== 'running') {
+        // prerušený zvuk skúsime prebudiť; keď sa to do chvíle nepodarí, pri ďalšom ťuknutí vytvoríme nový
+        const c = ctx;
+        try { const p = c.resume(); if (p) p.catch(e => { D.chyba = 'resume: ' + e.name; }); } catch (e) { D.chyba = 'resume: ' + e.name; }
+        setTimeout(() => { if (c === ctx && c.state !== 'running') { try { c.close(); } catch (e) {} ctx = null; } }, 800);
+      }
+      return ctx;
+    } catch (e) { D.chyba = 'Web Audio: ' + e.name; ctx = null; return null; }
+  }
+  function tone(c, f, t, d, type = 'sine', v = .2, f2) {
+    const o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + t;
+    o.type = type; o.frequency.setValueAtTime(f, t0);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + d);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .012); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+    o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + d + .03);
+  }
+  function sum(c, t, d, v, f1, f2) {
+    const len = Math.floor(c.sampleRate * d), buf = c.createBuffer(1, len, c.sampleRate), ch = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+    const s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime + t;
+    s.buffer = buf; fl.type = 'bandpass'; fl.Q.value = 1.4;
+    fl.frequency.setValueAtTime(f1, t0); fl.frequency.exponentialRampToValueAtTime(f2, t0 + d);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + d * .3); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+    s.connect(fl); fl.connect(g); g.connect(out); s.start(t0); s.stop(t0 + d);
+  }
+  const zvuky = {
+    tap: c => tone(c, 520, 0, .07, 'triangle', .16, 900),
+    pop: c => tone(c, 300, 0, .1, 'sine', .3, 1200),
+    boing: c => { tone(c, 130, 0, .38, 'sine', .32, 560); tone(c, 260, 0, .25, 'triangle', .07, 1000); },
+    whoosh: c => sum(c, 0, .32, .28, 300, 3500),
+    start: c => { sum(c, 0, .25, .18, 400, 2500); [523, 659, 784, 1047, 1319].forEach((f, i) => tone(c, f, .05 + i * .055, .16, 'square', .06)); },
+    ok: c => { [659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(c, f, i * .07, .24, 'triangle', .22)); tone(c, 2093, .3, .4, 'sine', .08); },
+    coin: c => { tone(c, 988, 0, .08, 'square', .07); tone(c, 1319, .07, .34, 'square', .07); },
+    bad: c => { tone(c, 311, 0, .18, 'sawtooth', .1, 233); tone(c, 233, .17, .36, 'sawtooth', .1, 110); },
+    star: c => { tone(c, 880, 0, .2, 'triangle', .22, 1760); tone(c, 1760, .08, .3, 'sine', .1, 2637); },
+    win: c => {
+      [392, 523.25, 659.25, 783.99, 659.25, 783.99].forEach((f, i) => tone(c, f, i * .11, .15, 'square', .08));
+      [1046.5, 1318.5, 1568].forEach(f => tone(c, f, .68, .9, 'triangle', .13));
+      for (let i = 0; i < 10; i++) tone(c, 1800 + Math.random() * 2200, .75 + i * .07, .1, 'sine', .06);
+    },
+    hoot: c => [0, .34].forEach(t => { tone(c, 440, t, .26, 'sine', .32, 350); tone(c, 880, t, .22, 'sine', .05, 700); }),
+    tick: c => tone(c, 1300 + Math.random() * 400, 0, .04, 'square', .035),
+    heart: c => { tone(c, 660, 0, .1, 'sine', .22, 990); tone(c, 990, .09, .2, 'sine', .2, 1480); },
+    bum: c => { tone(c, 160, 0, .3, 'sine', .35, 50); sum(c, 0, .35, .25, 2500, 400); },
+    ton0: c => tone(c, 330, 0, .42, 'triangle', .34), ton1: c => tone(c, 392, 0, .42, 'triangle', .34),
+    ton2: c => tone(c, 494, 0, .42, 'triangle', .34), ton3: c => tone(c, 587, 0, .42, 'triangle', .34),
+  };
+
+  // --- iPhone ---
+  function wav(d, sr) {
+    const n = d.length, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+    const s = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    s(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); s(8, 'WAVE'); s(12, 'fmt '); v.setUint32(16, 16, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true);
+    v.setUint16(32, 2, true); v.setUint16(34, 16, true); s(36, 'data'); v.setUint32(40, n * 2, true);
+    for (let i = 0; i < n; i++) { const x = Math.max(-1, Math.min(1, d[i])); v.setInt16(44 + i * 2, x < 0 ? x * 0x8000 : x * 0x7FFF, true); }
+    return b;
+  }
+  const dataUrl = ab => { const u = new Uint8Array(ab); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return 'data:audio/wav;base64,' + btoa(s); };
+
+  // Tichá slučka v bežnom prehrávači prepne iPhone do režimu médií: Web Audio potom hrá
+  // aj v tichom režime a telefón ho medzi zvukmi neuspí.
+  let slucka = null;
+  function zapniSlucku() {
+    try {
+      if (!slucka) {
+        slucka = document.createElement('audio');
+        slucka.setAttribute('x-webkit-airplay', 'deny');
+        slucka.loop = true; slucka.preload = 'auto';
+        slucka.src = dataUrl(wav(new Float32Array(22050), 22050));
+      }
+      if (slucka.paused) {
+        const p = slucka.play();
+        if (p) p.then(() => { D.slucka = 'hrá'; }, e => { D.slucka = 'zlyhala'; D.chyba = 'slučka: ' + e.name; });
+      }
+    } catch (e) { D.chyba = 'slučka: ' + e.name; }
+  }
+
+  // Záloha: zvuky vopred vyrobené ako krátke súbory a prehrávané ako bežné audio
+  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55 };
+  const urly = {}, banka = {};
+  const nahraj = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
+  async function priprav() {
+    const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!OC) { D.chyba = 'nedajú sa vyrobiť súbory'; return; }
+    for (const [n, d] of Object.entries(DLZKA)) {
+      try {
+        const oc = new OC(1, Math.ceil(44100 * d), 44100), comp = oc.createDynamicsCompressor(), g = oc.createGain();
+        g.gain.value = .75; g.connect(comp); comp.connect(oc.destination);
+        const zivy = out; out = g;
+        try { zvuky[n](oc); } finally { out = zivy; }
+        const buf = await nahraj(oc);
+        urly[n] = dataUrl(wav(buf.getChannelData(0), buf.sampleRate));
+      } catch (e) { D.chyba = 'súbor ' + n + ': ' + e.name; }
+    }
+  }
+  function prehravace() {
+    for (const n of Object.keys(urly)) if (!banka[n]) banka[n] = [0, 1].map(() => { const a = new Audio(); a.preload = 'auto'; a.src = urly[n]; a.load(); return a; });
+  }
+  function hrajSubor(n) {
+    if (!banka[n]) return false;
+    const zoz = banka[n], a = zoz.find(x => x.paused || x.ended) || zoz[0];
+    try { a.currentTime = 0; } catch (e) {}
+    const p = a.play(); if (p) p.catch(e => { D.chyba = 'súbor: ' + e.name; });
+    return true;
+  }
+
+  // Pri každom ťuknutí zvuk zobudíme: iPhone ho po prerušení (zamknutie, iná appka, čítanie nahlas) uspí.
+  function prebud() {
+    if (!on) return;
+    if (ios) { zapniSlucku(); prehravace(); }
+    ac();
+  }
+  ['touchend', 'click', 'keydown'].forEach(t => document.addEventListener(t, prebud, { capture: true, passive: true }));
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) return;
+    try { if (slucka) slucka.pause(); } catch (e) {}
+    D.slucka = 'pozastavená';
+    if (ctx) { try { ctx.close(); } catch (e) {} ctx = null; }
+  });
+  if (ios) priprav();
+
+  function hrajWeb(n) {
+    const c = ac();
+    if (!c) return false;
+    try { zvuky[n](c); D.posledny = 'Web Audio (' + c.state + ')'; return true; } catch (e) { D.chyba = 'hranie: ' + e.name; return false; }
+  }
+
+  return {
+    ios,
+    get sposob() { return sposob; },
+    set sposob(s) { sposob = s; S.set('zvuk-sposob', s); },
+    play(n) {
+      if (!on || !zvuky[n]) return;
+      if (ios && sposob === 'subor' && hrajSubor(n)) { D.posledny = 'súbor'; return; }
+      hrajWeb(n);
+    },
+    test(s) {
+      if (!on) this.toggle();
+      prebud();
+      if (s === 'subor') { if (hrajSubor('ok')) { D.posledny = 'súbor'; setTimeout(() => hrajSubor('coin'), 260); } else D.chyba = 'súbory ešte nie sú pripravené'; }
+      else { hrajWeb('ok'); setTimeout(() => hrajWeb('coin'), 260); }
+    },
+    get on() { return on; },
+    stav() { return ctx ? ctx.state : 'zatiaľ nespustený'; },
+    diag() {
+      return [
+        'iPhone: ' + (ios ? 'áno' : 'nie'),
+        'appka na ploche: ' + (navigator.standalone || matchMedia('(display-mode: standalone)').matches ? 'áno' : 'nie'),
+        'Web Audio: ' + (ctx ? ctx.state : '–'),
+        ios ? 'tichá slučka: ' + D.slucka : '',
+        ios ? 'súbory: ' + Object.keys(urly).length + '/' + Object.keys(DLZKA).length : '',
+        'naposledy: ' + (D.posledny || '–'),
+        'chyba: ' + (D.chyba || 'žiadna'),
+      ].filter(Boolean).join(' · ');
+    },
+    toggle() {
+      on = !on; S.set('zvuk', on);
+      if (on) { prebud(); this.play('pop'); }
+      else {
+        Object.values(banka).flat().forEach(a => { try { a.pause(); } catch (e) {} });
+        try { if (slucka) slucka.pause(); } catch (e) {}
+        try { if (ctx) ctx.suspend(); } catch (e) {}
+      }
+      return on;
+    },
+  };
+})();
+const vibruj = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
+
+/* Čítanie nahlas (hlas telefónu) */
+const Hlas = {
+  hovori: false,
+  citaj(text, btn) {
+    try {
+      const s = window.speechSynthesis;
+      if (!s) { toast('Tento telefón nevie čítať nahlas.'); return; }
+      if (this.hovori) { this.stop(); return; }
+      const u = new SpeechSynthesisUtterance(text), v = hlasSk();
+      u.lang = 'sk-SK'; u.rate = .95; if (v) u.voice = v;
+      if (!v && s.getVoices().length) toast('Slovenský hlas v telefóne chýba, číta sa iným hlasom.');
+      u.onend = u.onerror = () => { this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); };
+      this.hovori = true; if (btn) btn.classList.add('on');
+      // Safari na iPhone niekedy nič neprečíta, keď sa cancel() zavolá tesne pred speak()
+      if (s.speaking || s.pending) s.cancel();
+      s.speak(u);
+    } catch (e) { toast('Čítanie nahlas sa nepodarilo spustiť.'); }
+  },
+  stop() { try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); },
+};
+
+/* Efekty: konfety, hviezdičky, srdiečka a ohňostroj na plátne cez celú obrazovku */
+const FX = (() => {
+  const cv = document.getElementById('fx'), g = cv.getContext('2d');
+  const COL = ['#FFD23F', '#2FBF71', '#4C7DFF', '#FF9F1C', '#FF6FA8', '#B36BFF', '#16BFAE', '#FF5A5F'];
+  let P = [], beh = false, dpr = 1;
+  function size() { dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+  size(); addEventListener('resize', size);
+  function hviezda(r) { g.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } g.closePath(); }
+  function srdce(r) { g.beginPath(); g.moveTo(0, r * .9); g.bezierCurveTo(-r * 1.4, -r * .1, -r * .7, -r * 1.2, 0, -r * .45); g.bezierCurveTo(r * .7, -r * 1.2, r * 1.4, -r * .1, 0, r * .9); g.closePath(); }
+  function tick() {
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, innerWidth, innerHeight);
+    P = P.filter(p => p.t < p.life);
+    for (const p of P) {
+      p.t++; p.vy += p.g; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      g.save(); g.globalAlpha = Math.min(1, (p.life - p.t) / 20); g.translate(p.x, p.y); g.rotate(p.rot);
+      g.fillStyle = p.c; g.strokeStyle = '#2B2240'; g.lineWidth = 2;
+      if (p.k === 'star') { hviezda(p.s); g.fill(); g.stroke(); }
+      else if (p.k === 'heart') { srdce(p.s); g.fill(); g.stroke(); }
+      else if (p.k === 'dot') { g.beginPath(); g.arc(0, 0, p.s * .55, 0, 7); g.fill(); g.stroke(); }
+      else { g.scale(1, Math.cos(p.t * .25 + p.ph)); g.fillRect(-p.s * .5, -p.s * .7, p.s, p.s * 1.4); g.strokeRect(-p.s * .5, -p.s * .7, p.s, p.s * 1.4); }
+      g.restore();
+    }
+    if (P.length) requestAnimationFrame(tick); else { beh = false; g.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+  function add(p) {
+    if (tiche || P.length > 400) return;
+    P.push(Object.assign({ t: 0, rot: Math.random() * 6, vr: (Math.random() - .5) * .3, ph: Math.random() * 6, g: .25, life: 70 + Math.random() * 40, c: COL[Math.floor(Math.random() * COL.length)], s: 7 + Math.random() * 6, k: 'rect' }, p));
+    if (!beh) { beh = true; requestAnimationFrame(tick); }
+  }
+  return {
+    burst(x, y, n = 28, kinds = ['star', 'rect', 'dot'], sila = 9) { for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = sila * (.4 + Math.random() * .8); add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3, k: kinds[i % kinds.length] }); } },
+    rain(n = 120) { for (let i = 0; i < n; i++) add({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .7, vx: (Math.random() - .5) * 2, vy: 2 + Math.random() * 3, g: .05, life: 220 + Math.random() * 80 }); },
+    hearts(x, y) { for (let i = 0; i < 14; i++) { const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, v = 4 + Math.random() * 5; add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, k: 'heart', c: i % 2 ? '#FF5A5F' : '#FF6FA8', g: .12, s: 8 + Math.random() * 5 }); } },
+    ohnostroj(n = 5) { for (let i = 0; i < n; i++) setTimeout(() => { this.burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.12 + Math.random() * .35), 34, ['star', 'dot', 'rect'], 8); Zvuk.play('bum'); }, i * 420); },
+  };
+})();
+const stred = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+function letiText(x, y, text) { if (tiche) return; const s = document.createElement('span'); s.className = 'float-pts'; s.textContent = text; s.style.left = x + 'px'; s.style.top = y + 'px'; document.body.appendChild(s); setTimeout(() => s.remove(), 1200); }
+function zablesk(farba) { if (tiche) return; const d = document.createElement('div'); d.className = 'flash'; d.style.background = farba; document.body.appendChild(d); setTimeout(() => d.remove(), 600); }
+let toastT;
+function toast(text) { const t = document.getElementById('toast'); t.textContent = text; t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
+
+// pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
+const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
+const st = {
+  meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], dietaId: null, avatar: null,
+  faza: 'nacitava', upravuje: null, view: 'domov', kat: '', q: '', flow: null,
+};
+const main = document.getElementById('main');
+const byId = id => T.find(t => t.id === id);
+const teaser = t => t.m.split(/(?<=[.?!])\s/)[0];
+const bez = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const key = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const mix = n => { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const kats = () => Object.keys(KAT).map(id => ({ id, ...KAT[id], n: T.filter(t => t.k === id).length, hotovo: T.filter(t => t.k === id && st.done.includes(t.id)).length })).filter(k => k.n);
+const pre = q => st.vek === 'starsi' || q.v !== 's';
+const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
+const denCislo = () => { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); };
+const temaDna = () => T[denCislo() % T.length];
+
+function seria() {
+  let n = 0; const d = new Date();
+  if (!st.dni.includes(key(d))) d.setDate(d.getDate() - 1);
+  while (st.dni.includes(key(d))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function row(t) {
+  const k = KAT[t.k];
+  return `<button class="row" data-start="${t.id}" style="--c:${k.c}"><span class="thumb">${svg(t)}</span>
+    <span class="row-main"><span class="row-t">${t.t}</span><span class="row-s">${k.e} ${k.nazov}${st.fav.includes(t.id) ? ' · ♥' : ''}</span></span>
+    ${st.done.includes(t.id) ? '<span class="badge ok" aria-label="Hotovo">✓</span>' : '<span class="badge new">Nová</span>'}</button>`;
+}
+
+/* Brána pred appkou: prihlásenie rodiča, výber dieťaťa a tvorba postavičky */
+const vekText = v => v === 'starsi' ? '9–12 rokov' : '5–8 rokov';
+function noveUpravovanie(prve) {
+  const body = prve ? STARY.body || 0 : 0;
+  return { id: null, meno: prve ? STARY.meno : '', vek: prve ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(body), body, kat: 'vlasy', novy: true, prve, potvrd: false };
+}
+const brany = {
+  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
+  bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
+      <p class="muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>Skúsiť znova</button></div>`,
+  prihlasenie: () => {
+    // počas prihlasovania sa na tlačidle točí koliesko a tlačidlá sú zablokované (žiadne dvojité ťuknutie)
+    const C = window.Cloud || {}, p = C.pracuje || '', zam = p ? ' disabled' : '';
+    const napis = (co, text, cakaj = 'Chvíľku…') => p === co ? `<span class="koliesko"></span>${cakaj}` : text;
+    return `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1>
+      <p class="muted">Krátke témy o svete na rozhovor s deťmi. Prihláste sa, aby sa pokrok každého dieťaťa ukladal.</p>
+      <div class="card prof">
+        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Prihlásiť sa cez Google', 'Otvára sa Google…')}</button>
+        <div class="alebo"><span>alebo e-mailom</span></div>
+        <form id="prihlas-form" class="prof" novalidate>
+          <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="next">
+          <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password" enterkeyhint="go">
+          <div class="tests"><button type="submit" class="btn blue"${zam}>${napis('prihlas', 'Prihlásiť sa', 'Prihlasujem…')}</button><button type="button" class="btn ghost" data-ucet="registruj"${zam}>${napis('registruj', 'Nový účet')}</button></div>
+        </form>
+        <button type="button" class="link" data-ucet="zabudol"${zam}>Zabudli ste heslo?</button>
+        ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}
+      </div></div>`;
+  },
+  vyber: () => {
+    const C = window.Cloud, deti = C ? C.deti : [];
+    return `<div class="brana"><h1 class="h1">Kto sa dnes učí?</h1>
+      <div class="deti">${deti.map(d => `<button class="dieta" data-dieta="${d.id}"><span class="kruh-av" style="--bg:${d.avatar.pozadie}">${postavicka(d.avatar)}</span>
+          <b>${esc(d.meno)}</b><small>${vekText(d.vek)} · ⭐ ${d.body || 0}</small></button>`).join('')}
+        ${deti.length < 4 ? '<button class="dieta nove" data-nove-dieta><span class="plus">+</span><b>Pridať dieťa</b><small>najviac 4 deti</small></button>' : ''}</div>
+      <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b></p>
+      <button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa</button></div>`;
+  },
+  tvorba: () => {
+    const u = st.upravuje, maDeti = window.Cloud && window.Cloud.deti.length;
+    return `<div class="brana tvorba"><h1 class="h1">${u.novy ? 'Nové dieťa' : 'Moja postavička'}</h1>
+      <div class="av-wrap"><div class="av-nahlad kruh-av" id="av-nahlad" style="--bg:${u.avatar.pozadie}"><div id="av-velky">${postavicka(u.avatar)}</div></div>
+        <button class="kocka" data-nahodne aria-label="Náhodná postavička">🎲</button></div>
+      <div class="card prof">
+        <label class="lbl" for="meno-dietata">Meno</label>
+        <input id="meno-dietata" class="input" maxlength="20" placeholder="Napríklad Emka" autocomplete="off">
+        <span class="lbl">Vek</span>
+        <div class="seg2"><button data-uvek="mladsi" aria-pressed="${u.vek === 'mladsi'}">5–8 rokov</button><button data-uvek="starsi" aria-pressed="${u.vek === 'starsi'}">9–12 rokov</button></div>
+      </div>
+      <div class="chips av-tabs" id="av-tabs">${avTaby()}</div>
+      <div class="av-moznosti" id="av-moznosti">${avMoznosti()}</div>
+      <button class="btn wide cta" data-ulozit-dieta>Uložiť ✓</button>
+      ${u.novy ? '' : u.potvrd
+        ? `<div class="card prof potvrd"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="muted">Body a prebraté témy tohto dieťaťa sa stratia.</p>
+            <div class="tests"><button class="btn red" data-zmazat-ano>Áno, odstrániť</button><button class="btn ghost" data-zmazat-nie>Nie</button></div></div>`
+        : '<button class="link center" data-zmazat>Odstrániť tento profil</button>'}
+      ${maDeti ? '<button class="btn ghost wide" data-spat>Späť</button>' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>'}</div>`;
+  },
+};
+function avTaby() { return AV_KAT.map(([k, n]) => `<button class="chip" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}" style="--c:#4C7DFF">${n}</button>`).join(''); }
+// zamknutý diel: dieťa ešte nemá dosť bodov (diel, ktorý už má na sebe, ostáva voľný)
+const zamok = (k, v) => cenaDielu(k, v) > (st.upravuje.body || 0) && st.upravuje.avatar[k] !== v ? ' zamknute' : '';
+function avMoznosti() {
+  const u = st.upravuje, k = u.kat, farba = AV_FARBY.includes(k);
+  return AV[k].map(v => farba
+    ? `<button class="av-opt farba${zamok(k, v)}" data-cena="${cenaDielu(k, v)}" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--f:${v}" aria-label="farba"></button>`
+    // pri účese bez čiapky, inak by pod ňou všetky účesy vyzerali rovnako
+    : `<button class="av-opt kruh-av${zamok(k, v)}" data-cena="${cenaDielu(k, v)}" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--bg:${u.avatar.pozadie}" aria-label="${v}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</button>`).join('');
+}
+function renderBrana() {
+  document.body.classList.remove('tinted');
+  main.classList.add('anim');
+  main.innerHTML = brany[st.faza]();
+  ocisluj();
+  if (st.faza === 'prihlasenie') {
+    // tlačidlo „Prihlásiť“ na klávesnici odošle formulár; z e-mailu sa skočí na heslo
+    const form = document.getElementById('prihlas-form'), em = document.getElementById('email'), he = document.getElementById('heslo');
+    em.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); he.focus(); } });
+    form.addEventListener('submit', e => {
+      e.preventDefault(); he.blur();
+      if (window.Cloud) window.Cloud.akcia('prihlas', em.value.trim(), he.value); else toast('Prihlásenie sa ešte načítava, skúste o chvíľu.');
+    });
+  }
+  if (st.faza === 'tvorba') {
+    const inp = document.getElementById('meno-dietata');
+    inp.value = st.upravuje.meno;
+    inp.addEventListener('input', () => { st.upravuje.meno = inp.value; });
+  }
+}
+// po zmene dielu prekreslíme len náhľad a možnosti, stránka neskáče
+function obnovTvorbu() {
+  const u = st.upravuje, n = document.getElementById('av-nahlad');
+  document.getElementById('av-velky').innerHTML = postavicka(u.avatar);
+  n.style.setProperty('--bg', u.avatar.pozadie);
+  document.getElementById('av-moznosti').innerHTML = avMoznosti();
+  document.getElementById('av-tabs').innerHTML = avTaby();
+  n.classList.remove('hopni'); void n.offsetWidth; n.classList.add('hopni');
+}
+function tvorbaKlik(b, d) {
+  const u = st.upravuje;
+  if (d.avkat) { u.kat = d.avkat; Zvuk.play('tap'); obnovTvorbu(); return true; }
+  if (d.avvol) {
+    const cena = cenaDielu(u.kat, d.avvol);
+    if (cena > (u.body || 0) && u.avatar[u.kat] !== d.avvol) {
+      Zvuk.play('tap'); toast(`🔒 Odomkne sa pri ${cena} bodoch. Chýba ešte ${cena - (u.body || 0)} ⭐`);
+      b.classList.remove('trasie'); void b.offsetWidth; b.classList.add('trasie'); return true;
+    }
+    u.avatar[u.kat] = d.avvol; Zvuk.play('pop'); obnovTvorbu(); return true;
+  }
+  if (d.nahodne !== undefined) { u.avatar = nahodnyAvatar(u.body); Zvuk.play('boing'); obnovTvorbu(); const [x, y] = stred(b); FX.burst(x, y, 16, ['star', 'dot'], 6); return true; }
+  if (d.uvek) { u.vek = d.uvek; Zvuk.play('pop'); document.querySelectorAll('[data-uvek]').forEach(x => x.setAttribute('aria-pressed', x.dataset.uvek === u.vek)); return true; }
+  if (d.ulozitDieta !== undefined) {
+    u.meno = u.meno.trim();
+    if (!u.meno) { Zvuk.play('bad'); toast('Napíšte meno dieťaťa.'); document.getElementById('meno-dietata').focus(); return true; }
+    if (!window.Cloud) { toast('Ešte sa pripája, skúste o chvíľu.'); return true; }
+    const [x, y] = stred(document.getElementById('av-nahlad'));
+    Zvuk.play('win'); FX.burst(x, y, 30); FX.rain(60);
+    window.Cloud.ulozDieta(u);
+    return true;
+  }
+  if (d.zmazat !== undefined) { u.potvrd = true; render(); return true; }
+  if (d.zmazatNie !== undefined) { u.potvrd = false; render(); return true; }
+  if (d.zmazatAno !== undefined) { Zvuk.play('bad'); window.Cloud.zmazDieta(u.id); return true; }
+  if (d.spat !== undefined) {
+    Zvuk.play('whoosh');
+    if (!u.novy && st.dietaId) { st.faza = 'appka'; st.view = 'ja'; } else st.faza = 'vyber';
+    render(); scrollTo(0, 0); return true;
+  }
+  return false;
+}
+
+/* Odznaky za úspechy: väčšinu vidno z pokroku, „Bez chyby“ a „Blesk“ sa zapíšu po kvíze */
+const bezSpojovnika = s => s.replace(/­/g, '');
+const ODZNAKY = [
+  { g: 'Témy', id: 'prva', e: '🌱', n: 'Prvý krok', p: 'Preber prvú tému', ok: x => x.temy >= 1 },
+  { g: 'Témy', id: 'temy3', e: '📗', n: 'Zvedavec', p: 'Preber 3 témy', ok: x => x.temy >= 3 },
+  { g: 'Témy', id: 'temy5', e: '🚀', n: 'Objaviteľ', p: 'Preber 5 tém', ok: x => x.temy >= 5 },
+  { g: 'Témy', id: 'temy10', e: '🧭', n: 'Cestovateľ', p: 'Preber 10 tém', ok: x => x.temy >= 10 },
+  { g: 'Témy', id: 'temy15', e: '🗺️', n: 'Prieskumník', p: 'Preber 15 tém', ok: x => x.temy >= 15 },
+  { g: 'Témy', id: 'temy20', e: '🎓', n: 'Múdra hlava', p: 'Preber 20 tém', ok: x => x.temy >= 20 },
+  { g: 'Témy', id: 'temy30', e: '🏆', n: 'Učenec', p: 'Preber 30 tém', ok: x => x.temy >= 30 },
+  { g: 'Témy', id: 'temy40', e: '🦉', n: 'Múdra sova', p: 'Preber 40 tém', ok: x => x.temy >= 40 },
+  { g: 'Témy', id: 'vsetky', e: '👑', n: 'Kráľ vedomostí', p: 'Preber všetky témy', ok: x => x.temy >= T.length },
+  { g: 'Témy', id: 'kat3', e: '🎨', n: 'Všestranný', p: 'Preber témy z 3 rôznych kategórií', ok: x => x.kat >= 3 },
+  { g: 'Témy', id: 'katvsetky', e: '🌍', n: 'Svetobežník', p: 'Preber tému z každej kategórie', ok: x => x.kat >= Object.keys(KAT).length },
+  { g: 'Témy', id: 'bezchyby', e: '🎯', n: 'Bez chyby', p: 'Odpovedz v téme všetko správne', ok: x => x.udalost === 'bezchyby' },
+  { g: 'Témy', id: 'blesk', e: '⚡', n: 'Blesk', p: 'Rýchly kvíz 5 z 5', ok: x => x.udalost === 'blesk' },
+  { g: 'Témy', id: 'auto', e: '🚗', n: 'Prvá jazda', p: 'Prejdi tému v režime do auta', ok: x => x.udalost === 'auto' },
+  { g: 'Dni a séria', id: 'seria2', e: '✨', n: 'Znova tu', p: 'Uč sa 2 dni po sebe', ok: x => x.seria >= 2 },
+  { g: 'Dni a séria', id: 'seria3', e: '🔥', n: 'Tri dni', p: 'Uč sa 3 dni po sebe', ok: x => x.seria >= 3 },
+  { g: 'Dni a séria', id: 'seria5', e: '🌈', n: 'Päť dní', p: 'Uč sa 5 dní po sebe', ok: x => x.seria >= 5 },
+  { g: 'Dni a séria', id: 'seria7', e: '☄️', n: 'Celý týždeň', p: 'Uč sa 7 dní po sebe', ok: x => x.seria >= 7 },
+  { g: 'Dni a séria', id: 'seria14', e: '🚂', n: 'Dva týždne', p: 'Uč sa 14 dní po sebe', ok: x => x.seria >= 14 },
+  { g: 'Dni a séria', id: 'seria30', e: '🌋', n: 'Celý mesiac', p: 'Uč sa 30 dní po sebe', ok: x => x.seria >= 30 },
+  { g: 'Dni a séria', id: 'dni10', e: '📅', n: 'Desať dní', p: 'Uč sa spolu 10 dní', ok: x => x.dni >= 10 },
+  { g: 'Dni a séria', id: 'dni30', e: '🗓️', n: 'Verný kamarát', p: 'Uč sa spolu 30 dní', ok: x => x.dni >= 30 },
+  { g: 'Dni a séria', id: 'rano', e: '🐦', n: 'Ranné vtáča', p: 'Preber tému pred ôsmou ráno', ok: x => x.uci && x.hodina < 8 },
+  { g: 'Dni a séria', id: 'vecer', e: '🌙', n: 'Nočná sova', p: 'Preber tému po ôsmej večer', ok: x => x.uci && x.hodina >= 20 },
+  { g: 'Dni a séria', id: 'vikend', e: '🎈', n: 'Víkendový objaviteľ', p: 'Preber tému cez víkend', ok: x => x.uci && x.vikend },
+  { g: 'Body', id: 'body50', e: '🔸', n: 'Prvé body', p: 'Získaj 50 bodov', ok: x => x.body >= 50 },
+  { g: 'Body', id: 'body100', e: '⭐', n: 'Hviezdička', p: 'Získaj 100 bodov', ok: x => x.body >= 100 },
+  { g: 'Body', id: 'body250', e: '🍀', n: 'Štvorlístok', p: 'Získaj 250 bodov', ok: x => x.body >= 250 },
+  { g: 'Body', id: 'body500', e: '🌟', n: 'Superhviezda', p: 'Získaj 500 bodov', ok: x => x.body >= 500 },
+  { g: 'Body', id: 'body1000', e: '💫', n: 'Galaxia', p: 'Získaj 1000 bodov', ok: x => x.body >= 1000 },
+  { g: 'Body', id: 'body1500', e: '🪐', n: 'Planéta', p: 'Získaj 1500 bodov', ok: x => x.body >= 1500 },
+  { g: 'Body', id: 'body2000', e: '🌌', n: 'Vesmír', p: 'Získaj 2000 bodov', ok: x => x.body >= 2000 },
+  { g: 'Hry', id: 'hra1', e: '🎮', n: 'Hráč', p: 'Dohraj prvú hru', ok: x => x.hier >= 1 },
+  { g: 'Hry', id: 'hry10', e: '🎲', n: 'Hravý', p: 'Dohraj 10 hier', ok: x => x.hier >= 10 },
+  { g: 'Hry', id: 'hry50', e: '🕹️', n: 'Herný maratón', p: 'Dohraj 50 hier', ok: x => x.hier >= 50 },
+  { g: 'Hry', id: 'hryvsetky', e: '🎪', n: 'Majster hier', p: 'Zahraj si všetky hry', ok: x => x.hrane >= HRY.length },
+  { g: 'Hry', id: 'pexeso', e: '🃏', n: 'Pexesár', p: 'Nájdi v pexese všetky dvojice', ok: x => x.hra === 'pexeso' },
+  { g: 'Hry', id: 'pexeso-genius', e: '🧠', n: 'Pamäťový génius', p: 'Pexeso len s pár chybami', ok: x => x.hra === 'pexeso' && x.hodnota <= x.pary + 4 },
+  { g: 'Hry', id: 'hadaj6', e: '👀', n: 'Bystré oko', p: 'Hádaj tému aspoň 6 z 8', ok: x => x.hra === 'hadaj' && x.hodnota >= 6 },
+  { g: 'Hry', id: 'hadaj8', e: '🔍', n: 'Detektív', p: 'Hádaj tému 8 z 8', ok: x => x.hra === 'hadaj' && x.hodnota >= 8 },
+  { g: 'Hry', id: 'hviezdy20', e: '🌠', n: 'Lovec hviezd', p: 'Chyť 20 hviezd', ok: x => x.hra === 'hviezdy' && x.hodnota >= 20 },
+  { g: 'Hry', id: 'hviezdy35', e: '🏅', n: 'Hviezdny šampión', p: 'Chyť 35 hviezd', ok: x => x.hra === 'hviezdy' && x.hodnota >= 35 },
+  { g: 'Hry', id: 'bubliny10', e: '🔢', n: 'Počtár', p: 'Vypočítaj 10 príkladov v bublinách', ok: x => x.hra === 'bubliny' && x.hodnota >= 10 },
+  { g: 'Hry', id: 'bubliny20', e: '🧮', n: 'Matematik', p: 'Vypočítaj 20 príkladov v bublinách', ok: x => x.hra === 'bubliny' && x.hodnota >= 20 },
+  { g: 'Hry', id: 'skladacka', e: '🧩', n: 'Skladačkár', p: 'Poskladaj obrázok', ok: x => x.hra === 'skladacka' },
+  { g: 'Hry', id: 'skladacka-rychlo', e: '⏱️', n: 'Rýchle prsty', p: 'Poskladaj obrázok bez zbytočných ťahov', ok: x => x.hra === 'skladacka' && x.hodnota <= x.dieliky },
+  { g: 'Hry', id: 'opakuj5', e: '🎵', n: 'Dobrá pamäť', p: 'Zopakuj 5 farieb po sebe', ok: x => x.hra === 'opakuj' && x.hodnota >= 5 },
+  { g: 'Hry', id: 'opakuj10', e: '🐘', n: 'Pamäť ako slon', p: 'Zopakuj 10 farieb po sebe', ok: x => x.hra === 'opakuj' && x.hodnota >= 10 },
+  { g: 'Rôzne', id: 'fav1', e: '💌', n: 'Prvé srdiečko', p: 'Ulož si obľúbenú tému', ok: x => x.fav >= 1 },
+  { g: 'Rôzne', id: 'zberatel', e: '💖', n: 'Zberateľ', p: 'Ulož si 3 obľúbené témy', ok: x => x.fav >= 3 },
+  { g: 'Rôzne', id: 'fav10', e: '💝', n: 'Zbierka sŕdc', p: 'Ulož si 10 obľúbených tém', ok: x => x.fav >= 10 },
+  { g: 'Rôzne', id: 'stylista', e: '👗', n: 'Módny návrhár', p: 'Obleč postavičke odomknutú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) > 0) },
+  { g: 'Rôzne', id: 'zvieratko', e: '🐾', n: 'Najlepší kamarát', p: 'Daj postavičke zvieratko', ok: x => !!x.avatar.zvieratko && x.avatar.zvieratko !== 'ziadne' },
+  { g: 'Body', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 bodov', ok: x => x.body >= 5000 },
+  { g: 'Rôzne', id: 'myticke', e: '🦄', n: 'Mýtický hrdina', p: 'Obleč postavičke mýtickú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) >= 1600) },
+  ...Object.entries(KAT).map(([k, c]) => ({
+    g: 'Majster kategórie', id: 'kat-' + k, e: c.e, n: 'Majster: ' + bezSpojovnika(c.nazov),
+    p: 'Preber všetky témy: ' + bezSpojovnika(c.nazov).toLowerCase(), ok: x => T.filter(t => t.k === k).every(t => x.done.includes(t.id)),
+  })),
+];
+function najdlhsiaSeria(dniList) {
+  const d = [...new Set(dniList)].sort();
+  let naj = 0, teraz = 0, pred = null;
+  for (const k of d) {
+    const t = new Date(k + 'T12:00:00');
+    teraz = pred && Math.round((t - pred) / 864e5) === 1 ? teraz + 1 : 1;
+    naj = Math.max(naj, teraz); pred = t;
+  }
+  return naj;
+}
+// odznaky, ktoré dieťa práve získalo; hneď sa mu zapíšu (a cez Cloud uložia)
+function noveOdznaky(udalost = '', navyse = {}) {
+  if (!st.dietaId) return [];
+  const teraz = new Date(), prebrate = st.done.filter(byId);
+  const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
+    kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
+    hier: S.get('hry-pocet-' + st.dietaId, 0), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
+  const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
+  if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
+  return nove;
+}
+function oznamOdznaky(nove) {
+  nove.forEach((o, i) => setTimeout(() => {
+    toast(`Nový odznak! ${o.e} ${o.n}`); Zvuk.play('star'); FX.burst(innerWidth / 2, innerHeight / 3, 26, ['star', 'dot']);
+  }, i * 1300));
+}
+/* Odmeny za body: diely postavičky */
+const noveOdmeny = (pred, po) => ODMENY.filter(o => o.cena > pred && o.cena <= po);
+const dalsiaOdmena = () => ODMENY.find(o => o.cena > st.body);
+function kartaDalsiaOdmena() {
+  const o = dalsiaOdmena();
+  if (!o) return `<section class="card dalsia"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</span>
+      <div><b>Všetko odomknuté! 🎉</b><small>Máš všetky odmeny pre postavičku.</small></div></section>`;
+  const pred = ODMENY.filter(x => x.cena <= st.body).pop(), od = pred ? pred.cena : 0;
+  const pct = Math.max(4, Math.round((st.body - od) / (o.cena - od) * 100));
+  return `<section class="card dalsia"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka({ ...st.avatar, [o.k]: o.v })}</span>
+      <div><small class="lbl-mala">Ďalšia odmena</small><b>Ešte ${o.cena - st.body} ⭐ a máš ${NAZVY_ODMIEN[o.kluc]}!</b>
+      <div class="bar" style="--c:#FFC233"><i style="width:${pct}%"></i></div></div></section>`;
+}
+function odmenyHtml(f) {
+  const o = f.noveOdznaky || [], r = f.noveOdmeny || [], h = f.noveHry || [];
+  if (!o.length && !r.length && !h.length) return '';
+  return `<div class="nove-odmeny">
+      ${o.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + i * .25}s"><span class="medaila">${x.e}</span><div><b>Nový odznak!</b><span>${esc(x.n)}</span></div></div>`).join('')}
+      ${r.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + i) * .25}s"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka({ ...st.avatar, [x.k]: x.v })}</span><div><b>Odomknuté!</b><span>Máš ${NAZVY_ODMIEN[x.kluc]} pre postavičku</span></div></div>`).join('')}
+      ${h.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + r.length + i) * .25}s"><span class="hra-mini" style="--c:${x.c}">${OBR_HRY[x.id]}</span><div><b>Nová hra!</b><span>${esc(x.n)}</span></div></div>`).join('')}
+      ${r.length ? `<button class="btn wide" data-upravit="${r[0].k}">✨ Obliecť postavičku</button>` : ''}
+      ${h.length ? `<button class="btn wide blue" data-hra="${h[0].id}">Hrať: ${esc(h[0].n)}</button>` : ''}</div>`;
+}
+// odznaky v profile len ako jedna karta; celá zbierka sa otvorí ťuknutím
+function kartaOdznakov() {
+  const posledne = st.odznaky.slice(-5).reverse().map(id => ODZNAKY.find(o => o.id === id)).filter(Boolean);
+  return `<button class="card odznaky-karta" data-go="odznaky"><span class="medaila velka">🏅</span>
+      <span class="ok-info"><b>Moje odznaky</b><small>${ODZNAKY.filter(o => st.odznaky.includes(o.id)).length} z ${ODZNAKY.length} · ťukni a pozri všetky</small>
+      <span class="posledne">${posledne.map(o => `<span class="medaila mala">${o.e}</span>`).join('') || '<small>Prvý odznak dostaneš za prvú tému.</small>'}</span></span><span class="sipka">›</span></button>
+    <section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
+}
+function zbierkaOdznakov() {
+  const ma = id => st.odznaky.includes(id);
+  return `<div class="hra-top"><button class="ib" data-go="ja" aria-label="Späť">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Odznaky</h1><span class="chip" style="--c:#FFC233">${ODZNAKY.filter(o => ma(o.id)).length} z ${ODZNAKY.length}</span></div>
+    ${[...new Set(ODZNAKY.map(o => o.g))].map(g => { const zoz = ODZNAKY.filter(o => o.g === g); return `<section class="sec"><h2 class="h2" style="--hc:#FFC233">${g} <span class="pocet">${zoz.filter(o => ma(o.id)).length} z ${zoz.length}</span></h2>
+      <div class="odznaky">${zoz.map(o => `<div class="odznak${ma(o.id) ? ' ma' : ''}"><span class="medaila">${ma(o.id) ? o.e : '🔒'}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small></div>`).join('')}</div></section>`; }).join('')}`;
+}
+
+/* Režim do auta: appka prečíta tému, príklad, otázky na rozhovor aj kvíz; rodič za volantom nemusí nič ťukať */
+const vetyZ = txt => txt.split(/(?<=[.!?…])\s+/).filter(Boolean);
+let drzanie = null; // obrazovka počas jazdy nezhasne
+async function drzObrazovku(zapni) {
+  try {
+    if (zapni && 'wakeLock' in navigator && !drzanie) { drzanie = await navigator.wakeLock.request('screen'); drzanie.addEventListener('release', () => { drzanie = null; }); }
+    if (!zapni && drzanie) { const d = drzanie; drzanie = null; await d.release(); }
+  } catch (e) { drzanie = null; }
+}
+// v pozadí telefón čítanie aj odpočet zastaví, preto pauza (inak by appka potichu preskakovala vety)
+document.addEventListener('visibilitychange', () => {
+  if (!st.auto) return;
+  if (!document.hidden) drzObrazovku(true);
+  else if (st.auto.stav === 'hovori' || st.auto.stav === 'caka') Auto.ovladaj('pauza');
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'auto-dalsia' && st.auto) { st.auto.pokracovat = e.target.checked; S.set('auto-pokracovat', e.target.checked); }
+});
+
+// celá téma rozložená na vety, pauzy a zvuky; segment = jedna časť (vysvetlenie, otázka, kvíz…)
+function autoPlan(t) {
+  const segs = [], kroky = [];
+  const pridaj = (e, label, vety, navyse = []) => {
+    const i = segs.length; segs.push({ e, label, i });
+    vety.forEach(text => kroky.push({ seg: i, typ: 'veta', text }));
+    navyse.forEach(k => kroky.push({ seg: i, ...k }));
+  };
+  pridaj('🚗', 'Téma', [`Téma: ${t.t}`]);
+  pridaj('📖', 'Vysvetlenie', vetyZ(t.m));
+  if (st.vek === 'starsi') pridaj('🎓', 'Pre väčšie deti', vetyZ(t.s));
+  pridaj('💡', 'Príklad zo života', ['Príklad zo života.', ...vetyZ(t.p)]);
+  t.o.forEach((o, i) => pridaj('💬', `Porozprávajte sa · ${i + 1} z ${t.o.length}`, [o], [{ typ: 'pauza', s: 12, co: 'Čas na rozhovor' }]));
+  const qs = t.z.filter(pre);
+  qs.forEach((q, i) => {
+    const moznosti = mix(q.a.length).map(j => q.a[j][1]);
+    pridaj('❓', `Kvíz · ${i + 1} z ${qs.length}`,
+      [`Otázka ${i + 1}: ${q.q}`, `Je to: ${moznosti.slice(0, -1).join(', ')}, alebo ${moznosti[moznosti.length - 1]}?`],
+      [{ typ: 'pauza', s: 8, co: 'Čas na odpoveď' }, { typ: 'veta', text: `Správna odpoveď je: ${q.a[0][1]}.` },
+        ...(q.w ? [{ typ: 'veta', text: q.w }] : []), { typ: 'zvuk', z: 'star' }]);
+  });
+  pridaj('🏁', 'Hotovo', [], [{ typ: 'koniec' }]);
+  return { segs, kroky };
+}
+function povedzAuto(text, hotovo) {
+  let hotove = false;
+  const koniec = () => { if (hotove) return; hotove = true; clearTimeout(poistka); hotovo(); };
+  const poistka = setTimeout(koniec, 3000 + text.length * 110); // niektoré telefóny koniec vety neohlásia
+  try {
+    const u = new SpeechSynthesisUtterance(text), v = hlasSk();
+    u.lang = 'sk-SK'; u.rate = .95; if (v) u.voice = v;
+    u.onend = koniec;
+    u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') koniec(); };
+    speechSynthesis.speak(u);
+  } catch (e) { koniec(); }
+}
+function dokonciAuto(t) {
+  const qn = t.z.filter(pre).length, bodyPred = st.body, dnes = key(new Date()), prvy = !st.done.includes(t.id);
+  const zisk = prvy ? qn * 10 + 10 : 0;
+  if (prvy) { st.done.push(t.id); S.set('done', st.done); }
+  zapisPrebrate(t.id);
+  st.body += zisk; S.set('body', st.body);
+  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  return { zisk, noveOdznaky: noveOdznaky('auto', { uci: true }), noveOdmeny: noveOdmeny(bodyPred, st.body), noveHry: noveHry(bodyPred, st.body) };
+}
+function dalsiaTemaAuto(tid) {
+  const i = T.findIndex(t => t.id === tid);
+  for (let n = 1; n <= T.length; n++) { const t = T[(i + n) % T.length]; if (!st.done.includes(t.id)) return t; }
+  return T[(i + 1) % T.length];
+}
+
+const Auto = {
+  start(tid) {
+    const t = byId(tid);
+    if (!t) return;
+    const spat = st.auto ? st.auto.spat : st.view;
+    const zrusene = this.zrus();
+    const { segs, kroky } = autoPlan(t);
+    st.flow = null;
+    st.auto = { tid, segs, kroky, k: 0, stav: 'hovori', gen: 0, pokracovat: S.get('auto-pokracovat', true), vysledok: null, odpocet: null, spat };
+    if (!('speechSynthesis' in window)) { st.auto.stav = 'rucne'; toast('Tento telefón nevie čítať nahlas. Text si prečítajte a ťuknite na Ďalej.'); }
+    else if (!hlasSk() && speechSynthesis.getVoices().length) toast('Slovenský hlas v telefóne chýba, číta sa iným hlasom.');
+    drzObrazovku(true);
+    render(); scrollTo(0, 0);
+    const a = st.auto; // prvé speak() musí ísť hneď z ťuknutia (iPhone), po zrušenej reči až o chvíľku
+    if (zrusene) setTimeout(() => { if (st.auto === a) this.hraj(); }, 150); else this.hraj();
+  },
+  zrus() { // zastaví reč aj odpočítavanie
+    const a = st.auto;
+    if (!a) return;
+    a.gen++; clearInterval(a.odpocet); a.odpocet = null; clearTimeout(a.neskor);
+    try { if ('speechSynthesis' in window && (speechSynthesis.speaking || speechSynthesis.pending)) { speechSynthesis.cancel(); return true; } } catch (e) {}
+    return false;
+  },
+  hraj() {
+    const a = st.auto;
+    if (!a || a.stav === 'pauza' || a.stav === 'koniec') return;
+    const krok = a.kroky[a.k];
+    if (!krok) return;
+    const gen = ++a.gen;
+    const dalej = () => { if (st.auto !== a || a.gen !== gen) return; a.k++; this.hraj(); };
+    if (krok.typ === 'koniec') { this.koniec(); return; }
+    if (a.stav === 'rucne') { obnovAuto(); return; } // bez hlasu: celý text na obrazovke, ďalej ťuknutím
+    if (krok.typ === 'veta') { a.stav = 'hovori'; obnovAuto(); povedzAuto(krok.text, dalej); }
+    else if (krok.typ === 'pauza') {
+      a.stav = 'caka'; a.zostava = krok.s; obnovAuto();
+      a.odpocet = setInterval(() => {
+        if (st.auto !== a || a.gen !== gen) return;
+        a.zostava--;
+        const el = document.getElementById('auto-sek'); if (el) el.textContent = a.zostava;
+        if (a.zostava <= 0) { clearInterval(a.odpocet); a.odpocet = null; a.stav = 'hovori'; dalej(); }
+      }, 1000);
+    } else if (krok.typ === 'zvuk') { Zvuk.play(krok.z); setTimeout(dalej, 700); }
+  },
+  koniec() {
+    const a = st.auto, t = byId(a.tid);
+    if (!a.vysledok) { a.vysledok = dokonciAuto(t); const d = dalsiaTemaAuto(t.id); a.dalsia = d && d.id; }
+    const bezHlasu = a.stav === 'rucne', v = a.vysledok, gen = ++a.gen;
+    a.stav = 'koniec'; a.zostava = null; renderAuto();
+    Zvuk.play('win'); FX.rain(80);
+    const veta = `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} bodov.` : '')
+      + v.noveOdznaky.map(o => ` Nový odznak: ${o.n}.`).join('') + v.noveOdmeny.map(r => ` Pre postavičku máš ${NAZVY_ODMIEN[r.kluc]}.`).join('') + (v.noveHry || []).map(x => ` Odomkla sa nová hra ${x.n}.`).join('')
+      + (a.pokracovat && a.dalsia ? ' O chvíľu pokračujeme ďalšou témou.' : '');
+    const pokracuj = () => {
+      if (st.auto !== a || a.gen !== gen || !a.pokracovat || !a.dalsia) return;
+      a.zostava = 10; obnovKoniecAuto();
+      a.odpocet = setInterval(() => {
+        if (st.auto !== a || a.gen !== gen) { clearInterval(a.odpocet); return; }
+        a.zostava--; obnovKoniecAuto();
+        if (a.zostava <= 0) { clearInterval(a.odpocet); a.odpocet = null; Auto.start(a.dalsia); }
+      }, 1000);
+    };
+    setTimeout(() => {
+      if (st.auto !== a || a.gen !== gen) return;
+      if (bezHlasu) pokracuj(); else povedzAuto(veta, pokracuj);
+    }, 1500);
+  },
+  ovladaj(co) {
+    const a = st.auto;
+    if (!a) return;
+    if (co === 'stop') { this.stop(true); return; }
+    if (co === 'dalsia') { if (a.dalsia) this.start(a.dalsia); return; }
+    if (a.stav === 'koniec') return;
+    if (co === 'pauza') {
+      if (a.stav === 'pauza') { a.stav = 'hovori'; this.hraj(); }
+      else if (a.stav !== 'rucne') { this.zrus(); a.stav = 'pauza'; obnovAuto(); }
+      return;
+    }
+    const seg = (a.kroky[a.k] || a.kroky[a.kroky.length - 1]).seg, zaciatok = i => a.kroky.findIndex(k => k.seg === i);
+    this.zrus();
+    if (co === 'znova') a.k = zaciatok(seg);
+    if (co === 'dalej') a.k = seg + 1 < a.segs.length ? zaciatok(seg + 1) : a.kroky.length - 1;
+    if (a.stav !== 'rucne') { a.stav = 'hovori'; obnovAuto(); a.neskor = setTimeout(() => this.hraj(), 150); } // Safari po zrušení reči potrebuje chvíľku
+    else this.hraj();
+  },
+  stop(naspat) {
+    this.zrus(); drzObrazovku(false);
+    const spat = st.auto && st.auto.spat;
+    st.auto = null; document.body.classList.remove('auto-rezim');
+    if (naspat) { st.view = spat || 'domov'; render(); scrollTo(0, 0); }
+  },
+};
+
+function textAuto(a) {
+  const krok = a.kroky[a.k] || {}, seg = krok.seg ?? a.segs.length - 1;
+  const vety = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg && k.typ === 'veta');
+  const ukaz = a.stav === 'rucne' ? vety : vety.filter(k => k.i <= a.k);
+  return ukaz.map(k => `<span class="${k.i === a.k && a.stav === 'hovori' ? 'teraz' : 'minula'}">${esc(k.text)}</span>`).join(' ');
+}
+function obnovAuto() {
+  const a = st.auto, el = id => document.getElementById(id);
+  if (!a || a.stav === 'koniec' || !el('auto-text')) return;
+  const krok = a.kroky[a.k] || {}, seg = a.segs[krok.seg ?? a.segs.length - 1];
+  el('auto-stitok').textContent = `${seg.e} ${seg.label}`;
+  el('auto-text').innerHTML = textAuto(a);
+  const teraz = el('auto-text').querySelector('.teraz'); // dlhý text: aktuálna veta ostane nad tlačidlami
+  if (teraz) teraz.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  el('auto-cas').innerHTML = a.stav === 'caka'
+    ? `<span class="odpocet-kruh"><svg viewBox="0 0 64 64" style="--s:${krok.s}s"><circle cx="32" cy="32" r="27"/><circle class="ostava" cx="32" cy="32" r="27"/></svg><b id="auto-sek">${a.zostava}</b></span><span>${krok.co}</span>`
+    : a.stav === 'pauza' ? '<span>Pozastavené. Ťuknite na Pokračovať.</span>' : '';
+  el('auto-dots').innerHTML = a.segs.map((s, i) => `<i class="${i < seg.i ? 'hotovo' : i === seg.i ? 'teraz' : ''}"></i>`).join('');
+  const p = el('auto-pauza'), stoji = a.stav === 'pauza';
+  if (p.dataset.stoji !== String(stoji)) { p.dataset.stoji = stoji; p.innerHTML = stoji ? IKO.play + '<span>Pokračovať</span>' : IKO.pauza + '<span>Pauza</span>'; }
+}
+function obnovKoniecAuto() {
+  const a = st.auto, el = document.getElementById('auto-dalsia-sek'), r = document.getElementById('auto-odpocet');
+  if (r) r.hidden = !(a && a.zostava != null);
+  if (el && a) el.textContent = a.zostava;
+}
+function renderAuto() {
+  const a = st.auto, t = byId(a.tid);
+  const hore = `<div class="auto-top"><span class="chip auto-chip" style="--c:#FF9F1C">${IKO.auto}Režim do auta</span><button class="ib" data-auto="stop" aria-label="Ukončiť">${IKO.zavriet}</button></div>`;
+  main.classList.add('anim');
+  if (a.stav === 'koniec') {
+    const v = a.vysledok, d = a.dalsia && byId(a.dalsia);
+    main.innerHTML = `<div class="auto auto-koniec">${hore}
+      <div class="win-hero"><div class="burst"></div><div class="win-owl">${owl('cheer')}</div></div>
+      <h1 class="auto-t">Výborne${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
+      <p class="auto-text">Téma „${esc(t.t)}“ je prebratá.</p>
+      ${v.zisk ? `<div class="earn">${STAR()} +${v.zisk} bodov</div>` : ''}
+      ${odmenyHtml(v)}
+      ${d ? `<button class="btn wide cta" data-auto="dalsia">▶ Ďalšia téma: ${esc(d.t)}</button>
+        <p class="auto-odpocet" id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek">10</b> s</p>` : ''}
+      <button class="btn ghost wide" data-auto="stop">Domov</button></div>`;
+    ocisluj(); return;
+  }
+  main.innerHTML = `<div class="auto">${hore}
+    <div class="frame auto-scena">${svg(t)}</div>
+    <h1 class="auto-t">${t.t}</h1>
+    <div class="auto-body"><span class="sticker sm" id="auto-stitok"></span><p class="auto-text" id="auto-text"></p><div class="auto-cas" id="auto-cas"></div></div>
+    <div class="auto-dots" id="auto-dots"></div>
+    <div class="auto-ovl"><button class="auto-btn" data-auto="znova">${IKO.znova}<span>Znova</span></button><button class="auto-btn velke" id="auto-pauza" data-auto="pauza"></button><button class="auto-btn" data-auto="dalej">${IKO.dalej}<span>Ďalej</span></button></div>
+    <label class="auto-prepinac"><input type="checkbox" id="auto-dalsia"${a.pokracovat ? ' checked' : ''}> Potom automaticky ďalšia téma</label>
+  </div>`;
+  ocisluj(); obnovAuto();
+}
+
+/* Kreslené ikony ovládania (emoji kreslí každý telefón inak a v aute sú nečitateľné) */
+const IKO = {
+  play: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 10.5v27a2.2 2.2 0 0 0 3.3 1.9l21-13.5a2.2 2.2 0 0 0 0-3.8l-21-13.5A2.2 2.2 0 0 0 17 10.5z"/></svg>',
+  pauza: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="9" width="10" height="30" rx="3.5"/><rect x="27" y="9" width="10" height="30" rx="3.5"/></svg>',
+  dalej: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 11.5v25a2.2 2.2 0 0 0 3.4 1.8l18-12.5a2.2 2.2 0 0 0 0-3.6l-18-12.5A2.2 2.2 0 0 0 8 11.5z"/><rect x="33" y="9" width="8" height="30" rx="3"/></svg>',
+  znova: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="9" width="8" height="30" rx="3"/><path d="M40 11.5v25a2.2 2.2 0 0 1-3.4 1.8l-18-12.5a2.2 2.2 0 0 1 0-3.6l18-12.5a2.2 2.2 0 0 1 3.4 1.8z"/></svg>',
+  zavriet: '<svg viewBox="0 0 48 48" aria-hidden="true" class="iko-x"><path d="M14 14l20 20M34 14 14 34"/></svg>',
+  auto: `<svg viewBox="0 0 64 44" aria-hidden="true" class="iko-auto"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M5 30v-6.5a4 4 0 0 1 3-3.9l8-2 7-8.4A5 5 0 0 1 26.8 7.5H40a5 5 0 0 1 4 2l6.3 8.2 6 1.7a4 4 0 0 1 2.9 3.9V30a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" fill="#FF5A5F"/>
+    <path d="M22 17.5l5.6-6.5H34v6.5z" fill="#BFE6FF"/><path d="M38.5 11H40l5 6.5h-6.5z" fill="#BFE6FF"/><path d="M9 24h4" stroke="#FFD23F"/>
+    <circle cx="18" cy="33" r="6.5" fill="${INK}"/><circle cx="47" cy="33" r="6.5" fill="${INK}"/>
+    <circle cx="18" cy="33" r="2.2" fill="#fff" stroke="none"/><circle cx="47" cy="33" r="2.2" fill="#fff" stroke="none"/></g></svg>`,
+};
+
+/* Hlas na čítanie: zo slovenských hlasov v telefóne vyberie najkrajší (vylepšené a „prirodzené“ znejú oveľa ľudskejšie) */
+const kvalitaHlasu = v => { const x = v.name + ' ' + v.voiceURI; return /premium|prémiov/i.test(x) ? 3 : /enhanced|vylepšen|natural|neural|online|network|wavenet|google/i.test(x) ? 2 : 0; };
+const hlasy = () => { try { return speechSynthesis.getVoices().filter(v => /^sk/i.test(v.lang)).sort((a, b) => kvalitaHlasu(b) - kvalitaHlasu(a)); } catch (e) { return []; } };
+const hlasSk = () => { const z = hlasy(), vol = S.get('hlas', ''); return z.find(v => v.voiceURI === vol) || z[0] || null; };
+const menoHlasu = v => v.name.replace(/^Microsoft\s+/i, '').replace(/\s+-\s+.*$/, '').replace(/\bOnline\b|\s*\(.*?\)/gi, '').trim() || v.name;
+const radaHlas = () => Zvuk.ios
+  ? 'Krajší hlas zadarmo: v iPhone otvorte Nastavenia → Prístupnosť → Hovorený obsah → Hlasy → Slovenčina a stiahnite hlas Laura (vylepšený). Potom appku úplne zavrite a otvorte znova.'
+  : /Android/i.test(navigator.userAgent)
+    ? 'Krajší hlas zadarmo: v Nastaveniach telefónu vyhľadajte „Prevod textu na reč“, pri službe Google stiahnite slovenčinu a vyberte hlas vo vysokej kvalite. Potom appku zavrite a otvorte znova.'
+    : 'Na počítači číta najkrajšie prehliadač Microsoft Edge (hlasy Viktória a Lukáš).';
+function hlasyHtml() {
+  if (!('speechSynthesis' in window)) return '<p class="muted">Tento telefón nevie čítať nahlas.</p>';
+  const z = hlasy(), vyb = hlasSk();
+  if (!z.length) return `<p class="muted">Slovenský hlas sa v telefóne zatiaľ nenašiel.</p><p class="rada">${radaHlas()}</p>`;
+  return `<div class="hlasy">${z.map(v => `<button class="hlas" data-hlas="${esc(v.voiceURI)}" aria-pressed="${v === vyb}"><b>${esc(menoHlasu(v))}</b><small>${kvalitaHlasu(v) ? '⭐ kvalitný' : 'základný'}</small></button>`).join('')}</div>
+    <p class="muted">Ťuknite na hlas a vypočujte si ho.</p>${kvalitaHlasu(z[0]) ? '' : `<p class="rada">${radaHlas()}</p>`}`;
+}
+try { speechSynthesis.addEventListener('voiceschanged', () => { const el = document.getElementById('hlasy'); if (el) el.innerHTML = hlasyHtml(); }); } catch (e) {}
+
+/* Hry: odomykajú sa za body z tém (hraním sa body neminú) */
+const HRY = [
+  { id: 'pexeso', n: 'Pexeso', p: 'Nájdi dvojice rovnakých obrázkov.', cena: 150, c: '#FFB3D1' },
+  { id: 'hadaj', n: 'Hádaj tému', p: 'Podľa obrázka uhádni, o ktorej téme je.', cena: 250, c: '#CDEBFF' },
+  { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 400, c: '#FFE27A' },
+  { id: 'opakuj', n: 'Opakuj po mne', p: 'Zapamätaj si, ktoré farby zasvietili, a zopakuj ich.', cena: 550, c: '#FFD6A5' },
+  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF' },
+  { id: 'skladacka', n: 'Skladačka', p: 'Poprehadzovaný obrázok poskladaj späť.', cena: 900, c: '#9FE8DF' },
+];
+const noveHry = (pred, po) => HRY.filter(h => h.cena > pred && h.cena <= po);
+const HVIEZDA = 'M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z';
+const OBLAK = `<svg viewBox="0 0 48 42" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M12 28a8 8 0 0 1-1-15.9A11 11 0 0 1 32 9a8.5 8.5 0 0 1 5 16.3A6 6 0 0 1 35 28z" fill="#8C8FA8"/><path d="M24 26l-5 8h5l-3 7 9-11h-5l3-4z" fill="#FFD23F"/><circle cx="18" cy="19" r="1.6" fill="${INK}"/><circle cx="27" cy="19" r="1.6" fill="${INK}"/><path d="M19.5 24q3-2.5 6 0" fill="none"/></g></svg>`;
+const OBR_HRY = {
+  pexeso: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="8" y="10" width="30" height="42" rx="7" fill="#B36BFF" transform="rotate(-10 23 31)"/><path d="M18 26a5 5 0 1 1 7 4.6c-1.4.7-2 1.6-2 3.4" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" transform="rotate(-10 23 31)"/><circle cx="24" cy="40" r="2" fill="#fff" stroke="none" transform="rotate(-10 23 31)"/><rect x="42" y="12" width="30" height="42" rx="7" fill="#fff" transform="rotate(8 57 33)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(44 18) scale(1.1) rotate(8 12 12)"/></g></svg>`,
+  hviezdy: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#2E3A87"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(10 10) scale(1.3)"/><path d="${HVIEZDA}" fill="#FF9F1C" transform="translate(44 28) scale(1.1)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(50 6) scale(.8)"/><circle cx="16" cy="48" r="2" fill="#fff" stroke="none"/><circle cx="36" cy="16" r="1.5" fill="#fff" stroke="none"/></g></svg>`,
+  hadaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="6" y="8" width="52" height="40" rx="6" fill="#fff"/><path d="M8 44 L22 30 L34 40 L42 34 L56 44Z" fill="#4CD07D"/><circle cx="44" cy="20" r="5" fill="#FFD23F"/><circle cx="55" cy="42" r="12" fill="#fff" fill-opacity=".55"/><path d="M64 51l9 9" stroke-width="6" stroke-linecap="round"/></g></svg>`,
+  bubliny: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3"><circle cx="24" cy="38" r="16" fill="#9FE8FF"/><circle cx="52" cy="24" r="18" fill="#C8F1FF"/><circle cx="64" cy="52" r="8" fill="#9FE8FF"/></g><text x="24" y="45" font-size="19" ${TXT} fill="${INK}">7</text><text x="52" y="31" font-size="20" ${TXT} fill="${INK}">5</text></svg>`,
+  opakuj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="14" y="6" width="24" height="24" rx="7" fill="#FF5A5F"/><rect x="42" y="6" width="24" height="24" rx="7" fill="#4C7DFF" opacity=".55"/><rect x="14" y="34" width="24" height="24" rx="7" fill="#2FBF71" opacity=".55"/><rect x="42" y="34" width="24" height="24" rx="7" fill="#FFD23F"/></g><path d="M8 4l4 4M72 4l-4 4" stroke="${INK}" stroke-width="3" stroke-linecap="round"/></svg>`,
+  skladacka: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="10" y="8" width="26" height="22" rx="5" fill="#4C7DFF"/><rect x="40" y="8" width="26" height="22" rx="5" fill="#2FBF71"/><rect x="10" y="34" width="26" height="22" rx="5" fill="#FF9F1C"/><rect x="46" y="38" width="26" height="22" rx="5" fill="#FF5A5F" transform="rotate(14 59 49)"/><path d="M58 31l3 6" stroke-dasharray="2 3"/></g></svg>`,
+};
+const rekordKluc = id => `hra-${id}-${st.dietaId || 'x'}`;
+const slovoTahy = n => n === 1 ? 'ťah' : n >= 2 && n <= 4 ? 'ťahy' : 'ťahov';
+const slovoHviezdy = n => n === 1 ? 'hviezda' : n >= 2 && n <= 4 ? 'hviezdy' : 'hviezd';
+const slovoPriklady = n => n === 1 ? 'príklad' : n >= 2 && n <= 4 ? 'príklady' : 'príkladov';
+const slovoTony = n => n === 1 ? 'farba' : n >= 2 && n <= 4 ? 'farby' : 'farieb';
+const rekordText = (id, r) => id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
+// obrázky do hier: najprv z prebratých tém, tie dieťa pozná
+const temyDoHry = n => { const d = mix(T.length).map(i => T[i]); return [...d.filter(t => st.done.includes(t.id)), ...d.filter(t => !st.done.includes(t.id))].slice(0, n); };
+const stavHry = h => h.id === 'opakuj' ? `Farieb: ${h.seq.length}` : h.id === 'hviezdy' ? `⭐ ${h.skore} · ${h.zostava} s` : h.id === 'bubliny' ? `✓ ${h.skore} · ${h.zostava} s` : h.id === 'hadaj' ? `✓ ${h.spravne} z ${h.kola.length}` : `${h.tahy} ${slovoTahy(h.tahy)}`;
+const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if (el && st.hra) el.textContent = stavHry(st.hra); };
+
+const Hra = {
+  start(id) {
+    const info = HRY.find(x => x.id === id);
+    if (!info) return;
+    if (st.body < info.cena) { toast(`🔒 ${info.n} sa odomkne pri ${info.cena} bodoch. Chýba ešte ${info.cena - st.body} ⭐`); Zvuk.play('boing'); return; }
+    this.zrus(); Hlas.stop();
+    const mal = st.vek !== 'starsi';
+    st.flow = null;
+    if (id === 'pexeso') {
+      const t = temyDoHry(mal ? 6 : 8);
+      st.hra = { id, karty: mix(t.length * 2).map(i => t[i % t.length].id), otocene: [], najdene: [], tahy: 0 };
+    } else if (id === 'hviezdy') {
+      st.hra = { id, skore: 0, zostava: 30, beh: false, mal };
+    } else if (id === 'hadaj') {
+      st.hra = { id, kola: temyDoHry(8).map(t => t.id), i: 0, spravne: 0, n: mal ? 3 : 4, odp: null };
+      st.hra.moznosti = moznostiHadaj(st.hra);
+    } else if (id === 'opakuj') {
+      st.hra = { id, seq: [], krok: 0, faza: 'start', beh: false, mal };
+    } else if (id === 'bubliny') {
+      st.hra = { id, skore: 0, zostava: 60, beh: false, mal };
+    } else {
+      const [sl, ri] = mal ? [3, 3] : [4, 3];
+      let p; do p = mix(sl * ri); while (p.every((x, i) => x === i));
+      st.hra = { id, t: temyDoHry(1)[0].id, sl, ri, p, vyber: null, tahy: 0 };
+    }
+    Zvuk.play('start'); render(); scrollTo(0, 0);
+  },
+  zrus() { const h = st.hra; if (h) { h.beh = false; clearInterval(h.casovac); clearTimeout(h.dalsia); } st.hra = null; },
+  koniec(menejJeLepsie, hodnota) {
+    const h = st.hra, kl = rekordKluc(h.id), stary = S.get(kl, null);
+    const lepsi = stary == null || (menejJeLepsie ? hodnota < stary : hodnota > stary);
+    if (lepsi && hodnota > 0) S.set(kl, hodnota);
+    S.set('hry-pocet-' + st.dietaId, S.get('hry-pocet-' + st.dietaId, 0) + 1);
+    const odznaky = noveOdznaky('', { hra: h.id, hodnota, pary: h.karty ? h.karty.length / 2 : 0, dieliky: h.p ? h.p.length : 0 });
+    h.hotovo = { hodnota, novy: lepsi && stary != null, prvy: stary == null && hodnota > 0, stary, odznaky };
+    Zvuk.play('win'); FX.ohnostroj(3); vibruj([40, 60, 40]);
+    if (h.id === 'skladacka') obnovSklad();
+    const el = main.querySelector('.hra');
+    if (!el) return;
+    el.insertAdjacentHTML('beforeend', vysledokHry(h));
+    const v = el.lastElementChild; if (v) setTimeout(() => v.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 400);
+  },
+  // Pexeso: dve otočené karty, rovnaké ostanú hore
+  pex(i, b) {
+    const h = st.hra;
+    if (!h || h.hotovo || h.zamok || h.otocene.includes(i) || h.najdene.includes(h.karty[i])) return;
+    h.otocene.push(i); b.classList.add('otocena'); Zvuk.play('tap');
+    if (h.otocene.length < 2) return;
+    h.tahy++; obnovStavHry();
+    const [a, c] = h.otocene, karty = [...main.querySelectorAll('.pex')];
+    if (h.karty[a] === h.karty[c]) {
+      h.najdene.push(h.karty[a]); h.otocene = [];
+      [a, c].forEach(j => karty[j] && karty[j].classList.add('najdena'));
+      Zvuk.play('ok'); const [x, y] = stred(b); FX.burst(x, y, 16, ['star', 'dot'], 6);
+      if (h.najdene.length * 2 === h.karty.length) h.dalsia = setTimeout(() => { if (st.hra === h) this.koniec(true, h.tahy); }, 600);
+    } else {
+      h.zamok = true;
+      h.dalsia = setTimeout(() => {
+        if (st.hra !== h) return;
+        [a, c].forEach(j => karty[j] && karty[j].classList.remove('otocena'));
+        h.otocene = []; h.zamok = false;
+      }, 1000);
+    }
+  },
+  // Chytaj hviezdičky: 30 sekúnd, hviezdy +1, veľké +3, búrka −2
+  hviezdyStart() {
+    const h = st.hra;
+    if (!h || h.id !== 'hviezdy' || h.beh || h.hotovo) return;
+    h.beh = true; Zvuk.play('start');
+    const nebo = document.getElementById('nebo'); if (nebo) nebo.innerHTML = '';
+    h.casovac = setInterval(() => {
+      if (st.hra !== h) { clearInterval(h.casovac); return; }
+      h.zostava--; obnovStavHry();
+      if (h.zostava > 0 && h.zostava <= 3) Zvuk.play('tick');
+      if (h.zostava <= 0) {
+        clearInterval(h.casovac); clearTimeout(h.dalsia); h.beh = false;
+        const n = document.getElementById('nebo'); if (n) n.querySelectorAll('.hv').forEach(x => x.remove());
+        this.koniec(false, h.skore);
+      }
+    }, 1000);
+    const dalsia = () => {
+      if (st.hra !== h || !h.beh) return;
+      this.pridajHviezdu(h);
+      const uplynulo = 30 - h.zostava;
+      h.dalsia = setTimeout(dalsia, Math.max(h.mal ? 480 : 340, (h.mal ? 800 : 650) - uplynulo * (h.mal ? 11 : 12)));
+    };
+    dalsia();
+  },
+  pridajHviezdu(h) {
+    const nebo = document.getElementById('nebo'); if (!nebo) return;
+    const r = Math.random(), typ = r < .13 ? 'velka' : r < (h.mal ? .27 : .33) ? 'burka' : 'hviezda';
+    const el = document.createElement('button');
+    el.className = 'hv ' + typ; el.dataset.hv = typ;
+    el.setAttribute('aria-label', typ === 'burka' ? 'Búrka' : 'Hviezda');
+    el.style.left = (2 + Math.random() * 74) + '%'; el.style.top = (2 + Math.random() * 74) + '%';
+    el.innerHTML = typ === 'burka' ? OBLAK : STAR(typ === 'velka' ? '#FF9F1C' : '#FFD23F');
+    nebo.appendChild(el);
+    const zivot = Math.max(900, (h.mal ? 2000 : 1500) - (30 - h.zostava) * 16);
+    setTimeout(() => { el.classList.add('prec'); setTimeout(() => el.remove(), 260); }, zivot);
+  },
+  chyt(b) {
+    const h = st.hra;
+    if (!h || !h.beh || b.classList.contains('prec')) return;
+    const typ = b.dataset.hv, body = typ === 'velka' ? 3 : typ === 'burka' ? -2 : 1;
+    h.skore = Math.max(0, h.skore + body); obnovStavHry();
+    const [x, y] = stred(b);
+    if (body > 0) { Zvuk.play(body > 1 ? 'star' : 'coin'); FX.burst(x, y, body > 1 ? 18 : 8, ['star', 'dot'], 5); }
+    else { Zvuk.play('bad'); vibruj(80); }
+    const s = document.createElement('span');
+    s.className = 'hv-plus' + (body < 0 ? ' minus' : ''); s.textContent = (body > 0 ? '+' : '−') + Math.abs(body);
+    s.style.left = b.style.left; s.style.top = b.style.top;
+    b.replaceWith(s); setTimeout(() => s.remove(), 700);
+  },
+  // Hádaj tému: obrázok a tri alebo štyri názvy tém
+  hadaj(id) {
+    const h = st.hra;
+    if (!h || h.id !== 'hadaj' || h.odp || h.hotovo) return;
+    const ok = id === h.kola[h.i];
+    h.odp = id;
+    if (ok) { h.spravne++; Zvuk.play('ok'); } else { Zvuk.play('bad'); vibruj(60); }
+    obnovStavHry(); obnovHadaj();
+    h.dalsia = setTimeout(() => {
+      if (st.hra !== h) return;
+      h.i++; h.odp = null;
+      if (h.i >= h.kola.length) { this.koniec(false, h.spravne); return; }
+      h.moznosti = moznostiHadaj(h); obnovHadaj();
+    }, ok ? 900 : 1800);
+  },
+  // Bubliny s počtami: minúta, praskni bublinu so správnym výsledkom
+  bublinyStart() {
+    const h = st.hra;
+    if (!h || h.id !== 'bubliny' || h.beh || h.hotovo) return;
+    h.beh = true; Zvuk.play('start'); this.novyPriklad(h);
+    h.casovac = setInterval(() => {
+      if (st.hra !== h) { clearInterval(h.casovac); return; }
+      h.zostava--; obnovStavHry();
+      if (h.zostava > 0 && h.zostava <= 3) Zvuk.play('tick');
+      if (h.zostava <= 0) {
+        clearInterval(h.casovac); clearTimeout(h.dalsia); h.beh = false;
+        const el = document.getElementById('bubliny'), p = document.getElementById('priklad');
+        if (el) el.innerHTML = '';
+        if (p) p.textContent = 'Čas vypršal!';
+        this.koniec(false, h.skore);
+      }
+    }, 1000);
+  },
+  novyPriklad(h) {
+    const [text, vysl] = priklad(h.mal), n = h.mal ? 3 : 4, moz = new Set([vysl]), posun = h.mal ? [1, 2, 3] : [1, 2, 3, 10];
+    while (moz.size < n) { const x = vysl + (Math.random() < .5 ? -1 : 1) * posun[Math.floor(Math.random() * posun.length)]; if (x >= 0) moz.add(x); }
+    h.vysl = vysl; h.priklad = text; h.moznosti = [...moz].sort(() => Math.random() - .5);
+    const p = document.getElementById('priklad'), el = document.getElementById('bubliny');
+    if (p) p.textContent = text + ' = ?';
+    if (el) el.innerHTML = h.moznosti.map((x, i) => `<button class="bublina" data-bub="${x}" style="left:${(3 + i * 94 / n + Math.random() * Math.max(0, 94 / n - 25)).toFixed(1)}%;top:${(8 + Math.random() * 50).toFixed(1)}%;--d:${(-Math.random() * 2).toFixed(2)}s"><span>${x}</span></button>`).join('');
+  },
+  bub(b) {
+    const h = st.hra;
+    if (!h || !h.beh || b.classList.contains('praskla')) return;
+    const [x, y] = stred(b);
+    if (Number(b.dataset.bub) === h.vysl) {
+      h.skore++; obnovStavHry(); b.classList.add('praskla');
+      Zvuk.play('pop'); setTimeout(() => Zvuk.play('coin'), 120); FX.burst(x, y, 14, ['dot', 'star'], 6);
+      clearTimeout(h.dalsia); h.dalsia = setTimeout(() => { if (st.hra === h && h.beh) this.novyPriklad(h); }, 380);
+    } else {
+      h.skore = Math.max(0, h.skore - 1); obnovStavHry(); Zvuk.play('bad'); vibruj(60);
+      b.classList.remove('zle'); void b.offsetWidth; b.classList.add('zle');
+      const m = document.createElement('span'); m.className = 'hv-plus minus'; m.textContent = '−1';
+      m.style.left = b.style.left; m.style.top = b.style.top; b.parentNode.appendChild(m); setTimeout(() => m.remove(), 700);
+    }
+  },
+  // Opakuj po mne: farby zasvietia v poradí a dieťa ich zopakuje, každé kolo o jednu dlhšie
+  simonStart() {
+    const h = st.hra;
+    if (!h || h.id !== 'opakuj' || h.beh || h.hotovo) return;
+    h.beh = true; Zvuk.play('start');
+    const s = document.querySelector('.simon .hv-start'); if (s) s.remove();
+    h.seq = [Math.floor(Math.random() * 4)];
+    h.dalsia = setTimeout(() => { if (st.hra === h) this.ukaz(h); }, 700);
+  },
+  ukaz(h) {
+    h.faza = 'ukazuje'; h.krok = 0; obnovStavHry(); simonStav('Pozeraj a počúvaj…');
+    const t = Math.max(h.mal ? 480 : 380, (h.mal ? 760 : 620) - h.seq.length * 15);
+    let i = 0;
+    clearInterval(h.casovac);
+    h.casovac = setInterval(() => {
+      if (st.hra !== h) { clearInterval(h.casovac); return; }
+      if (i >= h.seq.length) { clearInterval(h.casovac); h.faza = 'hra'; simonStav('Teraz ty!'); return; }
+      zasviet(h.seq[i++], t * .6);
+    }, t);
+  },
+  pad(n) {
+    const h = st.hra;
+    if (!h || h.id !== 'opakuj' || h.faza !== 'hra') return;
+    zasviet(n, 260);
+    if (n !== h.seq[h.krok]) {
+      h.faza = 'koniec'; Zvuk.play('bad'); vibruj(120); simonStav('Ups, to nebola tá farba.');
+      h.dalsia = setTimeout(() => { if (st.hra === h) this.koniec(false, h.seq.length - 1); }, 800);
+      return;
+    }
+    h.krok++;
+    if (h.krok === h.seq.length) {
+      h.faza = 'cakaj'; simonStav('Výborne!');
+      h.dalsia = setTimeout(() => { if (st.hra !== h) return; h.seq.push(Math.floor(Math.random() * 4)); this.ukaz(h); }, 850);
+    }
+  },
+  // Skladačka: ťukni na dva dieliky a vymenia sa
+  diel(poz) {
+    const h = st.hra;
+    if (!h || h.hotovo) return;
+    if (h.vyber === null) { h.vyber = poz; Zvuk.play('tap'); }
+    else if (h.vyber === poz) { h.vyber = null; Zvuk.play('pop'); }
+    else {
+      const a = h.vyber; h.vyber = null;
+      [h.p[a], h.p[poz]] = [h.p[poz], h.p[a]]; h.tahy++; obnovStavHry();
+      Zvuk.play(h.p[a] === a || h.p[poz] === poz ? 'ok' : 'whoosh');
+      if (h.p.every((x, i) => x === i)) { this.koniec(true, h.tahy); return; }
+    }
+    obnovSklad();
+  },
+};
+
+// príklad na počítanie: menšie deti do 10, väčšie do 50 a malá násobilka
+function priklad(mal) {
+  const r = (od, po) => od + Math.floor(Math.random() * (po - od + 1)), druh = Math.random();
+  if (mal) {
+    if (druh < .6) { const a = r(1, 9), b = r(0, 10 - a); return [`${a} + ${b}`, a + b]; }
+    const a = r(2, 10), b = r(0, a); return [`${a} − ${b}`, a - b];
+  }
+  if (druh < .35) { const a = r(6, 30), b = r(3, 20); return [`${a} + ${b}`, a + b]; }
+  if (druh < .7) { const a = r(10, 40), b = r(2, Math.min(20, a)); return [`${a} − ${b}`, a - b]; }
+  const a = r(2, 9), b = r(2, 10); return [`${a} × ${b}`, a * b];
+}
+const moznostiHadaj = h => { const sp = h.kola[h.i], ine = mix(T.length).map(i => T[i].id).filter(id => id !== sp).slice(0, h.n - 1); return [sp, ...ine].sort(() => Math.random() - .5); };
+function hadajHtml(h) {
+  const t = byId(h.kola[h.i]);
+  return `<div class="frame hadaj-obr">${svg(t)}</div>
+    <p class="hadaj-otazka">O ktorej téme je tento obrázok?</p>
+    <div class="hadaj-moz">${h.moznosti.map(id => `<button class="btn ghost hadaj-btn${h.odp ? (id === t.id ? ' ok' : id === h.odp ? ' zle' : '') : ''}" data-hadaj="${id}">${esc(byId(id).t)}</button>`).join('')}</div>`;
+}
+const obnovHadaj = () => { const el = document.getElementById('hadaj'); if (el && st.hra) el.innerHTML = hadajHtml(st.hra); };
+const simonStav = text => { const el = document.getElementById('simon-stav'); if (el) el.textContent = text; };
+function zasviet(n, ms) {
+  Zvuk.play('ton' + n);
+  const el = document.querySelector(`[data-pad="${n}"]`);
+  if (!el) return;
+  el.classList.add('svieti'); setTimeout(() => el.classList.remove('svieti'), ms);
+}
+function skladHtml(h) {
+  const obr = svg(byId(h.t));
+  return h.p.map((kus, poz) => `<button class="diel${h.vyber === poz ? ' vybraty' : ''}${kus === poz ? ' sedi' : ''}" data-diel="${poz}" aria-label="Dielik ${poz + 1}"><span class="diel-obr" style="--x:${kus % h.sl};--y:${Math.floor(kus / h.sl)}">${obr}</span></button>`).join('');
+}
+function obnovSklad() {
+  const h = st.hra, el = document.getElementById('sklad');
+  if (!el || !h) return;
+  el.innerHTML = skladHtml(h); el.classList.toggle('hotova', !!h.hotovo);
+}
+function vysledokHry(h) {
+  const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null;
+  const nadpis = `${['hviezdy', 'bubliny', 'opakuj'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
+  return `<div class="card hra-vysledok"><div class="win-owl">${owl('cheer')}</div>
+    <h2 class="h2" style="--hc:#FFC233">${nadpis}</h2>
+    ${t ? `<p class="muted">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}
+    ${odmenyHtml({ noveOdznaky: v.odznaky || [] })}
+    ${v.novy ? '<span class="chip" style="--c:#FFD23F">🏆 Nový rekord!</span>' : v.prvy ? '<span class="chip" style="--c:#FFD23F">🏆 Prvý rekord</span>' : v.stary != null ? `<p class="muted">Rekord: ${rekordText(h.id, v.stary)}</p>` : ''}
+    <div class="tests"><button class="btn blue" data-hra="${h.id}">Hrať znova</button><button class="btn ghost" data-hra-spat>Iná hra</button></div></div>`;
+}
+function renderHra() {
+  const h = st.hra, info = HRY.find(x => x.id === h.id);
+  document.body.classList.remove('tinted');
+  let telo;
+  if (h.id === 'pexeso') {
+    telo = `<div class="pexeso" style="--st:${h.karty.length > 12 ? 4 : 3}">${h.karty.map((tid, i) => `<button class="pex${h.najdene.includes(tid) ? ' otocena najdena' : h.otocene.includes(i) ? ' otocena' : ''}" data-pex="${i}" aria-label="Karta ${i + 1}"><span class="pex-in"><span class="pex-rub">${STAR('#fff')}</span><span class="pex-lic">${svg(byId(tid))}</span></span></button>`).join('')}</div>`;
+  } else if (h.id === 'hviezdy') {
+    telo = `<div class="nebo" id="nebo">${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
+      <p class="muted hra-pomoc">${STAR()} +1 &nbsp; ${STAR('#FF9F1C')} +3 &nbsp; búrka −2</p>`;
+  } else if (h.id === 'hadaj') {
+    telo = `<div id="hadaj" class="hadaj">${hadajHtml(h)}</div>`;
+  } else if (h.id === 'bubliny') {
+    telo = `<div class="card priklad" id="priklad">${h.beh ? h.priklad + ' = ?' : h.hotovo ? 'Čas vypršal!' : 'Koľko je…?'}</div>
+      <div class="more${h.mal ? '' : ' styri'}" id="bubliny">${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
+      <p class="muted hra-pomoc">Praskni bublinu so správnym výsledkom. Zlá bublina zoberie bod. Máš na to minútu.</p>`;
+  } else if (h.id === 'opakuj') {
+    telo = `<p class="simon-stav" id="simon-stav">${h.beh ? '' : 'Ťukni na Štart'}</p>
+      <div class="simon">${['#FF5A5F', '#4C7DFF', '#2FBF71', '#FFD23F'].map((c, i) => `<button class="pad" data-pad="${i}" style="--c:${c}" aria-label="Farba ${i + 1}"><svg viewBox="-20 -20 40 40" aria-hidden="true"><g stroke="${INK}">${face(0, 0, 1.1)}</g></svg></button>`).join('')}
+      ${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
+      <p class="muted hra-pomoc">Pozeraj, ktoré farby zasvietia, a potom ich ťukni v rovnakom poradí.</p>`;
+  } else {
+    telo = `<div class="sklad${h.hotovo ? ' hotova' : ''}" id="sklad" style="--sl:${h.sl};--ri:${h.ri}">${skladHtml(h)}</div>
+      <p class="muted hra-pomoc">Ťukni na dva dieliky a vymenia sa. Zelený rámik = dielik je na správnom mieste.</p>`;
+  }
+  main.classList.add('anim');
+  main.innerHTML = `<div class="hra">
+    <div class="hra-top"><button class="ib" data-hra-spat aria-label="Späť na hry">${IKO.zavriet}</button><b class="hra-nazov">${info.n}</b><span class="chip" id="hra-stav" style="--c:${info.c}">${stavHry(h)}</span></div>
+    ${telo}${h.hotovo ? vysledokHry(h) : ''}</div>`;
+  ocisluj();
+}
+
+/* Prehľad pre rodiča: čo dieťa prebralo tento týždeň a v ktorých otázkach chybovalo */
+function zapisChybu(k, ok) {
+  const t = k && byId(k.tid);
+  if (!t) return;
+  const kl = t.id + ':' + t.z.indexOf(k.q), bola = st.chyby.includes(kl);
+  if (ok && bola) st.chyby = st.chyby.filter(x => x !== kl);
+  else if (!ok && !bola) st.chyby = [...st.chyby, kl].slice(-60);
+  else return;
+  S.set('chyby', st.chyby);
+}
+function zapisPrebrate(id) { st.kedy = { ...st.kedy, [id]: key(new Date()) }; S.set('kedy', st.kedy); }
+function prehladRodica() {
+  const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
+  const od = key(pon), dnes = key(new Date());
+  const den = d => d === dnes ? 'dnes' : DNI[(new Date(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8)).getDay() + 6) % 7];
+  const tyzden = Object.entries(st.kedy).filter(([id, d]) => d >= od && byId(id)).sort((a, b) => a[1] < b[1] ? -1 : 1);
+  const chyby = st.chyby.map(x => { const [id, i] = x.split(':'), t = byId(id), q = t && t.z[+i]; return q && { t, q }; }).filter(Boolean).slice(-6).reverse();
+  return `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Pre rodiča</h2>
+    <div class="card prehlad"><b>Tento týždeň prebraté</b>
+      ${tyzden.length ? `<ul>${tyzden.map(([id, d]) => `<li><span>${KAT[byId(id).k].e}</span><span>${esc(byId(id).t)}</span><small>${den(d)}</small></li>`).join('')}</ul>` : '<p class="muted">Tento týždeň zatiaľ nič.</p>'}
+      <b>Na čo sa ešte pozrieť</b>
+      ${chyby.length ? `<ul>${chyby.map(c => `<li><span>${KAT[c.t.k].e}</span><span>${esc(c.q.q)}<small>Správne: ${esc(c.q.a[0][1])}</small></span></li>`).join('')}</ul>` : '<p class="muted">Žiadne chyby v kvízoch. Výborne!</p>'}
+    </div></section>`;
+}
+const views = {
+  domov() {
+    const t = temaDna(), k = KAT[t.k], hot = st.done.includes(t.id), s = seria(), dnes = key(new Date());
+    const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
+    const tyzden = DNI.map((n, i) => { const d = new Date(pon); d.setDate(pon.getDate() + i); return { n, d, k: key(d) }; });
+    const dalsie = [...Array(T.length).keys()].map(i => T[(denCislo() + 1 + i) % T.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
+    return `${location.hostname.endsWith('github.io') ? `
+      <a class="presun" href="https://svet-za-3-minuty.web.app/">📦 Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
+      <section class="hero" style="--c:${k.c}">
+        <div class="hero-art">${scene(t, 'sm')}<span class="sticker">⭐ Téma dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
+        <div class="hero-in">
+          <span class="chip" style="--c:${k.c}">${k.e} ${k.nazov}</span>
+          <h2 class="tt">${t.t}</h2>
+          <p class="muted">${teaser(t)}</p>
+          <button class="btn wide ${hot ? 'ghost' : 'cta'}" data-start="${t.id}">${hot ? '↻ Zopakovať tému' : 'Poďme na to! →'}</button>
+        </div>
+      </section>
+      <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
+        <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
+      <section class="card">
+        <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak">${s ? `🔥 ${s} ${dni(s)} po sebe` : '🔥 Začnite sériu dnes'}</span></div>
+        <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
+      </section>
+      ${kartaDalsiaOdmena()}
+      <div class="acts">
+        <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">⚡</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém</small></button>
+        <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">🎲</span><b>Iná téma</b><small>Nechajte sa prekvapiť</small></button>
+      </div>
+      ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
+        <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
+      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Kategórie</h2>
+        <div class="tiles">${kats().map((k, i) => `<button class="tile" style="--c:${k.c}" data-kat="${k.id}"><span class="tile-e" style="--j:${i}">${k.e}</span><b>${k.nazov}</b><small>${k.hotovo}/${k.n}</small></button>`).join('')}
+          <button class="tile all" data-kat=""><span class="tile-e" style="--j:11">✨</span><b>Všetky témy</b><small>${T.length}</small></button></div>
+      </section>
+      <div class="tip"><button class="tip-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><p class="bubble">Témy sú krátke, zvládnete ich aj cestou autom. A ak šoférujete, ťuknite na „Prečítať nahlas“!</p></div>`;
+  },
+  temy() {
+    return `<h1 class="h1">Témy</h1>
+      <input id="hladaj" class="search" type="search" placeholder="🔍 Hľadať, napríklad srdce" aria-label="Hľadať tému">
+      <div class="chips" id="filtre"></div>
+      <div id="zoznam" class="list"></div>`;
+  },
+  hry() {
+    return `<h1 class="h1">Hry</h1>
+      <p class="muted">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
+      <div class="hry">${HRY.map(h => {
+        const ok = st.body >= h.cena, rek = S.get(rekordKluc(h.id), null);
+        return `<button class="hra-karta${ok ? '' : ' zamknuta'}" data-hra="${h.id}" style="--c:${h.c}"><span class="hra-obr">${OBR_HRY[h.id]}</span>
+          <span class="hra-info"><b>${h.n}</b><small>${h.p}</small>${ok
+            ? `<span class="chip" style="--c:${h.c}">${rek != null ? '🏆 Rekord: ' + rekordText(h.id, rek) : 'Hrať'}</span>`
+            : `<span class="zamok">🔒 Pri ${h.cena} ⭐ · chýba ${h.cena - st.body}</span><span class="bar" style="--c:#FFC233"><i style="width:${Math.max(4, Math.round(st.body / h.cena * 100))}%"></i></span>`}</span></button>`;
+      }).join('')}</div>`;
+  },
+  odznaky: () => zbierkaOdznakov(),
+  ja() {
+    const h = st.done.filter(byId).length, s = seria(), obvod = 326.7;
+    const f = st.fav.map(byId).filter(Boolean), C = window.Cloud;
+    return `<div class="prof-top"><button class="av-ja kruh-av" data-upravit aria-label="Upraviť postavičku" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</button>
+        <div class="prof-meno"><h1 class="h1">${esc(st.meno)}</h1><span class="chip" style="--c:#4C7DFF">${vekText(st.vek)}</span></div></div>
+      <button class="btn wide" data-upravit>✏️ Upraviť postavičku, meno a vek</button>
+      <section class="stats">
+        <div class="card ringc">
+          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--ink)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / T.length * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${T.length}</b></div>
+          <div><b class="lbl" style="font-size:1.3rem">Prebraté témy</b><br><small>${h === T.length ? 'Všetky! Si skvelý.' : 'Každá téma pridá body a kúsok kruhu.'}</small></div>
+        </div>
+        <div class="card mini" style="--c:#FFF0B3"><b>⭐ ${st.body}</b><small>bodov</small></div>
+        <div class="card mini" style="--c:#FFE3C7"><b>🔥 ${s}</b><small>${dni(s)} po sebe</small></div>
+      </section>
+      ${kartaOdznakov()}
+      ${prehladRodica()}
+      <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
+        <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${k.e}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
+      </section>
+      <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
+        ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ♡ a nájdeš ju tu.</span></div>`}
+      </section>
+      <section class="card prof">
+        <span class="lbl">Zvuky</span>
+        ${Zvuk.ios ? `<div class="tests"><button class="btn blue" data-test-zvuk="web">🔊 Test 1</button><button class="btn" data-test-zvuk="subor">🔊 Test 2</button></div>
+        <p class="muted">Ťuknite na oba testy a vyberte ten, ktorý počujete:</p>
+        <div class="seg2"><button data-sposob="web" aria-pressed="${Zvuk.sposob === 'web'}">Počujem Test 1</button><button data-sposob="subor" aria-pressed="${Zvuk.sposob === 'subor'}">Počujem Test 2</button></div>`
+        : '<button class="btn blue" data-test-zvuk="web">🔊 Vyskúšať zvuk</button>'}
+        <p class="muted">Keď nič nepočuť, zvýšte hlasitosť a skontrolujte, či zvuky nie sú vypnuté reproduktorom hore.</p>
+        <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
+      </section>
+      <section class="card prof"><span class="lbl">🗣️ Hlas na čítanie</span><div id="hlasy">${hlasyHtml()}</div></section>
+      <section class="card prof"><span class="lbl">👨‍👩‍👧 Rodina</span>
+        <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
+        <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
+      </section>
+      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${T.length} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.</p>`;
+  },
+};
+
+function fillTemy() {
+  const f = document.getElementById('filtre'), z = document.getElementById('zoznam');
+  f.innerHTML = [{ id: '', nazov: 'Všetko', e: '✨', c: '#2B2240' }, { id: 'fav', nazov: 'Uložené', e: '♥', c: '#FF5A5F' }, ...kats()].map(k =>
+    `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${k.e} ${k.nazov}</button>`).join('');
+  const q = bez(st.q.trim());
+  const poradie = Object.keys(KAT);
+  const list = [...T].sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k)).filter(t => (!st.kat || t.k === st.kat || (st.kat === 'fav' && st.fav.includes(t.id))) && (!q || bez(t.t + ' ' + t.m).includes(q)));
+  z.innerHTML = list.length ? list.map(row).join('') : `<div class="empty">${owl('oops')}<span>Takú tému zatiaľ nemáme.</span></div>`;
+}
+
+/* Téma a kvíz krok za krokom */
+function startTema(id) {
+  const t = byId(id);
+  const qs = t.z.filter(pre).map(q => ({ t: 'q', q, poradie: mix(q.a.length), tid: id }));
+  st.flow = { typ: 'tema', id, i: 0, odp: {}, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
+  Zvuk.play('start'); render(); window.scrollTo(0, 0);
+}
+function startKviz() {
+  const vsetky = T.flatMap(t => t.z.filter(pre).map(q => ({ t: 'q', q, tid: t.id })));
+  const qs = mix(vsetky.length).slice(0, 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
+  st.flow = { typ: 'kviz', i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
+  Zvuk.play('start'); render(); window.scrollTo(0, 0);
+}
+const citaj = typ => `<button class="read" data-citaj="${typ}">🔊 Prečítať nahlas</button>`;
+function textKroku(f) {
+  const k = f.kroky[f.i], t = f.id && byId(f.id);
+  if (k.t === 'uvod') return t.t + ' ' + t.m + (st.vek === 'starsi' ? ' ' + t.s : '');
+  if (k.t === 'priklad') return 'Príklad zo života. ' + t.p;
+  if (k.t === 'rozhovor') return 'Porozprávajte sa. ' + t.o.join(' ');
+  if (k.t === 'q') return k.q.q + ' ' + k.poradie.map(j => k.q.a[j][1]).join(', alebo ') + '?';
+  return '';
+}
+
+function krok(f, k) {
+  const t = f.id && byId(f.id);
+  if (k.t === 'uvod') {
+    const kat = KAT[t.k];
+    return `<div class="step"><div class="frame">${svg(t)}</div>
+      <div><span class="chip" style="--c:${kat.c}">${kat.e} ${kat.nazov}</span></div>
+      <h1 class="h1">${t.t}</h1>
+      <div class="say"><div class="say-head"><button class="say-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><span>Povedzte dieťaťu</span>${citaj('uvod')}</div>
+        <div class="bubble"><p>${t.m}</p></div></div>
+      <button class="btn auto-mini" data-auto-start="${t.id}">${IKO.auto}Celú tému nahlas (do auta)</button>
+      ${st.vek === 'starsi' ? `<div class="more"><b>🎓 Pre väčšie deti</b><p>${t.s}</p></div>` : ''}</div>`;
+  }
+  if (k.t === 'priklad') {
+    return `<div class="step"><div class="st-head"><div class="big-st" style="--c:#FFD23F">💡</div><h1 class="h1">Príklad zo života</h1></div>${citaj('priklad')}<div class="note-card"><p>${t.p}</p></div></div>`;
+  }
+  if (k.t === 'rozhovor') {
+    return `<div class="step"><div class="st-head"><div class="big-st" style="--c:#8FD3FF">💬</div><h1 class="h1">Porozprávajte sa</h1></div>
+      <p class="muted">Nie je tu správna ani nesprávna odpoveď. Stačí sa pýtať a počúvať.</p>${citaj('rozhovor')}
+      <div class="talk">${t.o.map((x, i) => `<div class="tb${i % 2 ? ' r' : ''}" style="--c:${TBG[i % 3]}"><span class="tb-q">?</span><p>${x}</p></div>`).join('')}</div></div>`;
+  }
+  if (k.t === 'q') {
+    const qn = f.kroky.filter(x => x.t === 'q'), odp = f.odp[f.i], q = k.q, zdroj = f.typ === 'kviz' ? byId(k.tid) : null;
+    return `<div class="step"><div class="qhead"><div class="qhead-r"><span class="sticker sm">Otázka ${qn.indexOf(k) + 1} z ${qn.length}</span>${citaj('q')}</div>
+        ${zdroj ? `<span class="chip" style="--c:${KAT[zdroj.k].c}">${KAT[zdroj.k].e} ${zdroj.t}</span>` : ''}
+        <h1 class="qt">${q.q}</h1></div>
+      <div class="answers">${k.poradie.map((j, pos) => {
+        const cls = odp ? (j === 0 ? ' ok' : j === odp.v ? ' bad' : '') : '';
+        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em" style="--e:${EMBG[pos % 3]}">${q.a[j][0]}</span><span>${q.a[j][1]}</span></button>`;
+      }).join('')}</div>
+      ${odp ? `<div class="fbk ${odp.ok ? 'ok' : 'bad'}" aria-live="polite"><span class="fbk-owl">${owl(odp.ok ? 'happy' : 'oops')}</span><div><b>${odp.ok ? odp.p : 'Nevadí, nabudúce!'}</b><p>${odp.ok ? '' : 'Správne je: ' + q.a[0][1] + '. '}${q.w || ''}</p></div></div>` : ''}</div>`;
+  }
+  // koniec
+  const qn = f.kroky.filter(x => x.t === 'q').length, c = Object.values(f.odp).filter(o => o.ok).length;
+  const hv = c === qn ? 3 : c * 2 >= qn ? 2 : c ? 1 : 0;
+  const rel = t ? t.r.map(byId).filter(Boolean) : [];
+  return `<div class="win">
+      <div class="win-hero"><div class="burst"></div><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl(c ? 'cheer' : 'hi')}</button></div>
+      <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
+      <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? '#FFD23F' : '#E4E0EE')).join('')}</div>
+      <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
+      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov</div>` : '<div class="earn plain">Body za túto tému už máte. Opakovanie je matka múdrosti.</div>'}
+      ${odmenyHtml(f)}
+      <div class="win-acts">
+        ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
+        <button class="btn blue wide" data-${f.typ === 'kviz' ? 'kviz' : 'nahodna'}>${f.typ === 'kviz' ? '⚡ Ďalší kvíz' : '🎲 Ďalšia téma'}</button>
+        <button class="btn ghost wide" data-zavriet>Späť domov</button>
+      </div></div>`;
+}
+
+function renderFlow(anim = true) {
+  const f = st.flow, k = f.kroky[f.i], n = f.kroky.length - 1, t = f.id && byId(f.id);
+  const fav = t && st.fav.includes(t.id), odp = f.odp[f.i];
+  document.body.style.setProperty('--kc', t ? KAT[t.k].c : '#FF9F1C');
+  document.body.classList.add('tinted');
+  let dalej = '';
+  if (k.t !== 'koniec') {
+    const caka = k.t === 'q' && !odp;
+    dalej = `<div class="flow-pad"></div><div class="fnext"><div class="gut"><button class="btn ${k.t === 'q' ? '' : 'blue'} wide${caka ? '' : ' cta'}" data-dalej${caka ? ' disabled' : ''}>${caka ? 'Vyberte odpoveď' : 'Pokračovať →'}</button></div></div>`;
+  }
+  main.classList.toggle('anim', anim);
+  main.innerHTML = `<div class="ftop"><button class="ib" data-zavriet aria-label="Zavrieť">${IKO.zavriet}</button>
+      <div class="fbar"><i style="width:${Math.max(6, Math.round(f.i / n * 100))}%"></i></div>
+      <span class="fnum">${Math.min(f.i + 1, n)}/${n}</span>
+      ${t ? `<button class="ib heart" data-fav aria-pressed="${fav}" aria-label="Uložiť tému">${fav ? '♥' : '♡'}</button>` : ''}</div>
+    ${krok(f, k)}${dalej}`;
+  ocisluj();
+  if (k.t === 'koniec' && anim) oslava(f);
+}
+
+function oslava(f) {
+  Zvuk.play('win'); vibruj([60, 40, 60]);
+  const box = main.querySelector('.stars3'), n = +box.dataset.n;
+  box.querySelectorAll('svg').forEach((s, i) => setTimeout(() => {
+    if (i >= n || !s.isConnected) return;
+    Zvuk.play('star'); const [x, y] = stred(s); FX.burst(x, y, 18, ['star', 'dot'], 7);
+  }, 550 + i * 300));
+  if (n) setTimeout(() => FX.rain(n * 60), 250);
+  if (n === 3) setTimeout(() => FX.ohnostroj(5), 1500);
+  main.querySelectorAll('.odmena-karta').forEach((k, i) => setTimeout(() => {
+    if (!k.isConnected) return;
+    Zvuk.play('star'); vibruj(30); const [x, y] = stred(k); FX.burst(x, y, 24, ['star', 'dot', 'rect'], 7);
+  }, 1900 + i * 250));
+  const el = main.querySelector('.earn b');
+  if (el && f.zisk) setTimeout(() => {
+    let v = 0; const krok = Math.max(1, Math.ceil(f.zisk / 20));
+    const iv = setInterval(() => { v = Math.min(f.zisk, v + krok); el.textContent = '+' + v; Zvuk.play('tick'); if (v >= f.zisk || !el.isConnected) { clearInterval(iv); Zvuk.play('coin'); } }, 45);
+  }, 1500);
+}
+
+function dokonci(f) {
+  const c = Object.values(f.odp).filter(o => o.ok).length, dnes = key(new Date()), bodyPred = st.body;
+  const qn = f.kroky.filter(x => x.t === 'q').length;
+  if (f.typ === 'tema') {
+    const prvy = !st.done.includes(f.id);
+    f.zisk = prvy ? c * 10 + 10 : 0;
+    if (prvy) { st.done.push(f.id); S.set('done', st.done); }
+    zapisPrebrate(f.id);
+  } else {
+    f.zisk = c * 10;
+  }
+  st.body += f.zisk; S.set('body', st.body);
+  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? 'blesk' : 'bezchyby') : '', { uci: true });
+  f.noveOdmeny = noveOdmeny(bodyPred, st.body);
+  f.noveHry = noveHry(bodyPred, st.body);
+}
+
+function paintHead() {
+  const el = document.getElementById('pozdrav');
+  el.textContent = '';
+  [...(st.meno ? `Ahoj, ${st.meno}!` : 'Ahoj!')].forEach((ch, i) => {
+    const s = document.createElement('span'); s.textContent = ch; s.style.setProperty('--k', i);
+    if (i >= 6 && ch.trim() && ch !== '!') s.style.color = DUHA[(i - 6) % DUHA.length];
+    el.appendChild(s);
+  });
+  const b = document.getElementById('body');
+  if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+  const z = document.getElementById('snd'); z.textContent = Zvuk.on ? '🔊' : '🔇'; z.setAttribute('aria-pressed', Zvuk.on);
+  const av = document.getElementById('av'), k = JSON.stringify(st.avatar);
+  if (av.dataset.k !== k) {
+    av.dataset.k = k; av.innerHTML = st.avatar ? postavicka(st.avatar) : owl('hi');
+    av.classList.toggle('kruh-av', !!st.avatar); av.style.setProperty('--bg', st.avatar ? st.avatar.pozadie : 'transparent');
+  }
+}
+function ocisluj() {
+  [...main.children].forEach((el, i) => el.style.setProperty('--i', i));
+  main.querySelectorAll('.step').forEach(s => [...s.children].forEach((el, j) => el.style.setProperty('--j', j)));
+}
+
+function render() {
+  const brana = st.faza !== 'appka', auto = !brana && !!st.auto, hra = !brana && !auto && !!st.hra, flow = !brana && !auto && !hra && !!st.flow;
+  document.getElementById('top').hidden = brana || auto || hra || flow;
+  document.getElementById('nav').hidden = brana || auto || hra || flow;
+  document.body.classList.toggle('auto-rezim', auto);
+  if (brana) { renderBrana(); return; }
+  if (auto) { renderAuto(); return; }
+  if (hra) { renderHra(); return; }
+  if (flow) { renderFlow(); return; }
+  document.body.classList.remove('tinted');
+  main.classList.add('anim');
+  main.innerHTML = views[st.view]();
+  ocisluj();
+  if (st.view === 'temy') {
+    const inp = document.getElementById('hladaj');
+    inp.value = st.q;
+    inp.addEventListener('input', () => { st.q = inp.value; fillTemy(); });
+    fillTemy();
+  }
+  ['domov', 'temy', 'hry', 'ja'].forEach(v => {
+    const b = document.getElementById('nav-' + v);
+    if (v === st.view || (v === 'ja' && st.view === 'odznaky')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  paintHead();
+}
+
+function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.view = v; render(); window.scrollTo(0, 0); }
+
+document.addEventListener('click', e => {
+  const sova = e.target.closest('[data-sova]');
+  if (sova) {
+    Zvuk.play('hoot'); vibruj(30);
+    const o = sova.querySelector('.owl'); if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
+    const [x, y] = stred(sova); FX.burst(x, y, 14, ['star', 'dot'], 6);
+    return;
+  }
+  const b = e.target.closest('button');
+  if (!b || b.disabled) return;
+  const d = b.dataset, f = st.flow;
+  if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
+  if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
+  if (d.auto) { Auto.ovladaj(d.auto); return; }
+  if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra); return; }
+  if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
+  if (d.pex) { Hra.pex(+d.pex, b); return; }
+  if (d.hv) { Hra.chyt(b); return; }
+  if (d.hvStart !== undefined) { if (st.hra && st.hra.id === 'bubliny') Hra.bublinyStart(); else if (st.hra && st.hra.id === 'opakuj') Hra.simonStart(); else Hra.hviezdyStart(); return; }
+  if (d.hadaj) { Hra.hadaj(d.hadaj); return; }
+  if (d.bub !== undefined) { Hra.bub(b); return; }
+  if (d.pad !== undefined) { Hra.pad(+d.pad); return; }
+  if (d.diel) { Hra.diel(+d.diel); return; }
+  if (d.hlas !== undefined) {
+    S.set('hlas', d.hlas);
+    document.querySelectorAll('[data-hlas]').forEach(x => x.setAttribute('aria-pressed', x === b));
+    const ukazka = () => Hlas.citaj(`Ahoj${st.meno ? ', ' + st.meno : ''}! Takto ti budem čítať témy o svete.`);
+    if (Hlas.hovori) { Hlas.stop(); setTimeout(ukazka, 150); } else ukazka();
+    return;
+  }
+  if (d.reload !== undefined) { location.reload(); return; }
+  if (d.deti !== undefined) {
+    Hlas.stop(); Hra.zrus(); Zvuk.play('whoosh'); if (window.Cloud) window.Cloud.ulozHned();
+    Object.assign(st, { flow: null, faza: 'vyber' }); render(); scrollTo(0, 0); return;
+  }
+  if (d.dieta) { Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
+  if (d.noveDieta !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); return; }
+  if (d.upravit !== undefined) {
+    if (st.auto) Auto.stop(false);
+    Zvuk.play('pop');
+    st.upravuje = { id: st.dietaId, meno: st.meno, vek: st.vek, avatar: { ...AV_ZAKLAD, ...st.avatar }, body: st.body, kat: AV_KAT.some(([k]) => k === d.upravit) ? d.upravit : 'vlasy', novy: false, potvrd: false };
+    st.flow = null;
+    st.faza = 'tvorba'; render(); scrollTo(0, 0); return;
+  }
+  if (st.faza === 'tvorba' && tvorbaKlik(b, d)) return;
+  if (d.testZvuk !== undefined) {
+    Hlas.stop(); Zvuk.test(d.testZvuk || 'web'); paintHead();
+    const [x, y] = stred(b); FX.burst(x, y, 20, ['star', 'dot'], 7);
+    setTimeout(() => { const el = document.getElementById('diag'); if (el) el.textContent = Zvuk.diag(); }, 900);
+    return;
+  }
+  if (d.sposob) {
+    Zvuk.sposob = d.sposob; render(); Zvuk.play('pop');
+    toast(d.sposob === 'subor' ? 'Zvuky pôjdu spôsobom z Testu 2.' : 'Zvuky pôjdu spôsobom z Testu 1.');
+    return;
+  }
+  if (d.ucet) {
+    if (!window.Cloud) { toast('Prihlásenie sa ešte načítava, skúste o chvíľu.'); return; }
+    const email = (document.getElementById('email') || {}).value || '', heslo = (document.getElementById('heslo') || {}).value || '';
+    window.Cloud.akcia(d.ucet, email.trim(), heslo);
+    return;
+  }
+  if (d.start) startTema(d.start);
+  else if (d.go) { Zvuk.play('whoosh'); go(d.go); }
+  else if (d.kviz !== undefined) startKviz();
+  else if (d.nahodna !== undefined) {
+    const nove = T.filter(t => !st.done.includes(t.id) && t.id !== (f && f.id));
+    startTema(pick(nove.length ? nove : T.filter(t => t.id !== (f && f.id))).id);
+  } else if (d.kat !== undefined) {
+    Zvuk.play('boing');
+    st.kat = d.kat; st.q = '';
+    if (st.view === 'temy' && !f) fillTemy(); else go('temy');
+  } else if (d.vek) {
+    Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render();
+  } else if (d.citaj !== undefined && f) {
+    Zvuk.play('tap'); Hlas.citaj(textKroku(f), b);
+  } else if (d.zavriet !== undefined) {
+    Zvuk.play('whoosh');
+    go(f && f.typ === 'tema' && f.kroky[f.i].t !== 'koniec' ? f.from : 'domov');
+  } else if (d.fav !== undefined && f) {
+    const pridat = !st.fav.includes(f.id);
+    st.fav = pridat ? [...st.fav, f.id] : st.fav.filter(x => x !== f.id);
+    S.set('fav', st.fav);
+    if (pridat) { Zvuk.play('heart'); const [x, y] = stred(b); FX.hearts(x, y); toast('Uložené medzi obľúbené ♥'); } else Zvuk.play('tap');
+    oznamOdznaky(noveOdznaky());
+    renderFlow(false);
+  } else if (d.ans !== undefined && f) {
+    const v = Number(d.ans), ok = v === 0, [x, y] = stred(b);
+    Hlas.stop();
+    f.odp[f.i] = { v, ok, p: pick(POCHVALA) };
+    zapisChybu(f.kroky[f.i], ok);
+    renderFlow(false);
+    if (ok) {
+      Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); vibruj(40);
+      FX.burst(x, y, 30); letiText(x, y - 20, '+10'); zablesk('rgb(47 191 113 / .35)');
+    } else {
+      Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');
+      const s = main.querySelector('.step'); if (s) s.classList.add('shake');
+    }
+  } else if (d.dalej !== undefined && f) {
+    Hlas.stop();
+    if (f.kroky[f.i + 1].t === 'koniec') dokonci(f); else Zvuk.play('whoosh');
+    f.i++; renderFlow(); window.scrollTo(0, 0);
+  } else {
+    Zvuk.play('tap');
+  }
+});
+
+document.getElementById('av').innerHTML = owl('hi');
+document.getElementById('star-ico').innerHTML = STAR();
+render();
+// keď sa Firebase do chvíle nenačíta (prvé spustenie bez internetu), povieme to
+setTimeout(() => { if (!window.Cloud && st.faza === 'nacitava') { st.faza = 'bezNetu'; render(); } }, 9000);
+</script>
+<script type="module">
+// Prihlásenie rodiča a profily detí vo Firebase (projekt svet-za-3-minuty).
+// Každé dieťa má vlastný dokument rodiny/<uid>/deti/<id>: meno, vek, postavička a pokrok.
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, connectAuthEmulator, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache,
+  collection, doc, onSnapshot, getDoc, setDoc, deleteDoc, serverTimestamp,
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname); // skúšanie na emulátore, nie ostré dáta
+const naFirebase = location.hostname.endsWith('.web.app') || location.hostname.endsWith('.firebaseapp.com');
+const app = initializeApp({
+  apiKey: 'AIzaSyA3pvk0D072FJq0-i3Bwz-fo8Cyw7dHzfk',
+  // na adrese z Firebase ide prihlásenie cez tú istú doménu, inak ho Safari na iPhone zablokuje
+  authDomain: naFirebase ? location.hostname : 'svet-za-3-minuty.firebaseapp.com',
+  projectId: lokalne ? 'demo-svet-za-3-minuty' : 'svet-za-3-minuty',
+  storageBucket: 'svet-za-3-minuty.firebasestorage.app',
+  messagingSenderId: '37427452834',
+  appId: '1:37427452834:web:9ce1a6941d3e1396d570fb',
+});
+const auth = getAuth(app);
+auth.languageCode = 'sk';
+let db;
+try { db = initializeFirestore(app, { localCache: persistentLocalCache() }); } catch (e) { db = getFirestore(app); }
+if (lokalne) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9199', { disableWarnings: true });
+  connectFirestoreEmulator(db, '127.0.0.1', 8180);
+}
+
+const CHYBY = {
+  'auth/invalid-credential': 'Nesprávny e-mail alebo heslo.',
+  'auth/invalid-login-credentials': 'Nesprávny e-mail alebo heslo.',
+  'auth/wrong-password': 'Nesprávne heslo.',
+  'auth/user-not-found': 'Účet s týmto e-mailom neexistuje. Ťuknite na Nový účet.',
+  'auth/invalid-email': 'E-mail nie je napísaný správne.',
+  'auth/missing-email': 'Najprv napíšte e-mail.',
+  'auth/missing-password': 'Napíšte heslo.',
+  'auth/email-already-in-use': 'Tento e-mail už účet má. Ťuknite na Prihlásiť sa.',
+  'auth/weak-password': 'Heslo musí mať aspoň 6 znakov.',
+  'auth/too-many-requests': 'Priveľa pokusov. Skúste to o chvíľu.',
+  'auth/network-request-failed': 'Chýba internet. Skúste to, keď bude signál.',
+  'auth/popup-closed-by-user': 'Okno s prihlásením sa zavrelo skôr, ako ste sa prihlásili.',
+  'auth/cancelled-popup-request': 'Prihlásenie sa prerušilo, skúste znova.',
+  'auth/unauthorized-domain': 'Na tejto adrese prihlásenie cez Google nejde. Otvorte svet-za-3-minuty.web.app.',
+  'auth/operation-not-allowed': 'Tento spôsob prihlásenia ešte nie je zapnutý.',
+  'permission-denied': 'Cloud uloženie odmietol.',
+  'unavailable': 'Cloud je teraz nedostupný, uloží sa neskôr.',
+};
+const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
+const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
+const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || [], zoradene(d.kedy), d.chyby || []]);
+let odber = null, casovac = null;
+// prihlásenie cez Google v appke na ploche odchádza na stránku Googlu a vracia sa späť (do 3 minút)
+let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
+
+const Cloud = {
+  pouzivatel: null, deti: [], nacitane: false, chyba: '', stavUlozenia: '', ticho: false, pracuje: '',
+  // zmena pokroku aktívneho dieťaťa: uložíme o chvíľu (viac zmien naraz = jeden zápis)
+  naplanuj() {
+    if (!this.pouzivatel || !st.dietaId) return;
+    clearTimeout(casovac);
+    this.stavUlozenia = 'Ukladá sa…'; obnovStav();
+    casovac = setTimeout(ulozAktivne, 800);
+  },
+  ulozHned() { if (casovac) { clearTimeout(casovac); ulozAktivne(); } },
+  async akcia(co, email, heslo) {
+    const prihlasuje = ['google', 'prihlas', 'registruj'].includes(co);
+    if (this.pracuje) return; // už sa prihlasuje, ďalšie ťuknutie ignorujeme
+    this.chyba = '';
+    if (prihlasuje) { this.pracuje = co; if (st.faza === 'prihlasenie') obnovPrihlasenie(); }
+    try {
+      if (co === 'google') {
+        const p = new GoogleAuthProvider();
+        p.setCustomParameters({ prompt: 'select_account' });
+        const naPloche = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+        const presmeruj = () => { S.set('presmerovanie', Date.now()); return signInWithRedirect(auth, p); };
+        if (naPloche) await presmeruj();
+        else {
+          try { await signInWithPopup(auth, p); }
+          catch (e) { if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(e.code)) await presmeruj(); else throw e; }
+        }
+      } else if (co === 'prihlas') {
+        await signInWithEmailAndPassword(auth, email, heslo);
+      } else if (co === 'registruj') {
+        await createUserWithEmailAndPassword(auth, email, heslo);
+      } else if (co === 'zabudol') {
+        if (!email) throw { code: 'auth/missing-email' };
+        await sendPasswordResetEmail(auth, email);
+        toast('Poslali sme vám e-mail na zmenu hesla.');
+        return;
+      } else if (co === 'odhlas') {
+        this.ulozHned();
+        await signOut(auth);
+        toast('Odhlásené.');
+        return;
+      }
+      Zvuk.play('ok');
+    } catch (e) {
+      this.chyba = chybaText(e); Zvuk.play('bad');
+    } finally {
+      if (prihlasuje) { this.pracuje = ''; if (st.faza === 'prihlasenie') obnovPrihlasenie(); }
+    }
+  },
+  vyber(id, pohlad = 'domov') {
+    this.ulozHned();
+    const d = this.deti.find(x => x.id === id);
+    if (!d) return;
+    nastavAktivne(d); noveOdznaky(); S.set('aktivne', id);
+    Object.assign(st, { flow: null, faza: 'appka', view: pohlad });
+    render(); scrollTo(0, 0);
+  },
+  // uloženie z tvorby postavičky (nové dieťa alebo úprava existujúceho)
+  ulozDieta(u) {
+    const id = u.id || noveId(), stare = this.deti.find(x => x.id === id);
+    const prazdne = { body: 0, done: [], fav: [], dni: [] };
+    const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
+    const d = {
+      meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
+      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])],
+      poradie: stare ? stare.poradie : Date.now(),
+    };
+    if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
+    zapis(id, d);
+    this.vyber(id, stare ? 'ja' : 'domov');
+  },
+  zmazDieta(id) {
+    this.deti = this.deti.filter(x => x.id !== id);
+    deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'deti', id)).catch(e => toast('Nepodarilo sa odstrániť: ' + chybaText(e)));
+    if (st.dietaId === id) { st.dietaId = null; S.set('aktivne', null); }
+    st.faza = this.deti.length ? 'vyber' : 'tvorba';
+    if (st.faza === 'tvorba') st.upravuje = noveUpravovanie(false);
+    render(); toast('Profil je odstránený.');
+  },
+};
+window.Cloud = Cloud;
+
+function nastavAktivne(d) {
+  Object.assign(st, {
+    dietaId: d.id, meno: d.meno || '', vek: d.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: { ...AV_ZAKLAD, ...(d.avatar || nahodnyAvatar()) },
+    body: d.body || 0, done: [...(d.done || [])], fav: [...(d.fav || [])], dni: [...(d.dni || [])], odznaky: [...(d.odznaky || [])],
+    kedy: { ...(d.kedy || {}) }, chyby: [...(d.chyby || [])],
+  });
+}
+function zapis(id, d) {
+  const z = setDoc(doc(db, 'rodiny', Cloud.pouzivatel.uid, 'deti', id), {
+    meno: d.meno, vek: d.vek, avatar: d.avatar, body: d.body, done: d.done, fav: d.fav, dni: d.dni, odznaky: d.odznaky || [], kedy: d.kedy || {}, chyby: d.chyby || [],
+    poradie: d.poradie, verzia: 4, upravene: serverTimestamp(),
+  });
+  if (!navigator.onLine) { Cloud.stavUlozenia = 'Uložené v telefóne, do cloudu sa pošle, keď bude internet.'; obnovStav(); }
+  z.then(() => { Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; obnovStav(); },
+    e => { Cloud.stavUlozenia = 'Neuložené: ' + chybaText(e); obnovStav(); });
+}
+function ulozAktivne() {
+  casovac = null;
+  const d = Cloud.deti.find(x => x.id === st.dietaId);
+  if (!d || !Cloud.pouzivatel) return;
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60) });
+  zapis(d.id, d);
+}
+function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
+function obnovPrihlasenie() {
+  const em = (document.getElementById('email') || {}).value, he = (document.getElementById('heslo') || {}).value;
+  render(); main.classList.remove('anim');
+  if (em) document.getElementById('email').value = em;
+  if (he) document.getElementById('heslo').value = he;
+}
+// zmena aktívneho dieťaťa z iného telefónu
+function prevezmi(a) {
+  if (casovac || otlacok(a) === otlacok(st)) return; // vlastné neuložené zmeny majú prednosť
+  nastavAktivne(a);
+  if (st.flow) paintHead(); else { render(); main.classList.remove('anim'); }
+}
+function zobrazPoNacitani() {
+  const a = Cloud.deti.find(x => x.id === S.get('aktivne', null));
+  if (a) { nastavAktivne(a); noveOdznaky(); Object.assign(st, { faza: 'appka', view: 'domov' }); }
+  else if (Cloud.deti.length) st.faza = 'vyber';
+  else { st.faza = 'tvorba'; st.upravuje = noveUpravovanie(true); }
+  render();
+}
+// pokrok z verzie 5 (dokument pokrok/<uid>) sa prenesie ako prvé dieťa
+async function prevodStareho(u) {
+  try {
+    const s = await getDoc(doc(db, 'pokrok', u.uid));
+    if (s.exists() && !Cloud.deti.length) {
+      const c = s.data(), id = noveId();
+      const d = { meno: (c.meno || 'Dieťa').slice(0, 20), vek: c.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: nahodnyAvatar(),
+        body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-60), odznaky: [], poradie: Date.now() };
+      Cloud.deti = [{ id, ...d }]; zapis(id, d); S.set('aktivne', id);
+    }
+  } catch (e) { /* bez starého pokroku pokračujeme ďalej */ }
+  zobrazPoNacitani();
+}
+
+onAuthStateChanged(auth, u => {
+  Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = '';
+  if (odber) { odber(); odber = null; }
+  clearTimeout(casovac); casovac = null;
+  if (!u) {
+    // po návrate z Googlu sa prihlásenie ešte dokončuje: neukazujeme prihlasovaciu obrazovku, aby sa neťukalo znova
+    Object.assign(st, { dietaId: null, avatar: null, flow: null, faza: dokoncujeGoogle ? 'nacitava' : 'prihlasenie', sprava: dokoncujeGoogle ? 'Dokončuje sa prihlásenie cez Google…' : '' });
+    render(); return;
+  }
+  Object.assign(st, { faza: 'nacitava', sprava: 'Prihlásené, načítavajú sa deti…' }); render();
+  odber = onSnapshot(collection(db, 'rodiny', u.uid, 'deti'), { includeMetadataChanges: true }, snap => {
+    const deti = snap.docs.map(x => ({ id: x.id, ...x.data() })).sort((a, b) => (a.poradie || 0) - (b.poradie || 0));
+    if (!Cloud.nacitane) {
+      if (snap.empty && snap.metadata.fromCache) return; // prvé spustenie: počkáme na odpoveď z cloudu
+      Cloud.nacitane = true; Cloud.deti = deti;
+      if (deti.length) zobrazPoNacitani(); else prevodStareho(u);
+      return;
+    }
+    Cloud.deti = deti;
+    const a = deti.find(x => x.id === st.dietaId);
+    if (st.faza === 'appka' && st.dietaId && !a && !snap.metadata.hasPendingWrites) {
+      // dieťa odstránené na inom telefóne
+      Object.assign(st, { dietaId: null, flow: null, faza: deti.length ? 'vyber' : 'tvorba' });
+      if (!deti.length) st.upravuje = noveUpravovanie(false);
+      render(); return;
+    }
+    if (a && st.faza === 'appka' && !snap.metadata.hasPendingWrites && !snap.metadata.fromCache) prevezmi(a);
+    if (st.faza === 'vyber') render();
+  }, e => { Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav(); });
+});
+getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); }).finally(() => {
+  const bolo = dokoncujeGoogle;
+  dokoncujeGoogle = false; S.set('presmerovanie', 0);
+  if (!Cloud.pouzivatel && (bolo || Cloud.chyba)) { Object.assign(st, { faza: 'prihlasenie', sprava: '' }); render(); }
+});
+</script>
