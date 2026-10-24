@@ -13,7 +13,7 @@ service cloud.firestore {
         && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
         && d.vek in ['mladsi', 'starsi']
         && d.avatar is map
-        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'pozadie'])
+        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'kuzlo', 'pozadie'])
         && (!('odznaky' in d) || (d.odznaky is list && d.odznaky.size() <= 100))
         && (!('kedy' in d) || (d.kedy is map && d.kedy.size() <= 500))
         && (!('chyby' in d) || (d.chyby is list && d.chyby.size() <= 60))

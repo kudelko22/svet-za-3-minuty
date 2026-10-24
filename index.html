@@ -658,7 +658,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 12; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 13; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1148,6 +1148,8 @@ const ODZNAKY = [
   { g: 'Rôzne', id: 'fav10', e: '💝', n: 'Zbierka sŕdc', p: 'Ulož si 10 obľúbených tém', ok: x => x.fav >= 10 },
   { g: 'Rôzne', id: 'stylista', e: '👗', n: 'Módny návrhár', p: 'Obleč postavičke odomknutú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) > 0) },
   { g: 'Rôzne', id: 'zvieratko', e: '🐾', n: 'Najlepší kamarát', p: 'Daj postavičke zvieratko', ok: x => !!x.avatar.zvieratko && x.avatar.zvieratko !== 'ziadne' },
+  { g: 'Body', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 bodov', ok: x => x.body >= 5000 },
+  { g: 'Rôzne', id: 'myticke', e: '🦄', n: 'Mýtický hrdina', p: 'Obleč postavičke mýtickú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) >= 1600) },
   ...Object.entries(KAT).map(([k, c]) => ({
     g: 'Majster kategórie', id: 'kat-' + k, e: c.e, n: 'Majster: ' + bezSpojovnika(c.nazov),
     p: 'Preber všetky témy: ' + bezSpojovnika(c.nazov).toLowerCase(), ok: x => T.filter(t => t.k === k).every(t => x.done.includes(t.id)),
@@ -1472,7 +1474,7 @@ const HRY = [
   { id: 'hadaj', n: 'Hádaj tému', p: 'Podľa obrázka uhádni, o ktorej téme je.', cena: 250, c: '#CDEBFF' },
   { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 400, c: '#FFE27A' },
   { id: 'opakuj', n: 'Opakuj po mne', p: 'Zapamätaj si, ktoré farby zasvietili, a zopakuj ich.', cena: 550, c: '#FFD6A5' },
-  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom.', cena: 700, c: '#BDE9FF' },
+  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF' },
   { id: 'skladacka', n: 'Skladačka', p: 'Poprehadzovaný obrázok poskladaj späť.', cena: 900, c: '#9FE8DF' },
 ];
 const noveHry = (pred, po) => HRY.filter(h => h.cena > pred && h.cena <= po);
@@ -1659,7 +1661,12 @@ const Hra = {
       h.skore++; obnovStavHry(); b.classList.add('praskla');
       Zvuk.play('pop'); setTimeout(() => Zvuk.play('coin'), 120); FX.burst(x, y, 14, ['dot', 'star'], 6);
       clearTimeout(h.dalsia); h.dalsia = setTimeout(() => { if (st.hra === h && h.beh) this.novyPriklad(h); }, 380);
-    } else { Zvuk.play('bad'); vibruj(60); b.classList.remove('zle'); void b.offsetWidth; b.classList.add('zle'); }
+    } else {
+      h.skore = Math.max(0, h.skore - 1); obnovStavHry(); Zvuk.play('bad'); vibruj(60);
+      b.classList.remove('zle'); void b.offsetWidth; b.classList.add('zle');
+      const m = document.createElement('span'); m.className = 'hv-plus minus'; m.textContent = '−1';
+      m.style.left = b.style.left; m.style.top = b.style.top; b.parentNode.appendChild(m); setTimeout(() => m.remove(), 700);
+    }
   },
   // Opakuj po mne: farby zasvietia v poradí a dieťa ich zopakuje, každé kolo o jednu dlhšie
   simonStart() {
@@ -1771,7 +1778,7 @@ function renderHra() {
   } else if (h.id === 'bubliny') {
     telo = `<div class="card priklad" id="priklad">${h.beh ? h.priklad + ' = ?' : h.hotovo ? 'Čas vypršal!' : 'Koľko je…?'}</div>
       <div class="more${h.mal ? '' : ' styri'}" id="bubliny">${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
-      <p class="muted hra-pomoc">Praskni bublinu so správnym výsledkom. Máš na to minútu.</p>`;
+      <p class="muted hra-pomoc">Praskni bublinu so správnym výsledkom. Zlá bublina zoberie bod. Máš na to minútu.</p>`;
   } else if (h.id === 'opakuj') {
     telo = `<p class="simon-stav" id="simon-stav">${h.beh ? '' : 'Ťukni na Štart'}</p>
       <div class="simon">${['#FF5A5F', '#4C7DFF', '#2FBF71', '#FFD23F'].map((c, i) => `<button class="pad" data-pad="${i}" style="--c:${c}" aria-label="Farba ${i + 1}"><svg viewBox="-20 -20 40 40" aria-hidden="true"><g stroke="${INK}">${face(0, 0, 1.1)}</g></svg></button>`).join('')}

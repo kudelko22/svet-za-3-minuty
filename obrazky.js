@@ -511,22 +511,23 @@ const STAR = (f = '#FFD23F') => `<svg viewBox="0 0 24 24" aria-hidden="true"><pa
 
 /* Postavička dieťaťa: skladá sa z dielov, ktoré si dieťa vyberie (rám 120 × 130) */
 const AV = {
-  vlasy: ['kratke', 'jezko', 'kucery', 'mikado', 'dlhe', 'copiky', 'chvost', 'ziadne'],
-  farbaVlasov: ['#2B2240', '#6B4226', '#B5713C', '#F2C14E', '#E0623A', '#FF6FA8', '#4C7DFF', '#B36BFF', '#2FBF71'],
+  vlasy: ['kratke', 'jezko', 'kucery', 'mikado', 'dlhe', 'copiky', 'chvost', 'ziadne', 'irokez', 'drdol', 'ofina', 'dvadrdoly', 'vlny', 'afro'],
+  farbaVlasov: ['#2B2240', '#6B4226', '#B5713C', '#F2C14E', '#E0623A', '#FF6FA8', '#4C7DFF', '#B36BFF', '#2FBF71', '#C9CCD8', '#16BFAE'],
   koza: ['#FFE0C7', '#F6C9A0', '#E0A87A', '#B97A50', '#8A5634'],
   oci: ['bodky', 'velke', 'vesele', 'mrk'],
   usta: ['usmev', 'smiech', 'jazyk'],
-  okuliare: ['ziadne', 'okruhle', 'hranate', 'srdiecka', 'slnecne', 'hviezdy', 'potapac'],
-  tricko: ['#FF5A5F', '#FF9F1C', '#FFD23F', '#2FBF71', '#16BFAE', '#4C7DFF', '#7C6CFF', '#FF6FA8', '#FFFFFF'],
-  vzor: ['ziadny', 'pruhy', 'hviezda', 'srdce', 'blesk', 'duha'],
-  doplnok: ['ziadny', 'siltovka', 'ciapka', 'masla', 'kvietok', 'sluchadla', 'pirat', 'korunka', 'cylinder', 'carodej'],
-  zvieratko: ['ziadne', 'macka', 'psik', 'sovicka', 'dino', 'jednorozec'],
+  okuliare: ['ziadne', 'okruhle', 'hranate', 'srdiecka', 'slnecne', 'hviezdy', 'potapac', 'kocicie', 'monokel', 'lyziarske', 'robot'],
+  tricko: ['#FF5A5F', '#FF9F1C', '#FFD23F', '#2FBF71', '#16BFAE', '#4C7DFF', '#7C6CFF', '#FF6FA8', '#FFFFFF', '#2B2240', '#8FD3FF', '#C9A0FF'],
+  vzor: ['ziadny', 'pruhy', 'hviezda', 'srdce', 'blesk', 'duha', 'motylik', 'jahoda', 'kravata', 'futbal', 'sal', 'nahrdelnik', 'medaila', 'raketa'],
+  doplnok: ['ziadny', 'siltovka', 'ciapka', 'masla', 'kvietok', 'sluchadla', 'pirat', 'korunka', 'cylinder', 'carodej', 'zajacie', 'macacie', 'kovboj', 'veniec', 'tiara', 'viking', 'svatozar', 'cisarska'],
+  zvieratko: ['ziadne', 'macka', 'psik', 'sovicka', 'dino', 'jednorozec', 'zajko', 'tucniak', 'liska', 'drak', 'fenix'],
+  kuzlo: ['ziadne', 'iskry', 'motyl', 'aura', 'anjel', 'drakie', 'duha'],
   pozadie: ['#D6E6FF', '#FFE1E8', '#D9F8E6', '#FFF0B3', '#EBDDFF', '#FFE3C7', '#C8F1F6'],
 };
 const AV_KAT = [['vlasy', '💇 Účes'], ['farbaVlasov', '🎨 Farba vlasov'], ['koza', '🙂 Pleť'], ['oci', '👀 Oči'], ['usta', '😄 Úsmev'],
-  ['okuliare', '👓 Okuliare'], ['tricko', '👕 Tričko'], ['vzor', '⭐ Obrázok'], ['doplnok', '👑 Doplnok'], ['zvieratko', '🐾 Zvieratko'], ['pozadie', '🌈 Pozadie']];
+  ['okuliare', '👓 Okuliare'], ['tricko', '👕 Tričko'], ['vzor', '⭐ Na tričko'], ['doplnok', '👑 Doplnok'], ['zvieratko', '🐾 Zvieratko'], ['kuzlo', '✨ Kúzlo'], ['pozadie', '🌈 Pozadie']];
 const AV_FARBY = ['farbaVlasov', 'koza', 'tricko', 'pozadie'];
-const AV_ZAKLAD = { zvieratko: 'ziadne' }; // diely, ktoré staršie postavičky ešte nemali
+const AV_ZAKLAD = { zvieratko: 'ziadne', kuzlo: 'ziadne' }; // diely, ktoré staršie postavičky ešte nemali
 
 // Odmeny: koľko bodov treba, aby sa diel odomkol (ostatné sú zadarmo)
 const ODOMKNI = {
@@ -534,6 +535,15 @@ const ODOMKNI = {
   'vzor:blesk': 180, 'doplnok:sluchadla': 230, 'farbaVlasov:#B36BFF': 270, 'farbaVlasov:#2FBF71': 270, 'okuliare:slnecne': 300,
   'zvieratko:sovicka': 360, 'vzor:duha': 420, 'doplnok:pirat': 480, 'okuliare:hviezdy': 540, 'doplnok:korunka': 630,
   'zvieratko:dino': 750, 'okuliare:potapac': 840, 'doplnok:cylinder': 960, 'doplnok:carodej': 1140, 'zvieratko:jednorozec': 1350,
+  'farbaVlasov:#C9CCD8': 680, 'farbaVlasov:#16BFAE': 720, 'tricko:#2B2240': 110, 'tricko:#8FD3FF': 140, 'tricko:#C9A0FF': 170,
+  'vlasy:irokez': 200, 'vlasy:drdol': 240, 'vlasy:ofina': 320, 'vlasy:dvadrdoly': 380, 'vlasy:vlny': 460, 'vlasy:afro': 580,
+  'vzor:motylik': 130, 'vzor:jahoda': 200, 'vzor:kravata': 250, 'vzor:futbal': 290, 'vzor:sal': 340, 'vzor:nahrdelnik': 440, 'vzor:medaila': 520, 'vzor:raketa': 600,
+  'okuliare:kocicie': 260, 'okuliare:monokel': 400, 'okuliare:lyziarske': 650, 'okuliare:robot': 900,
+  'doplnok:zajacie': 160, 'doplnok:macacie': 210, 'doplnok:kovboj': 350, 'doplnok:veniec': 410, 'doplnok:tiara': 700, 'doplnok:viking': 800,
+  'zvieratko:zajko': 310, 'zvieratko:tucniak': 490, 'zvieratko:liska': 870,
+  // mýtické veci
+  'kuzlo:iskry': 1600, 'kuzlo:motyl': 2000, 'doplnok:svatozar': 2400, 'zvieratko:drak': 2800, 'kuzlo:aura': 3200,
+  'kuzlo:anjel': 3600, 'zvieratko:fenix': 4000, 'kuzlo:drakie': 4500, 'doplnok:cisarska': 5000, 'kuzlo:duha': 5000,
 };
 // názvy odmien vo vete „Odomkneš …“
 const NAZVY_ODMIEN = {
@@ -542,6 +552,15 @@ const NAZVY_ODMIEN = {
   'farbaVlasov:#2FBF71': 'zelené vlasy', 'okuliare:slnecne': 'slnečné okuliare', 'zvieratko:sovicka': 'sovičku', 'vzor:duha': 'dúhu na tričko',
   'doplnok:pirat': 'pirátsku šatku', 'okuliare:hviezdy': 'hviezdne okuliare', 'doplnok:korunka': 'korunku', 'zvieratko:dino': 'dinosauríka',
   'okuliare:potapac': 'potápačské okuliare', 'doplnok:cylinder': 'cylinder', 'doplnok:carodej': 'čarodejnícky klobúk', 'zvieratko:jednorozec': 'jednorožca',
+  'farbaVlasov:#C9CCD8': 'strieborné vlasy', 'farbaVlasov:#16BFAE': 'tyrkysové vlasy', 'tricko:#2B2240': 'čierne tričko', 'tricko:#8FD3FF': 'blankytné tričko',
+  'tricko:#C9A0FF': 'levanduľové tričko', 'vlasy:irokez': 'číro', 'vlasy:drdol': 'drdol', 'vlasy:ofina': 'účes s ofinou', 'vlasy:dvadrdoly': 'dva drdoly',
+  'vlasy:vlny': 'vlnité vlasy', 'vlasy:afro': 'afro účes', 'vzor:motylik': 'motýlik', 'vzor:jahoda': 'jahodu na tričko', 'vzor:kravata': 'kravatu',
+  'vzor:futbal': 'loptu na tričko', 'vzor:sal': 'šál', 'vzor:nahrdelnik': 'náhrdelník', 'vzor:medaila': 'medailu', 'vzor:raketa': 'raketu na tričko',
+  'okuliare:kocicie': 'mačacie okuliare', 'okuliare:monokel': 'monokel', 'okuliare:lyziarske': 'lyžiarske okuliare', 'okuliare:robot': 'robotí priezor',
+  'doplnok:zajacie': 'zajačie uši', 'doplnok:macacie': 'mačacie uši', 'doplnok:kovboj': 'kovbojský klobúk', 'doplnok:veniec': 'kvetinový veniec',
+  'doplnok:tiara': 'tiaru', 'doplnok:viking': 'vikingskú prilbu', 'zvieratko:zajko': 'zajka', 'zvieratko:tucniak': 'tučniaka', 'zvieratko:liska': 'líšku',
+  'kuzlo:iskry': 'čarovné iskry', 'kuzlo:motyl': 'motýlie krídla', 'doplnok:svatozar': 'svätožiaru', 'zvieratko:drak': 'dráčika', 'kuzlo:aura': 'zlatú žiaru',
+  'kuzlo:anjel': 'anjelské krídla', 'zvieratko:fenix': 'fénixa', 'kuzlo:drakie': 'dračie krídla', 'doplnok:cisarska': 'cisársku korunu', 'kuzlo:duha': 'dúhovú žiaru',
 };
 const cenaDielu = (k, v) => ODOMKNI[k + ':' + v] || 0;
 const odomknute = (k, v, body) => cenaDielu(k, v) <= (body || 0);
@@ -550,7 +569,7 @@ const ODMENY = Object.entries(ODOMKNI).sort((a, b) => a[1] - b[1]).map(([kluc, c
 // náhodná postavička: len z odomknutých dielov; okuliare, doplnok a zvieratko len niekedy
 const nahodnyAvatar = (body = 0) => Object.fromEntries(Object.entries(AV).map(([k, v]) => {
   const moze = v.filter(x => odomknute(k, x, body));
-  if (['okuliare', 'doplnok', 'zvieratko'].includes(k) && Math.random() < .55) return [k, v[0]];
+  if (['okuliare', 'doplnok', 'zvieratko', 'kuzlo'].includes(k) && Math.random() < .55) return [k, v[0]];
   return [k, moze[Math.floor(Math.random() * moze.length)]];
 }));
 
@@ -563,6 +582,11 @@ function postavicka(a, kruh = false) {
     copiky: `<ellipse cx="23" cy="72" rx="11" ry="15" fill="${fv}"/><ellipse cx="97" cy="72" rx="11" ry="15" fill="${fv}"/><rect x="27" y="62" width="7" height="9" rx="3" fill="#FF6FA8"/><rect x="86" y="62" width="7" height="9" rx="3" fill="#FF6FA8"/>`,
     chvost: `<path d="M84 40 Q114 40 108 90 Q103 72 88 62Z" fill="${fv}"/><circle cx="88" cy="42" r="5" fill="#FF6FA8"/>`,
     kucery: `<g>${kucery}</g>`,
+    drdol: `<circle cx="60" cy="24" r="13" fill="${fv}"/>`,
+    dvadrdoly: `<circle cx="33" cy="34" r="12" fill="${fv}"/><circle cx="87" cy="34" r="12" fill="${fv}"/>`,
+    vlny: `<path d="M27 66 Q22 26 60 25 Q98 26 93 66 Q100 76 94 86 Q100 96 92 108 Q84 100 84 90 L83 70 L37 70 L36 90 Q36 100 28 108 Q20 96 26 86 Q20 76 27 66Z" fill="${fv}"/>`,
+    afro: `<circle cx="60" cy="54" r="42" fill="${fv}"/>`,
+    ofina: `<path d="M27 70 Q22 26 60 25 Q98 26 93 70 L94 90 Q86 92 84 86 L36 86 Q34 92 26 90Z" fill="${fv}"/>`,
   }[a.vlasy] || '';
   const vpredu = {
     kratke: `<path d="M30 62 Q26 29 60 29 Q94 29 90 62 Q86 46 72 44 Q60 50 48 44 Q34 46 30 62Z" fill="${fv}"/>`,
@@ -573,6 +597,12 @@ function postavicka(a, kruh = false) {
     copiky: `<path d="M30 60 Q27 29 60 29 Q93 29 90 60 Q76 48 60 50 Q44 48 30 60Z" fill="${fv}"/><path d="M60 30 V44" stroke-width="2.5"/>`,
     chvost: `<path d="M30 62 Q27 29 60 29 Q93 29 90 58 Q72 50 56 42 Q48 54 30 62Z" fill="${fv}"/>`,
     ziadne: `<path d="M57 34 q3 -9 10 -4" fill="none" stroke-width="3"/>`,
+    irokez: `<path d="M50 41 L51 20 L57 30 L60 11 L63 30 L69 20 L70 41 Q60 36 50 41Z" fill="${fv}"/>`,
+    drdol: `<path d="M30 60 Q27 29 60 29 Q93 29 90 60 Q78 44 60 44 Q42 44 30 60Z" fill="${fv}"/><rect x="52" y="32" width="16" height="6" rx="3" fill="#FF6FA8"/>`,
+    dvadrdoly: `<path d="M30 60 Q27 29 60 29 Q93 29 90 60 Q78 44 60 44 Q42 44 30 60Z" fill="${fv}"/><path d="M60 30 V44" stroke-width="2.5"/>`,
+    vlny: `<path d="M30 62 Q29 29 60 29 Q91 29 90 62 Q82 42 64 41 Q56 54 30 62Z" fill="${fv}"/>`,
+    afro: `<path d="M31 56 Q34 38 60 36 Q86 38 89 56 Q76 46 60 48 Q44 46 31 56Z" fill="${fv}"/>`,
+    ofina: `<path d="M29 62 Q27 28 60 28 Q93 28 91 62 L89 50 Q60 55 31 50Z" fill="${fv}"/>`,
   }[a.vlasy] || '';
   const oci = {
     bodky: `<g class="blink"><circle cx="49" cy="64" r="3.4" fill="${INK}" stroke="none"/><circle cx="71" cy="64" r="3.4" fill="${INK}" stroke="none"/></g>`,
@@ -593,6 +623,10 @@ function postavicka(a, kruh = false) {
     srdiecka: `<path d="M49 73 C38 66 38 56 44 56 C47 56 49 58 49 60 C49 58 51 56 54 56 C60 56 60 66 49 73Z M71 73 C60 66 60 56 66 56 C69 56 71 58 71 60 C71 58 73 56 76 56 C82 56 82 66 71 73Z" fill="#FF6FA8"/><path d="M57 62 H63 M40 60 L32 59 M80 60 L88 59" fill="none"/>`,
     hviezdy: `<path d="M49 54 L52 61 L59 62 L54 67 L55 74 L49 70 L43 74 L44 67 L39 62 L46 61Z M71 54 L74 61 L81 62 L76 67 L77 74 L71 70 L65 74 L66 67 L61 62 L68 61Z" fill="#FFD23F"/><path d="M59 63 H61 M39 62 L32 60 M81 62 L88 60" fill="none"/>`,
     potapac: `<path d="M88 54 V30 q0 -7 7 -7" fill="none" stroke-width="8"/><path d="M88 54 V30 q0 -7 7 -7" fill="none" stroke="#FF9F1C" stroke-width="4"/><path d="M30 63 H90" stroke-width="5"/><rect x="36" y="53" width="48" height="21" rx="10" fill="rgb(143 211 255 / .6)"/><path d="M60 53 V74" stroke-width="2.5"/><path d="M41 58 l6 -2" stroke="#fff" stroke-width="2"/>`,
+    kocicie: `<path d="M38 58 Q48 54 58 58 Q57 71 48 71 Q39 71 38 58Z M62 58 Q72 54 82 58 Q81 71 72 71 Q63 71 62 58Z" fill="${sklo}"/><path d="M38 58 L33 52 M82 58 L87 52" stroke="#FF6FA8" stroke-width="4"/><path d="M58 61 H62 M38 60 L32 59 M82 60 L88 59" fill="none"/>`,
+    monokel: `<circle cx="71" cy="64" r="9" fill="${sklo}" stroke="#FFC233" stroke-width="3"/><path d="M79 70 Q88 84 82 100" fill="none" stroke="#FFC233" stroke-width="2"/>`,
+    lyziarske: `<path d="M28 63 H92" stroke-width="7"/><path d="M28 63 H92" stroke="#FF5A5F" stroke-width="3"/><rect x="36" y="54" width="48" height="20" rx="10" fill="#FFB020"/><path d="M42 60 l9 -2.5" stroke="#fff" stroke-width="2.5"/>`,
+    robot: `<rect x="31" y="55" width="58" height="17" rx="8" fill="${INK}"/><rect x="37" y="60" width="46" height="6" rx="3" fill="#FF5A5F" stroke="none" class="beam"/>`,
   }[a.okuliare] || '';
   const vzor = {
     pruhy: `<path d="M20 112 H100 M17 122 H103" stroke="rgb(255 255 255 / .75)" stroke-width="5"/>`,
@@ -600,6 +634,14 @@ function postavicka(a, kruh = false) {
     srdce: `<path d="M60 126 C47 118 48 106 55 106 C58 106 60 109 60 111 C60 109 62 106 65 106 C72 106 73 118 60 126Z" fill="#FF5A5F" stroke-width="2.5"/>`,
     blesk: `<path d="M63 103 L52 117 H60 L56 128 L69 112 H61Z" fill="#FFD23F" stroke-width="2.5"/>`,
     duha: ['#FF5A5F', '#FFD23F', '#2FBF71', '#4C7DFF'].map((c, i) => `<path d="M${42 + i * 4} 128 A${18 - i * 4} ${18 - i * 4} 0 0 1 ${78 - i * 4} 128" fill="none" stroke="${c}" stroke-width="4"/>`).join(''),
+    motylik: `<path d="M60 102 L48 95 V109Z M60 102 L72 95 V109Z" fill="#FF5A5F" stroke-width="2.5"/><circle cx="60" cy="102" r="3.5" fill="#FF5A5F" stroke-width="2.5"/>`,
+    jahoda: `<path d="M60 127 Q49 119 51 110 Q60 106 69 110 Q71 119 60 127Z" fill="#FF5A5F" stroke-width="2.5"/><path d="M54 109 l6 -5 6 5 -6 2z" fill="#2FBF71" stroke-width="2"/><path d="M56 115 h.1 M64 115 h.1 M60 120 h.1" stroke="#FFF3B0" stroke-width="2.5"/>`,
+    kravata: `<path d="M56 99 H64 L62 105 L66 123 L60 130 L54 123 L58 105Z" fill="#4C7DFF" stroke-width="2.5"/>`,
+    futbal: `<circle cx="60" cy="116" r="9" fill="#fff" stroke-width="2.5"/><path d="M60 111.5 l4 3 -1.5 4.5 h-5 l-1.5 -4.5Z" fill="${INK}" stroke="none"/>`,
+    sal: `<path d="M43 94 Q60 106 77 94 L81 102 Q60 116 39 102Z" fill="#FF9F1C" stroke-width="2.5"/><path d="M68 105 L71 126 L80 124 L77 103Z" fill="#FF9F1C" stroke-width="2.5"/><path d="M46 99 l4 5 M55 102 l2 5 M65 102 l-2 5" stroke="#fff" stroke-width="2"/>`,
+    nahrdelnik: [...Array(9).keys()].map(i => { const u = Math.PI * (.12 + i * .095); return `<circle cx="${(60 + Math.cos(u) * 17).toFixed(1)}" cy="${(97 + Math.sin(u) * 11).toFixed(1)}" r="2.8" fill="#fff" stroke-width="1.5"/>`; }).join(''),
+    medaila: `<path d="M53 96 L58 110 M67 96 L62 110" stroke="#4C7DFF" stroke-width="4"/><circle cx="60" cy="116" r="7.5" fill="#FFD23F" stroke-width="2.5"/><path d="M60 112 l1.2 2.6 2.8.3 -2.1 1.9.6 2.8 -2.5 -1.4 -2.5 1.4.6 -2.8 -2.1 -1.9 2.8 -.3z" fill="#FF9F1C" stroke="none"/>`,
+    raketa: `<path d="M60 104 Q67 110 66 122 H54 Q53 110 60 104Z" fill="#fff" stroke-width="2.5"/><circle cx="60" cy="113" r="2.5" fill="#8FD3FF" stroke-width="1.5"/><path d="M54 117 l-4 6 h5 M66 117 l4 6 h-5" fill="#FF5A5F" stroke-width="2"/><path d="M57 123 L60 129 L63 123" fill="#FFB020" stroke-width="2"/>`,
   }[a.vzor] || '';
   const doplnok = {
     siltovka: `<path d="M29 54 Q29 25 60 25 Q91 25 91 54Z" fill="${tr === '#FFFFFF' ? '#4C7DFF' : tr}"/><path d="M60 52 H101 Q104 58 95 59 H60Z" fill="${tr === '#FFFFFF' ? '#4C7DFF' : tr}"/><circle cx="60" cy="27" r="3" fill="#fff"/>`,
@@ -611,6 +653,14 @@ function postavicka(a, kruh = false) {
     pirat: `<path d="M89 46 L106 38 L102 52Z M89 50 L104 60 L94 62Z" fill="#FF5A5F"/><path d="M29 56 Q29 26 60 26 Q91 26 91 56 Q60 44 29 56Z" fill="#FF5A5F"/>${[[44, 40], [58, 34], [72, 38], [52, 46], [78, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#fff" stroke="none"/>`).join('')}`,
     cylinder: `<rect x="40" y="6" width="40" height="32" rx="3" fill="${INK}"/><rect x="40" y="26" width="40" height="7" fill="#FF5A5F" stroke="none"/><rect x="28" y="34" width="64" height="9" rx="4.5" fill="${INK}"/>`,
     carodej: `<path d="M33 40 Q50 30 60 1 Q70 30 87 40Z" fill="#7C6CFF"/><ellipse cx="60" cy="40" rx="33" ry="7" fill="#7C6CFF"/><path d="M60 14 l2 4 l4 .5 l-3 3 l1 4 l-4 -2 l-4 2 l1 -4 l-3 -3 l4 -.5z" fill="#FFD23F" stroke-width="1.5"/><circle cx="68" cy="30" r="2.5" fill="#FFD23F" stroke="none"/><circle cx="51" cy="27" r="2" fill="#FFD23F" stroke="none"/>`,
+    zajacie: `<path d="M46 36 Q38 4 48 4 Q56 6 53 34Z M74 36 Q82 4 72 4 Q64 6 67 34Z" fill="#fff"/><path d="M47.5 30 Q43 11 48 10 Q51 13 50.5 30Z M72.5 30 Q77 11 72 10 Q69 13 69.5 30Z" fill="#FF9EC7" stroke="none"/>`,
+    macacie: `<path d="M35 46 L37 17 L55 34Z M85 46 L83 17 L65 34Z" fill="${fv}"/><path d="M40 38 L41 25 L49 33Z M80 38 L79 25 L71 33Z" fill="#FF9EC7" stroke="none"/>`,
+    kovboj: `<path d="M36 48 Q33 21 48 21 Q55 25 60 21 Q65 25 72 21 Q87 21 84 48 Q60 54 36 48Z" fill="#C98A4B"/><path d="M37 42 Q60 48 83 42" stroke="#FF5A5F" stroke-width="4" fill="none"/><path d="M16 45 Q60 60 104 45 Q102 54 60 58 Q18 54 16 45Z" fill="#B5713C"/>`,
+    veniec: [[36, 44, '#FF9EC7'], [46, 35, '#FFD23F'], [60, 31, '#8FD3FF'], [74, 35, '#FF9EC7'], [84, 44, '#FFD23F']].map(([x, y, c]) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map(u => `<circle cx="0" cy="-4.5" r="3.6" fill="${c}" stroke-width="1.8" transform="rotate(${u})"/>`).join('')}<circle r="2.8" fill="#FF9F1C" stroke-width="1.5"/></g>`).join(''),
+    tiara: `<path d="M38 41 Q60 31 82 41 L79 31 L71 36 L66 22 L60 33 L54 22 L49 36 L41 31Z" fill="#E6E9F5"/><circle cx="60" cy="27" r="3.4" fill="#8FD3FF" stroke-width="2"/><circle cx="49" cy="33" r="2" fill="#FF9EC7" stroke-width="1.5"/><circle cx="71" cy="33" r="2" fill="#FF9EC7" stroke-width="1.5"/>`,
+    viking: `<path d="M32 40 Q14 36 16 12 Q24 28 37 30Z M88 40 Q106 36 104 12 Q96 28 83 30Z" fill="#FFF3D6"/><path d="M30 52 Q30 24 60 24 Q90 24 90 52Z" fill="#B8BCCB"/><path d="M30 50 H90" stroke-width="7"/><path d="M30 50 H90" stroke="#C98A4B" stroke-width="3"/><path d="M60 25 V48" stroke-width="2.5"/>`,
+    svatozar: `<g class="bob"><ellipse cx="60" cy="17" rx="25" ry="7" fill="none" stroke-width="9"/><ellipse cx="60" cy="17" rx="25" ry="7" fill="none" stroke="#FFD23F" stroke-width="5"/><ellipse cx="60" cy="17" rx="25" ry="7" fill="none" stroke="#FFF3B0" stroke-width="1.5"/></g>`,
+    cisarska: `<path d="M31 43 L28 11 L43 26 L51 5 L60 21 L69 5 L77 26 L92 11 L89 43Z" fill="#FFC233"/><rect x="31" y="36" width="58" height="10" rx="3" fill="#FF5A5F"/><circle cx="60" cy="30" r="4" fill="#4C7DFF" stroke-width="2"/><circle cx="44" cy="33" r="3" fill="#2FBF71" stroke-width="2"/><circle cx="76" cy="33" r="3" fill="#B36BFF" stroke-width="2"/>${[[28, 9], [51, 3], [69, 3], [92, 9]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#fff" stroke-width="2"/>`).join('')}<g transform="translate(101 22)"><g class="twinkle"><path d="M0 -7 L2 -2 L7 0 L2 2 L0 7 L-2 2 L-7 0 L-2 -2Z" fill="#FFD23F" stroke-width="1.5"/></g></g>`,
   }[a.doplnok] || '';
   const oko = (x, y) => `<circle cx="${x}" cy="${y}" r="2" fill="${INK}" stroke="none"/>`;
   const zvieratko = {
@@ -619,15 +669,34 @@ function postavicka(a, kruh = false) {
     sovicka: `<path d="M-9 -9 L-11 -18 L-3 -12Z M9 -9 L11 -18 L3 -12Z" fill="#7650E6" stroke-width="2"/><circle r="12" fill="#9B6BFF" stroke-width="2.5"/><circle cx="-4.5" cy="-2" r="4.5" fill="#fff" stroke-width="2"/><circle cx="4.5" cy="-2" r="4.5" fill="#fff" stroke-width="2"/>${oko(-4, -2)}${oko(5, -2)}<path d="M-2 3 H2 L0 6Z" fill="#FFA62B" stroke-width="1.5"/>`,
     dino: `<path d="M-8 -11 l3 -7 l3 6 l3 -7 l3 6 l3 -6 l2 8" fill="#16BFAE" stroke-width="2"/><ellipse rx="14" ry="11" fill="#2FBF71" stroke-width="2.5"/>${oko(-5, -3)}${oko(5, -3)}<path d="M-6 4 q6 5 12 0" fill="none" stroke-width="2"/><circle cx="-2" cy="1" r="1" fill="${INK}" stroke="none"/><circle cx="2" cy="1" r="1" fill="${INK}" stroke="none"/>`,
     jednorozec: `<circle cx="-11" cy="-6" r="5" fill="#FF9EC7" stroke-width="2"/><circle cx="-12" cy="2" r="5" fill="#B36BFF" stroke-width="2"/><circle cx="-10" cy="9" r="4.5" fill="#8FD3FF" stroke-width="2"/><path d="M-2 -10 L2 -26 L6 -10Z" fill="#FFD23F" stroke-width="2"/><circle r="12" fill="#fff" stroke-width="2.5"/><path d="M-6 -1 q3 3 6 0 M3 -1 q3 3 6 0" fill="none" stroke-width="2"/><circle cx="7" cy="5" r="2.5" fill="#FF8FB1" stroke="none"/>`,
+    zajko: `<path d="M-6 -8 Q-11 -27 -4 -27 Q0 -25 -1 -9Z M6 -8 Q11 -27 4 -27 Q0 -25 1 -9Z" fill="#fff" stroke-width="2"/><circle r="12" fill="#fff" stroke-width="2.5"/>${oko(-4.5, -2)}${oko(4.5, -2)}<path d="M-1.5 2 h3 l-1.5 2Z" fill="#FF6FA8" stroke="none"/><circle cx="-7" cy="4" r="2.2" fill="#FF9EC7" stroke="none"/><circle cx="7" cy="4" r="2.2" fill="#FF9EC7" stroke="none"/>`,
+    tucniak: `<ellipse rx="12" ry="13" fill="${INK}" stroke-width="2.5"/><ellipse cy="3" rx="8" ry="9" fill="#fff" stroke="none"/><circle cx="-4" cy="-4" r="3" fill="#fff" stroke="none"/><circle cx="4" cy="-4" r="3" fill="#fff" stroke="none"/>${oko(-4, -4)}${oko(4, -4)}<path d="M-3 0 h6 l-3 4Z" fill="#FF9F1C" stroke-width="1.5"/>`,
+    liska: `<path d="M-12 -2 L-11 -19 L-3 -11Z M12 -2 L11 -19 L3 -11Z" fill="#FF7A1A" stroke-width="2.5"/><path d="M-13 -4 Q-13 -13 0 -13 Q13 -13 13 -4 Q10 8 0 12 Q-10 8 -13 -4Z" fill="#FF7A1A" stroke-width="2.5"/><path d="M-9 2 Q-4 4 0 11 Q4 4 9 2 Q5 9 0 11.5 Q-5 9 -9 2Z" fill="#fff" stroke="none"/>${oko(-4.5, -3)}${oko(4.5, -3)}<circle cy="9" r="1.8" fill="${INK}" stroke="none"/>`,
+    drak: `<path d="M-10 -4 L-23 -17 L-19 -3 L-25 -5 L-14 4Z M10 -4 L23 -17 L19 -3 L25 -5 L14 4Z" fill="#7C6CFF" stroke-width="2"/><ellipse rx="13" ry="11" fill="#B36BFF" stroke-width="2.5"/><path d="M-7 -10 l2 -6 2 5 M3 -10 l2 -6 2 5" fill="#FFD23F" stroke-width="1.5"/>${oko(-5, -3)}${oko(5, -3)}<path d="M-4 4 q4 3 8 0" fill="none" stroke-width="2"/><path d="M13 2 q9 -4 12 2 q-5 0 -3 5 q-5 -3 -9 -3Z" fill="#FF9F1C" stroke-width="1.5"/>`,
+    fenix: `<path d="M-8 5 Q-21 16 -27 7 Q-19 8 -16 1Z M8 5 Q21 16 27 7 Q19 8 16 1Z" fill="#FF9F1C" stroke-width="2"/><path d="M-6 -10 Q-9 -23 0 -27 Q-2 -19 2 -15 Q4 -23 11 -23 Q6 -17 6 -10Z" fill="#FFD23F" stroke-width="2"/><circle r="12" fill="#FF5A5F" stroke-width="2.5"/>${oko(-4.5, -2)}${oko(4.5, -2)}<path d="M-2 2 h4 l-2 4Z" fill="#FFD23F" stroke-width="1.5"/>`,
   }[a.zvieratko];
+  const krid = p => `<path d="${p}"/><path d="${p}" transform="matrix(-1 0 0 1 120 0)"/>`;
+  const kuzloZ = {
+    motyl: `<g fill="#FF9EC7">${krid('M44 100 Q8 66 5 94 Q3 116 40 110Z')}</g><g fill="#B36BFF">${krid('M42 106 Q16 98 14 112 Q22 124 43 112Z')}</g><g fill="#fff" stroke="none">${krid('M20 86 a5 5 0 1 0 .1 0Z')}</g>`,
+    aura: `<circle cx="60" cy="64" r="58" fill="#FFE27A" opacity=".6" stroke="none"/><circle cx="60" cy="64" r="47" fill="#FFF3B0" opacity=".7" stroke="none"/>${[...Array(12).keys()].map(i => `<path d="M${(60 + Math.cos(i * Math.PI / 6) * 44).toFixed(1)} ${(64 + Math.sin(i * Math.PI / 6) * 44).toFixed(1)} L${(60 + Math.cos(i * Math.PI / 6) * 58).toFixed(1)} ${(64 + Math.sin(i * Math.PI / 6) * 58).toFixed(1)}" stroke="#FFC233" stroke-width="4" opacity=".7"/>`).join('')}`,
+    anjel: `<g fill="#fff">${krid('M44 104 Q10 98 3 64 Q15 74 21 72 Q11 62 13 49 Q25 65 33 63 Q29 55 33 45 Q41 70 52 92Z')}</g>`,
+    drakie: `<g fill="#7C6CFF">${krid('M45 100 L7 50 L17 69 L3 71 L19 83 L7 92 L41 107Z')}</g><g fill="none" stroke-width="2">${krid('M41 102 L17 69 M39 104 L19 83')}</g>`,
+    duha: ['#FF5A5F', '#FF9F1C', '#FFD23F', '#2FBF71', '#4C7DFF', '#B36BFF'].map((c, i) => `<path d="M${4 + i * 5} 76 A${56 - i * 5} ${56 - i * 5} 0 0 1 ${116 - i * 5} 76" fill="none" stroke="${c}" stroke-width="5.5"/>`).join(''),
+  }[a.kuzlo] || '';
+  const iskra = (x, y, d, c = '#FFD23F') => `<g transform="translate(${x} ${y})"><g class="twinkle" style="animation-delay:${d}s"><path d="M0 -7 L2 -2 L7 0 L2 2 L0 7 L-2 2 L-7 0 L-2 -2Z" fill="${c}" stroke-width="1.5"/></g></g>`;
+  const kuzloP = {
+    iskry: [[16, 30, 0], [104, 24, .6], [12, 90, 1.2], [106, 78, .3], [60, 8, .9, '#FF9EC7']].map(p => iskra(...p)).join(''),
+    duha: iskra(14, 40, 0) + iskra(106, 40, .7, '#FF9EC7'),
+    aura: iskra(20, 26, .2) + iskra(100, 26, .9),
+  }[a.kuzlo] || '';
   return `<svg class="postavicka" viewBox="0 0 120 130" aria-hidden="true"><g stroke="${INK}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
     ${kruh ? `<circle cx="60" cy="64" r="58" fill="${a.pozadie}" stroke="none"/>` : ''}
-    ${vzadu}
+    ${kuzloZ}${vzadu}
     <path d="M14 131 Q16 100 42 96 L78 96 Q104 100 106 131Z" fill="${tr}"/>${vzor}
     <path d="M50 86 V100 Q60 106 70 100 V86Z" fill="${k}"/><path d="M47 97 Q60 108 73 97" fill="none" stroke-width="3"/>
     <circle cx="31" cy="66" r="7" fill="${k}"/><circle cx="89" cy="66" r="7" fill="${k}"/>
     <circle cx="60" cy="62" r="30" fill="${k}"/>
     <circle cx="42" cy="74" r="4.5" fill="#FF8FB1" opacity=".75" stroke="none"/><circle cx="78" cy="74" r="4.5" fill="#FF8FB1" opacity=".75" stroke="none"/>
     ${oci}${usta}${vpredu}${okuliare}${doplnok}
-    ${zvieratko ? `<g transform="translate(97 106) scale(1.3)"><g class="bob">${zvieratko}</g></g>` : ''}</g></svg>`;
+    ${zvieratko ? `<g transform="translate(97 106) scale(1.3)"><g class="bob">${zvieratko}</g></g>` : ''}${kuzloP}</g></svg>`;
 }

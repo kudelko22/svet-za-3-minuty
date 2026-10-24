@@ -25,7 +25,10 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 
 - **64 odznakov** za témy, sériu dní, body, hry, obľúbené témy a „Majster“ za každú kategóriu (podrobne nižšie).
 - **Diely postavičky za body:** veselé farby vlasov, okuliare, obrázky na tričko, klobúky a zvieratko na pleci
-  (od 60 do 1350 bodov, cenník je `ODOMKNI` v `obrazky.js`). Domovská obrazovka ukazuje ďalšiu odmenu
+  (od 60 do 1350 bodov, cenník je `ODOMKNI` v `obrazky.js`). Od verzie 13 aj 6 nových účesov, nové farby,
+  motýlik, kravata, šál, náhrdelník, zvieratká zajko, tučniak a líška a ďalšie okuliare a čiapky.
+- **Mýtické veci** od 1600 do 5000 bodov: čarovné iskry, motýlie, anjelské a dračie krídla, zlatá a dúhová žiara
+  (diel „Kúzlo“), svätožiara, dráčik, fénix a cisárska koruna. Domovská obrazovka ukazuje ďalšiu odmenu
   a na konci témy sa oslavujú nové odznaky aj odomknuté veci.
 
 ## Režim do auta
@@ -50,6 +53,7 @@ v telefóne pre každé dieťa zvlášť.
 - **Chytaj hviezdičky** (od 400 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
 - **Opakuj po mne** (od 550 bodov): farby zasvietia a zahrajú tón, dieťa ich zopakuje; každé kolo o jednu viac.
 - **Bubliny s počtami** (od 700 bodov): minúta príkladov, menšie deti do 10, väčšie do 50 a malá násobilka.
+  Zlá bublina zoberie jeden bod hry.
 - **Skladačka** (od 900 bodov): poprehadzovaný obrázok z témy, ťuknutím sa vymenia dva dieliky.
 
 ## Odznaky
