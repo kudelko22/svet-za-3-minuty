@@ -38,7 +38,8 @@ img { max-width: 100%; }
 body { color: var(--ink); font: 700 16px/1.55 var(--f-body); -webkit-text-size-adjust: 100%; background-color: var(--sky); transition: background-color .5s; }
 body.tinted { background-color: color-mix(in srgb, var(--kc) 22%, #fff); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: inherit; }
-button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.koliesko { display: inline-block; width: 1em; height: 1em; margin-right: 8px; vertical-align: -.15em; border: 3px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
 :focus-visible { outline: 3px dashed var(--blue); outline-offset: 3px; }
 .gut { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .h1 { margin: 0; font: 700 clamp(1.9rem, 7.5vw, 2.3rem)/1.08 var(--f-display); text-wrap: balance; }
@@ -453,7 +454,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 6; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 7; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -761,20 +762,24 @@ function noveUpravovanie(prve) {
   return { id: null, meno: prve ? STARY.meno : '', vek: prve ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(), kat: 'vlasy', novy: true, prve, potvrd: false };
 }
 const brany = {
-  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted">Načítava sa…</p></div>`,
+  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
   bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
       <p class="muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>Skúsiť znova</button></div>`,
   prihlasenie: () => {
-    const C = window.Cloud || {};
+    // počas prihlasovania sa na tlačidle točí koliesko a tlačidlá sú zablokované (žiadne dvojité ťuknutie)
+    const C = window.Cloud || {}, p = C.pracuje || '', zam = p ? ' disabled' : '';
+    const napis = (co, text, cakaj = 'Chvíľku…') => p === co ? `<span class="koliesko"></span>${cakaj}` : text;
     return `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1>
       <p class="muted">Krátke témy o svete na rozhovor s deťmi. Prihláste sa, aby sa pokrok každého dieťaťa ukladal.</p>
       <div class="card prof">
-        <button class="btn google" data-ucet="google"><span class="g">G</span>Prihlásiť sa cez Google</button>
+        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Prihlásiť sa cez Google', 'Otvára sa Google…')}</button>
         <div class="alebo"><span>alebo e-mailom</span></div>
-        <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false">
-        <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password">
-        <div class="tests"><button class="btn blue" data-ucet="prihlas">Prihlásiť sa</button><button class="btn ghost" data-ucet="registruj">Nový účet</button></div>
-        <button class="link" data-ucet="zabudol">Zabudli ste heslo?</button>
+        <form id="prihlas-form" class="prof" novalidate>
+          <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="next">
+          <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password" enterkeyhint="go">
+          <div class="tests"><button type="submit" class="btn blue"${zam}>${napis('prihlas', 'Prihlásiť sa', 'Prihlasujem…')}</button><button type="button" class="btn ghost" data-ucet="registruj"${zam}>${napis('registruj', 'Nový účet')}</button></div>
+        </form>
+        <button type="button" class="link" data-ucet="zabudol"${zam}>Zabudli ste heslo?</button>
         ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}
       </div></div>`;
   },
@@ -805,7 +810,7 @@ const brany = {
         ? `<div class="card prof potvrd"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="muted">Body a prebraté témy tohto dieťaťa sa stratia.</p>
             <div class="tests"><button class="btn red" data-zmazat-ano>Áno, odstrániť</button><button class="btn ghost" data-zmazat-nie>Nie</button></div></div>`
         : '<button class="link center" data-zmazat>Odstrániť tento profil</button>'}
-      ${maDeti ? '<button class="btn ghost wide" data-spat>Späť</button>' : ''}</div>`;
+      ${maDeti ? '<button class="btn ghost wide" data-spat>Späť</button>' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>'}</div>`;
   },
 };
 function avTaby() { return AV_KAT.map(([k, n]) => `<button class="chip" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}" style="--c:#4C7DFF">${n}</button>`).join(''); }
@@ -821,6 +826,15 @@ function renderBrana() {
   main.classList.add('anim');
   main.innerHTML = brany[st.faza]();
   ocisluj();
+  if (st.faza === 'prihlasenie') {
+    // tlačidlo „Prihlásiť“ na klávesnici odošle formulár; z e-mailu sa skočí na heslo
+    const form = document.getElementById('prihlas-form'), em = document.getElementById('email'), he = document.getElementById('heslo');
+    em.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); he.focus(); } });
+    form.addEventListener('submit', e => {
+      e.preventDefault(); he.blur();
+      if (window.Cloud) window.Cloud.akcia('prihlas', em.value.trim(), he.value); else toast('Prihlásenie sa ešte načítava, skúste o chvíľu.');
+    });
+  }
   if (st.faza === 'tvorba') {
     const inp = document.getElementById('meno-dietata');
     inp.value = st.upravuje.meno;
@@ -1263,9 +1277,11 @@ const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).
 const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
 const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene(d.avatar), d.body || 0, d.done || [], d.fav || [], d.dni || []]);
 let odber = null, casovac = null;
+// prihlásenie cez Google v appke na ploche odchádza na stránku Googlu a vracia sa späť (do 3 minút)
+let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
 
 const Cloud = {
-  pouzivatel: null, deti: [], nacitane: false, chyba: '', stavUlozenia: '', ticho: false,
+  pouzivatel: null, deti: [], nacitane: false, chyba: '', stavUlozenia: '', ticho: false, pracuje: '',
   // zmena pokroku aktívneho dieťaťa: uložíme o chvíľu (viac zmien naraz = jeden zápis)
   naplanuj() {
     if (!this.pouzivatel || !st.dietaId) return;
@@ -1275,16 +1291,20 @@ const Cloud = {
   },
   ulozHned() { if (casovac) { clearTimeout(casovac); ulozAktivne(); } },
   async akcia(co, email, heslo) {
+    const prihlasuje = ['google', 'prihlas', 'registruj'].includes(co);
+    if (this.pracuje) return; // už sa prihlasuje, ďalšie ťuknutie ignorujeme
     this.chyba = '';
+    if (prihlasuje) { this.pracuje = co; if (st.faza === 'prihlasenie') obnovPrihlasenie(); }
     try {
       if (co === 'google') {
         const p = new GoogleAuthProvider();
         p.setCustomParameters({ prompt: 'select_account' });
         const naPloche = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
-        if (naPloche) await signInWithRedirect(auth, p);
+        const presmeruj = () => { S.set('presmerovanie', Date.now()); return signInWithRedirect(auth, p); };
+        if (naPloche) await presmeruj();
         else {
           try { await signInWithPopup(auth, p); }
-          catch (e) { if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(e.code)) await signInWithRedirect(auth, p); else throw e; }
+          catch (e) { if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(e.code)) await presmeruj(); else throw e; }
         }
       } else if (co === 'prihlas') {
         await signInWithEmailAndPassword(auth, email, heslo);
@@ -1304,7 +1324,8 @@ const Cloud = {
       Zvuk.play('ok');
     } catch (e) {
       this.chyba = chybaText(e); Zvuk.play('bad');
-      if (st.faza === 'prihlasenie') obnovPrihlasenie();
+    } finally {
+      if (prihlasuje) { this.pracuje = ''; if (st.faza === 'prihlasenie') obnovPrihlasenie(); }
     }
   },
   vyber(id, pohlad = 'domov') {
@@ -1400,8 +1421,12 @@ onAuthStateChanged(auth, u => {
   Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = '';
   if (odber) { odber(); odber = null; }
   clearTimeout(casovac); casovac = null;
-  if (!u) { Object.assign(st, { dietaId: null, avatar: null, flow: null, faza: 'prihlasenie' }); render(); return; }
-  st.faza = 'nacitava'; render();
+  if (!u) {
+    // po návrate z Googlu sa prihlásenie ešte dokončuje: neukazujeme prihlasovaciu obrazovku, aby sa neťukalo znova
+    Object.assign(st, { dietaId: null, avatar: null, flow: null, faza: dokoncujeGoogle ? 'nacitava' : 'prihlasenie', sprava: dokoncujeGoogle ? 'Dokončuje sa prihlásenie cez Google…' : '' });
+    render(); return;
+  }
+  Object.assign(st, { faza: 'nacitava', sprava: 'Prihlásené, načítavajú sa deti…' }); render();
   odber = onSnapshot(collection(db, 'rodiny', u.uid, 'deti'), { includeMetadataChanges: true }, snap => {
     const deti = snap.docs.map(x => ({ id: x.id, ...x.data() })).sort((a, b) => (a.poradie || 0) - (b.poradie || 0));
     if (!Cloud.nacitane) {
@@ -1422,7 +1447,11 @@ onAuthStateChanged(auth, u => {
     if (st.faza === 'vyber') render();
   }, e => { Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav(); });
 });
-getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); if (st.faza === 'prihlasenie') obnovPrihlasenie(); });
+getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); }).finally(() => {
+  const bolo = dokoncujeGoogle;
+  dokoncujeGoogle = false; S.set('presmerovanie', 0);
+  if (!Cloud.pouzivatel && (bolo || Cloud.chyba)) { Object.assign(st, { faza: 'prihlasenie', sprava: '' }); render(); }
+});
 </script>
 <script>
 // Offline: appka sa pri prvom otvorení uloží do telefónu.
