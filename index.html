@@ -455,6 +455,49 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .av-opt.farba.zamknute::after { inset: auto 0 22% 0; }
 .av-opt.trasie { animation: shake .4s; }
 
+/* Režim do auta: tmavšie farby (neoslňujú), veľké písmo a tlačidlá */
+body.auto-rezim { background-color: #1D2557; }
+body.auto-rezim .blobs { opacity: .3; }
+.auto { display: grid; gap: 16px; color: #fff; padding-top: 4px; }
+.auto-top { display: flex; align-items: center; justify-content: space-between; }
+.auto .frame { border-color: #0E1330; box-shadow: 0 6px 0 #0E1330; }
+.auto .ib { color: var(--ink); }
+.auto-scena svg { aspect-ratio: 2 / 1; }
+.auto-t { margin: 0; font: 700 1.9rem/1.1 var(--f-display); text-wrap: balance; }
+.auto-body { display: grid; gap: 12px; justify-items: start; min-height: 10em; align-content: start; }
+.auto-text { margin: 0; font: 700 1.45rem/1.5 var(--f-body); }
+.auto-text .minula { opacity: .6; }
+.auto-text .teraz { scroll-margin: 80px 0 150px; color: #FFE27A; background: rgb(255 210 63 / .16); border-radius: 8px; box-shadow: 0 0 0 4px rgb(255 210 63 / .16); }
+.auto-cas { display: flex; align-items: center; gap: 12px; font: 700 1.25rem/1.2 var(--f-display); color: #FFE27A; }
+.odpocet-kruh { position: relative; width: 64px; height: 64px; display: grid; place-items: center; }
+.odpocet-kruh svg { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.odpocet-kruh circle { fill: none; stroke: rgb(255 255 255 / .2); stroke-width: 7; }
+.odpocet-kruh .ostava { stroke: #FFD23F; stroke-linecap: round; stroke-dasharray: 170; animation: odpocet var(--s) linear forwards; }
+.odpocet-kruh b { position: relative; font-size: 1.4rem; }
+@keyframes odpocet { to { stroke-dashoffset: 170; } }
+.auto-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.auto-dots i { width: 10px; height: 10px; border-radius: 50%; background: rgb(255 255 255 / .22); transition: transform .3s; }
+.auto-dots i.hotovo { background: #2FBF71; }
+.auto-dots i.teraz { background: #FFD23F; transform: scale(1.45); }
+.auto-ovl { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2; display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: center; gap: 14px; }
+.auto-btn { height: 78px; border-radius: 24px; border: 3px solid #0E1330; background: #fff; color: var(--ink); font-size: 2rem; box-shadow: 0 5px 0 #0E1330; }
+.auto-btn.velke { height: 100px; font-size: 3rem; background: var(--sun); }
+.auto-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #0E1330; }
+.auto-prepinac { display: flex; align-items: center; gap: 10px; font-weight: 800; color: rgb(255 255 255 / .85); }
+.auto-prepinac input { width: 26px; height: 26px; accent-color: #2FBF71; }
+.auto-koniec { justify-items: center; text-align: center; }
+.auto-koniec .auto-top, .auto-koniec .btn, .auto-koniec .nove-odmeny { width: 100%; }
+.auto-koniec .earn, .auto-koniec .nove-odmeny { color: var(--ink); }
+.auto-odpocet { margin: 0; color: #FFE27A; font-weight: 800; }
+.auto-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; text-align: left; border-radius: 24px; border: 3px solid var(--ink); background: linear-gradient(135deg, #2E3A87, #4C7DFF); color: #fff; box-shadow: var(--sh); }
+.auto-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.auto-karta > div { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.auto-karta b { font: 700 1.35rem/1.15 var(--f-display); text-shadow: 0 2px 0 var(--ink); }
+.auto-karta small { font-weight: 800; opacity: .92; }
+.auto-ikona { flex: none; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--ink); background: #fff; font-size: 2rem; animation: tileBob 2.6s ease-in-out infinite; }
+.auto-play { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); color: var(--ink); font-size: 1.4rem; animation: pulse 1.6s ease-in-out infinite; }
+.btn.auto-mini { background: #2E3A87; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -486,7 +529,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 8; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 9; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -991,6 +1034,223 @@ function zbierkaOdznakov() {
     <section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
 }
 
+/* Režim do auta: appka prečíta tému, príklad, otázky na rozhovor aj kvíz; rodič za volantom nemusí nič ťukať */
+const vetyZ = txt => txt.split(/(?<=[.!?…])\s+/).filter(Boolean);
+const hlasSk = () => { try { return speechSynthesis.getVoices().find(v => /^sk/i.test(v.lang)); } catch (e) { return null; } };
+let drzanie = null; // obrazovka počas jazdy nezhasne
+async function drzObrazovku(zapni) {
+  try {
+    if (zapni && 'wakeLock' in navigator && !drzanie) { drzanie = await navigator.wakeLock.request('screen'); drzanie.addEventListener('release', () => { drzanie = null; }); }
+    if (!zapni && drzanie) { const d = drzanie; drzanie = null; await d.release(); }
+  } catch (e) { drzanie = null; }
+}
+// v pozadí telefón čítanie aj odpočet zastaví, preto pauza (inak by appka potichu preskakovala vety)
+document.addEventListener('visibilitychange', () => {
+  if (!st.auto) return;
+  if (!document.hidden) drzObrazovku(true);
+  else if (st.auto.stav === 'hovori' || st.auto.stav === 'caka') Auto.ovladaj('pauza');
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'auto-dalsia' && st.auto) { st.auto.pokracovat = e.target.checked; S.set('auto-pokracovat', e.target.checked); }
+});
+
+// celá téma rozložená na vety, pauzy a zvuky; segment = jedna časť (vysvetlenie, otázka, kvíz…)
+function autoPlan(t) {
+  const segs = [], kroky = [];
+  const pridaj = (e, label, vety, navyse = []) => {
+    const i = segs.length; segs.push({ e, label, i });
+    vety.forEach(text => kroky.push({ seg: i, typ: 'veta', text }));
+    navyse.forEach(k => kroky.push({ seg: i, ...k }));
+  };
+  pridaj('🚗', 'Téma', [`Téma: ${t.t}`]);
+  pridaj('📖', 'Vysvetlenie', vetyZ(t.m));
+  if (st.vek === 'starsi') pridaj('🎓', 'Pre väčšie deti', vetyZ(t.s));
+  pridaj('💡', 'Príklad zo života', ['Príklad zo života.', ...vetyZ(t.p)]);
+  t.o.forEach((o, i) => pridaj('💬', `Porozprávajte sa · ${i + 1} z ${t.o.length}`, [o], [{ typ: 'pauza', s: 12, co: 'Čas na rozhovor' }]));
+  const qs = t.z.filter(pre);
+  qs.forEach((q, i) => {
+    const moznosti = mix(q.a.length).map(j => q.a[j][1]);
+    pridaj('❓', `Kvíz · ${i + 1} z ${qs.length}`,
+      [`Otázka ${i + 1}: ${q.q}`, `Je to: ${moznosti.slice(0, -1).join(', ')}, alebo ${moznosti[moznosti.length - 1]}?`],
+      [{ typ: 'pauza', s: 8, co: 'Čas na odpoveď' }, { typ: 'veta', text: `Správna odpoveď je: ${q.a[0][1]}.` },
+        ...(q.w ? [{ typ: 'veta', text: q.w }] : []), { typ: 'zvuk', z: 'star' }]);
+  });
+  pridaj('🏁', 'Hotovo', [], [{ typ: 'koniec' }]);
+  return { segs, kroky };
+}
+function povedzAuto(text, hotovo) {
+  let hotove = false;
+  const koniec = () => { if (hotove) return; hotove = true; clearTimeout(poistka); hotovo(); };
+  const poistka = setTimeout(koniec, 3000 + text.length * 110); // niektoré telefóny koniec vety neohlásia
+  try {
+    const u = new SpeechSynthesisUtterance(text), v = hlasSk();
+    u.lang = 'sk-SK'; u.rate = .95; if (v) u.voice = v;
+    u.onend = koniec;
+    u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') koniec(); };
+    speechSynthesis.speak(u);
+  } catch (e) { koniec(); }
+}
+function dokonciAuto(t) {
+  const qn = t.z.filter(pre).length, bodyPred = st.body, dnes = key(new Date()), prvy = !st.done.includes(t.id);
+  const zisk = prvy ? qn * 10 + 10 : 0;
+  if (prvy) { st.done.push(t.id); S.set('done', st.done); }
+  st.body += zisk; S.set('body', st.body);
+  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  return { zisk, noveOdznaky: noveOdznaky(), noveOdmeny: noveOdmeny(bodyPred, st.body) };
+}
+function dalsiaTemaAuto(tid) {
+  const i = T.findIndex(t => t.id === tid);
+  for (let n = 1; n <= T.length; n++) { const t = T[(i + n) % T.length]; if (!st.done.includes(t.id)) return t; }
+  return T[(i + 1) % T.length];
+}
+
+const Auto = {
+  start(tid) {
+    const t = byId(tid);
+    if (!t) return;
+    const spat = st.auto ? st.auto.spat : st.view;
+    const zrusene = this.zrus();
+    const { segs, kroky } = autoPlan(t);
+    st.flow = null;
+    st.auto = { tid, segs, kroky, k: 0, stav: 'hovori', gen: 0, pokracovat: S.get('auto-pokracovat', true), vysledok: null, odpocet: null, spat };
+    if (!('speechSynthesis' in window)) { st.auto.stav = 'rucne'; toast('Tento telefón nevie čítať nahlas. Text si prečítajte a ťuknite na Ďalej.'); }
+    else if (!hlasSk() && speechSynthesis.getVoices().length) toast('Slovenský hlas v telefóne chýba, číta sa iným hlasom.');
+    drzObrazovku(true);
+    render(); scrollTo(0, 0);
+    const a = st.auto; // prvé speak() musí ísť hneď z ťuknutia (iPhone), po zrušenej reči až o chvíľku
+    if (zrusene) setTimeout(() => { if (st.auto === a) this.hraj(); }, 150); else this.hraj();
+  },
+  zrus() { // zastaví reč aj odpočítavanie
+    const a = st.auto;
+    if (!a) return;
+    a.gen++; clearInterval(a.odpocet); a.odpocet = null; clearTimeout(a.neskor);
+    try { if ('speechSynthesis' in window && (speechSynthesis.speaking || speechSynthesis.pending)) { speechSynthesis.cancel(); return true; } } catch (e) {}
+    return false;
+  },
+  hraj() {
+    const a = st.auto;
+    if (!a || a.stav === 'pauza' || a.stav === 'koniec') return;
+    const krok = a.kroky[a.k];
+    if (!krok) return;
+    const gen = ++a.gen;
+    const dalej = () => { if (st.auto !== a || a.gen !== gen) return; a.k++; this.hraj(); };
+    if (krok.typ === 'koniec') { this.koniec(); return; }
+    if (a.stav === 'rucne') { obnovAuto(); return; } // bez hlasu: celý text na obrazovke, ďalej ťuknutím
+    if (krok.typ === 'veta') { a.stav = 'hovori'; obnovAuto(); povedzAuto(krok.text, dalej); }
+    else if (krok.typ === 'pauza') {
+      a.stav = 'caka'; a.zostava = krok.s; obnovAuto();
+      a.odpocet = setInterval(() => {
+        if (st.auto !== a || a.gen !== gen) return;
+        a.zostava--;
+        const el = document.getElementById('auto-sek'); if (el) el.textContent = a.zostava;
+        if (a.zostava <= 0) { clearInterval(a.odpocet); a.odpocet = null; a.stav = 'hovori'; dalej(); }
+      }, 1000);
+    } else if (krok.typ === 'zvuk') { Zvuk.play(krok.z); setTimeout(dalej, 700); }
+  },
+  koniec() {
+    const a = st.auto, t = byId(a.tid);
+    if (!a.vysledok) { a.vysledok = dokonciAuto(t); const d = dalsiaTemaAuto(t.id); a.dalsia = d && d.id; }
+    const bezHlasu = a.stav === 'rucne', v = a.vysledok, gen = ++a.gen;
+    a.stav = 'koniec'; a.zostava = null; renderAuto();
+    Zvuk.play('win'); FX.rain(80);
+    const veta = `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} bodov.` : '')
+      + v.noveOdznaky.map(o => ` Nový odznak: ${o.n}.`).join('') + v.noveOdmeny.map(r => ` Pre postavičku máš ${NAZVY_ODMIEN[r.kluc]}.`).join('')
+      + (a.pokracovat && a.dalsia ? ' O chvíľu pokračujeme ďalšou témou.' : '');
+    const pokracuj = () => {
+      if (st.auto !== a || a.gen !== gen || !a.pokracovat || !a.dalsia) return;
+      a.zostava = 10; obnovKoniecAuto();
+      a.odpocet = setInterval(() => {
+        if (st.auto !== a || a.gen !== gen) { clearInterval(a.odpocet); return; }
+        a.zostava--; obnovKoniecAuto();
+        if (a.zostava <= 0) { clearInterval(a.odpocet); a.odpocet = null; Auto.start(a.dalsia); }
+      }, 1000);
+    };
+    setTimeout(() => {
+      if (st.auto !== a || a.gen !== gen) return;
+      if (bezHlasu) pokracuj(); else povedzAuto(veta, pokracuj);
+    }, 1500);
+  },
+  ovladaj(co) {
+    const a = st.auto;
+    if (!a) return;
+    if (co === 'stop') { this.stop(true); return; }
+    if (co === 'dalsia') { if (a.dalsia) this.start(a.dalsia); return; }
+    if (a.stav === 'koniec') return;
+    if (co === 'pauza') {
+      if (a.stav === 'pauza') { a.stav = 'hovori'; this.hraj(); }
+      else if (a.stav !== 'rucne') { this.zrus(); a.stav = 'pauza'; obnovAuto(); }
+      return;
+    }
+    const seg = (a.kroky[a.k] || a.kroky[a.kroky.length - 1]).seg, zaciatok = i => a.kroky.findIndex(k => k.seg === i);
+    this.zrus();
+    if (co === 'znova') a.k = zaciatok(seg);
+    if (co === 'dalej') a.k = seg + 1 < a.segs.length ? zaciatok(seg + 1) : a.kroky.length - 1;
+    if (a.stav !== 'rucne') { a.stav = 'hovori'; obnovAuto(); a.neskor = setTimeout(() => this.hraj(), 150); } // Safari po zrušení reči potrebuje chvíľku
+    else this.hraj();
+  },
+  stop(naspat) {
+    this.zrus(); drzObrazovku(false);
+    const spat = st.auto && st.auto.spat;
+    st.auto = null; document.body.classList.remove('auto-rezim');
+    if (naspat) { st.view = spat || 'domov'; render(); scrollTo(0, 0); }
+  },
+};
+
+function textAuto(a) {
+  const krok = a.kroky[a.k] || {}, seg = krok.seg ?? a.segs.length - 1;
+  const vety = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg && k.typ === 'veta');
+  const ukaz = a.stav === 'rucne' ? vety : vety.filter(k => k.i <= a.k);
+  return ukaz.map(k => `<span class="${k.i === a.k && a.stav === 'hovori' ? 'teraz' : 'minula'}">${esc(k.text)}</span>`).join(' ');
+}
+function obnovAuto() {
+  const a = st.auto, el = id => document.getElementById(id);
+  if (!a || a.stav === 'koniec' || !el('auto-text')) return;
+  const krok = a.kroky[a.k] || {}, seg = a.segs[krok.seg ?? a.segs.length - 1];
+  el('auto-stitok').textContent = `${seg.e} ${seg.label}`;
+  el('auto-text').innerHTML = textAuto(a);
+  const teraz = el('auto-text').querySelector('.teraz'); // dlhý text: aktuálna veta ostane nad tlačidlami
+  if (teraz) teraz.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  el('auto-cas').innerHTML = a.stav === 'caka'
+    ? `<span class="odpocet-kruh"><svg viewBox="0 0 64 64" style="--s:${krok.s}s"><circle cx="32" cy="32" r="27"/><circle class="ostava" cx="32" cy="32" r="27"/></svg><b id="auto-sek">${a.zostava}</b></span><span>${krok.co}</span>`
+    : a.stav === 'pauza' ? '<span>⏸ Pozastavené. Ťuknite na ▶.</span>' : '';
+  el('auto-dots').innerHTML = a.segs.map((s, i) => `<i class="${i < seg.i ? 'hotovo' : i === seg.i ? 'teraz' : ''}"></i>`).join('');
+  const p = el('auto-pauza');
+  p.textContent = a.stav === 'pauza' ? '▶' : '⏸';
+  p.setAttribute('aria-label', a.stav === 'pauza' ? 'Pokračovať' : 'Pozastaviť');
+}
+function obnovKoniecAuto() {
+  const a = st.auto, el = document.getElementById('auto-dalsia-sek'), r = document.getElementById('auto-odpocet');
+  if (r) r.hidden = !(a && a.zostava != null);
+  if (el && a) el.textContent = a.zostava;
+}
+function renderAuto() {
+  const a = st.auto, t = byId(a.tid);
+  const hore = `<div class="auto-top"><span class="chip" style="--c:#FF9F1C">🚗 Režim do auta</span><button class="ib" data-auto="stop" aria-label="Ukončiť">✕</button></div>`;
+  main.classList.add('anim');
+  if (a.stav === 'koniec') {
+    const v = a.vysledok, d = a.dalsia && byId(a.dalsia);
+    main.innerHTML = `<div class="auto auto-koniec">${hore}
+      <div class="win-hero"><div class="burst"></div><div class="win-owl">${owl('cheer')}</div></div>
+      <h1 class="auto-t">Výborne${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
+      <p class="auto-text">Téma „${esc(t.t)}“ je prebratá.</p>
+      ${v.zisk ? `<div class="earn">${STAR()} +${v.zisk} bodov</div>` : ''}
+      ${odmenyHtml(v)}
+      ${d ? `<button class="btn wide cta" data-auto="dalsia">▶ Ďalšia téma: ${esc(d.t)}</button>
+        <p class="auto-odpocet" id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek">10</b> s</p>` : ''}
+      <button class="btn ghost wide" data-auto="stop">Domov</button></div>`;
+    ocisluj(); return;
+  }
+  main.innerHTML = `<div class="auto">${hore}
+    <div class="frame auto-scena">${svg(t)}</div>
+    <h1 class="auto-t">${t.t}</h1>
+    <div class="auto-body"><span class="sticker sm" id="auto-stitok"></span><p class="auto-text" id="auto-text"></p><div class="auto-cas" id="auto-cas"></div></div>
+    <div class="auto-dots" id="auto-dots"></div>
+    <div class="auto-ovl"><button class="auto-btn" data-auto="znova" aria-label="Znova">⏮</button><button class="auto-btn velke" id="auto-pauza" data-auto="pauza">⏸</button><button class="auto-btn" data-auto="dalej" aria-label="Ďalej">⏭</button></div>
+    <label class="auto-prepinac"><input type="checkbox" id="auto-dalsia"${a.pokracovat ? ' checked' : ''}> Potom automaticky ďalšia téma</label>
+  </div>`;
+  ocisluj(); obnovAuto();
+}
+
 const views = {
   domov() {
     const t = temaDna(), k = KAT[t.k], hot = st.done.includes(t.id), s = seria(), dnes = key(new Date());
@@ -1008,6 +1268,8 @@ const views = {
           <button class="btn wide ${hot ? 'ghost' : 'cta'}" data-start="${t.id}">${hot ? '↻ Zopakovať tému' : 'Poďme na to! →'}</button>
         </div>
       </section>
+      <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">🚗</span>
+        <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">▶</span></button>
       <section class="card">
         <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak">${s ? `🔥 ${s} ${dni(s)} po sebe` : '🔥 Začnite sériu dnes'}</span></div>
         <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
@@ -1111,6 +1373,7 @@ function krok(f, k) {
       <h1 class="h1">${t.t}</h1>
       <div class="say"><div class="say-head"><button class="say-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><span>Povedzte dieťaťu</span>${citaj('uvod')}</div>
         <div class="bubble"><p>${t.m}</p></div></div>
+      <button class="btn auto-mini" data-auto-start="${t.id}">🚗 Celú tému nahlas (do auta)</button>
       ${st.vek === 'starsi' ? `<div class="more"><b>🎓 Pre väčšie deti</b><p>${t.s}</p></div>` : ''}</div>`;
   }
   if (k.t === 'priklad') {
@@ -1229,10 +1492,12 @@ function ocisluj() {
 }
 
 function render() {
-  const brana = st.faza !== 'appka', flow = !brana && !!st.flow;
-  document.getElementById('top').hidden = brana || flow;
-  document.getElementById('nav').hidden = brana || flow;
+  const brana = st.faza !== 'appka', auto = !brana && !!st.auto, flow = !brana && !auto && !!st.flow;
+  document.getElementById('top').hidden = brana || auto || flow;
+  document.getElementById('nav').hidden = brana || auto || flow;
+  document.body.classList.toggle('auto-rezim', auto);
   if (brana) { renderBrana(); return; }
+  if (auto) { renderAuto(); return; }
   if (flow) { renderFlow(); return; }
   document.body.classList.remove('tinted');
   main.classList.add('anim');
@@ -1265,6 +1530,8 @@ document.addEventListener('click', e => {
   if (!b || b.disabled) return;
   const d = b.dataset, f = st.flow;
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
+  if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
+  if (d.auto) { Auto.ovladaj(d.auto); return; }
   if (d.reload !== undefined) { location.reload(); return; }
   if (d.deti !== undefined) {
     Hlas.stop(); Zvuk.play('whoosh'); if (window.Cloud) window.Cloud.ulozHned();
@@ -1273,6 +1540,7 @@ document.addEventListener('click', e => {
   if (d.dieta) { Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
   if (d.noveDieta !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); return; }
   if (d.upravit !== undefined) {
+    if (st.auto) Auto.stop(false);
     Zvuk.play('pop');
     st.upravuje = { id: st.dietaId, meno: st.meno, vek: st.vek, avatar: { ...AV_ZAKLAD, ...st.avatar }, body: st.body, kat: AV_KAT.some(([k]) => k === d.upravit) ? d.upravit : 'vlasy', novy: false, potvrd: false };
     st.flow = null;

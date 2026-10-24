@@ -29,6 +29,16 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
   (od 40 do 900 bodov, cenník je `ODOMKNI` v `obrazky.js`). Domovská obrazovka ukazuje ďalšiu odmenu
   a na konci témy sa oslavujú nové odznaky aj odomknuté veci.
 
+## Režim do auta
+
+- Na domovskej obrazovke je veľká modrá karta **Režim do auta** a v úvode každej témy tlačidlo
+  **Celú tému nahlas**. Jedno ťuknutie a appka prečíta tému, odsek pre väčšie deti, príklad,
+  otázky na rozhovor (po každej 12 sekúnd na odpoveď) aj kvíz (otázka, možnosti, 8 sekúnd, správna odpoveď).
+- Na tmavej obrazovke svieti práve čítaná veta. Veľké tlačidlá: ⏮ znova, ⏸ pauza, ⏭ ďalšia časť, ✕ koniec.
+- Na konci appka pripíše body, oznámi nové odznaky a o 10 sekúnd sama spustí ďalšiu neprebratú tému
+  (dá sa vypnúť prepínačom).
+- Obrazovka počas čítania nezhasne. Keď sa appka schová (iná aplikácia, zamknutý telefón), čítanie sa pozastaví.
+
 ## Firebase
 
 Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Firestore a hosting.
