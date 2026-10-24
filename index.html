@@ -658,7 +658,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 13; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 14; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1827,6 +1827,10 @@ const views = {
     const dalsie = [...Array(T.length).keys()].map(i => T[(denCislo() + 1 + i) % T.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
     return `${location.hostname.endsWith('github.io') ? `
       <a class="presun" href="https://svet-za-3-minuty.web.app/">📦 Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
+      <section class="card">
+        <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak">${s ? `🔥 ${s} ${dni(s)} po sebe` : '🔥 Začnite sériu dnes'}</span></div>
+        <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
+      </section>
       <section class="hero" style="--c:${k.c}">
         <div class="hero-art">${scene(t, 'sm')}<span class="sticker">⭐ Téma dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
         <div class="hero-in">
@@ -1838,10 +1842,6 @@ const views = {
       </section>
       <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
         <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
-      <section class="card">
-        <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak">${s ? `🔥 ${s} ${dni(s)} po sebe` : '🔥 Začnite sériu dnes'}</span></div>
-        <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
-      </section>
       ${kartaDalsiaOdmena()}
       <div class="acts">
         <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">⚡</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém</small></button>
