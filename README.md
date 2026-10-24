@@ -4,7 +4,7 @@ Appka pre rodičov a deti. Každý deň jedna krátka téma o tom, ako funguje s
 zvládol povedať za 2–3 minúty, napríklad cestou autom. Ku každej téme patrí obrázok, príklad zo života,
 otázky na rozhovor a kvíz. Text vie appka aj prečítať nahlas.
 
-**Appka:** https://kudelko22.github.io/svet-za-3-minuty/
+**Appka:** https://svet-za-3-minuty.web.app/ (Firebase Hosting). Stará adresa na GitHub Pages ukazuje odkaz na novú.
 
 ## Ako si ju dať do mobilu
 
@@ -12,7 +12,17 @@ otázky na rozhovor a kvíz. Text vie appka aj prečítať nahlas.
 - **iPhone (Safari):** otvor odkaz, ťukni na tlačidlo **Zdieľať** a vyber **Pridať na plochu**.
 
 Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom otvorení funguje aj bez internetu.
-Body, prebraté a uložené témy si pamätá telefón, nikam sa neposielajú.
+Body, prebraté a uložené témy si pamätá telefón. Keď sa rodič v profile prihlási (Google účtom alebo e-mailom
+a heslom), pokrok sa uloží aj do cloudu (Firebase, databáza v Európe) a je dostupný na každom jeho mobile.
+
+## Firebase
+
+Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Firestore a hosting.
+
+- Pokrok je v kolekcii `pokrok/<uid>`; podľa `firestore.rules` vidí a mení každý len svoj dokument.
+- Nasadenie (Firebase CLI): `firebase deploy --only hosting,firestore:rules,auth`
+- Skúšanie bez ostrých účtov: `firebase emulators:start --only auth,firestore,hosting --project demo-svet-za-3-minuty`
+  a otvoriť http://127.0.0.1:5050 (appka sa na localhoste sama pripojí na emulátor).
 
 ## Čo v nej je
 
@@ -38,7 +48,7 @@ Body, prebraté a uložené témy si pamätá telefón, nikam sa neposielajú.
    vysvetlenie `m` (pre všetkých) a `s` (navyše pre staršie deti), príklad `p`, otázky `o` a kvíz `z`.
    V kvíze je správna vždy prvá odpoveď, appka ich poradie zamieša sama.
 2. Do `obrazky.js` pridaj do `ART` obrázok s rovnakým `id`.
-3. V `sw.js` zvýš `VERZIA` (napríklad `svet3-v2`), aby si telefóny stiahli novú verziu.
+3. V `index.html` zvýš `VERZIA_APPKY` (vidno ju v profile) a nasaď. Telefóny si novú verziu stiahnu pri ďalšom otvorení.
 
 Fakty v témach treba pred pridaním skontrolovať.
 

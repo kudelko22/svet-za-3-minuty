@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
 <style>
 /* Základ stránky (okraje pod lištami telefónu) */
 html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -30,7 +30,7 @@ img { max-width: 100%; }
   --ok-bg: #D9F8E6; --bad-bg: #FFE1E1;
   --sh: 0 5px 0 var(--ink);
   --spring: cubic-bezier(.25, 1.55, .5, 1);
-  --f-display: "Fredoka", "Baloo 2", "Segoe UI", system-ui, sans-serif;
+  --f-display: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif;
   --f-body: "Nunito", "Segoe UI", system-ui, sans-serif;
   color-scheme: light;
 }
@@ -290,6 +290,15 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .seg2 button { padding: 10px; border-radius: 16px; border: 3px solid var(--ink); background: var(--paper); font: 600 1.05rem/1.2 var(--f-display); box-shadow: 0 4px 0 var(--ink); }
 .seg2 button[aria-pressed="true"] { background: var(--blue); color: #fff; text-shadow: 0 2px 0 var(--ink); animation: jelly .5s; }
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tests { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.diag { margin: 0; padding: 8px 10px; border-radius: 12px; background: var(--soft); color: var(--muted); font: 600 .78rem/1.45 var(--f-body); overflow-wrap: anywhere; }
+.btn.google { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--paper); color: var(--ink); text-shadow: none; }
+.btn.google .g { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(#EA4335 0 25%, #FBBC05 0 50%, #34A853 0 75%, #4285F4 0); color: #fff; font: 800 1rem/1 var(--f-body); text-shadow: 0 1px 0 rgb(0 0 0 / .3); }
+.alebo { display: flex; align-items: center; gap: 10px; color: var(--muted); font: 600 .9rem/1 var(--f-display); }
+.alebo::before, .alebo::after { content: ""; flex: 1; height: 2px; background: var(--soft); }
+.link { justify-self: start; border: 0; background: none; padding: 2px 0; color: var(--blue); font: 700 .95rem/1.3 var(--f-body); text-decoration: underline; }
+.chyba { margin: 0; padding: 8px 12px; border-radius: 12px; background: var(--bad-bg); color: #B4232A; font-weight: 800; }
+.presun { display: block; padding: 12px 16px; border-radius: 18px; border: 3px solid var(--ink); background: var(--sun); box-shadow: 0 4px 0 var(--ink); color: var(--ink); text-decoration: none; font-weight: 800; }
 .ringc { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; }
 .ring { position: relative; flex: none; width: 116px; height: 116px; }
 .ring svg { width: 100%; height: 100%; rotate: -90deg; }
@@ -408,7 +417,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 4; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 5; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -417,45 +426,45 @@ const TBG = ['#D6E6FF', '#D9F8E6', '#FFE3C7'];
 const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovný!', 'Bomba!'];
 const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Pokrok sa ukladá v telefóne; po prihlásení ho Cloud (modul Firebase dole) pošle aj do cloudu
+const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni'];
 const S = {
   get(k, d) { try { const v = localStorage.getItem('svet3:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem('svet3:' + k, JSON.stringify(v)); } catch (e) {} },
+  set(k, v) {
+    try { localStorage.setItem('svet3:' + k, JSON.stringify(v)); } catch (e) {}
+    if (SYNC.includes(k) && window.Cloud && !window.Cloud.ticho) window.Cloud.naplanuj();
+  },
 };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-/* Zvuky: všetky sa skladajú priamo v prehliadači, žiadne súbory */
+/* Zvuky: všetky sa skladajú priamo v prehliadači, nič sa nesťahuje */
 const Zvuk = (() => {
   let ctx = null, out = null, on = S.get('zvuk', true);
-  // iPhone a iPad: Web Audio tam po zamknutí displeja, prepnutí appky či čítaní nahlas často stíchne.
-  // Preto sa tam zvuky hneď na začiatku „nahrajú“ do krátkych súborov a hrajú ako bežné audio.
   const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const urly = {}, banka = {};
-  let odomknute = false;
+  let sposob = S.get('zvuk-sposob', 'web'); // na iPhone: 'web' (Web Audio) alebo 'subor' (krátke súbory)
+  const D = { chyba: '', slucka: 'nespustená', posledny: '' };
+
   function ac() {
     if (!on) return null;
     try {
       if (!ctx) {
         const C = window.AudioContext || window.webkitAudioContext;
-        if (!C) return null;
+        if (!C) { D.chyba = 'Web Audio v prehliadači chýba'; return null; }
         ctx = new C();
         const comp = ctx.createDynamicsCompressor();
         out = ctx.createGain(); out.gain.value = .75;
         out.connect(comp); comp.connect(ctx.destination);
+        const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
       }
       if (ctx.state !== 'running') {
         // prerušený zvuk skúsime prebudiť; keď sa to do chvíle nepodarí, pri ďalšom ťuknutí vytvoríme nový
         const c = ctx;
-        try { const p = c.resume(); if (p) p.catch(() => {}); } catch (e) {}
-        setTimeout(() => { if (c === ctx && c.state !== 'running') { try { c.close(); } catch (e) {} ctx = null; } }, 600);
+        try { const p = c.resume(); if (p) p.catch(e => { D.chyba = 'resume: ' + e.name; }); } catch (e) { D.chyba = 'resume: ' + e.name; }
+        setTimeout(() => { if (c === ctx && c.state !== 'running') { try { c.close(); } catch (e) {} ctx = null; } }, 800);
       }
       return ctx;
-    } catch (e) { ctx = null; return null; }
+    } catch (e) { D.chyba = 'Web Audio: ' + e.name; ctx = null; return null; }
   }
-  // po návrate do appky začneme so svežím zvukom: starý môže byť „mŕtvy“, hoci tvrdí, že hrá
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden || !ctx) return;
-    try { ctx.close(); } catch (e) {}
-    ctx = null;
-  });
   function tone(c, f, t, d, type = 'sine', v = .2, f2) {
     const o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + t;
     o.type = type; o.frequency.setValueAtTime(f, t0);
@@ -492,64 +501,121 @@ const Zvuk = (() => {
     heart: c => { tone(c, 660, 0, .1, 'sine', .22, 990); tone(c, 990, .09, .2, 'sine', .2, 1480); },
     bum: c => { tone(c, 160, 0, .3, 'sine', .35, 50); sum(c, 0, .35, .25, 2500, 400); },
   };
-  // --- iPhone: zvuky ako krátke súbory WAV ---
-  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55 };
-  function wav(buf) {
-    const d = buf.getChannelData(0), n = d.length, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+
+  // --- iPhone ---
+  function wav(d, sr) {
+    const n = d.length, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
     const s = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
     s(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); s(8, 'WAVE'); s(12, 'fmt '); v.setUint32(16, 16, true);
-    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, buf.sampleRate, true); v.setUint32(28, buf.sampleRate * 2, true);
+    v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true);
     v.setUint16(32, 2, true); v.setUint16(34, 16, true); s(36, 'data'); v.setUint32(40, n * 2, true);
     for (let i = 0; i < n; i++) { const x = Math.max(-1, Math.min(1, d[i])); v.setInt16(44 + i * 2, x < 0 ? x * 0x8000 : x * 0x7FFF, true); }
     return b;
   }
+  const dataUrl = ab => { const u = new Uint8Array(ab); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return 'data:audio/wav;base64,' + btoa(s); };
+
+  // Tichá slučka v bežnom prehrávači prepne iPhone do režimu médií: Web Audio potom hrá
+  // aj v tichom režime a telefón ho medzi zvukmi neuspí.
+  let slucka = null;
+  function zapniSlucku() {
+    try {
+      if (!slucka) {
+        slucka = document.createElement('audio');
+        slucka.setAttribute('x-webkit-airplay', 'deny');
+        slucka.loop = true; slucka.preload = 'auto';
+        slucka.src = dataUrl(wav(new Float32Array(22050), 22050));
+      }
+      if (slucka.paused) {
+        const p = slucka.play();
+        if (p) p.then(() => { D.slucka = 'hrá'; }, e => { D.slucka = 'zlyhala'; D.chyba = 'slučka: ' + e.name; });
+      }
+    } catch (e) { D.chyba = 'slučka: ' + e.name; }
+  }
+
+  // Záloha: zvuky vopred vyrobené ako krátke súbory a prehrávané ako bežné audio
+  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55 };
+  const urly = {}, banka = {};
   const nahraj = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
   async function priprav() {
     const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    if (!OC) return;
+    if (!OC) { D.chyba = 'nedajú sa vyrobiť súbory'; return; }
     for (const [n, d] of Object.entries(DLZKA)) {
       try {
         const oc = new OC(1, Math.ceil(44100 * d), 44100), comp = oc.createDynamicsCompressor(), g = oc.createGain();
         g.gain.value = .75; g.connect(comp); comp.connect(oc.destination);
         const zivy = out; out = g;
         try { zvuky[n](oc); } finally { out = zivy; }
-        urly[n] = URL.createObjectURL(new Blob([wav(await nahraj(oc))], { type: 'audio/wav' }));
-      } catch (e) {}
+        const buf = await nahraj(oc);
+        urly[n] = dataUrl(wav(buf.getChannelData(0), buf.sampleRate));
+      } catch (e) { D.chyba = 'súbor ' + n + ': ' + e.name; }
     }
   }
-  // iPhone pustí zvuk len vtedy, keď prehrávač vznikol pri ťuknutí: pri prvom ťuknutí ich pripravíme všetky
-  function odomkni() {
-    if (odomknute || !urly.tap) return;
-    for (const n of Object.keys(urly)) banka[n] = [0, 1].map(() => { const a = new Audio(); a.preload = 'auto'; a.src = urly[n]; a.load(); return a; });
-    odomknute = true;
+  function prehravace() {
+    for (const n of Object.keys(urly)) if (!banka[n]) banka[n] = [0, 1].map(() => { const a = new Audio(); a.preload = 'auto'; a.src = urly[n]; a.load(); return a; });
   }
-  function hraj(n) {
-    const zoz = banka[n];
-    const a = zoz.find(x => x.paused || x.ended) || zoz[0];
+  function hrajSubor(n) {
+    if (!banka[n]) return false;
+    const zoz = banka[n], a = zoz.find(x => x.paused || x.ended) || zoz[0];
     try { a.currentTime = 0; } catch (e) {}
-    const p = a.play(); if (p) p.catch(() => {});
+    const p = a.play(); if (p) p.catch(e => { D.chyba = 'súbor: ' + e.name; });
+    return true;
   }
-  if (ios) {
-    priprav();
-    ['touchend', 'click'].forEach(t => document.addEventListener(t, odomkni, { capture: true, passive: true }));
+
+  // Pri každom ťuknutí zvuk zobudíme: iPhone ho po prerušení (zamknutie, iná appka, čítanie nahlas) uspí.
+  function prebud() {
+    if (!on) return;
+    if (ios) { zapniSlucku(); prehravace(); }
+    ac();
+  }
+  ['touchend', 'click', 'keydown'].forEach(t => document.addEventListener(t, prebud, { capture: true, passive: true }));
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) return;
+    try { if (slucka) slucka.pause(); } catch (e) {}
+    D.slucka = 'pozastavená';
+    if (ctx) { try { ctx.close(); } catch (e) {} ctx = null; }
+  });
+  if (ios) priprav();
+
+  function hrajWeb(n) {
+    const c = ac();
+    if (!c) return false;
+    try { zvuky[n](c); D.posledny = 'Web Audio (' + c.state + ')'; return true; } catch (e) { D.chyba = 'hranie: ' + e.name; return false; }
   }
 
   return {
+    ios,
+    get sposob() { return sposob; },
+    set sposob(s) { sposob = s; S.set('zvuk-sposob', s); },
     play(n) {
       if (!on || !zvuky[n]) return;
-      if (ios && banka[n]) { hraj(n); return; }
-      const c = ac(); if (c) try { zvuky[n](c); } catch (e) {}
+      if (ios && sposob === 'subor' && hrajSubor(n)) { D.posledny = 'súbor'; return; }
+      hrajWeb(n);
+    },
+    test(s) {
+      if (!on) this.toggle();
+      prebud();
+      if (s === 'subor') { if (hrajSubor('ok')) { D.posledny = 'súbor'; setTimeout(() => hrajSubor('coin'), 260); } else D.chyba = 'súbory ešte nie sú pripravené'; }
+      else { hrajWeb('ok'); setTimeout(() => hrajWeb('coin'), 260); }
     },
     get on() { return on; },
-    stav() {
-      if (ios) return odomknute ? 'running' : urly.tap ? 'čaká na prvé ťuknutie' : 'pripravuje sa';
-      return ctx ? ctx.state : 'zatiaľ nespustený';
+    stav() { return ctx ? ctx.state : 'zatiaľ nespustený'; },
+    diag() {
+      return [
+        'iPhone: ' + (ios ? 'áno' : 'nie'),
+        'appka na ploche: ' + (navigator.standalone || matchMedia('(display-mode: standalone)').matches ? 'áno' : 'nie'),
+        'Web Audio: ' + (ctx ? ctx.state : '–'),
+        ios ? 'tichá slučka: ' + D.slucka : '',
+        ios ? 'súbory: ' + Object.keys(urly).length + '/' + Object.keys(DLZKA).length : '',
+        'naposledy: ' + (D.posledny || '–'),
+        'chyba: ' + (D.chyba || 'žiadna'),
+      ].filter(Boolean).join(' · ');
     },
     toggle() {
       on = !on; S.set('zvuk', on);
-      if (on) this.play('pop');
+      if (on) { prebud(); this.play('pop'); }
       else {
         Object.values(banka).flat().forEach(a => { try { a.pause(); } catch (e) {} });
+        try { if (slucka) slucka.pause(); } catch (e) {}
         try { if (ctx) ctx.suspend(); } catch (e) {}
       }
       return on;
@@ -651,13 +717,32 @@ function row(t) {
     ${st.done.includes(t.id) ? '<span class="badge ok" aria-label="Hotovo">✓</span>' : '<span class="badge new">Nová</span>'}</button>`;
 }
 
+function uctovaKarta() {
+  const C = window.Cloud;
+  if (!C) return `<section class="card prof"><span class="lbl">☁️ Ukladanie do cloudu</span><p class="muted">Načítava sa… Bez internetu sa prihlásiť nedá, pokrok sa zatiaľ ukladá v tomto telefóne.</p></section>`;
+  const u = C.pouzivatel;
+  if (u) return `<section class="card prof ucet"><span class="lbl">☁️ Pokrok sa ukladá do cloudu</span>
+      <p class="muted">Prihlásený účet: <b>${esc(u.email || u.displayName || 'bez e-mailu')}</b><br><span id="cloud-stav">${esc(C.stavUlozenia)}</span></p>
+      <button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></section>`;
+  return `<section class="card prof ucet"><span class="lbl">☁️ Uložiť pokrok do cloudu</span>
+      <p class="muted">Po prihlásení sa body, prebraté a uložené témy uložia do cloudu a uvidíte ich aj na inom mobile.</p>
+      <button class="btn google" data-ucet="google"><span class="g">G</span>Prihlásiť sa cez Google</button>
+      <div class="alebo"><span>alebo e-mailom</span></div>
+      <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false">
+      <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password">
+      <div class="tests"><button class="btn blue" data-ucet="prihlas">Prihlásiť sa</button><button class="btn ghost" data-ucet="registruj">Nový účet</button></div>
+      <button class="link" data-ucet="zabudol">Zabudli ste heslo?</button>
+      ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}</section>`;
+}
+
 const views = {
   domov() {
     const t = temaDna(), k = KAT[t.k], hot = st.done.includes(t.id), s = seria(), dnes = key(new Date());
     const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
     const tyzden = DNI.map((n, i) => { const d = new Date(pon); d.setDate(pon.getDate() + i); return { n, d, k: key(d) }; });
     const dalsie = [...Array(T.length).keys()].map(i => T[(denCislo() + 1 + i) % T.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
-    return `
+    return `${location.hostname.endsWith('github.io') ? `
+      <a class="presun" href="https://svet-za-3-minuty.web.app/">📦 Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
       <section class="hero" style="--c:${k.c}">
         <div class="hero-art">${scene(t, 'sm')}<span class="sticker">⭐ Téma dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
         <div class="hero-in">
@@ -700,10 +785,15 @@ const views = {
         <div class="seg2"><button data-vek="mladsi" aria-pressed="${st.vek === 'mladsi'}">5–8 rokov</button><button data-vek="starsi" aria-pressed="${st.vek === 'starsi'}">9–12 rokov</button></div>
         <p class="muted">Pri 9–12 rokoch má každá téma odsek navyše a ťažšie otázky v kvíze.</p>
       </section>
+      ${uctovaKarta()}
       <section class="card prof">
         <span class="lbl">Zvuky</span>
-        <button class="btn blue" data-test-zvuk>🔊 Vyskúšať zvuk</button>
-        <p class="muted">Keď nič nepočuť, zvýšte hlasitosť a skontrolujte, či zvuky nie sú vypnuté reproduktorom hore. Ak zvuky zmiznú, stačí ťuknúť sem.</p>
+        ${Zvuk.ios ? `<div class="tests"><button class="btn blue" data-test-zvuk="web">🔊 Test 1</button><button class="btn" data-test-zvuk="subor">🔊 Test 2</button></div>
+        <p class="muted">Ťuknite na oba testy a vyberte ten, ktorý počujete:</p>
+        <div class="seg2"><button data-sposob="web" aria-pressed="${Zvuk.sposob === 'web'}">Počujem Test 1</button><button data-sposob="subor" aria-pressed="${Zvuk.sposob === 'subor'}">Počujem Test 2</button></div>`
+        : '<button class="btn blue" data-test-zvuk="web">🔊 Vyskúšať zvuk</button>'}
+        <p class="muted">Keď nič nepočuť, zvýšte hlasitosť a skontrolujte, či zvuky nie sú vypnuté reproduktorom hore.</p>
+        <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
       </section>
       <section class="stats">
         <div class="card ringc">
@@ -911,10 +1001,20 @@ document.addEventListener('click', e => {
   const d = b.dataset, f = st.flow;
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
   if (d.testZvuk !== undefined) {
-    if (!Zvuk.on) Zvuk.toggle();
-    Hlas.stop(); paintHead(); Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260);
+    Hlas.stop(); Zvuk.test(d.testZvuk || 'web'); paintHead();
     const [x, y] = stred(b); FX.burst(x, y, 20, ['star', 'dot'], 7);
-    setTimeout(() => toast(Zvuk.stav() === 'running' ? 'Zvuk hrá 🎵 Ak nič nepočuť, zvýšte hlasitosť.' : 'Zvuk sa ešte nerozbehol, ťuknite ešte raz.'), 700);
+    setTimeout(() => { const el = document.getElementById('diag'); if (el) el.textContent = Zvuk.diag(); }, 900);
+    return;
+  }
+  if (d.sposob) {
+    Zvuk.sposob = d.sposob; render(); Zvuk.play('pop');
+    toast(d.sposob === 'subor' ? 'Zvuky pôjdu spôsobom z Testu 2.' : 'Zvuky pôjdu spôsobom z Testu 1.');
+    return;
+  }
+  if (d.ucet) {
+    if (!window.Cloud) { toast('Prihlásenie sa ešte načítava, skúste o chvíľu.'); return; }
+    const email = (document.getElementById('email') || {}).value || '', heslo = (document.getElementById('heslo') || {}).value || '';
+    window.Cloud.akcia(d.ucet, email.trim(), heslo);
     return;
   }
   if (d.start) startTema(d.start);
@@ -964,6 +1064,171 @@ document.addEventListener('click', e => {
 document.getElementById('av').innerHTML = owl('hi');
 document.getElementById('star-ico').innerHTML = STAR();
 render();
+</script>
+<script type="module">
+// Prihlásenie a ukladanie pokroku do Firebase (projekt svet-za-3-minuty).
+// Appka funguje aj bez toho: keď sa knižnica nenačíta (napríklad bez internetu), pokrok ostáva v telefóne.
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth, connectAuthEmulator, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache, doc, onSnapshot, setDoc, serverTimestamp,
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname); // skúšanie na emulátore, nie ostré dáta
+const naFirebase = location.hostname.endsWith('.web.app') || location.hostname.endsWith('.firebaseapp.com');
+const app = initializeApp({
+  apiKey: 'AIzaSyA3pvk0D072FJq0-i3Bwz-fo8Cyw7dHzfk',
+  // na adrese z Firebase ide prihlásenie cez tú istú doménu, inak ho Safari na iPhone zablokuje
+  authDomain: naFirebase ? location.hostname : 'svet-za-3-minuty.firebaseapp.com',
+  projectId: lokalne ? 'demo-svet-za-3-minuty' : 'svet-za-3-minuty',
+  storageBucket: 'svet-za-3-minuty.firebasestorage.app',
+  messagingSenderId: '37427452834',
+  appId: '1:37427452834:web:9ce1a6941d3e1396d570fb',
+});
+const auth = getAuth(app);
+auth.languageCode = 'sk';
+let db;
+try { db = initializeFirestore(app, { localCache: persistentLocalCache() }); } catch (e) { db = getFirestore(app); }
+if (lokalne) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9199', { disableWarnings: true });
+  connectFirestoreEmulator(db, '127.0.0.1', 8180);
+}
+
+const CHYBY = {
+  'auth/invalid-credential': 'Nesprávny e-mail alebo heslo.',
+  'auth/invalid-login-credentials': 'Nesprávny e-mail alebo heslo.',
+  'auth/wrong-password': 'Nesprávne heslo.',
+  'auth/user-not-found': 'Účet s týmto e-mailom neexistuje. Ťuknite na Nový účet.',
+  'auth/invalid-email': 'E-mail nie je napísaný správne.',
+  'auth/missing-email': 'Najprv napíšte e-mail.',
+  'auth/missing-password': 'Napíšte heslo.',
+  'auth/email-already-in-use': 'Tento e-mail už účet má. Ťuknite na Prihlásiť sa.',
+  'auth/weak-password': 'Heslo musí mať aspoň 6 znakov.',
+  'auth/too-many-requests': 'Priveľa pokusov. Skúste to o chvíľu.',
+  'auth/network-request-failed': 'Chýba internet. Skúste to, keď bude signál.',
+  'auth/popup-closed-by-user': 'Okno s prihlásením sa zavrelo skôr, ako ste sa prihlásili.',
+  'auth/cancelled-popup-request': 'Prihlásenie sa prerušilo, skúste znova.',
+  'auth/unauthorized-domain': 'Na tejto adrese prihlásenie cez Google nejde. Otvorte svet-za-3-minuty.web.app.',
+  'auth/operation-not-allowed': 'Tento spôsob prihlásenia ešte nie je zapnutý.',
+  'permission-denied': 'Cloud uloženie odmietol.',
+  'unavailable': 'Cloud je teraz nedostupný, uloží sa neskôr.',
+};
+const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
+
+const KLUCE = ['meno', 'vek', 'body', 'done', 'fav', 'dni'];
+let odber = null, casovac = null, zlucene = false;
+
+const Cloud = {
+  pouzivatel: null, chyba: '', stavUlozenia: '', ticho: false,
+  naplanuj() {
+    if (!this.pouzivatel || !zlucene) return;
+    clearTimeout(casovac);
+    this.stavUlozenia = 'Ukladá sa…'; obnovStav();
+    casovac = setTimeout(uloz, 800);
+  },
+  async akcia(co, email, heslo) {
+    this.chyba = '';
+    try {
+      if (co === 'google') {
+        const p = new GoogleAuthProvider();
+        p.setCustomParameters({ prompt: 'select_account' });
+        const naPloche = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+        if (naPloche) await signInWithRedirect(auth, p);
+        else {
+          try { await signInWithPopup(auth, p); }
+          catch (e) { if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment'].includes(e.code)) await signInWithRedirect(auth, p); else throw e; }
+        }
+      } else if (co === 'prihlas') {
+        await signInWithEmailAndPassword(auth, email, heslo);
+      } else if (co === 'registruj') {
+        await createUserWithEmailAndPassword(auth, email, heslo);
+      } else if (co === 'zabudol') {
+        if (!email) throw { code: 'auth/missing-email' };
+        await sendPasswordResetEmail(auth, email);
+        toast('Poslali sme vám e-mail na zmenu hesla.');
+        return;
+      } else if (co === 'odhlas') {
+        await signOut(auth);
+        toast('Odhlásené. Pokrok ostáva aj v tomto telefóne.');
+        return;
+      }
+      Zvuk.play('ok'); toast('Prihlásené ☁️ Pokrok sa ukladá do cloudu.');
+    } catch (e) {
+      this.chyba = chybaText(e); Zvuk.play('bad'); obnovProfil();
+    }
+  },
+};
+window.Cloud = Cloud;
+
+const data = () => ({
+  meno: (st.meno || '').slice(0, 20), vek: st.vek === 'starsi' ? 'starsi' : 'mladsi',
+  body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60),
+  verzia: 1, upravene: serverTimestamp(),
+});
+function zapisLokalne() { Cloud.ticho = true; try { KLUCE.forEach(k => S.set(k, st[k])); } finally { Cloud.ticho = false; } }
+function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
+// Profil prekreslíme bez skákania a bez straty napísaného e-mailu a hesla
+function obnovProfil() {
+  if (st.flow || st.view !== 'ja') return;
+  const pise = document.activeElement && document.activeElement.id === 'meno';
+  if (pise) { obnovStav(); return; }
+  const em = (document.getElementById('email') || {}).value, he = (document.getElementById('heslo') || {}).value, y = scrollY;
+  render(); main.classList.remove('anim'); scrollTo(0, y);
+  if (em) document.getElementById('email').value = em;
+  if (he) document.getElementById('heslo').value = he;
+}
+function prekresli() { if (st.flow) paintHead(); else if (st.view === 'ja') obnovProfil(); else { render(); main.classList.remove('anim'); } }
+
+async function uloz() {
+  const u = Cloud.pouzivatel;
+  if (!u) return;
+  const zapis = setDoc(doc(db, 'pokrok', u.uid), data());
+  if (!navigator.onLine) { Cloud.stavUlozenia = 'Uložené v telefóne. Do cloudu sa pošle, keď bude internet.'; obnovStav(); }
+  try { await zapis; Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; }
+  catch (e) { Cloud.stavUlozenia = 'Neuložené: ' + chybaText(e); }
+  obnovStav();
+}
+// Prvé prihlásenie na tomto telefóne: spojíme pokrok z telefónu a z cloudu, nič sa nestratí
+function zluc(c) {
+  if (c) {
+    st.done = [...new Set([...(c.done || []), ...st.done])];
+    st.fav = [...new Set([...(c.fav || []), ...st.fav])];
+    st.dni = [...new Set([...(c.dni || []), ...st.dni])].sort().slice(-60);
+    st.body = Math.max(st.body || 0, c.body || 0);
+    if (!st.meno && c.meno) st.meno = c.meno;
+    if (c.vek) st.vek = c.vek;
+    zapisLokalne();
+  }
+  zlucene = true;
+  uloz(); prekresli();
+}
+// Zmena z iného telefónu
+function prevezmi(c) {
+  const nove = { meno: c.meno || '', vek: c.vek || 'mladsi', body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: c.dni || [] };
+  if (JSON.stringify(KLUCE.map(k => nove[k])) === JSON.stringify(KLUCE.map(k => st[k]))) return;
+  Object.assign(st, nove); zapisLokalne(); prekresli();
+}
+
+onAuthStateChanged(auth, u => {
+  Cloud.pouzivatel = u; zlucene = false;
+  if (odber) { odber(); odber = null; }
+  if (u) {
+    Cloud.stavUlozenia = 'Načítava sa pokrok z cloudu…';
+    odber = onSnapshot(doc(db, 'pokrok', u.uid), { includeMetadataChanges: true }, snap => {
+      if (snap.metadata.hasPendingWrites) return;
+      if (!zlucene) { if (!snap.metadata.fromCache) zluc(snap.exists() ? snap.data() : null); return; }
+      if (snap.exists() && !snap.metadata.fromCache) prevezmi(snap.data());
+    }, e => { Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav(); });
+  } else {
+    Cloud.stavUlozenia = '';
+  }
+  obnovProfil();
+});
+getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); obnovProfil(); });
+obnovProfil();
 </script>
 <script>
 // Offline: appka sa pri prvom otvorení uloží do telefónu.

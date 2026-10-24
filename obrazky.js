@@ -1,7 +1,7 @@
 // Kreslené obrázky Svet za 3 minúty: všetko z jednoduchých tvarov s tmavým obrysom (rám 320 × 180).
 // Pohyb robia triedy (blink, hop, drift, rain, …), štýly sú v hlavnej stránke.
 const INK = '#2B2240', N = 'stroke="none"';
-const TXT = 'font-family="Fredoka, sans-serif" font-weight="700" text-anchor="middle" stroke="none"';
+const TXT = 'font-family="&quot;Baloo 2&quot;, Nunito, sans-serif" font-weight="700" text-anchor="middle" stroke="none"';
 const bg = c => `<rect width="320" height="180" fill="${c}" ${N}/>`;
 const dot = (x, y, r = 2.2) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${INK}" ${N}/>`;
 const lica = (x, y, d) => `<circle cx="${x - d}" cy="${y}" r="3.5" fill="#FF8FB1" opacity=".8" ${N}/><circle cx="${x + d}" cy="${y}" r="3.5" fill="#FF8FB1" opacity=".8" ${N}/>`;
