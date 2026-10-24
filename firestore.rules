@@ -7,13 +7,14 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
-    // Profil dieťaťa: meno, vek, postavička a pokrok (od verzie 6)
+    // Profil dieťaťa: meno, vek, postavička, pokrok a odznaky (od verzie 6; odznaky a zvieratko od verzie 8)
     function platneDieta(d) {
-      return d.keys().hasOnly(['meno', 'vek', 'avatar', 'body', 'done', 'fav', 'dni', 'poradie', 'verzia', 'upravene'])
+      return d.keys().hasOnly(['meno', 'vek', 'avatar', 'body', 'done', 'fav', 'dni', 'odznaky', 'poradie', 'verzia', 'upravene'])
         && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
         && d.vek in ['mladsi', 'starsi']
         && d.avatar is map
-        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'pozadie'])
+        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'pozadie'])
+        && (!('odznaky' in d) || (d.odznaky is list && d.odznaky.size() <= 100))
         && d.body is int && d.body >= 0 && d.body <= 1000000
         && d.done is list && d.done.size() <= 500
         && d.fav is list && d.fav.size() <= 500

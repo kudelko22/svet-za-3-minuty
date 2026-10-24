@@ -21,6 +21,14 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
   doplnok a pozadie. Postavička je v hlavičke appky a v profile; ťuknutím na ňu sa mení dieťa.
 - Pokrok sa ukladá do cloudu (Firebase, databáza v Európe), takže je rovnaký na každom mobile rodiča.
 
+## Odmeny
+
+- **24 odznakov** za úspechy: počet tém, séria dní, body, téma bez chyby, rýchly kvíz 5 z 5, obľúbené témy
+  a „Majster“ za každú kategóriu. Zbierka je v profile.
+- **Diely postavičky za body:** veselé farby vlasov, okuliare, obrázky na tričko, klobúky a zvieratko na pleci
+  (od 40 do 900 bodov, cenník je `ODOMKNI` v `obrazky.js`). Domovská obrazovka ukazuje ďalšiu odmenu
+  a na konci témy sa oslavujú nové odznaky aj odomknuté veci.
+
 ## Firebase
 
 Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Firestore a hosting.
