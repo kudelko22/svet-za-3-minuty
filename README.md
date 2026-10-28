@@ -60,7 +60,8 @@ v telefóne pre každé dieťa zvlášť.
 
 64 odznakov v skupinách Témy, Dni a séria, Body, Hry, Rôzne a Majster kategórie (zoznam `ODZNAKY` v index.html).
 Za hry sa dávajú po dohraní hry (prvá hra, 10 a 50 hier, výsledky v jednotlivých hrách). V profile je len karta
-„Moje odznaky“ s poslednými odznakmi, celá zbierka sa otvorí ťuknutím.
+„Moje odznaky“ s poslednými odznakmi, celá zbierka sa otvorí ťuknutím. Za každý získaný odznak si dieťa
+ťuknutím naň vyzdvihne 2 hviezdičky (body), ktoré priletia do hlavičky (pole `vybrate` u dieťaťa).
 
 ## Pre rodiča
 
@@ -87,6 +88,7 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
   pre väčšie praktické vety (v obchode, na ceste, v reštaurácii, o sebe). Téma dňa a náhodná téma sú vždy pre vek dieťaťa.
 - Väčšie deti majú aj **Výzvu**: 10 extra ťažkých otázok, za každú správnu 20 bodov (dvojnásobok).
 - Body za kvízy (rýchly, ťažký aj Výzvu) sa dajú získať len raz za deň, za každý druh zvlášť, aby sa nezbierali opakovaním.
+  Zopakovaná téma dá desatinu bodov (počet správnych odpovedí + 1), za tú istú tému najviac raz za deň.
 - Obrázky k novším témam sú poskladané z veľkých emoji (funkcia `ez` v obrazky.js).
 - dva vekové stupne: 5–8 rokov a 9–12 rokov. Väčšie deti majú odsek navyše, dve otázky navyše v každej téme,
   ťažšie nesprávne odpovede pri všetkých otázkach (odpovede A–D bez obrázkov) a Ťažký kvíz s 8 otázkami za 15 bodov

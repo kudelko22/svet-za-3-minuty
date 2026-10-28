@@ -120,6 +120,11 @@ for (const v of ["mladsi", "starsi"]) { st.vek = v; for (const w of ["domov", "t
 st.vek = "starsi"; st.dietaId = "limit"; for (const i of [0, 1]) { startKviz("vyzva"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl);
   if (i === 0 && fl.zisk !== 200) chyby.push("vyzva body " + fl.zisk); if (i === 1 && (fl.zisk !== 0 || !fl.dnesUz)) chyby.push("vyzva druhykrat " + fl.zisk); fl.i++; renderFlow(); st.flow = null; }
 st.dietaId = "d1";
+/* VYBER_TEST */
+Object.assign(st, { dietaId: "d1", vek: "mladsi", body: 10, odznaky: ["prva"], vybrate: [] }); vyberOdznak("prva", document.createElement("button"));
+if (st.body !== 12 || !st.vybrate.includes("prva")) chyby.push("vyber odznaku " + st.body); vyberOdznak("prva", document.createElement("button")); if (st.body !== 12) chyby.push("vyber dvakrat");
+st.view = "odznaky"; render(); st.view = "ja"; render();
+st.done = ["ruky"]; st.kedy = {}; for (const ocak of [4, 0]) { startTema("ruky"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl); if (fl.zisk !== ocak) chyby.push("opakovanie body " + fl.zisk + " cakal " + ocak); fl.i++; renderFlow(); st.flow = null; }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

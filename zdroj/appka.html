@@ -610,6 +610,17 @@ body.auto-rezim .blobs { opacity: .3; }
 .pad.svieti { opacity: 1; transform: scale(1.05); box-shadow: 0 0 0 6px #fff, 0 0 34px var(--c), 0 6px 0 var(--ink); }
 .simon .hv-start { z-index: 2; width: 124px; height: 124px; }
 
+/* odznaky: vyzdvihnutie hviezdičiek */
+button.odznak { width: 100%; font: inherit; color: inherit; }
+.odznak.na-vyber { position: relative; border: 3px solid var(--ink); background: #FFF6CC; box-shadow: 0 0 0 4px #FFE27A, 0 4px 0 var(--ink); animation: pulse 1.6s ease-in-out infinite; }
+.plus2 { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border: 2px solid var(--ink); border-radius: 999px; background: var(--sun); color: var(--ink); font: 800 .85rem/1.2 var(--f-display); }
+.plus2 svg { width: 16px; height: 16px; }
+.vyber-tip { margin: 8px 0 0; padding: 10px 12px; border: 2px dashed var(--ink); border-radius: 14px; background: #FFF6CC; font-weight: 800; text-align: center; }
+.leti { position: fixed; z-index: 60; width: 34px; height: 34px; margin: -17px 0 0 -17px; pointer-events: none; transition: transform .7s cubic-bezier(.5, -.3, .7, 1); }
+.leti svg { display: block; width: 100%; height: 100%; }
+.chip.tmavy { color: var(--ink); text-shadow: none; }
+.ok-info .chip { justify-self: start; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -641,7 +652,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 18; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 19; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -651,7 +662,7 @@ const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovn�
 const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Pokrok dieťaťa ukladá Cloud (modul Firebase dole) do jeho profilu; v telefóne ostávajú len nastavenia
-const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby'];
+const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby', 'vybrate'];
 const S = {
   get(k, d) { try { const v = localStorage.getItem('svet3:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) {
@@ -916,7 +927,7 @@ function toast(text) { const t = document.getElementById('toast'); t.textContent
 // pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
 const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
 const st = {
-  meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], dietaId: null, avatar: null,
+  meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [], dietaId: null, avatar: null,
   faza: 'nacitava', upravuje: null, view: 'domov', kat: '', q: '', flow: null,
 };
 const main = document.getElementById('main');
@@ -1195,21 +1206,47 @@ function odmenyHtml(f) {
       ${r.length ? `<button class="btn wide" data-upravit="${r[0].k}">✨ Obliecť postavičku</button>` : ''}
       ${h.length ? `<button class="btn wide blue" data-hra="${h[0].id}">Hrať: ${esc(h[0].n)}</button>` : ''}</div>`;
 }
+// za každý získaný odznak si dieťa ťuknutím vyzdvihne 2 hviezdičky (body); dve hviezdy priletia do hlavičky
+function vyberOdznak(id, el) {
+  if (!st.odznaky.includes(id) || st.vybrate.includes(id)) return;
+  st.vybrate = [...st.vybrate, id]; S.set('vybrate', st.vybrate);
+  st.body += 2; S.set('body', st.body);
+  el.classList.remove('na-vyber'); el.removeAttribute('data-vyber');
+  const p = el.querySelector('.plus2'); if (p) p.remove();
+  const zost = odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length, tip = document.querySelector('.vyber-tip');
+  if (tip) { if (zost) tip.textContent = `✨ Ťukni na žiariace odznaky a vyzdvihni si ${zost * 2} ⭐`; else tip.remove(); }
+  const [x, y] = stred(el), ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30];
+  FX.burst(x, y, 16, ['star', 'dot'], 6); Zvuk.play('coin'); vibruj(30);
+  [0, 1].forEach(i => setTimeout(() => {
+    const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = STAR();
+    h.style.left = x + 'px'; h.style.top = y + 'px'; document.body.appendChild(h);
+    requestAnimationFrame(() => requestAnimationFrame(() => { h.style.transform = `translate(${cx - x}px, ${cy - y}px) scale(.6)`; }));
+    setTimeout(() => {
+      h.remove(); Zvuk.play('star');
+      const b = document.getElementById('body'), s = document.getElementById('stars');
+      if (b) b.textContent = st.body - 1 + i;
+      if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+      if (i) { const nove = noveOdznaky(); oznamOdznaky(nove); if (nove.length && st.view === 'odznaky') setTimeout(render, 1500); }
+    }, 750);
+  }, i * 220));
+}
 // odznaky pre vek dieťaťa (Majster kategórie len pre jeho kategórie)
 const odznakyVek = () => ODZNAKY.filter(o => !o.vek || o.vek === st.vek);
 // odznaky v profile len ako jedna karta; celá zbierka sa otvorí ťuknutím
 function kartaOdznakov() {
   const posledne = st.odznaky.slice(-5).reverse().map(id => odznakyVek().find(o => o.id === id)).filter(Boolean);
   return `<button class="card odznaky-karta" data-go="odznaky"><span class="medaila velka">🏅</span>
-      <span class="ok-info"><b>Moje odznaky</b><small>${odznakyVek().filter(o => st.odznaky.includes(o.id)).length} z ${odznakyVek().length} · ťukni a pozri všetky</small>
+      <span class="ok-info"><b>Moje odznaky</b><small>${odznakyVek().filter(o => st.odznaky.includes(o.id)).length} z ${odznakyVek().length} · ťukni a pozri všetky</small>${(k => k ? `<span class="chip tmavy" style="--c:#FFD23F">+${k * 2} ⭐ na vyzdvihnutie</span>` : '')(odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length)}
       <span class="posledne">${posledne.map(o => `<span class="medaila mala">${o.e}</span>`).join('') || '<small>Prvý odznak dostaneš za prvú tému.</small>'}</span></span><span class="sipka">›</span></button>
     <section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
 }
 function zbierkaOdznakov() {
   const ma = id => st.odznaky.includes(id);
   return `<div class="hra-top"><button class="ib" data-go="ja" aria-label="Späť">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Odznaky</h1><span class="chip" style="--c:#FFC233">${odznakyVek().filter(o => ma(o.id)).length} z ${odznakyVek().length}</span></div>
+    ${(k => k ? `<p class="vyber-tip">✨ Ťukni na žiariace odznaky a vyzdvihni si ${k * 2} ⭐</p>` : '')(odznakyVek().filter(o => ma(o.id) && !st.vybrate.includes(o.id)).length)}
     ${[...new Set(odznakyVek().map(o => o.g))].map(g => { const zoz = odznakyVek().filter(o => o.g === g); return `<section class="sec"><h2 class="h2" style="--hc:#FFC233">${g} <span class="pocet">${zoz.filter(o => ma(o.id)).length} z ${zoz.length}</span></h2>
-      <div class="odznaky">${zoz.map(o => `<div class="odznak${ma(o.id) ? ' ma' : ''}"><span class="medaila">${ma(o.id) ? o.e : '🔒'}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small></div>`).join('')}</div></section>`; }).join('')}`;
+      <div class="odznaky">${zoz.map(o => { const m = ma(o.id), v = m && !st.vybrate.includes(o.id), tag = v ? 'button' : 'div';
+        return `<${tag} class="odznak${m ? ' ma' : ''}${v ? ' na-vyber' : ''}"${v ? ` data-vyber="${o.id}" aria-label="Vyzdvihnúť 2 hviezdičky za odznak ${esc(o.n)}"` : ''}><span class="medaila">${m ? o.e : '🔒'}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small>${v ? `<span class="plus2">+2 ${STAR()}</span>` : ''}</${tag}>`; }).join('')}</div></section>`; }).join('')}`;
 }
 
 /* Režim do auta: appka prečíta tému, príklad, otázky na rozhovor aj kvíz; rodič za volantom nemusí nič ťukať */
@@ -1269,7 +1306,7 @@ function povedzAuto(text, hotovo) {
 }
 function dokonciAuto(t) {
   const qn = t.z.filter(pre).length, bodyPred = st.body, dnes = key(new Date()), prvy = !st.done.includes(t.id);
-  const zisk = prvy ? qn * 10 + 10 : 0;
+  const zisk = prvy ? qn * 10 + 10 : st.kedy[t.id] === dnes ? 0 : qn + 1; // zopakovaná téma: desatina, raz za deň
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
   zapisPrebrate(t.id);
   st.body += zisk; S.set('body', st.body);
@@ -1985,7 +2022,7 @@ function krok(f, k) {
       <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? '#FFD23F' : '#E4E0EE')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
-      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov</div>` : f.typ !== 'kviz' ? '<div class="earn plain">Body za túto tému už máte. Opakovanie je matka múdrosti.</div>' : f.dnesUz ? '<div class="earn plain">Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!</div>' : ''}
+      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
       ${odmenyHtml(f)}
       <div class="win-acts">
         ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
@@ -2038,8 +2075,10 @@ function dokonci(f) {
   const c = Object.values(f.odp).filter(o => o.ok).length, dnes = key(new Date()), bodyPred = st.body;
   const qn = f.kroky.filter(x => x.t === 'q').length;
   if (f.typ === 'tema') {
-    const prvy = !st.done.includes(f.id);
-    f.zisk = prvy ? c * 10 + 10 : 0;
+    const prvy = !st.done.includes(f.id), dnesUz = !prvy && st.kedy[f.id] === dnes;
+    // zopakovaná téma: desatina bodov, za tú istú tému najviac raz za deň
+    f.zisk = prvy ? c * 10 + 10 : dnesUz ? 0 : c + 1;
+    Object.assign(f, { opakovanie: !prvy, dnesUz });
     if (prvy) { st.done.push(f.id); S.set('done', st.done); }
     zapisPrebrate(f.id);
   } else {
@@ -2120,6 +2159,7 @@ document.addEventListener('click', e => {
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
   if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
   if (d.auto) { Auto.ovladaj(d.auto); return; }
+  if (d.vyber) { vyberOdznak(d.vyber, b); return; }
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra); return; }
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
   if (d.pex) { Hra.pex(+d.pex, b); return; }
@@ -2275,7 +2315,7 @@ const CHYBY = {
 const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
 const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
-const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || [], zoradene(d.kedy), d.chyby || []]);
+const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || [], zoradene(d.kedy), d.chyby || [], d.vybrate || []]);
 let odber = null, casovac = null;
 // prihlásenie cez Google v appke na ploche odchádza na stránku Googlu a vracia sa späť (do 3 minút)
 let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
@@ -2343,7 +2383,7 @@ const Cloud = {
     const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
-      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])],
+      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
@@ -2365,13 +2405,13 @@ function nastavAktivne(d) {
   Object.assign(st, {
     dietaId: d.id, meno: d.meno || '', vek: d.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: { ...AV_ZAKLAD, ...(d.avatar || nahodnyAvatar()) },
     body: d.body || 0, done: [...(d.done || [])], fav: [...(d.fav || [])], dni: [...(d.dni || [])], odznaky: [...(d.odznaky || [])],
-    kedy: { ...(d.kedy || {}) }, chyby: [...(d.chyby || [])],
+    kedy: { ...(d.kedy || {}) }, chyby: [...(d.chyby || [])], vybrate: [...(d.vybrate || [])],
   });
 }
 function zapis(id, d) {
   const z = setDoc(doc(db, 'rodiny', Cloud.pouzivatel.uid, 'deti', id), {
-    meno: d.meno, vek: d.vek, avatar: d.avatar, body: d.body, done: d.done, fav: d.fav, dni: d.dni, odznaky: d.odznaky || [], kedy: d.kedy || {}, chyby: d.chyby || [],
-    poradie: d.poradie, verzia: 4, upravene: serverTimestamp(),
+    meno: d.meno, vek: d.vek, avatar: d.avatar, body: d.body, done: d.done, fav: d.fav, dni: d.dni, odznaky: d.odznaky || [], kedy: d.kedy || {}, chyby: d.chyby || [], vybrate: d.vybrate || [],
+    poradie: d.poradie, verzia: 5, upravene: serverTimestamp(),
   });
   if (!navigator.onLine) { Cloud.stavUlozenia = 'Uložené v telefóne, do cloudu sa pošle, keď bude internet.'; obnovStav(); }
   z.then(() => { Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; obnovStav(); },
@@ -2381,7 +2421,7 @@ function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
   if (!d || !Cloud.pouzivatel) return;
-  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60) });
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
   zapis(d.id, d);
 }
 function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
