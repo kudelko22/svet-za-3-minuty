@@ -62,6 +62,7 @@ v telefóne pre každé dieťa zvlášť.
 Za hry sa dávajú po dohraní hry (prvá hra, 10 a 50 hier, výsledky v jednotlivých hrách). V profile je len karta
 „Moje odznaky“ s poslednými odznakmi, celá zbierka sa otvorí ťuknutím. Za každý získaný odznak si dieťa
 ťuknutím naň vyzdvihne 2 hviezdičky (body), ktoré priletia do hlavičky (pole `vybrate` u dieťaťa).
+Kým čakajú nevyzdvihnuté hviezdičky, bliká v menu Ja s nápisom „Nové!“ a v profile karta odznakov s nálepkou „Novinka!“.
 
 ## Pre rodiča
 

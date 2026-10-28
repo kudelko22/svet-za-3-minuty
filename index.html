@@ -639,6 +639,17 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .chip.tmavy { color: var(--ink); text-shadow: none; }
 .ok-info .chip { justify-self: start; }
 
+/* novinka: nevyzdvihnuté hviezdičky za odznaky (bliká Ja v menu a karta odznakov) */
+.nav button { position: relative; }
+.nav button.novinka .ni { border-color: var(--ink); animation: novinka 1.1s ease-in-out infinite; }
+.nav button.novinka::after { content: "Nové!"; position: absolute; top: -6px; left: calc(50% + 10px); padding: 1px 6px; border: 2px solid var(--ink); border-radius: 999px; background: var(--coral); color: #fff; font: 800 .68rem/1.2 var(--f-display); animation: novinka-stitok 1.1s ease-in-out infinite; }
+@keyframes novinka { 50% { background: #FFE27A; scale: 1.15; } }
+@keyframes novinka-stitok { 50% { scale: 1.15; } }
+.odznaky-karta { position: relative; }
+.odznaky-karta.novinka { animation: karta-blik 1.4s ease-in-out infinite; }
+@keyframes karta-blik { 50% { background: #FFF6CC; box-shadow: 0 0 0 5px #FFE27A, var(--sh); } }
+.nov-stitok { position: absolute; top: -12px; right: 14px; padding: 2px 10px; border: 2.5px solid var(--ink); border-radius: 999px; background: var(--coral); color: #fff; font: 800 .8rem/1.3 var(--f-display); rotate: 4deg; animation: novinka-stitok 1.1s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -671,7 +682,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 19; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 20; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1233,6 +1244,7 @@ function vyberOdznak(id, el) {
   el.classList.remove('na-vyber'); el.removeAttribute('data-vyber');
   const p = el.querySelector('.plus2'); if (p) p.remove();
   const zost = odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length, tip = document.querySelector('.vyber-tip');
+  document.getElementById('nav-ja').classList.toggle('novinka', zost > 0);
   if (tip) { if (zost) tip.textContent = `✨ Ťukni na žiariace odznaky a vyzdvihni si ${zost * 2} ⭐`; else tip.remove(); }
   const [x, y] = stred(el), ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30];
   FX.burst(x, y, 16, ['star', 'dot'], 6); Zvuk.play('coin'); vibruj(30);
@@ -1252,9 +1264,11 @@ function vyberOdznak(id, el) {
 // odznaky pre vek dieťaťa (Majster kategórie len pre jeho kategórie)
 const odznakyVek = () => ODZNAKY.filter(o => !o.vek || o.vek === st.vek);
 // odznaky v profile len ako jedna karta; celá zbierka sa otvorí ťuknutím
+const nevybrate = () => st.dietaId ? odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length : 0;
 function kartaOdznakov() {
+  const k = nevybrate();
   const posledne = st.odznaky.slice(-5).reverse().map(id => odznakyVek().find(o => o.id === id)).filter(Boolean);
-  return `<button class="card odznaky-karta" data-go="odznaky"><span class="medaila velka">🏅</span>
+  return `<button class="card odznaky-karta${k ? ' novinka' : ''}" data-go="odznaky">${k ? '<span class="nov-stitok">Novinka!</span>' : ''}<span class="medaila velka">🏅</span>
       <span class="ok-info"><b>Moje odznaky</b><small>${odznakyVek().filter(o => st.odznaky.includes(o.id)).length} z ${odznakyVek().length} · ťukni a pozri všetky</small>${(k => k ? `<span class="chip tmavy" style="--c:#FFD23F">+${k * 2} ⭐ na vyzdvihnutie</span>` : '')(odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length)}
       <span class="posledne">${posledne.map(o => `<span class="medaila mala">${o.e}</span>`).join('') || '<small>Prvý odznak dostaneš za prvú tému.</small>'}</span></span><span class="sipka">›</span></button>
     <section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
@@ -2130,6 +2144,7 @@ function paintHead() {
     av.dataset.k = k; av.innerHTML = st.avatar ? postavicka(st.avatar) : owl('hi');
     av.classList.toggle('kruh-av', !!st.avatar); av.style.setProperty('--bg', st.avatar ? st.avatar.pozadie : 'transparent');
   }
+  document.getElementById('nav-ja').classList.toggle('novinka', nevybrate() > 0);
 }
 function ocisluj() {
   [...main.children].forEach((el, i) => el.style.setProperty('--i', i));
