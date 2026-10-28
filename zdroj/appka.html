@@ -222,6 +222,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .day.today { color: var(--blue); }
 .day.today i { outline: 3px solid var(--blue); outline-offset: 2px; }
 .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.act.siroky { grid-column: 1 / -1; }
 .act { position: relative; overflow: hidden; display: grid; gap: 4px; justify-items: start; text-align: left; border: 3px solid var(--ink); border-radius: 24px; padding: 14px; color: #fff; text-shadow: 0 2px 0 var(--ink); background: var(--c); box-shadow: var(--sh); }
 .act::after { content: ""; position: absolute; width: 90px; height: 90px; right: -26px; bottom: -30px; border-radius: 50%; background: rgb(255 255 255 / .25); }
 .act-e, .tile-e { display: grid; place-items: center; border-radius: 50%; background: var(--paper); border: 2.5px solid var(--ink); text-shadow: none; animation: tileBob 2.4s ease-in-out infinite; animation-delay: calc(var(--j, 0) * -.35s); }
@@ -639,7 +640,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 14; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 15; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1089,6 +1090,7 @@ const ODZNAKY = [
   { g: 'Témy', id: 'katvsetky', e: '🌍', n: 'Svetobežník', p: 'Preber tému z každej kategórie', ok: x => x.kat >= Object.keys(KAT).length },
   { g: 'Témy', id: 'bezchyby', e: '🎯', n: 'Bez chyby', p: 'Odpovedz v téme všetko správne', ok: x => x.udalost === 'bezchyby' },
   { g: 'Témy', id: 'blesk', e: '⚡', n: 'Blesk', p: 'Rýchly kvíz 5 z 5', ok: x => x.udalost === 'blesk' },
+  { g: 'Témy', id: 'tazky', e: '💎', n: 'Diamantová hlava', p: 'Ťažký kvíz 8 z 8', ok: x => x.udalost === 'tazky' },
   { g: 'Témy', id: 'auto', e: '🚗', n: 'Prvá jazda', p: 'Prejdi tému v režime do auta', ok: x => x.udalost === 'auto' },
   { g: 'Dni a séria', id: 'seria2', e: '✨', n: 'Znova tu', p: 'Uč sa 2 dni po sebe', ok: x => x.seria >= 2 },
   { g: 'Dni a séria', id: 'seria3', e: '🔥', n: 'Tri dni', p: 'Uč sa 3 dni po sebe', ok: x => x.seria >= 3 },
@@ -1827,6 +1829,7 @@ const views = {
       <div class="acts">
         <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">⚡</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém</small></button>
         <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">🎲</span><b>Iná téma</b><small>Nechajte sa prekvapiť</small></button>
+        ${st.vek === 'starsi' ? `<button class="act siroky" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">🧠</span><b>Ťažký kvíz</b><small>8 ťažkých otázok pre väčšie deti, za každú 15 bodov</small></button>` : ''}
       </div>
       ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
         <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
@@ -1911,10 +1914,11 @@ function startTema(id) {
   st.flow = { typ: 'tema', id, i: 0, odp: {}, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
-function startKviz() {
-  const vsetky = T.flatMap(t => t.z.filter(pre).map(q => ({ t: 'q', q, tid: t.id })));
-  const qs = mix(vsetky.length).slice(0, 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
-  st.flow = { typ: 'kviz', i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
+// rýchly kvíz: 5 otázok z rôznych tém; ťažký kvíz (pre väčšie deti): 8 otázok len pre väčšie deti
+function startKviz(tazky = false) {
+  const vsetky = T.flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(q => ({ t: 'q', q, tid: t.id })));
+  const qs = mix(vsetky.length).slice(0, tazky ? 8 : 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
+  st.flow = { typ: 'kviz', tazky, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
 const citaj = typ => `<button class="read" data-citaj="${typ}">🔊 Prečítať nahlas</button>`;
@@ -1971,7 +1975,7 @@ function krok(f, k) {
       ${odmenyHtml(f)}
       <div class="win-acts">
         ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
-        <button class="btn blue wide" data-${f.typ === 'kviz' ? 'kviz' : 'nahodna'}>${f.typ === 'kviz' ? '⚡ Ďalší kvíz' : '🎲 Ďalšia téma'}</button>
+        <button class="btn blue wide" data-${f.typ === 'kviz' ? `kviz="${f.tazky ? 'tazky' : ''}"` : 'nahodna'}>${f.typ === 'kviz' ? (f.tazky ? '🧠 Ďalší ťažký kvíz' : '⚡ Ďalší kvíz') : '🎲 Ďalšia téma'}</button>
         <button class="btn ghost wide" data-zavriet>Späť domov</button>
       </div></div>`;
 }
@@ -2025,11 +2029,11 @@ function dokonci(f) {
     if (prvy) { st.done.push(f.id); S.set('done', st.done); }
     zapisPrebrate(f.id);
   } else {
-    f.zisk = c * 10;
+    f.zisk = c * (f.tazky ? 15 : 10);
   }
   st.body += f.zisk; S.set('body', st.body);
   if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
-  f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? 'blesk' : 'bezchyby') : '', { uci: true });
+  f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
   f.noveOdmeny = noveOdmeny(bodyPred, st.body);
   f.noveHry = noveHry(bodyPred, st.body);
 }
@@ -2148,7 +2152,7 @@ document.addEventListener('click', e => {
   }
   if (d.start) startTema(d.start);
   else if (d.go) { Zvuk.play('whoosh'); go(d.go); }
-  else if (d.kviz !== undefined) startKviz();
+  else if (d.kviz !== undefined) startKviz(d.kviz === 'tazky');
   else if (d.nahodna !== undefined) {
     const nove = T.filter(t => !st.done.includes(t.id) && t.id !== (f && f.id));
     startTema(pick(nove.length ? nove : T.filter(t => t.id !== (f && f.id))).id);

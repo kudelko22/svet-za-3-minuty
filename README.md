@@ -80,9 +80,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
-- 44 tém v 11 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
-  ľudské telo, geografia, psychológia, kultúra), téma dňa a náhodná téma
-- dva vekové stupne: 5–8 rokov a 9–12 rokov (odsek navyše a ťažšie otázky)
+- 48 tém v 12 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
+  ľudské telo, geografia, psychológia, kultúra, angličtina), téma dňa a náhodná téma
+- dva vekové stupne: 5–8 rokov a 9–12 rokov (odsek navyše, dve ťažšie otázky v každej téme a Ťažký kvíz s 8 otázkami za 15 bodov)
 - kvíz s obrázkovými odpoveďami, rýchly kvíz z rôznych tém, body, hviezdy a séria dní
 - maskot sovička Múdra, kreslené pohyblivé obrázky, zvuky (dajú sa vypnúť) a čítanie nahlas
 

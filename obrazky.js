@@ -479,6 +479,24 @@ const ART = {
       <g class="lift"><path d="M-32 -86 L-8 -54" stroke-width="5"/><circle cx="-34" cy="-89" r="5" fill="#fff"/></g><g class="lift" style="animation-delay:.6s"><path d="M32 -86 L8 -54" stroke-width="5"/><circle cx="34" cy="-89" r="5" fill="#fff"/></g></g>
     ${kid(84, 170, '#7C6CFF', { arm: -10 })}
     ${[[122, 74, 0, '#FF6FA8'], [150, 50, .8, '#3D8BFF'], [176, 80, 1.6, '#2FBF71']].map(([x, y, d, c]) => `<g transform="translate(${x} ${y})"><g class="rise" style="animation-delay:${d}s"><path d="M1.5 -1 V-24 L15.5 -28 V-5" fill="none" stroke-width="3.5"/><ellipse cx="-4" cy="0" rx="6" ry="4.5" fill="${c}"/><ellipse cx="10" cy="-4" rx="6" ry="4.5" fill="${c}"/></g></g>`).join('')}`,
+  pozdravy: () => `${bg('#E3F4FF')}${cloud(140, 12, .55)}
+    <rect y="150" width="320" height="30" fill="#9BE3A8" ${N}/><path d="M0 150 H320"/>
+    ${kid(96, 170, '#4C7DFF', { arm: -30 })}${kid(224, 170, '#FF6FA8', { flip: true, arm: -30, hair: '#E0623A', d: .4 })}
+    <path d="M30 32 H122 Q130 32 130 40 V64 Q130 72 122 72 H94 L86 84 L82 72 H30 Q22 72 22 64 V40 Q22 32 30 32Z" fill="#fff"/><text x="76" y="60" font-size="20" ${TXT} fill="${INK}">Hello!</text>
+    <path d="M198 32 H290 Q298 32 298 40 V64 Q298 72 290 72 H242 L238 84 L230 72 H198 Q190 72 190 64 V40 Q190 32 198 32Z" fill="#fff"/><text x="244" y="60" font-size="20" ${TXT} fill="${INK}">Ahoj!</text>`,
+
+  farby: () => `${bg('#FFF6E6')}
+    ${[['#FF5A5F', 'red'], ['#3D8BFF', 'blue'], ['#FFD23F', 'yellow'], ['#2FBF71', 'green'], ['#B36BFF', 'purple'], ['#FF9F1C', 'orange']].map(([c, w], i) => `<g transform="translate(${30 + i * 52} 84)"><g class="bob" style="animation-delay:${i * .2}s"><path d="M0 -26 C16 -26 22 -14 20 -2 C18 12 6 18 0 18 C-8 18 -20 12 -20 -2 C-22 -16 -14 -26 0 -26Z" fill="${c}"/><circle cx="-7" cy="-10" r="4" fill="#fff" opacity=".6" ${N}/></g><text y="46" font-size="14" ${TXT} fill="${INK}">${w}</text></g>`).join('')}`,
+
+  zvierata: () => `${bg('#E6F7EC')}${sun(284, 28, 13)}
+    <rect y="134" width="320" height="46" fill="#9BE3A8" ${N}/><path d="M0 134 H320"/>
+    <g transform="translate(66 92)"><g class="bob"><ellipse cx="-24" cy="-4" rx="10" ry="20" fill="#8B5A3C" transform="rotate(20 -24 -4)"/><ellipse cx="24" cy="-4" rx="10" ry="20" fill="#8B5A3C" transform="rotate(-20 24 -4)"/><circle r="28" fill="#D9A06B"/>${face(0, -2, 1.2)}</g><text y="68" font-size="18" ${TXT} fill="${INK}">dog</text></g>
+    <g transform="translate(166 92)"><g class="bob" style="animation-delay:.5s"><path d="M-26 -8 L-24 -40 L-6 -24Z M26 -8 L24 -40 L6 -24Z" fill="#FF9F1C"/><circle r="28" fill="#FF9F1C"/>${face(0, -2, 1.2)}<path d="M-16 8 H-36 M-16 12 L-34 18 M16 8 H36 M16 12 L34 18" fill="none" stroke-width="2"/></g><text y="68" font-size="18" ${TXT} fill="${INK}">cat</text></g>
+    <g transform="translate(260 90)"><g class="fly"><path d="M-14 -2 Q-4 -26 8 -6Z" fill="#3D8BFF"/><circle r="16" fill="#8FD3FF"/>${dot(5, -4, 2.4)}<path d="M14 0 L25 3 L14 7Z" fill="#FFB020"/></g><text y="70" font-size="18" ${TXT} fill="${INK}">bird</text></g>`,
+
+  cisla: () => `${bg('#EBDDFF')}
+    ${[['1', 'one', '#FF5A5F'], ['2', 'two', '#FFB020'], ['3', 'three', '#2FBF71'], ['4', 'four', '#3D8BFF']].map(([n, w, c], i) => `<g transform="translate(${46 + i * 76} 80)"><g class="bob" style="animation-delay:${i * .3}s"><circle r="30" fill="${c}"/><text y="14" font-size="40" ${TXT} fill="#fff">${n}</text></g><text y="62" font-size="18" ${TXT} fill="${INK}">${w}</text></g>`).join('')}
+    ${[60, 140, 220, 290].map((x, i) => hviezdicka(x, 160, .7, '#FFD23F', i * .4)).join('')}`,
 };
 // päťcípa hviezda pre obrázky (vlajka EÚ)
 const HV5 = 'M0 -10 L2.9 -4 9.5 -3.1 4.7 1.5 5.9 8.1 0 5 -5.9 8.1 -4.7 1.5 -9.5 -3.1 -2.9 -4Z';

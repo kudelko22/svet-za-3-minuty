@@ -37,7 +37,7 @@ for (const t of T) {
   if (!ART[t.id]) chyby.push('obrazok ' + t.id);
   if (!KAT[t.k]) chyby.push('kategoria ' + t.id);
   for (const r of t.r) if (!byId(r)) chyby.push('suvisi ' + t.id + ' -> ' + r);
-  for (const q of t.z) if (q.a.length !== 3) chyby.push('odpovede ' + t.id);
+  for (const q of t.z) if (q.a.length !== (q.v === 's' ? q.a.length : 3) || q.a.length < 3 || q.a.length > 4) chyby.push('odpovede ' + t.id); // ťažké otázky môžu mať 4 odpovede
   if (t.z.filter(q => q.v !== 's').length < 3) chyby.push('malo otazok pre mladsich ' + t.id);
 }
 if (new Set(T.map(t => t.id)).size !== T.length) chyby.push('duplicitne id');
@@ -101,6 +101,10 @@ Hra.start("hviezdy"); Hra.zrus(); if (st.hra) chyby.push("hra zrus");
 if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,hadaj,hviezdy") chyby.push("nove hry");
 if (!odmenyHtml({ noveHry: noveHry(140, 160) }).includes("Pexeso")) chyby.push("odmena hra");
 st.view = "ja"; render(); st.view = "domov"; render();
+/* TAZKE_TEST */
+for (const t of T) if (t.z.filter(q => q.v === 's').length < 2) chyby.push("tazke otazky " + t.id);
+st.vek = "starsi"; startKviz(true); if (!st.flow.tazky || st.flow.kroky.filter(k => k.t === "q").some(k => k.q.v !== "s") || st.flow.kroky.length !== 9) chyby.push("tazky kviz");
+st.flow = null; st.vek = "mladsi"; startKviz(); if (st.flow.kroky.some(k => k.q && k.q.v === "s")) chyby.push("rychly kviz mladsi"); st.flow = null;
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
