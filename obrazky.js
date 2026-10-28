@@ -497,9 +497,61 @@ const ART = {
   cisla: () => `${bg('#EBDDFF')}
     ${[['1', 'one', '#FF5A5F'], ['2', 'two', '#FFB020'], ['3', 'three', '#2FBF71'], ['4', 'four', '#3D8BFF']].map(([n, w, c], i) => `<g transform="translate(${46 + i * 76} 80)"><g class="bob" style="animation-delay:${i * .3}s"><circle r="30" fill="${c}"/><text y="14" font-size="40" ${TXT} fill="#fff">${n}</text></g><text y="62" font-size="18" ${TXT} fill="${INK}">${w}</text></g>`).join('')}
     ${[60, 140, 220, 290].map((x, i) => hviezdicka(x, 160, .7, '#FFD23F', i * .4)).join('')}`,
+  farma: () => ez('#DFF3FF', '#9BE3A8', '🐄', '🐔', '🐑'),
+  mladata: () => ez('#FFF0D9', '#9BE3A8', '🐣', '🐶', '🐱'),
+  les: () => ez('#E3F6E8', '#6FCF7F', '🦔', '🐿️', '🦌'),
+  zvuky: () => ez('#FFE9F2', '#9BE3A8', '🐓', '🐮', '🦆'),
+  tvary: () => ez('#FFF6E6', '#FFD9A8', '🔺', '🟦', '🟡'),
+  miesanie: () => ez('#F3EFFF', '#D9CFFF', '🎨', '🖌️', '🌈'),
+  protiklady: () => ez('#E8F7FF', '#9BE3A8', '🐘', '🐭'),
+  pocitanie: () => ez('#FFF0B3', '#FFD9A8', '🖐️', '🍓', '🔢'),
+  rodina: () => ez('#FFE9F2', '#9BE3A8', '👨‍👩‍👧', '👵', '❤️'),
+  izby: () => ez('#FFF6E6', '#E8C9A0', '🛋️', '🛏️', '🍳'),
+  pomahanie: () => ez('#E6F7EC', '#9BE3A8', '🧹', '🪴', '🧸'),
+  zdrave: () => ez('#F0FFE6', '#C9F0A8', '🍎', '🥕', '💧'),
+  tyzden: () => ez('#E8F0FF', '#C9D8FF', '📅', '🎈', '🎒'),
+  dennoc: () => ez('#1D2557', null, '🌍', '☀️', '🌙'),
+  pocasie: () => ez('#DDF2FF', '#9BE3A8', '☂️', '⛄', '🪁'),
+  hodiny: () => ez('#FFF6E6', '#FFD9A8', '⏰', '🕒'),
+  zachranari: () => ez('#FFE9E6', '#C9C9D6', '🚒', '🚑', '🚓'),
+  stratil: () => ez('#E8F7FF', '#C9D8FF', '🧒', '🏬', '👮'),
+  cudzi: () => ez('#FFF0D9', '#9BE3A8', '🙅', '🍬', '👩'),
+  pozor: () => ez('#FFF6E6', '#E8C9A0', '🔥', '✂️', '💊'),
+  jedlo: () => ez('#FFF6E6', '#FFD9A8', '🍎', '🍞', '🥛'),
+  oblecenie: () => ez('#F3EFFF', '#D9CFFF', '👕', '👟', '🧢'),
+  vdome: () => ez('#E8F7FF', '#E8C9A0', '🏠', '🛏️', '🚪'),
+  planety: () => ez('#141A40', null, '🪐', '🌍', '☀️'),
+  hviezdy: () => ez('#1D2557', null, '⭐', '🌟', '✨'),
+  ciernadiera: () => ez('#0E1330', null, '🕳️', '🌌'),
+  iss: () => ez('#1D2557', null, '🧑‍🚀', '🛰️', '🌍'),
+  tlac: () => ez('#FFF6E6', '#E8C9A0', '📖', '🖋️', '📜'),
+  ziarovka: () => ez('#2B2240', null, '💡', '🕯️'),
+  penicilin: () => ez('#EFFAF4', '#C9E7D2', '🔬', '🧫', '💊'),
+  slovaci: () => ez('#DDF2FF', '#9BE3A8', '🪂', '📻', '🚁'),
+  klima: () => ez('#FFE9C7', '#E8C27A', '🌡️', '🏭', '🌍'),
+  prales: () => ez('#D8F5DC', '#4CAF6A', '🦜', '🌴', '🐒'),
+  oceany: () => ez('#CDEBFF', '#3DA5FF', '🐢', '🐋', '🐠'),
+  obnovitelna: () => ez('#E6F7FF', '#9BE3A8', '☀️', '🌬️', '💧'),
+  rim: () => ez('#FFF0D9', '#E8C9A0', '🏛️', '⚔️', '🛡️'),
+  morava: () => ez('#F3EFFF', '#9BE3A8', '🏰', '📜', '⛪'),
+  objavitelia: () => ez('#CDEBFF', '#3DA5FF', '⛵', '🧭', '🗺️'),
+  priemysel: () => ez('#E6E9F5', '#C9C9D6', '🚂', '🏭', '⚙️'),
+  mozog: () => ez('#FFE9F2', '#F3C9DA', '🧠', '⚡'),
+  zrak: () => ez('#E8F7FF', '#C9D8FF', '👁️', '🔍', '🌈'),
+  dna: () => ez('#F3EFFF', '#D9CFFF', '🧬', '👪'),
+  imunita: () => ez('#EFFAF4', '#C9E7D2', '🛡️', '🦠', '💉'),
+  obchod: () => ez('#FFF6E6', '#E8C9A0', '🛒', '💷', '🛍️'),
+  cesta: () => ez('#E8F7FF', '#C9C9D6', '🗺️', '🚉', '✈️'),
+  restauracia: () => ez('#FFF0D9', '#E8C9A0', '🍽️', '🍕', '🧾'),
+  osebe: () => ez('#FFE9F2', '#9BE3A8', '👋', '🧒', '⚽'),
 };
 // päťcípa hviezda pre obrázky (vlajka EÚ)
 const HV5 = 'M0 -10 L2.9 -4 9.5 -3.1 4.7 1.5 5.9 8.1 0 5 -5.9 8.1 -4.7 1.5 -9.5 -3.1 -2.9 -4Z';
+// jednoduchší obrázok z veľkých emoji (novšie témy): obloha, zem (alebo hviezdy, keď zem chýba) a 2–3 hýbajúce sa postavičky
+const ez = (obloha, zem, ...em) => `${bg(obloha)}${zem
+  ? `${sun(286, 30, 13)}${cloud(24, 18, .6)}${cloud(150, 10, .5, -2)}<rect y="138" width="320" height="42" fill="${zem}" ${N}/><path d="M0 138 H320"/>`
+  : [[30, 30], [90, 152], [150, 22], [250, 36], [292, 150], [62, 96]].map(([x, y], i) => hviezdicka(x, y, .6, '#FFE27A', i * .3)).join('')}
+  ${em.map((e, i) => `<g transform="translate(${160 + (i - (em.length - 1) / 2) * (em.length > 2 ? 92 : 110)} ${zem ? 104 : 92})"><g class="${i % 2 ? 'swap' : 'bob'}" style="animation-delay:${i * .4}s"><text font-size="${em.length > 2 ? 62 : 74}" text-anchor="middle" dominant-baseline="central" stroke="none">${e}</text></g></g>`).join('')}`;
 
 const svg = t => `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Obrázok: ${t.t}"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${ART[t.id]()}</g></svg>`;
 const scene = (t, cls = '') => `<div class="scene ${cls}">${svg(t)}</div>`;

@@ -80,8 +80,13 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
-- 48 tém v 12 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
-  ľudské telo, geografia, psychológia, kultúra, angličtina), téma dňa a náhodná téma
+- 95 tém v 22 kategóriách. Spoločné pre všetkých: história, politika, ekonomika, každodenný život, technika, veda,
+  príroda, ľudské telo, geografia, psychológia, kultúra a angličtina. Len pre menšie deti (5–8 rokov) ľahké kategórie
+  Zvieratká, Farby a tvary, Doma a v rodine, Čas a počasie a Bezpečne; len pre väčšie (9–12) náročné kategórie Vesmír,
+  Vynálezy, Planéta a klíma, Svetové dejiny a Biológia. Angličtina má pre menšie deti slovíčka (jedlo, oblečenie, doma),
+  pre väčšie praktické vety (v obchode, na ceste, v reštaurácii, o sebe). Téma dňa a náhodná téma sú vždy pre vek dieťaťa.
+- Väčšie deti majú aj **Výzvu**: 10 extra ťažkých otázok, za každú správnu 20 bodov (dvojnásobok).
+- Obrázky k novším témam sú poskladané z veľkých emoji (funkcia `ez` v obrazky.js).
 - dva vekové stupne: 5–8 rokov a 9–12 rokov. Väčšie deti majú odsek navyše, dve otázky navyše v každej téme,
   ťažšie nesprávne odpovede pri všetkých otázkach (odpovede A–D bez obrázkov) a Ťažký kvíz s 8 otázkami za 15 bodov
 - kvíz s obrázkovými odpoveďami, rýchly kvíz z rôznych tém, body, hviezdy a séria dní
