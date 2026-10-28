@@ -82,7 +82,8 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 - 48 tém v 12 kategóriách (história, politika, ekonomika, každodenný život, technika, veda, príroda,
   ľudské telo, geografia, psychológia, kultúra, angličtina), téma dňa a náhodná téma
-- dva vekové stupne: 5–8 rokov a 9–12 rokov (odsek navyše, dve ťažšie otázky v každej téme a Ťažký kvíz s 8 otázkami za 15 bodov)
+- dva vekové stupne: 5–8 rokov a 9–12 rokov. Väčšie deti majú odsek navyše, dve otázky navyše v každej téme,
+  ťažšie nesprávne odpovede pri všetkých otázkach (odpovede A–D bez obrázkov) a Ťažký kvíz s 8 otázkami za 15 bodov
 - kvíz s obrázkovými odpoveďami, rýchly kvíz z rôznych tém, body, hviezdy a séria dní
 - maskot sovička Múdra, kreslené pohyblivé obrázky, zvuky (dajú sa vypnúť) a čítanie nahlas
 
@@ -103,7 +104,8 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 1. Do `temy.js` pridaj do zoznamu `T` nový záznam podľa vzoru ostatných: `id`, kategória `k`, nadpis `t`,
    vysvetlenie `m` (pre všetkých) a `s` (navyše pre staršie deti), príklad `p`, otázky `o` a kvíz `z`.
-   V kvíze je správna vždy prvá odpoveď, appka ich poradie zamieša sama.
+   V kvíze je správna vždy prvá odpoveď, appka ich poradie zamieša sama. Pole `h` sú tri ťažšie nesprávne
+   odpovede pre väčšie deti (dostanú ich namiesto ľahkých).
 2. Do `obrazky.js` pridaj do `ART` obrázok s rovnakým `id`.
 3. V `zdroj/appka.html` zvýš `VERZIA_APPKY` (vidno ju v profile), spusti testy a zostavenie a nasaď.
    Telefóny si novú verziu stiahnu pri ďalšom otvorení.

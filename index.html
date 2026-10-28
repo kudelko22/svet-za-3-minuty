@@ -350,6 +350,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .ans { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 10px 14px 10px 10px; border-radius: 22px; border: 3px solid var(--ink); background: var(--paper); box-shadow: var(--sh); font: 600 1.15rem/1.25 var(--f-display); }
 .ans .em { flex: none; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; font-size: 1.9rem; background: var(--e); border: 2.5px solid var(--ink); }
 .ans:disabled { cursor: default; }
+.ans .em.pismeno { font: 700 1.8rem/1 var(--f-display); }
 .ans:disabled:not(.ok):not(.bad) > * { opacity: .45; }
 .ans.ok { background: var(--ok-bg); animation: okPop .5s var(--spring); }
 .ans.bad { background: var(--bad-bg); }
@@ -659,7 +660,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 15; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 16; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -946,6 +947,8 @@ const mix = n => { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i-
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const kats = () => Object.keys(KAT).map(id => ({ id, ...KAT[id], n: T.filter(t => t.k === id).length, hotovo: T.filter(t => t.k === id && st.done.includes(t.id)).length })).filter(k => k.n);
 const pre = q => st.vek === 'starsi' || q.v !== 's';
+// väčšie deti: namiesto ľahkých nesprávnych odpovedí ťažšie (q.h); pôvodná otázka ostáva v povodna
+const naVek = q => st.vek === 'starsi' && q.h ? { ...q, a: [q.a[0], ...q.h.map(t => ['', t])], povodna: q } : q;
 const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
 const denCislo = () => { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); };
 const temaDna = () => T[denCislo() % T.length];
@@ -1253,7 +1256,7 @@ function autoPlan(t) {
   if (st.vek === 'starsi') pridaj('🎓', 'Pre väčšie deti', vetyZ(t.s));
   pridaj('💡', 'Príklad zo života', ['Príklad zo života.', ...vetyZ(t.p)]);
   t.o.forEach((o, i) => pridaj('💬', `Porozprávajte sa · ${i + 1} z ${t.o.length}`, [o], [{ typ: 'pauza', s: 12, co: 'Čas na rozhovor' }]));
-  const qs = t.z.filter(pre);
+  const qs = t.z.filter(pre).map(naVek);
   qs.forEach((q, i) => {
     const moznosti = mix(q.a.length).map(j => q.a[j][1]);
     pridaj('❓', `Kvíz · ${i + 1} z ${qs.length}`,
@@ -1801,7 +1804,7 @@ function renderHra() {
 function zapisChybu(k, ok) {
   const t = k && byId(k.tid);
   if (!t) return;
-  const kl = t.id + ':' + t.z.indexOf(k.q), bola = st.chyby.includes(kl);
+  const kl = t.id + ':' + t.z.indexOf(k.q.povodna || k.q), bola = st.chyby.includes(kl);
   if (ok && bola) st.chyby = st.chyby.filter(x => x !== kl);
   else if (!ok && !bola) st.chyby = [...st.chyby, kl].slice(-60);
   else return;
@@ -1929,13 +1932,13 @@ function fillTemy() {
 /* Téma a kvíz krok za krokom */
 function startTema(id) {
   const t = byId(id);
-  const qs = t.z.filter(pre).map(q => ({ t: 'q', q, poradie: mix(q.a.length), tid: id }));
+  const qs = t.z.filter(pre).map(naVek).map(q => ({ t: 'q', q, poradie: mix(q.a.length), tid: id }));
   st.flow = { typ: 'tema', id, i: 0, odp: {}, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
 // rýchly kvíz: 5 otázok z rôznych tém; ťažký kvíz (pre väčšie deti): 8 otázok len pre väčšie deti
 function startKviz(tazky = false) {
-  const vsetky = T.flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(q => ({ t: 'q', q, tid: t.id })));
+  const vsetky = T.flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id })));
   const qs = mix(vsetky.length).slice(0, tazky ? 8 : 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
   st.flow = { typ: 'kviz', tazky, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
@@ -1977,7 +1980,7 @@ function krok(f, k) {
         <h1 class="qt">${q.q}</h1></div>
       <div class="answers">${k.poradie.map((j, pos) => {
         const cls = odp ? (j === 0 ? ' ok' : j === odp.v ? ' bad' : '') : '';
-        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em" style="--e:${EMBG[pos % 3]}">${q.a[j][0]}</span><span>${q.a[j][1]}</span></button>`;
+        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em${st.vek === 'starsi' ? ' pismeno' : ''}" style="--e:${EMBG[pos % 3]}">${st.vek === 'starsi' ? 'ABCD'[pos] : q.a[j][0]}</span><span>${q.a[j][1]}</span></button>`;
       }).join('')}</div>
       ${odp ? `<div class="fbk ${odp.ok ? 'ok' : 'bad'}" aria-live="polite"><span class="fbk-owl">${owl(odp.ok ? 'happy' : 'oops')}</span><div><b>${odp.ok ? odp.p : 'Nevadí, nabudúce!'}</b><p>${odp.ok ? '' : 'Správne je: ' + q.a[0][1] + '. '}${q.w || ''}</p></div></div>` : ''}</div>`;
   }

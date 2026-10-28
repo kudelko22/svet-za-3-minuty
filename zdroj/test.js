@@ -105,6 +105,11 @@ st.view = "ja"; render(); st.view = "domov"; render();
 for (const t of T) if (t.z.filter(q => q.v === 's').length < 2) chyby.push("tazke otazky " + t.id);
 st.vek = "starsi"; startKviz(true); if (!st.flow.tazky || st.flow.kroky.filter(k => k.t === "q").some(k => k.q.v !== "s") || st.flow.kroky.length !== 9) chyby.push("tazky kviz");
 st.flow = null; st.vek = "mladsi"; startKviz(); if (st.flow.kroky.some(k => k.q && k.q.v === "s")) chyby.push("rychly kviz mladsi"); st.flow = null;
+/* TAZSIE_TEST */
+for (const t of T) t.z.forEach((x, i) => { if (x.h && (x.h.length !== 3 || x.h.includes(x.a[0][1]) || new Set(x.h).size !== 3)) chyby.push("tazsie " + t.id + " " + i); if (!x.h && x.a.length < 4) chyby.push("chyba tazsia odpoved " + t.id + " " + i); });
+st.vek = "starsi"; startTema("ruky"); if (st.flow.kroky.filter(k => k.t === "q").some(k => k.q.a.length !== 4)) chyby.push("starsi maju 4 odpovede"); renderFlow();
+st.flow.i = st.flow.kroky.findIndex(k => k.t === "q"); renderFlow(); st.chyby = []; zapisChybu(st.flow.kroky[st.flow.i], false); if (st.chyby[0] !== "ruky:0") chyby.push("chyba starsi " + st.chyby);
+st.flow = null; st.chyby = []; st.vek = "mladsi"; startTema("ruky"); if (st.flow.kroky.filter(k => k.t === "q").some(k => k.q.a.length !== 3)) chyby.push("mladsi maju 3 odpovede"); st.flow = null;
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
