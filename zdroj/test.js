@@ -116,11 +116,15 @@ st.vek = "starsi"; if (TV().some(t => (t.vek || KAT[t.k].vek) === "mladsi")) chy
 startKviz("vyzva"); if (!st.flow.vyzva || st.flow.kroky.length !== 11 || st.flow.kroky.some(k => k.q && k.q.a.length !== 4)) chyby.push("vyzva"); zapisChybu(st.flow.kroky[0], false); st.flow = null;
 for (const x of VYZVA) if (!byId(x.tid)) chyby.push("vyzva tema " + x.tid);
 for (const v of ["mladsi", "starsi"]) { st.vek = v; for (const w of ["domov", "temy", "hry", "odznaky", "ja"]) { st.view = w; render(); } }
+/* DENNY_LIMIT_TEST */
+st.vek = "starsi"; st.dietaId = "limit"; for (const i of [0, 1]) { startKviz("vyzva"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl);
+  if (i === 0 && fl.zisk !== 200) chyby.push("vyzva body " + fl.zisk); if (i === 1 && (fl.zisk !== 0 || !fl.dnesUz)) chyby.push("vyzva druhykrat " + fl.zisk); fl.i++; renderFlow(); st.flow = null; }
+st.dietaId = "d1";
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
   if (plan.segs.filter(x => x.e === "❓").length !== qn) chyby.push("auto kviz segmenty");
-  if (!plan.segs.some(x => x.label === "Pre väčšie deti")) chyby.push("auto starsie");
+  if (!plan.segs.some(x => x.label === "Do hĺbky")) chyby.push("auto starsie");
   if (plan.kroky.filter(k => k.typ === "pauza").length !== qn + byId("hory").o.length) chyby.push("auto pauzy"); }
 Auto.start("hory");
 if (st.auto.stav !== "rucne") chyby.push("auto bez hlasu ma byt rucne");

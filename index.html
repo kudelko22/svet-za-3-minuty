@@ -660,7 +660,7 @@ body.auto-rezim .blobs { opacity: .3; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 17; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 18; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1260,7 +1260,7 @@ function autoPlan(t) {
   };
   pridaj('🚗', 'Téma', [`Téma: ${t.t}`]);
   pridaj('📖', 'Vysvetlenie', vetyZ(t.m));
-  if (st.vek === 'starsi') pridaj('🎓', 'Pre väčšie deti', vetyZ(t.s));
+  if (st.vek === 'starsi') pridaj('🎓', 'Do hĺbky', vetyZ(t.s));
   pridaj('💡', 'Príklad zo života', ['Príklad zo života.', ...vetyZ(t.p)]);
   t.o.forEach((o, i) => pridaj('💬', `Porozprávajte sa · ${i + 1} z ${t.o.length}`, [o], [{ typ: 'pauza', s: 12, co: 'Čas na rozhovor' }]));
   const qs = t.z.filter(pre).map(naVek);
@@ -1857,10 +1857,10 @@ const views = {
         <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
       ${kartaDalsiaOdmena()}
       <div class="acts">
-        <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">⚡</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém</small></button>
+        <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">⚡</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém, body raz za deň</small></button>
         <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">🎲</span><b>Iná téma</b><small>Nechajte sa prekvapiť</small></button>
-        ${st.vek === 'starsi' ? `<button class="act siroky" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">🧠</span><b>Ťažký kvíz</b><small>8 ťažkých otázok pre väčšie deti, za každú 15 bodov</small></button>
-        <button class="act siroky" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">🏆</span><b>Výzva</b><small>10 extra ťažkých otázok, za každú dvojnásobné body (20)</small></button>` : ''}
+        ${st.vek === 'starsi' ? `<button class="act siroky" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">🧠</span><b>Ťažký kvíz</b><small>8 ťažkých otázok, 15 bodov za každú, body raz za deň</small></button>
+        <button class="act siroky" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">🏆</span><b>Výzva</b><small>10 extra ťažkých otázok, 20 bodov za každú, body raz za deň</small></button>` : ''}
       </div>
       ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
         <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
@@ -1974,7 +1974,7 @@ function krok(f, k) {
       <div class="say"><div class="say-head"><button class="say-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><span>Povedzte dieťaťu</span>${citaj('uvod')}</div>
         <div class="bubble"><p>${t.m}</p></div></div>
       <button class="btn auto-mini" data-auto-start="${t.id}">${IKO.auto}Celú tému nahlas (do auta)</button>
-      ${st.vek === 'starsi' ? `<div class="more"><b>🎓 Pre väčšie deti</b><p>${t.s}</p></div>` : ''}</div>`;
+      ${st.vek === 'starsi' ? `<div class="more"><b>🎓 Do hĺbky</b><p>${t.s}</p></div>` : ''}</div>`;
   }
   if (k.t === 'priklad') {
     return `<div class="step"><div class="st-head"><div class="big-st" style="--c:#FFD23F">💡</div><h1 class="h1">Príklad zo života</h1></div>${citaj('priklad')}<div class="note-card"><p>${t.p}</p></div></div>`;
@@ -2004,7 +2004,7 @@ function krok(f, k) {
       <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? '#FFD23F' : '#E4E0EE')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
-      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov</div>` : '<div class="earn plain">Body za túto tému už máte. Opakovanie je matka múdrosti.</div>'}
+      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov</div>` : f.typ !== 'kviz' ? '<div class="earn plain">Body za túto tému už máte. Opakovanie je matka múdrosti.</div>' : f.dnesUz ? '<div class="earn plain">Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!</div>' : ''}
       ${odmenyHtml(f)}
       <div class="win-acts">
         ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
@@ -2062,7 +2062,11 @@ function dokonci(f) {
     if (prvy) { st.done.push(f.id); S.set('done', st.done); }
     zapisPrebrate(f.id);
   } else {
-    f.zisk = c * (f.vyzva ? 20 : f.tazky ? 15 : 10);
+    // body za kvíz len raz za deň (každý druh zvlášť), aby sa nedali zbierať opakovaním
+    const kl = 'kviz-' + (st.dietaId || 'x') + '-' + (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'rychly');
+    f.dnesUz = S.get(kl, '') === dnes;
+    f.zisk = f.dnesUz ? 0 : c * (f.vyzva ? 20 : f.tazky ? 15 : 10);
+    S.set(kl, dnes);
   }
   st.body += f.zisk; S.set('body', st.body);
   if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
