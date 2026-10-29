@@ -716,6 +716,20 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes osPrilet { from { transform: translate(190px, -150px) rotate(25deg) scale(.6); } 60% { transform: translate(-6px, 6px) rotate(-6deg); } }
 @keyframes osPismeno { from { opacity: 0; transform: translateY(26px) scale(.4); } }
 @keyframes osPadne { from { opacity: 0; transform: translateY(-120px) scale(1.6); } 70% { opacity: 1; transform: translateY(0) scale(.85); } }
+/* oblasti tém */
+.skupiny { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tile.skupina { min-height: 150px; }
+.tile.skupina b { font-size: 1.08rem; }
+.mini-ik { display: flex; flex-wrap: wrap; gap: 3px; }
+.mini-ik i { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); }
+.mini-ik .ik { width: 16px; height: 16px; }
+.skupiny.vybrana .skupina[aria-pressed="false"] { opacity: .5; transform: scale(.96); }
+.skupina[aria-pressed="true"] { outline: 3px dashed var(--ink); outline-offset: 3px; }
+#filtre { display: grid; gap: 12px; }
+#filtre .tile.skupina { min-height: 0; gap: 4px; padding: 8px 10px; }
+#filtre .tile-e { width: 34px; height: 34px; }
+#filtre .tile-e .ik { width: 24px; height: 24px; }
+.skup-h { margin: 10px 0 0; }
 /* okno Čo je nové */
 .novinky { position: fixed; inset: 0; z-index: 54; display: grid; place-items: center; padding: 16px; background: rgb(43 34 64 / .45); animation: osIn .3s ease-out both; }
 .novinky.pryc { animation: osOut .3s ease-in both; }
@@ -770,10 +784,10 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=25"></script>
-<script src="obrazky.js?v=25"></script>
+<script src="temy.js?v=26"></script>
+<script src="obrazky.js?v=26"></script>
 <script>
-const VERZIA_APPKY = 25; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 26; const VERZIA_NAZOV = '1.26'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1104,7 +1118,7 @@ function toast(text) { const t = document.getElementById('toast'); t.textContent
 const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
 const st = {
   meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [], dietaId: null, avatar: null,
-  faza: 'nacitava', upravuje: null, view: 'domov', kat: '', q: '', flow: null,
+  faza: 'nacitava', upravuje: null, view: 'domov', kat: '', skupina: '', q: '', flow: null,
 };
 const main = document.getElementById('main');
 const byId = id => T.find(t => t.id === id);
@@ -1114,6 +1128,19 @@ const key = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0
 const mix = n => { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
 // kategórie pre vek dieťaťa; tie len pre jeho vek idú prvé
+/* 4 veľké oblasti tém, v každej menšie kategórie (každá kategória patrí práve do jednej oblasti) */
+const SKUPINY = [
+  { id: 'priroda', nazov: 'Príroda a vesmír', c: '#16BFAE', ikona: () => IK_KAT.priroda, kat: ['zvieratka', 'priroda', 'cas', 'telo', 'vesmir', 'planeta', 'biologia'] },
+  { id: 'ludia', nazov: 'Ľudia a život', c: '#FF6FA8', ikona: () => IK.rodina, kat: ['domacnost', 'zivot', 'bezpecne', 'psychologia', 'ekonomika', 'kultura'] },
+  { id: 'svet', nazov: 'Svet a dejiny', c: '#FF8A3D', ikona: () => IK_KAT.planeta, kat: ['historia', 'dejiny', 'geografia', 'politika', 'anglictina'] },
+  { id: 'veda', nazov: 'Veda a technika', c: '#7C6CFF', ikona: () => IK_KAT.veda, kat: ['tvary', 'veda', 'technika', 'doprava', 'vynalezy', 'digital'] },
+];
+const skupinaKat = id => SKUPINY.find(g => g.kat.includes(id));
+const skupinaKarta = (g, kk, i) => {
+  const k = g.kat.map(id => kk.find(x => x.id === id)).filter(Boolean), n = k.reduce((a, x) => a + x.n, 0), h = k.reduce((a, x) => a + x.hotovo, 0);
+  return `<button class="tile skupina" style="--c:${g.c}" data-skupina="${g.id}" aria-pressed="${st.skupina === g.id}"><span class="tile-e" style="--j:${i}">${g.ikona()}</span><b>${g.nazov}</b>
+    <span class="mini-ik">${k.map(x => `<i>${ikKat(x.id)}</i>`).join('')}</span><small>${h}/${n} tém</small></button>`;
+};
 const kats = () => { const v = TV(); return Object.keys(KAT).map(id => ({ id, ...KAT[id], n: v.filter(t => t.k === id).length, hotovo: v.filter(t => t.k === id && st.done.includes(t.id)).length })).filter(k => k.n).sort((a, b) => !!b.vek - !!a.vek); };
 const pre = q => st.vek === 'starsi' || q.v !== 's';
 // témy pre vek dieťaťa: kategória alebo téma s vek: 'mladsi' / 'starsi' patrí len danému veku
@@ -2418,9 +2445,8 @@ const views = {
       </div>
       ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
         <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
-      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Kategórie</h2>
-        <div class="tiles">${kats().map((k, i) => `<button class="tile" style="--c:${k.c}" data-kat="${k.id}"><span class="tile-e" style="--j:${i}">${ikKat(k.id)}</span><b>${k.nazov}</b><small>${k.hotovo}/${k.n}</small></button>`).join('')}
-          <button class="tile all" data-kat=""><span class="tile-e" style="--j:11">${IK.iskra}</span><b>Všetky témy</b><small>${TV().length}</small></button></div>
+      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Oblasti tém</h2>
+        <div class="skupiny">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
       </section>
       <div class="tip"><button class="tip-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><p class="bubble">Témy sú krátke, zvládnete ich aj cestou autom. A ak šoférujete, ťuknite na „Prečítať nahlas“!</p></div>`;
   },
@@ -2478,18 +2504,23 @@ const views = {
         <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
         <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
       </section>
-      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
+      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
   },
 };
 
 function fillTemy() {
   const f = document.getElementById('filtre'), z = document.getElementById('zoznam');
-  f.innerHTML = [{ id: '', nazov: 'Všetko', ikona: IK.iskra, c: '#2B2240' }, { id: 'fav', nazov: 'Uložené', ikona: IK.srdce, c: '#FF5A5F' }, ...kats()].map(k =>
-    `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${ii(k.ikona || ikKat(k.id))} ${k.nazov}</button>`).join('');
-  const q = bez(st.q.trim());
-  const poradie = kats().map(k => k.id);
-  const list = TV().sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k)).filter(t => (!st.kat || t.k === st.kat || (st.kat === 'fav' && st.fav.includes(t.id))) && (!q || bez(t.t + ' ' + t.m).includes(q)));
-  z.innerHTML = list.length ? list.map(row).join('') : `<div class="empty">${owl('oops')}<span>Takú tému zatiaľ nemáme.</span></div>`;
+  const kk = kats(), q = bez(st.q.trim()), g = q || st.kat === 'fav' ? null : SKUPINY.find(x => x.id === st.skupina);
+  const chip = k => `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${ii(k.ikona || ikKat(k.id))} ${k.nazov}</button>`;
+  f.innerHTML = `<div class="skupiny${g ? ' vybrana' : ''}">${SKUPINY.map((x, i) => skupinaKarta(x, kk, i)).join('')}</div>
+    <div class="chips">${g ? [{ id: '', nazov: 'Celá oblasť', ikona: g.ikona(), c: g.c }, ...g.kat.map(id => kk.find(k => k.id === id)).filter(Boolean)].map(chip).join('') : ''}${chip({ id: 'fav', nazov: 'Uložené', ikona: IK.srdce, c: '#FF5A5F' })}</div>`;
+  const poradie = SKUPINY.flatMap(x => x.kat);
+  const list = TV().sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k))
+    .filter(t => q ? bez(t.t + ' ' + t.m).includes(q) : st.kat === 'fav' ? st.fav.includes(t.id) : st.kat ? t.k === st.kat : !g || g.kat.includes(t.k));
+  const html = q || !g ? (st.kat === 'fav' && !q ? list.map(row).join('')
+    : SKUPINY.map(x => (tt => tt.length ? `<h2 class="h2 skup-h" style="--hc:${x.c}">${ii(x.ikona())} ${x.nazov}</h2>${tt.map(row).join('')}` : '')(list.filter(t => x.kat.includes(t.k)))).join(''))
+    : list.map(row).join('');
+  z.innerHTML = html || `<div class="empty">${owl('oops')}<span>${st.kat === 'fav' ? 'Zatiaľ nič uložené.' : 'Takú tému zatiaľ nemáme.'}</span></div>`;
 }
 
 /* Téma a kvíz krok za krokom */
@@ -2654,6 +2685,7 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 26, obr: () => IKS(SKUPINY.map((g, i) => `<rect x="${5 + (i % 2) * 21}" y="${5 + Math.floor(i / 2) * 21}" width="17" height="17" rx="5" fill="${g.c}"/>`).join('')), n: 'Témy v 4 oblastiach', p: 'Príroda a vesmír, Ľudia a život, Svet a dejiny, Veda a technika. Vnútri sú menšie kategórie.' },
   { v: 25, obr: () => svg(byId('farma')), siroky: true, n: 'Obrázky tém nakreslené nanovo', p: '79 tém má nové kreslené obrázky: zvieratká, autá, jedlo aj predmety s očkami a pohybom.' },
   { v: 24, obr: () => IK.ohen, n: 'Veľká oslava série', p: 'Prvá téma alebo kvíz dňa: vyrastie strom múdrosti a pribudne na ňom plod.' },
   { v: 22, obr: () => OBR_HRY.sova, n: 'Nová hra Lietajúca sova', p: 'Ťukaj a sovička letí pomedzi ceruzky. Odomkne sa za 300 bodov.' },
@@ -2673,7 +2705,7 @@ const Novinky = {
   ukaz(z) {
     const el = document.createElement('div');
     el.className = 'novinky'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Čo je nové');
-    el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('cheer')}<div><small>Verzia ${VERZIA_APPKY}</small><h2>Čo je nové?</h2></div></div>
+    el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('cheer')}<div><small>Verzia ${VERZIA_NAZOV}</small><h2>Čo je nové?</h2></div></div>
       <div class="nov-zoznam">${z.map((n, i) => `<div class="nov-polozka" style="--i:${i}"><span class="nov-obr${n.siroky ? ' siroky' : ''}">${n.obr()}</span><div><b>${n.n}</b><small>${n.p}</small></div></div>`).join('')}</div>
       <button class="btn wide cta" data-novinky-ok>Super, poďme na to!</button></div>`;
     document.body.appendChild(el);
@@ -2830,9 +2862,16 @@ document.addEventListener('click', e => {
   else if (d.nahodna !== undefined) {
     const nove = TV().filter(t => !st.done.includes(t.id) && t.id !== (f && f.id));
     startTema(pick(nove.length ? nove : TV().filter(t => t.id !== (f && f.id))).id);
+  } else if (d.skupina !== undefined) {
+    Zvuk.play('boing');
+    // druhé ťuknutie na vybranú oblasť ju zavrie
+    st.skupina = st.view === 'temy' && st.skupina === d.skupina && !st.kat ? '' : d.skupina; st.kat = ''; st.q = '';
+    const inp = document.getElementById('hladaj'); if (inp) inp.value = '';
+    if (st.view === 'temy' && !f) fillTemy(); else go('temy');
   } else if (d.kat !== undefined) {
     Zvuk.play('boing');
     st.kat = d.kat; st.q = '';
+    if (d.kat && d.kat !== 'fav') st.skupina = (skupinaKat(d.kat) || {}).id || ''; else if (d.kat === 'fav') st.skupina = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
   } else if (d.vek) {
     Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render();

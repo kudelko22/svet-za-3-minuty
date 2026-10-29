@@ -84,6 +84,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- Témy sú v 4 oblastiach (`SKUPINY` v zdroj/appka.html): Príroda a vesmír, Ľudia a život, Svet a dejiny, Veda a technika;
+  v každej sú menšie kategórie. Každá kategória musí patriť práve do jednej oblasti (test to stráži).
+- Verzia sa v profile ukazuje ako `VERZIA_NAZOV` (napr. 1.26); `VERZIA_APPKY` je poradové číslo pre telefón a novinky.
 - 127 tém v 24 kategóriách. Spoločné pre všetkých: história, politika, ekonomika, každodenný život, technika, veda,
   príroda, ľudské telo, geografia, psychológia, kultúra a angličtina. Len pre menšie deti (5–8 rokov) ľahké kategórie
   Zvieratká, Farby a tvary, Doma a v rodine, Čas a počasie, Bezpečne a Doprava; len pre väčšie (9–12) náročné kategórie Vesmír,

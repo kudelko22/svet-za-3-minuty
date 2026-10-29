@@ -171,6 +171,11 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (!Nahravky.hra || !Hlas.hovori) chyby.push("hlas nahravky"); Hlas.stop(); if (Nahravky.hra) chyby.push("hlas stop"); Nahravky.zoznam = null; }
 /* V25B_TEST */
 { const RE = new RegExp(EMO_RE.source, "u"), zle = T.filter(t => String(ART[t.id]).includes("P.") && RE.test(ART[t.id]())); if (zle.length) chyby.push("nove obrazky s emoji: " + zle.map(t => t.id).join(" ")); }
+/* V26_TEST */
+{ for (const id of Object.keys(KAT)) { const n = SKUPINY.filter(g => g.kat.includes(id)).length; if (n !== 1) chyby.push("kategoria " + id + " v oblastiach " + n + "x"); }
+  for (const id of SKUPINY.flatMap(g => g.kat)) if (!KAT[id]) chyby.push("oblast ma neznamu kategoriu " + id);
+  for (const vek of ["mladsi", "starsi"]) { st.vek = vek; for (const sk of ["", ...SKUPINY.map(g => g.id)]) { st.skupina = sk; st.kat = ""; st.q = ""; fillTemy(); } }
+  st.kat = "fav"; fillTemy(); st.kat = ""; st.q = "srdce"; fillTemy(); st.q = ""; st.skupina = ""; st.view = "domov"; render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
