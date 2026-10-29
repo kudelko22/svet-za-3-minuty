@@ -977,6 +977,16 @@ body.dm-rezim::before { display: none; }
 .uvod-bodky i:nth-child(2) { background: #FF6FA8; animation-delay: .15s; }
 .uvod-bodky i:nth-child(3) { background: #4C7DFF; animation-delay: .3s; }
 @keyframes uvodBodka { 40% { transform: translateY(-9px); } }
+/* Výzva: 3 životy */
+.zivoty { display: inline-flex; gap: 3px; }
+.zivoty i { display: grid; width: 28px; height: 28px; }
+.zivoty i svg { width: 100%; height: 100%; }
+.zivoty i.strata { opacity: .4; filter: grayscale(1); }
+.zivoty i.prave { animation: zivotStrata .8s ease-out both; }
+@keyframes zivotStrata { 0% { transform: scale(1.6); opacity: 1; filter: none; } 30% { transform: scale(1.25) rotate(-16deg); opacity: 1; filter: none; } 60% { transform: rotate(12deg); } }
+.zivoty.velke { justify-content: center; gap: 8px; }
+.zivoty.velke i { width: 46px; height: 46px; }
+.act.cas { opacity: .62; }
 /* Pridať na plochu: karta na Domove, tip pri prihlásení a kreslený návod */
 .plocha-karta { display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 8px; border: 3px solid var(--ink); border-radius: 24px; background: #FFF8EC; box-shadow: 0 4px 0 var(--ink); }
 .plocha-obr { flex: none; width: 82px; }
@@ -2217,6 +2227,20 @@ const SOVA_IMG = (() => {
   for (const [k, m] of [['hore', 'cheer'], ['dole', 'happy']]) { o[k] = new Image(); o[k].src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(owl(m).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ')); }
   return o;
 })();
+// bitmapa nakreslená raz a potom už len kopírovaná do hry (kluc null = jednorazová, bez pamäte)
+const sovaSprite = (() => {
+  const pamat = {};
+  return (kluc, w, v, dpr, kresli) => {
+    const k = kluc && kluc + '@' + dpr;
+    if (k && pamat[k]) return pamat[k];
+    const cv = document.createElement('canvas'), g = cv.getContext && cv.getContext('2d');
+    if (!g) return null;
+    cv.width = Math.ceil(w * dpr); cv.height = Math.ceil(v * dpr); g.scale(dpr, dpr);
+    if (kresli(g) === false) return null;
+    if (k) pamat[k] = cv;
+    return cv;
+  };
+})();
 const CERUZKY = ['#FF5A5F', '#4C7DFF', '#2FBF71', '#FFD23F', '#B36BFF', '#FF9F1C'];
 const SIRKA_CERUZKY = 56, HROT = 46, SOVA_R = 15;
 function sovaSvet(W, H, mal) {
@@ -2352,23 +2376,28 @@ const Hra = {
       setTimeout(() => { if (st.hra === h && !h.hotovo) this.koniec(false, h.skore); }, 800);
     }
   },
+  // obloha, oblak, hviezda, sovička a srdiečka sú predkreslené bitmapy (sovaSprite); kresliť SVG v každom snímku na telefóne sekalo
   sovaKresli(h) {
     const cv = document.getElementById('sova-cv');
     if (!cv || !cv.getContext || !h) return;
-    const W = cv.clientWidth || 360, H = cv.clientHeight || 480, dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = h.W || cv.clientWidth || 360, H = h.H || cv.clientHeight || 480, dpr = Math.min(2, window.devicePixelRatio || 1);
     if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     const g = cv.getContext('2d'), pos = h.posun || 0, zem = H - 26, cas = h.cas || 0;
     g.setTransform(dpr, 0, 0, dpr, 0, 0); g.lineJoin = 'round'; g.lineCap = 'round'; g.strokeStyle = INK;
-    const obloha = g.createLinearGradient(0, 0, 0, H); obloha.addColorStop(0, '#8FD3FF'); obloha.addColorStop(1, '#E8F7FF');
-    g.fillStyle = obloha; g.fillRect(0, 0, W, H);
-    // slnko a oblaky (pomaly sa posúvajú)
-    g.lineWidth = 3; g.fillStyle = '#FFD23F'; g.beginPath(); g.arc(W - 46, 48, 24, 0, 7); g.fill(); g.stroke();
-    for (let i = 0; i < 3; i++) {
-      const x = ((i * 190 + 80 - pos * .2) % (W + 160) + W + 160) % (W + 160) - 80, y = 70 + i * 52;
-      const kruhy = [[0, 0, 18], [20, -8, 22], [42, 0, 17]];
-      g.fillStyle = '#fff'; g.lineWidth = 6; kruhy.forEach(([a, b, rr]) => { g.beginPath(); g.arc(x + a, y + b, rr, 0, 7); g.stroke(); });
-      kruhy.forEach(([a, b, rr]) => { g.beginPath(); g.arc(x + a, y + b, rr, 0, 7); g.fill(); });
-    }
+    const obloha = sovaSprite('obloha' + W + 'x' + H, W, H, dpr, c => {
+      const gr = c.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#8FD3FF'); gr.addColorStop(1, '#E8F7FF');
+      c.fillStyle = gr; c.fillRect(0, 0, W, H);
+      c.strokeStyle = INK; c.lineWidth = 3; c.fillStyle = '#FFD23F'; c.beginPath(); c.arc(W - 46, 48, 24, 0, 7); c.fill(); c.stroke();
+    });
+    if (obloha) g.drawImage(obloha, 0, 0, W, H);
+    // oblaky (pomaly sa posúvajú)
+    const oblak = sovaSprite('oblak', 84, 56, dpr, c => {
+      const kruhy = [[21, 34, 18], [41, 26, 22], [63, 34, 17]];
+      c.strokeStyle = INK; c.fillStyle = '#fff'; c.lineWidth = 6;
+      kruhy.forEach(([a, b, rr]) => { c.beginPath(); c.arc(a, b, rr, 0, 7); c.stroke(); });
+      kruhy.forEach(([a, b, rr]) => { c.beginPath(); c.arc(a, b, rr, 0, 7); c.fill(); });
+    });
+    for (let i = 0; i < 3 && oblak; i++) g.drawImage(oblak, ((i * 190 + 80 - pos * .2) % (W + 160) + W + 160) % (W + 160) - 80 - 21, 70 + i * 52 - 34, 84, 56);
     // kopce v diaľke
     g.fillStyle = '#B9EBC0'; g.lineWidth = 3; g.beginPath(); g.moveTo(0, H);
     for (let x = 0; x <= W + 8; x += 8) g.lineTo(x, zem - 34 - 20 * Math.sin((x + pos * .35) / 64));
@@ -2376,38 +2405,50 @@ const Hra = {
     // ceruzky
     (h.prekazky || []).forEach(p => sovaCeruzky(g, p, h, zem));
     // hviezdy
-    (h.hviezdy || []).forEach(z => {
-      g.save(); g.translate(z.x, z.y + Math.sin(cas * 4 + z.x / 40) * 3); g.rotate(Math.sin(cas * 3 + z.x) * .25);
-      g.fillStyle = 'rgb(255 255 255 / .55)'; g.beginPath(); g.arc(0, 0, 18, 0, 7); g.fill();
-      g.fillStyle = '#FFD23F'; g.lineWidth = 2.5; g.beginPath();
-      for (let k = 0; k < 10; k++) { const rr = k % 2 ? 5.5 : 13, a = -Math.PI / 2 + k * Math.PI / 5; g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
-      g.closePath(); g.fill(); g.stroke(); g.restore();
+    const hv = sovaSprite('hviezda', 38, 38, dpr, c => {
+      c.translate(19, 19); c.fillStyle = 'rgb(255 255 255 / .55)'; c.beginPath(); c.arc(0, 0, 18, 0, 7); c.fill();
+      c.strokeStyle = INK; c.lineJoin = 'round'; c.fillStyle = '#FFD23F'; c.lineWidth = 2.5; c.beginPath();
+      for (let k = 0; k < 10; k++) { const rr = k % 2 ? 5.5 : 13, a = -Math.PI / 2 + k * Math.PI / 5; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+      c.closePath(); c.fill(); c.stroke();
+    });
+    if (hv) (h.hviezdy || []).forEach(z => {
+      g.save(); g.translate(z.x, z.y + Math.sin(cas * 4 + z.x / 40) * 3); g.rotate(Math.sin(cas * 3 + z.x) * .25); g.drawImage(hv, -19, -19, 38, 38); g.restore();
     });
     // iskry po chytenej hviezde
     (h.iskry || []).forEach(q => { g.globalAlpha = Math.max(0, q.ziv / .6); g.fillStyle = q.c; g.beginPath(); g.arc(q.x, q.y, 4, 0, 7); g.fill(); });
     g.globalAlpha = 1;
-    // zem s trávou
+    // zem s trávou (všetky trsy jednou cestou)
     g.fillStyle = '#7ED957'; g.fillRect(0, zem, W, H - zem); g.lineWidth = 3; g.beginPath(); g.moveTo(0, zem); g.lineTo(W, zem); g.stroke();
-    g.fillStyle = '#5BB85B';
-    for (let x = -((pos % 30) + 30) % 30; x < W; x += 30) { g.beginPath(); g.moveTo(x, zem + 8); g.lineTo(x + 6, zem + 18); g.lineTo(x + 12, zem + 8); g.fill(); }
+    g.fillStyle = '#5BB85B'; g.beginPath();
+    for (let x = -((pos % 30) + 30) % 30; x < W; x += 30) { g.moveTo(x, zem + 8); g.lineTo(x + 6, zem + 18); g.lineTo(x + 12, zem + 8); }
+    g.fill();
     // sovička
     const y = h.y != null ? h.y : H * .42, x = h.x != null ? h.x : W * .28, uhol = Math.max(-.45, Math.min(.8, (h.vy || 0) / 700));
     g.save(); g.translate(x, y + (h.beh || h.hotovo || h.zivoty < (h.mal ? 3 : 2) ? 0 : Math.sin(performance.now() / 300) * 4)); g.rotate(uhol);
     if (h.neznic && Math.floor(cas * 10) % 2) g.globalAlpha = .35;
-    const img = SOVA_IMG[h.mava > 0 || !h.beh ? 'hore' : 'dole'];
-    if (img && img.complete && img.naturalWidth) g.drawImage(img, -24, -27, 48, 53);
+    const kk = h.mava > 0 || !h.beh ? 'hore' : 'dole';
+    const sova = sovaSprite('sova-' + kk, 48, 53, dpr, c => { const img = SOVA_IMG[kk]; if (!img || !img.complete || !img.naturalWidth) return false; c.drawImage(img, 0, 0, 48, 53); });
+    if (sova) g.drawImage(sova, -24, -27, 48, 53);
     else { g.fillStyle = '#9B6BFF'; g.beginPath(); g.arc(0, 0, 18, 0, 7); g.fill(); g.stroke(); }
     g.restore(); g.globalAlpha = 1;
     // srdiečka a body
     for (let i = 0; i < (h.mal ? 3 : 2); i++) {
-      g.save(); g.translate(14 + i * 30, 12); g.scale(.55, .55); g.lineWidth = 5;
-      g.fillStyle = i < h.zivoty ? '#FF5A5F' : '#fff';
-      g.beginPath(); g.moveTo(24, 42); g.bezierCurveTo(10, 33, 5, 25, 5, 17); g.bezierCurveTo(5, 11, 10, 7, 15, 7); g.bezierCurveTo(19, 7, 22, 9, 24, 13);
-      g.bezierCurveTo(26, 9, 29, 7, 33, 7); g.bezierCurveTo(38, 7, 43, 11, 43, 17); g.bezierCurveTo(43, 25, 38, 33, 24, 42); g.closePath(); g.fill(); g.stroke(); g.restore();
+      const plne = i < h.zivoty, s = sovaSprite('srdce' + (plne ? 1 : 0), 27, 27, dpr, c => {
+        c.scale(.55, .55); c.lineWidth = 5; c.strokeStyle = INK; c.lineJoin = 'round'; c.fillStyle = plne ? '#FF5A5F' : '#fff';
+        c.beginPath(); c.moveTo(24, 42); c.bezierCurveTo(10, 33, 5, 25, 5, 17); c.bezierCurveTo(5, 11, 10, 7, 15, 7); c.bezierCurveTo(19, 7, 22, 9, 24, 13);
+        c.bezierCurveTo(26, 9, 29, 7, 33, 7); c.bezierCurveTo(38, 7, 43, 11, 43, 17); c.bezierCurveTo(43, 25, 38, 33, 24, 42); c.closePath(); c.fill(); c.stroke();
+      });
+      if (s) g.drawImage(s, 14 + i * 30, 12, 27, 27);
     }
     if (h.beh || h.hotovo) {
-      g.font = '700 40px "Baloo 2", Nunito, sans-serif'; g.textAlign = 'center'; g.lineWidth = 7;
-      g.strokeText(String(h.skore), W / 2, 58); g.fillStyle = '#fff'; g.fillText(String(h.skore), W / 2, 58);
+      if (!h.skoreObr || h.skoreObr.n !== h.skore) {
+        const n = String(h.skore);
+        h.skoreObr = { n: h.skore, c: sovaSprite(null, 140, 64, dpr, c => {
+          c.font = '700 40px "Baloo 2", Nunito, sans-serif'; c.textAlign = 'center'; c.lineWidth = 7; c.lineJoin = 'round'; c.strokeStyle = INK;
+          c.strokeText(n, 70, 50); c.fillStyle = '#fff'; c.fillText(n, 70, 50);
+        }) };
+      }
+      if (h.skoreObr.c) g.drawImage(h.skoreObr.c, W / 2 - 70, 8, 140, 64);
     }
   },
   // Pexeso: dve otočené karty, rovnaké ostanú hore
@@ -2734,7 +2775,7 @@ const views = {
         <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém, body raz za deň</small></button>
         <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">${IK.kocka}</span><b>Iná téma</b><small>Nechajte sa prekvapiť</small></button>
         ${st.vek === 'starsi' ? `<button class="act siroky" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>8 ťažkých otázok, 15 bodov za každú, body raz za deň</small></button>
-        <button class="act siroky" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>10 extra ťažkých otázok, 20 bodov za každú, body raz za deň</small></button>` : ''}
+        <button class="act siroky${vyzvaMinuty() ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${vyzvaMinuty() ? `Znova o ${vyzvaMinuty()} min. Medzitým skús iný kvíz!` : '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň'}</small></button>` : ''}
       </div>
       ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
         <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
@@ -2956,13 +2997,27 @@ function startTema(id) {
   st.flow = { typ: 'tema', id, i: 0, odp: {}, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
+// Výzva (verzia 2.4): 3 životy; po dohraní alebo po strate životov sa dá hrať znova až o hodinu
+const vyzvaKluc = () => 'vyzva-zamok-' + (st.dietaId || 'x');
+const vyzvaMinuty = () => Math.max(0, Math.ceil((S.get(vyzvaKluc(), 0) - Date.now()) / 60000));
+const vyzvaZamkni = () => S.set(vyzvaKluc(), Date.now() + 3600e3);
+// téma bez jedinej správnej odpovede sa nezapíše a strom múdrosti nenarastie: treba skúsiť otázky ešte raz
+const vsetkoZle = f => f.typ === 'tema' && f.kroky.some(k => k.t === 'q') && !Object.values(f.odp).some(o => o.ok);
+// zapíše odpoveď; vo Výzve zlá odpoveď zoberie život a po treťom sa výzva končí
+function odpovedz(f, v) {
+  const ok = v === 0;
+  f.odp[f.i] = { v, ok, p: pick(POCHVALA) };
+  if (f.zivoty != null && !ok) { f.zivoty--; f.prave = true; if (f.zivoty <= 0) f.prehra = true; }
+  return ok;
+}
 // rýchly kvíz: 5 otázok; ťažký kvíz (väčšie deti): 8 otázok len pre väčšie deti; výzva: 10 extra ťažkých otázok za dvojnásobné body
 function startKviz(druh = '') {
   const tazky = druh === 'tazky', vyzva = druh === 'vyzva';
+  if (vyzva && vyzvaMinuty()) { Zvuk.play('boing'); toast(`Výzvu môžeš znova hrať o ${vyzvaMinuty()} min.`); return; }
   const vsetky = vyzva ? VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid }))
     : TV().flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id })));
   const qs = mix(vsetky.length).slice(0, vyzva ? 10 : tazky ? 8 : 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
-  st.flow = { typ: 'kviz', tazky, vyzva, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
+  st.flow = { typ: 'kviz', tazky, vyzva, zivoty: vyzva ? 3 : null, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
 const citaj = typ => `<button class="read" data-citaj="${typ}">${ii(IK.repro)} Prečítať nahlas</button>`;
@@ -2997,7 +3052,7 @@ function krok(f, k) {
   }
   if (k.t === 'q') {
     const qn = f.kroky.filter(x => x.t === 'q'), odp = f.odp[f.i], q = k.q, zdroj = f.typ === 'kviz' ? byId(k.tid) : null;
-    return `<div class="step"><div class="qhead"><div class="qhead-r"><span class="sticker sm">Otázka ${qn.indexOf(k) + 1} z ${qn.length}</span>${citaj('q')}</div>
+    return `<div class="step"><div class="qhead"><div class="qhead-r"><span class="sticker sm">Otázka ${qn.indexOf(k) + 1} z ${qn.length}</span>${f.zivoty != null ? `<span class="zivoty" aria-label="Životy: ${f.zivoty} z 3">${[0, 1, 2].map(i => `<i class="${i < f.zivoty ? 'ma' : 'strata'}${i === f.zivoty && f.prave ? ' prave' : ''}">${i < f.zivoty ? IK.srdce : IK.srdcePrazdne}</i>`).join('')}</span>` : ''}${citaj('q')}</div>
         ${zdroj ? `<span class="chip" style="--c:${KAT[zdroj.k].c}">${ii(ikKat(zdroj.k))} ${zdroj.t}</span>` : ''}
         <h1 class="qt">${q.q}</h1></div>
       <div class="answers">${k.poradie.map((j, pos) => {
@@ -3008,6 +3063,16 @@ function krok(f, k) {
   }
   // koniec
   const qn = f.kroky.filter(x => x.t === 'q').length, c = Object.values(f.odp).filter(o => o.ok).length;
+  if (f.zle) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
+      <h1 class="h1">Nevadí${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
+      <p class="muted">Tentoraz nevyšla ani jedna odpoveď. Strom múdrosti narastie, keď otázky skúsiš ešte raz.</p>
+      <div class="win-acts"><button class="btn wide cta" data-znova>↻ Nevadí, ale skús to ešte raz</button>
+        <button class="btn blue wide" data-znova="tema">Prečítať tému ešte raz</button><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
+  if (f.prehra) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
+      <h1 class="h1">Došli životy!</h1>
+      <div class="zivoty velke">${[0, 1, 2].map(() => `<i class="strata">${IK.srdcePrazdne}</i>`).join('')}</div>
+      <p class="muted">Výzva sa skončila, tentoraz bez bodov. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>Ďalšia výzva sa dá hrať o hodinu.</p>
+      <div class="win-acts"><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
   const hv = c === qn ? 3 : c * 2 >= qn ? 2 : c ? 1 : 0;
   const rel = t ? t.r.map(byId).filter(Boolean) : [];
   return `<div class="win">
@@ -3020,7 +3085,7 @@ function krok(f, k) {
       ${(So => So && So.zapnute && f.typ === 'tema' && Object.keys(So.priatelia).length && !S.get('soc-pochvala-' + So.pid + '-' + f.id, false) ? `<button class="btn wide cta soc-pochval" data-soc-pochval="${f.id}:${hv}">${ii(IK.rodina)} Pochváliť sa priateľom</button>` : '')(socC())}
       <div class="win-acts">
         ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
-        <button class="btn blue wide" data-${f.typ === 'kviz' ? `kviz="${f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : ''}"` : 'nahodna'}>${f.typ === 'kviz' ? (f.vyzva ? ii(IK.pohar) + ' Ďalšia výzva' : f.tazky ? ii(IK.mozog) + ' Ďalší ťažký kvíz' : ii(IK.blesk) + ' Ďalší kvíz') : ii(IK.kocka) + ' Ďalšia téma'}</button>
+        ${f.vyzva ? `<div class="earn plain">${ii(IK.pohar)} Ďalšiu výzvu môžeš hrať o hodinu.</div>` : `<button class="btn blue wide" data-${f.typ === 'kviz' ? `kviz="${f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : ''}"` : 'nahodna'}>${f.typ === 'kviz' ? (f.vyzva ? ii(IK.pohar) + ' Ďalšia výzva' : f.tazky ? ii(IK.mozog) + ' Ďalší ťažký kvíz' : ii(IK.blesk) + ' Ďalší kvíz') : ii(IK.kocka) + ' Ďalšia téma'}</button>`}
         <button class="btn ghost wide" data-zavriet>Späť domov</button>
       </div></div>`;
 }
@@ -3073,7 +3138,7 @@ const plod = i => `<circle r="10" fill="${['#FF5A5F', '#FFD23F', '#FF9F1C', '#FF
 const Oslava = {
   kluc: () => 'oslava-' + (st.dietaId || 'x'),
   // volá sa pred dokonci(): dnes ešte nič hotové = séria sa práve predĺži
-  treba: f => !!f && !st.dni.includes(key(new Date())) && S.get(Oslava.kluc(), '') !== key(new Date()),
+  treba: f => !!f && Object.values(f.odp || {}).some(o => o.ok) && !st.dni.includes(key(new Date())) && S.get(Oslava.kluc(), '') !== key(new Date()),
   ukaz(dalej) {
     const dnes = key(new Date()); S.set(this.kluc(), dnes);
     const s = Math.max(1, seria()), n = Math.min(s, PLODY.length), casy = [];
@@ -3112,6 +3177,9 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 31, obr: () => IK.srdce, n: 'Výzva s tromi životmi', p: 'Za každú zlú odpoveď zmizne srdiečko. Po treťom sa výzva skončí bez bodov. Znova sa dá hrať o hodinu.' },
+  { v: 31, obr: () => owl('oops'), n: 'Všetko zle? Nevadí!', p: 'Keď v téme nevyjde ani jedna odpoveď, strom múdrosti nenarastie. Stačí skúsiť otázky ešte raz.' },
+  { v: 31, obr: () => OBR_HRY.sova, n: 'Plynulejšia Lietajúca sova', p: 'Hra sa kreslí rýchlejšie, sovička letí plynulo aj na starších telefónoch.' },
   { v: 31, obr: () => plPlocha(), n: 'Appka na ploche ako naozajstná', p: 'Kreslený návod ukáže, ako si appku pridať na plochu iPhonu, iPadu, Macu aj Androidu. Pri spustení vás privíta Sovička.' },
   { v: 30, obr: () => owl('cheer'), n: 'Sovička ťa prevedie appkou', p: 'Nový sprievodca ukáže, čo kde je, a všetko si vyskúšaš ťuknutím. Spustíš ho kedykoľvek v karte Ja.' },
   { v: 29, obr: () => IK.srdce, n: 'Pochváľ sa témou a daj srdiečko', p: 'Po téme ju pošli priateľom, oni ju skúsia tiež. Dvojité ťuknutie na správu dá srdiečko a uvidíš, či je správa Videná.' },
@@ -3443,9 +3511,11 @@ function dokonci(f) {
     f.dnesUz = S.get(kl, '') === dnes;
     f.zisk = f.dnesUz ? 0 : c * (f.vyzva ? 20 : f.tazky ? 15 : 10);
     S.set(kl, dnes);
+    if (f.vyzva) vyzvaZamkni();
   }
   st.body += f.zisk; S.set('body', st.body);
-  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
+  if (c && !st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
   f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
   f.noveOdmeny = noveOdmeny(bodyPred, st.body);
   f.noveHry = noveHry(bodyPred, st.body);
@@ -3655,9 +3725,9 @@ document.addEventListener('click', e => {
     oznamOdznaky(noveOdznaky());
     renderFlow(false);
   } else if (d.ans !== undefined && f) {
-    const v = Number(d.ans), ok = v === 0, [x, y] = stred(b);
+    const v = Number(d.ans), [x, y] = stred(b);
     Hlas.stop();
-    f.odp[f.i] = { v, ok, p: pick(POCHVALA) };
+    const ok = odpovedz(f, v);
     zapisChybu(f.kroky[f.i], ok);
     renderFlow(false);
     if (ok) {
@@ -3666,9 +3736,17 @@ document.addEventListener('click', e => {
     } else {
       Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');
       const s = main.querySelector('.step'); if (s) s.classList.add('shake');
+      if (f.prehra) setTimeout(() => { Zvuk.play('bum'); vibruj([60, 40, 60]); }, 450);
     }
+  } else if (d.znova !== undefined && f) {
+    // téma bez správnej odpovede: otázky (alebo celá téma) odznova, odpovede v inom poradí
+    f.odp = {}; f.zle = false; f.kroky.forEach(k => { if (k.t === 'q') k.poradie = mix(k.q.a.length); });
+    f.i = d.znova === 'tema' ? 0 : f.kroky.findIndex(k => k.t === 'q');
+    Zvuk.play('start'); renderFlow(); window.scrollTo(0, 0);
   } else if (d.dalej !== undefined && f) {
-    Hlas.stop();
+    Hlas.stop(); f.prave = false;
+    if (f.prehra) { vyzvaZamkni(); f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
+    if (f.kroky[f.i + 1].t === 'koniec' && vsetkoZle(f)) { f.zle = true; f.i++; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec') {
       const oslava = Oslava.treba(f); dokonci(f);
       // téma dňa: najprv veľká oslava, výsledok až po ťuknutí na Pokračovať

@@ -84,6 +84,12 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Verzia 2.4:** úvodná obrazovka so Sovičkou (`#uvod`; iPhone a iPad ju ukážu ešte pred načítaním z `ikony/start`,
+  obrázky kreslí `node zdroj/uvod-obrazky.js` podľa `STARTY` v zostav.js). Kreslený návod Pridať na plochu (`Plocha`, `PLOCHA`)
+  pre iPhone, iPad, Mac, Android a prehliadač v inej appke, karta na Domove, tip pri prihlásení, tlačidlo v profile.
+  Téma bez jedinej správnej odpovede sa nezapíše a strom nenarastie (tlačidlo „Nevadí, ale skús to ešte raz“); deň sa
+  počíta len s aspoň jednou správnou odpoveďou. Výzva má 3 životy (`odpovedz`), po dohraní alebo prehre znova o hodinu.
+  Lietajúca sova kreslí predkreslené bitmapy (`sovaSprite`), aby na telefóne nesekala.
 - **Sprievodca appkou (verzia 2.3):** pri novom dieťati sa sám spustí, Sovička svietiacim kruhom ukazuje skutočné
   časti appky (téma dňa, týždeň, body, režim do auta, kvízy, Témy, Hry, Priatelia, profil) a dieťa samo ťuká na tlačidlá
   v menu. Znova sa spustí v karte Ja (Sprievodca appkou). Kroky sú v `SPR_KROKY`, ovládanie v `Sprievodca` (zdroj/appka.html).

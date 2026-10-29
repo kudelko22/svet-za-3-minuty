@@ -121,7 +121,7 @@ startKviz("vyzva"); if (!st.flow.vyzva || st.flow.kroky.length !== 11 || st.flow
 for (const x of VYZVA) if (!byId(x.tid)) chyby.push("vyzva tema " + x.tid);
 for (const v of ["mladsi", "starsi"]) { st.vek = v; for (const w of ["domov", "temy", "hry", "odznaky", "ja"]) { st.view = w; render(); } }
 /* DENNY_LIMIT_TEST */
-st.vek = "starsi"; st.dietaId = "limit"; for (const i of [0, 1]) { startKviz("vyzva"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl);
+st.vek = "starsi"; st.dietaId = "limit"; for (const i of [0, 1]) { localStorage.removeItem("svet3:vyzva-zamok-limit"); startKviz("vyzva"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl);
   if (i === 0 && fl.zisk !== 200) chyby.push("vyzva body " + fl.zisk); if (i === 1 && (fl.zisk !== 0 || !fl.dnesUz)) chyby.push("vyzva druhykrat " + fl.zisk); fl.i++; renderFlow(); st.flow = null; }
 st.dietaId = "d1";
 /* VYBER_TEST */
@@ -141,7 +141,7 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   for (let i = 0; i < 600; i++) { if (h.y > 240) h.vy = h.skok; sovaKrok(h, 1 / 60); }
   if (!h.prekazky.length) chyby.push("sova bez ceruziek"); Hra.sovaKresli(h); Hra.koniec(false, 31);
   if (!st.odznaky.includes("sova30") || !st.odznaky.includes("sova10")) chyby.push("odznaky sova"); Hra.zrus(); }
-{ const f = { typ: "tema", id: "ruky" }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f) || !Oslava.treba({ typ: "kviz" })) chyby.push("oslava prva tema dna"); Oslava.ukaz(() => {});
+{ const f = { typ: "tema", id: "ruky", odp: { 3: { ok: true } } }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f) || !Oslava.treba({ typ: "kviz", odp: { 0: { ok: true } } })) chyby.push("oslava prva tema dna"); Oslava.ukaz(() => {});
   if (Oslava.treba(f)) chyby.push("oslava druhykrat"); S.set(Oslava.kluc(), ""); st.dni = [key(new Date())]; if (Oslava.treba(f)) chyby.push("oslava ked uz dnes nieco"); st.dni = dniPred; }
 Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
 /* V23_TEST */
@@ -222,6 +222,21 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   st.view = "ja"; render(); if (!main.innerHTML.includes("data-plocha")) chyby.push("plocha v profile");
   st.faza = "prihlasenie"; render(); st.faza = "appka"; st.view = "domov"; render(); Uvod.skontroluj(); Uvod.skry();
   if (!NOVINKY.some(n => n.v === VERZIA_APPKY)) chyby.push("novinky " + VERZIA_APPKY); }
+/* V31B_TEST */
+{ Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi" });
+  localStorage.removeItem("svet3:vyzva-zamok-d1");
+  startTema("hory"); const f = st.flow; f.kroky.forEach((k, i) => { if (k.t === "q") f.odp[i] = { v: 1, ok: false, p: "x" }; });
+  if (!vsetkoZle(f) || Oslava.treba(f)) chyby.push("tema vsetko zle");
+  f.zle = true; f.i = f.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("data-znova")) chyby.push("tlacidlo skus znova");
+  startKviz("vyzva"); const v = st.flow; if (!v || v.zivoty !== 3) chyby.push("vyzva zivoty");
+  for (let i = 0; i < 3; i++) { v.i = i; odpovedz(v, 1); renderFlow(false); }
+  if (!v.prehra || v.zivoty !== 0 || !main.innerHTML.includes("zivoty")) chyby.push("vyzva tri zle");
+  v.i = v.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("Došli životy")) chyby.push("vyzva prehra");
+  st.flow = null; vyzvaZamkni(); startKviz("vyzva"); if (st.flow) chyby.push("vyzva zamok");
+  st.view = "domov"; render(); if (!main.innerHTML.includes("Znova o")) chyby.push("vyzva cas na domove");
+  localStorage.removeItem("svet3:vyzva-zamok-d1");
+  const dniPred = JSON.stringify(st.dni); startKviz(""); dokonci(st.flow); if (JSON.stringify(st.dni) !== dniPred) chyby.push("kviz bez spravnej pridal den");
+  st.flow = null; st.body = 500; Hra.start("sova"); if (!st.hra) chyby.push("sova start"); Hra.sovaKresli(st.hra); Hra.zrus(); render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
