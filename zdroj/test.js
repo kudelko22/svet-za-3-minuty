@@ -196,6 +196,20 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (!nahladSpravy("f1").includes("Ty: Ahoj!") && !nahladSpravy("f1").includes("nálepka")) chyby.push("nahlad spravy " + nahladSpravy("f1"));
   if (!prehladPriatelov().includes("SOVA-K7M2")) chyby.push("prehlad priatelov"); st.view = "ja"; render();
   Object.assign(st, zal); window.Cloud = undefined; }
+/* V30_TEST */
+{ Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "ja" }); render();
+  if (!main.innerHTML.includes("data-sprievodca")) chyby.push("sprievodca v profile");
+  Sprievodca.start(); if (!Sprievodca.el || Sprievodca.i !== 0) chyby.push("sprievodca nezacal");
+  for (let i = 0; i < 40 && Sprievodca.el; i++) {
+    const k = SPR_KROKY[Sprievodca.i];
+    if (k.v && st.view !== k.v) chyby.push("sprievodca krok " + Sprievodca.i + " na " + st.view);
+    if (k.id === "koniec" && st.view !== "ja") chyby.push("sprievodca konci mimo profilu");
+    if (k.tap) Sprievodca.tukni(); else Sprievodca.dalej();
+  }
+  if (Sprievodca.el) chyby.push("sprievodca neskoncil");
+  for (const k of SPR_KROKY.filter(k => k.v && k.v !== "priatelia" && k.cil[0] === ".")) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca ciel " + k.cil); }
+  if (!NOVINKY.some(n => n.v === VERZIA_APPKY)) chyby.push("novinky " + VERZIA_APPKY);
+  st.view = "domov"; render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

@@ -875,6 +875,66 @@ body.dm-rezim::before { display: none; }
 .sova-hra { position: relative; }
 .sova-cv { display: block; width: 100%; height: min(62vh, 520px); border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
 
+/* Sprievodca appkou: svietiaci kruh na skutočnom tlačidle, bublina so Sovičkou a ruka, ktorá ukazuje, kam ťuknúť */
+.spr { position: fixed; inset: 0; z-index: 57; touch-action: manipulation; animation: osIn .35s ease-out both; }
+.spr.pryc { animation: osOut .35s ease-in both; }
+.spr-diera { position: fixed; left: 50%; top: 45%; width: 0; height: 0; border-radius: 24px; pointer-events: none; box-shadow: 0 0 0 4px #FFD23F, 0 0 0 200vmax rgb(43 34 64 / .62); transition: left .5s var(--spring), top .5s var(--spring), width .5s var(--spring), height .5s var(--spring), border-radius .5s; }
+.spr.velka .spr-diera { box-shadow: 0 0 0 0 #FFD23F, 0 0 0 200vmax rgb(43 34 64 / .7); }
+.spr-diera::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 4px solid #FFD23F; animation: sprPuls 1.5s ease-out infinite; }
+.spr.velka .spr-diera::after { display: none; }
+@keyframes sprPuls { from { transform: scale(1); opacity: .9; } to { transform: scale(1.18); opacity: 0; } }
+.spr-ruka { position: fixed; z-index: 2; width: 52px; height: 58px; pointer-events: none; opacity: 0; transition: left .5s var(--spring), top .5s var(--spring), opacity .3s; }
+.spr.tap .spr-ruka { opacity: 1; }
+.spr-ruka svg { display: block; width: 100%; height: 100%; transform-origin: 40% 4%; animation: sprTuk 1.2s ease-in-out infinite; filter: drop-shadow(0 3px 0 rgb(43 34 64 / .35)); }
+.spr-ruka::before { content: ""; position: absolute; left: 21px; top: 2px; width: 30px; height: 30px; margin: -15px 0 0 -15px; border: 4px solid #fff; border-radius: 50%; opacity: 0; animation: sprVlna 1.2s ease-out infinite; }
+@keyframes sprTuk { 0%, 100% { transform: translate(12px, 18px) rotate(-8deg); } 45%, 55% { transform: translate(0, 0) scale(.9) rotate(0); } }
+@keyframes sprVlna { 0%, 44% { transform: scale(.3); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+.spr-bublina { position: fixed; left: 50%; top: 30%; z-index: 1; display: grid; gap: 10px; width: min(calc(100% - 32px), 420px); padding: 14px; translate: -50% 0; border: 3px solid var(--ink); border-radius: 26px; background: var(--paper); box-shadow: 0 6px 0 var(--ink); transition: top .5s var(--spring); }
+.spr-bublina.nova .spr-obsah { animation: sprPop .45s var(--spring) both; }
+.spr-bublina.tras { animation: sprTras .45s; }
+@keyframes sprPop { from { transform: scale(.85); opacity: 0; } }
+@keyframes sprTras { 20%, 60% { translate: calc(-50% - 9px) 0; } 40%, 80% { translate: calc(-50% + 9px) 0; } }
+.spr-obsah { display: grid; gap: 10px; }
+.spr-hlava { display: flex; align-items: center; gap: 10px; }
+.spr-sova { flex: none; width: 58px; padding: 0; border: 0; background: none; }
+.spr-sova .owl { display: block; width: 100%; height: auto; }
+.spr-bublina.nova .spr-sova .owl { animation: hop 1.6s ease-in-out .2s; }
+.spr-nadpis { flex: 1; min-width: 0; }
+.spr-nadpis small { display: block; color: var(--muted); font-weight: 800; }
+.spr-nadpis b { display: block; font: 700 1.35rem/1.15 var(--f-display); }
+.spr-hlava .ib { width: 40px; height: 40px; border-radius: 12px; padding: 7px; }
+.spr-hlava .ib svg { width: 100%; height: 100%; }
+.spr-citaj.on { background: #FFD23F; }
+.spr-text { margin: 0; font-weight: 700; font-size: 1.08rem; line-height: 1.4; }
+.spr-text span { display: inline-block; animation: sprSlovo .4s ease-out both; animation-delay: calc(.12s + var(--k) * 40ms); }
+@keyframes sprSlovo { from { transform: translateY(8px); opacity: 0; } }
+.spr-tip { display: flex; align-items: center; gap: 8px; margin: 0; padding: 8px 12px; border: 2.5px dashed var(--ink); border-radius: 16px; background: #FFF3C4; font: 700 1rem/1.25 var(--f-display); animation: novinka 1.4s ease-in-out infinite; }
+.spr-tip-ruka { flex: none; width: 24px; height: 27px; } .spr-tip-ruka svg { display: block; width: 100%; height: 100%; }
+.spr-tlacidla { display: flex; gap: 10px; justify-content: flex-end; }
+.spr-pruh { height: 10px; border: 2.5px solid var(--ink); border-radius: 999px; background: #EFEAF7; overflow: hidden; }
+.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #FFD23F, #FF9F1C); transition: width .6s var(--spring); }
+.spr.velka .spr-pruh { display: none; }
+.spr.velka .spr-bublina { gap: 14px; padding: 22px 18px 18px; text-align: center; }
+.spr.velka .spr-hlava { flex-direction: column; gap: 6px; }
+.spr.velka .spr-sova { width: 120px; }
+.spr.velka .spr-sova .owl { animation: hop 1.8s ease-in-out infinite; }
+.spr.velka .spr-nadpis b { font-size: 2.1rem; }
+.spr.velka .spr-nadpis b span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
+.spr.velka .spr-hlava .ib { position: absolute; top: 12px; right: 12px; }
+.spr.velka .spr-citaj { left: 12px; right: auto !important; }
+.spr.velka .spr-tlacidla { flex-direction: column; }
+.spr-hviezdy { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 23px; }
+.spr-hviezdy i { position: absolute; width: 22px; height: 22px; animation: sprHviezda 2.4s ease-in-out infinite; animation-delay: calc(var(--k) * .3s); }
+.spr-hviezdy svg { width: 100%; height: 100%; }
+@keyframes sprHviezda { 0%, 100% { transform: scale(.5) rotate(0); opacity: .3; } 50% { transform: scale(1.1) rotate(25deg); opacity: 1; } }
+/* karta v profile */
+.spr-karta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; text-align: left; background: #EAF4FF; }
+.spr-karta .owl { flex: none; width: 54px; height: auto; animation: hop 2.2s ease-in-out infinite; }
+.spr-karta span { flex: 1; min-width: 0; }
+.spr-karta b { display: block; font: 700 1.15rem/1.2 var(--f-display); }
+.spr-karta small { display: block; color: var(--muted); font-weight: 700; }
+.spr-karta .auto-play { flex: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .oslava *, .oslava, .streak .ik { animation: none !important; }
 }
@@ -909,10 +969,10 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=29"></script>
-<script src="obrazky.js?v=29"></script>
+<script src="temy.js?v=30"></script>
+<script src="obrazky.js?v=30"></script>
 <script>
-const VERZIA_APPKY = 29; const VERZIA_NAZOV = '2.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 30; const VERZIA_NAZOV = '2.3'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -2620,6 +2680,7 @@ const views = {
         <div class="card mini" style="--c:#FFE3C7"><b>${ii(IK.ohen)} ${s}</b><small>${dni(s)} po sebe</small></div>
       </section>
       ${kartaOdznakov()}
+      <button class="card spr-karta" data-sprievodca>${owl('hi')}<span><b>Sprievodca appkou</b><small>Sovička ti znova ukáže, čo kde je.</small></span><span class="auto-play">${IKO.play}</span></button>
       ${prehladRodica()}
       <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
         <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${ikKat(k.id)}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
@@ -2762,7 +2823,7 @@ function socZmena() {
 let socPosledna = 0, socTap = {}, socOznCas = 0;
 // nová správa, kým je dieťa inde v appke: bublina hore (ťuknutím otvorí rozhovor)
 function socNovaSprava(f) {
-  if (st.faza !== 'appka' || st.flow || st.hra || st.auto || (st.view === 'priatel' && st.priatel === f)) return;
+  if (st.faza !== 'appka' || st.flow || st.hra || st.auto || Sprievodca.el || (st.view === 'priatel' && st.priatel === f)) return;
   const So = socC(), p = So && So.profily[f];
   if (!p) return;
   if (Date.now() - socOznCas > 1500) { Zvuk.play('heart'); vibruj([30, 40, 30]); } // viac správ naraz = jeden zvuk
@@ -2954,6 +3015,7 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 30, obr: () => owl('cheer'), n: 'Sovička ťa prevedie appkou', p: 'Nový sprievodca ukáže, čo kde je, a všetko si vyskúšaš ťuknutím. Spustíš ho kedykoľvek v karte Ja.' },
   { v: 29, obr: () => IK.srdce, n: 'Pochváľ sa témou a daj srdiečko', p: 'Po téme ju pošli priateľom, oni ju skúsia tiež. Dvojité ťuknutie na správu dá srdiečko a uvidíš, či je správa Videná.' },
   { v: 28, obr: () => IK.bublina, n: 'Správy ako v chate', p: 'V Priateľoch sú hneď rozhovory. Ťukni na kamaráta a nálepky posielaš jedným ťuknutím.' },
   { v: 27, obr: () => IK.rodina, n: 'Verzia 2.0: Priatelia', p: 'Pridaj si kamaráta kódom, posielajte si nálepky a súťažte v týždennom rebríčku. Rodič ich zapne v karte Priatelia.' },
@@ -2965,7 +3027,7 @@ const NOVINKY = [
 ];
 const Novinky = {
   skontroluj() {
-    if (this.bolo || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto) return;
+    if (this.bolo || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto || Sprievodca.el) return;
     this.bolo = true;
     const videl = S.get('videl-verziu', 0);
     if (videl >= VERZIA_APPKY) return;
@@ -2986,6 +3048,131 @@ const Novinky = {
     if (b) b.addEventListener('click', e => { e.stopPropagation(); Zvuk.play('tap'); el.classList.add('pryc'); setTimeout(() => el.remove(), 300); });
   },
 };
+/* Sprievodca appkou (verzia 2.3): Sovička prevedie dieťa skutočnou appkou, svieti na tlačidlá a dieťa na ne ťuká.
+   Sám sa spustí pri novom dieťati, znova sa dá spustiť v profile (karta Ja). */
+const SPR_RUKA = `<svg viewBox="0 0 64 72" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M20 40 V9 C20 2 30 2 30 9 V28 C31 23 39 23 39 29 C40 24 48 24 48 31 C49 27 56 28 56 34 V48 C56 61 48 69 37 69 H33 C25 69 20 65 16 58 L8 44 C5 38 12 34 16 39 L20 44Z" fill="#fff"/>
+  <path d="M30 28 V37 M39 29 V37 M48 31 V38" fill="none" stroke-width="3"/></g></svg>`;
+const SPR_KROKY = [
+  { id: 'vitaj', nalada: 'hi', p: 'Ja som Sovička Múdra. Ukážem ti, čo všetko v appke nájdeš. Bude to rýchle, sľubujem!' },
+  { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň ťa tu čaká nová téma. S rodičom si ju prečítate za 3 minúty a potom odpovieš na pár otázok.' },
+  { v: 'domov', cil: 'main > section.card', n: 'Tento týždeň', p: 'Za každý deň s témou dostaneš hviezdičku. Keď sa učíš deň po dni, horí ti plamienok a rastie strom múdrosti.' },
+  { v: 'domov', cil: '#stars', n: 'Tvoje body', nalada: 'cheer', p: 'Za správne odpovede zbieraš body. Za body sa odomykajú hry a nové veci pre tvoju postavičku.' },
+  { v: 'domov', cil: '.auto-karta', n: 'Režim do auta', p: 'Keď ide rodina autom, appka prečíta tému aj otázky nahlas. Učiť sa dá aj cestou.' },
+  { v: 'domov', cil: '.acts', n: 'Kvízy', nalada: 'happy', p: 'Rýchly kvíz má 5 otázok z rôznych tém. Iná téma ťa prekvapí.' },
+  { tap: 'temy', cil: '#nav-temy', n: 'Ťukni na Témy', p: 'Teraz si to vyskúšaj: ťukni na Témy dole.' },
+  { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: 'Témy sú v 4 oblastiach: príroda, ľudia, svet a veda. Ťukni na oblasť alebo hore napíš, čo hľadáš.' },
+  { tap: 'hry', cil: '#nav-hry', n: 'Ťukni na Hry', nalada: 'happy', p: 'Výborne! Teraz ťukni na Hry.' },
+  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Za body sa odomykajú hry. Hraním sa body neminú.' },
+  { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťukni na Priatelia', p: 'Ešte dve zastávky. Ťukni na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
+  { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia', p: () => socC() && socC().zapnute ? 'Tu sú tvoji kamaráti. Posielate si nálepky a súťažíte v týždennom rebríčku.' : 'Tu si pridáš kamarátov. Posielate si nálepky a súťažíte v týždennom rebríčku. Zapína to rodič.' },
+  { tap: 'ja', cil: '#nav-ja', n: 'Ťukni na Ja', nalada: 'happy', p: 'Posledná zastávka. Ťukni na Ja.' },
+  { v: 'ja', cil: '.prof-top', n: 'Tvoj profil', nalada: 'happy', p: 'Tu je tvoja postavička. Ťukni na ňu a môžeš ju prezliecť.' },
+  { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky', nalada: 'cheer', p: 'Za úspechy dostávaš odznaky. Koľko ich nazbieraš?' },
+  { v: 'ja', cil: '.spr-karta', n: 'Kedykoľvek znova', p: 'Keď budeš chcieť, ukážem ti všetko znova. Stačí ťuknúť sem.' },
+  { id: 'koniec', nalada: 'cheer', p: 'Teraz už vieš, kde je čo. Poďme spolu na tému dňa?' },
+];
+const Sprievodca = {
+  el: null, i: 0,
+  ciel() { const k = SPR_KROKY[this.i]; return k && k.cil ? document.querySelector(k.cil) : null; },
+  nadpis: k => k.id === 'vitaj' ? (st.meno ? `Ahoj, ${st.meno}!` : 'Ahoj!') : k.id === 'koniec' ? 'Hotovo!' : k.n,
+  veta: k => typeof k.p === 'function' ? k.p() : k.p,
+  start() {
+    if (st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto) return;
+    const ine = document.querySelector('.novinky, .oslava');
+    if (ine && ine.isConnected) { setTimeout(() => this.start(), 700); return; } // počká, kým sa zavrie iné okno
+    if (this.el) this.el.remove();
+    const el = document.createElement('div');
+    el.className = 'spr'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Sprievodca appkou');
+    el.innerHTML = `<div class="spr-diera"></div><div class="spr-ruka">${SPR_RUKA}</div><div class="spr-bublina" aria-live="polite"><div class="spr-obsah"></div><div class="spr-pruh"><i></i></div></div>`;
+    el.addEventListener('click', e => this.klik(e));
+    document.body.appendChild(el);
+    this.el = el; this.i = 0; this.ukaz();
+    const tik = () => { if (this.el !== el) return; this.poloha(); requestAnimationFrame(tik); };
+    requestAnimationFrame(tik);
+  },
+  ukaz() {
+    const k = SPR_KROKY[this.i], el = this.el, velka = !k.cil, n = SPR_KROKY.length - 2, nadpis = this.nadpis(k);
+    Hlas.stop();
+    if (k.v && st.view !== k.v) go(k.v);
+    el.classList.toggle('velka', velka); el.classList.toggle('tap', !!k.tap);
+    const tl = k.id === 'vitaj' ? '<button class="btn wide cta" data-spr="dalej">Ukáž mi to! →</button><button class="btn wide ghost" data-spr="zavri">Teraz nie</button>'
+      : k.id === 'koniec' ? '<button class="btn wide cta" data-spr="tema">Poďme na tému dňa! →</button><button class="btn wide ghost" data-spr="domov">Zavrieť</button>'
+      : k.tap ? '' : `<button class="btn cta" data-spr="dalej">${this.i === n ? 'Hotovo' : 'Ďalej'} →</button>`;
+    el.querySelector('.spr-obsah').innerHTML = `${velka ? `<div class="spr-hviezdy">${[[6, 30], [86, 22], [90, 58], [4, 66], [72, 84], [18, 88]].map(([x, y], i) => `<i style="left:${x}%;top:${y}%;--k:${i}">${STAR()}</i>`).join('')}</div>` : ''}
+      <div class="spr-hlava"><button class="spr-sova" data-spr="sova" aria-label="Sovička Múdra">${owl(k.nalada || 'hi')}</button>
+        <div class="spr-nadpis">${velka ? '' : `<small>${this.i} z ${n}</small>`}<b>${velka ? [...nadpis].map((ch, i) => `<span style="--k:${i}">${esc(ch)}</span>`).join('') : esc(nadpis)}</b></div>
+        <button class="ib spr-citaj" data-spr="citaj" aria-label="Prečítať nahlas">${IK.repro}</button>
+        ${k.id === 'koniec' ? '' : `<button class="ib spr-x" data-spr="zavri" aria-label="Zavrieť sprievodcu">${IKO.zavriet}</button>`}</div>
+      <p class="spr-text">${this.veta(k).split(' ').map((w, i) => `<span style="--k:${i}">${esc(w)}</span>`).join(' ')}</p>
+      ${k.tap ? `<p class="spr-tip"><i class="spr-tip-ruka">${SPR_RUKA}</i>Ťukni na svietiace tlačidlo</p>` : ''}
+      ${tl ? `<div class="spr-tlacidla">${tl}</div>` : ''}`;
+    const b = el.querySelector('.spr-bublina'); b.classList.remove('nova', 'tras'); void b.offsetWidth; b.classList.add('nova');
+    el.querySelector('.spr-pruh i').style.width = Math.round(this.i / (n + 1) * 100) + '%';
+    if (k.id === 'vitaj') { Zvuk.play('hoot'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .3, 24, ['star', 'dot']), 250); }
+    else if (k.id === 'koniec') { Zvuk.play('win'); FX.ohnostroj(3); setTimeout(() => FX.rain(70), 500); }
+    else Zvuk.play('pop');
+    const f = el.querySelector('[data-spr="dalej"], [data-spr="tema"]');
+    if (f && f.focus) setTimeout(() => f.focus({ preventScroll: true }), 60);
+    if (k.cil) setTimeout(() => this.posun(), 80);
+  },
+  // posunie stránku tak, aby bolo vidno svietiace miesto aj bublinu pod ním
+  posun() {
+    const c = this.ciel(), b = this.el && this.el.querySelector('.spr-bublina');
+    if (!c || !b || !c.closest || c.closest('.nav')) return;
+    const r = c.getBoundingClientRect(), cel = r.height + b.offsetHeight + 40, hore = cel < innerHeight ? (innerHeight - cel) / 2 + 12 : 12;
+    scrollTo({ top: Math.max(0, scrollY + r.top - hore), behavior: 'smooth' });
+  },
+  // každý snímok: kruh, bublina a ruka idú za tlačidlom (aj keď sa stránka posúva)
+  poloha() {
+    const el = this.el, k = SPR_KROKY[this.i], c = this.ciel(), D = el.querySelector('.spr-diera'), B = el.querySelector('.spr-bublina'), H = innerHeight, bh = B.offsetHeight;
+    if (!c) { Object.assign(D.style, { left: innerWidth / 2 + 'px', top: H / 2 + 'px', width: '0px', height: '0px' }); B.style.top = Math.max(12, (H - bh) / 2) + 'px'; return; }
+    const r = c.getBoundingClientRect(), x = r.left - 8, y = r.top - 8, w = r.width + 16, h = r.height + 16;
+    Object.assign(D.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px', borderRadius: Math.min(h / 2, 26) + 'px' });
+    B.style.top = (y + h + 14 + bh < H - 8 ? y + h + 14 : y - 14 - bh > 8 ? y - 14 - bh : H - bh - 12) + 'px';
+    if (k.tap) Object.assign(el.querySelector('.spr-ruka').style, { left: r.left + r.width / 2 - 20 + 'px', top: r.top + r.height * .35 - 2 + 'px' });
+  },
+  klik(e) {
+    e.stopPropagation();
+    const k = SPR_KROKY[this.i], b = e.target.closest('[data-spr]');
+    if (b) {
+      const a = b.dataset.spr;
+      if (a === 'dalej') this.dalej();
+      else if (a === 'zavri') { Zvuk.play('tap'); this.zavri(); }
+      else if (a === 'citaj') Hlas.citaj(this.nadpis(k) + ' ' + this.veta(k), b);
+      else if (a === 'sova') {
+        Zvuk.play('hoot'); vibruj(30);
+        const o = b.querySelector('.owl'); if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
+        const [x, y] = stred(b); FX.burst(x, y, 14, ['star', 'dot'], 6);
+      } else if (a === 'tema') { this.zavri(true); startTema(temaDna().id); }
+      else if (a === 'domov') { this.zavri(true); Zvuk.play('whoosh'); go('domov'); }
+      return;
+    }
+    if (e.target.closest('.spr-bublina') || !k.cil) return;
+    const c = this.ciel();
+    if (c) {
+      const r = c.getBoundingClientRect();
+      if (e.clientX > r.left - 10 && e.clientX < r.right + 10 && e.clientY > r.top - 10 && e.clientY < r.bottom + 10) { if (k.tap) this.tukni(); else this.dalej(); return; }
+    }
+    // ťuknutie vedľa: bublina sa zatrasie
+    Zvuk.play('boing'); vibruj(20);
+    const B = this.el.querySelector('.spr-bublina'); B.classList.remove('tras'); void B.offsetWidth; B.classList.add('tras');
+  },
+  tukni() {
+    const k = SPR_KROKY[this.i], c = this.ciel();
+    if (c) { const [x, y] = stred(c); FX.burst(x, y, 16, ['star', 'dot'], 6); }
+    if (k.pred) k.pred();
+    vibruj(20); go(k.tap); this.dalej();
+  },
+  dalej() { if (this.i >= SPR_KROKY.length - 1) { this.zavri(true); return; } this.i++; this.ukaz(); },
+  zavri(hotovo) {
+    const el = this.el; if (!el) return;
+    this.el = null; Hlas.stop();
+    el.classList.add('pryc'); setTimeout(() => el.remove(), 350);
+    if (!hotovo) toast('Sprievodcu spustíš znova v karte Ja.');
+  },
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && Sprievodca.el) Sprievodca.zavri(); });
 function dokonci(f) {
   const c = Object.values(f.odp).filter(o => o.ok).length, dnes = key(new Date()), bodyPred = st.body;
   const qn = f.kroky.filter(x => x.t === 'q').length;
@@ -3143,6 +3330,7 @@ document.addEventListener('click', e => {
   }
   if (d.start) startTema(d.start);
   else if (d.go) { Zvuk.play('whoosh'); go(d.go); }
+  else if (d.sprievodca !== undefined) Sprievodca.start();
   else if (d.socZapni !== undefined) { const C = window.Cloud; if (C && C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); FX.burst(innerWidth / 2, innerHeight / 3, 24, ['star', 'dot']); toast('Priatelia sú zapnutí!'); }); }
   else if (d.socVypni !== undefined) { const C = window.Cloud; if (C && C.soc && confirm('Vypnúť priateľov pre ' + st.meno + '? Kód prestane platiť a priatelia nebudú môcť posielať správy.')) socAkcia(C.soc.vypni(), () => { toast('Priatelia sú vypnutí.'); render(); }); }
   else if (d.socZdielaj !== undefined) {
@@ -3370,6 +3558,7 @@ const Cloud = {
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
     zapis(id, d);
     this.vyber(id, stare ? 'ja' : 'domov');
+    if (!stare) setTimeout(() => Sprievodca.start(), 1500); // nové dieťa: Sovička ukáže appku
   },
   zmazDieta(id) {
     this.deti = this.deti.filter(x => x.id !== id);

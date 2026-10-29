@@ -84,6 +84,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Sprievodca appkou (verzia 2.3):** pri novom dieťati sa sám spustí, Sovička svietiacim kruhom ukazuje skutočné
+  časti appky (téma dňa, týždeň, body, režim do auta, kvízy, Témy, Hry, Priatelia, profil) a dieťa samo ťuká na tlačidlá
+  v menu. Znova sa spustí v karte Ja (Sprievodca appkou). Kroky sú v `SPR_KROKY`, ovládanie v `Sprievodca` (zdroj/appka.html).
 - **Priatelia (verzia 2.0):** rodič ich zapne v karte Priatelia. Dieťa má kód (napr. SOVA-K7M2), priateľa pridá jeho kódom
   a ten musí žiadosť prijať (deti sa nedajú vyhľadať). Priatelia vidia postavičku, meno, sériu, body, témy, odznaky a strom
   múdrosti, posielajú si len kreslené nálepky a hotové vety (`VETY`, `NALEPKY`; rovnaký zoznam je vo firestore.rules),
