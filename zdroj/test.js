@@ -169,6 +169,8 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (spojVety(["Čo dáva krava?", "Mlieko", "Vajíčka", "alebo", "Vlnu"]) !== "Čo dáva krava? Mlieko, Vajíčka alebo Vlnu?") chyby.push("spojVety " + spojVety(["Čo dáva krava?", "Mlieko", "Vajíčka", "alebo", "Vlnu"]));
   Nahravky.zoznam = new Set(["Ahoj!", "Takto ti budem čítať témy o svete."].map(klucVety)); Hlas.citaj(["Ahoj!", "Takto ti budem čítať témy o svete."]);
   if (!Nahravky.hra || !Hlas.hovori) chyby.push("hlas nahravky"); Hlas.stop(); if (Nahravky.hra) chyby.push("hlas stop"); Nahravky.zoznam = null; }
+/* V25B_TEST */
+{ const RE = new RegExp(EMO_RE.source, "u"), zle = T.filter(t => String(ART[t.id]).includes("P.") && RE.test(ART[t.id]())); if (zle.length) chyby.push("nove obrazky s emoji: " + zle.map(t => t.id).join(" ")); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

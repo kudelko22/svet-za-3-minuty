@@ -92,7 +92,8 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 - Väčšie deti majú aj **Výzvu**: 10 extra ťažkých otázok, za každú správnu 20 bodov (dvojnásobok).
 - Body za kvízy (rýchly, ťažký aj Výzvu) sa dajú získať len raz za deň, za každý druh zvlášť, aby sa nezbierali opakovaním.
   Zopakovaná téma dá desatinu bodov (počet správnych odpovedí + 1), za tú istú tému najviac raz za deň.
-- Obrázky k novším témam (79) sú nakreslené prostredia (`PROSTR` na konci obrazky.js: lúka, izba, kuchyňa, mesto, vesmír,
+- Obrázky k novším témam (79) sú vlastné kresby: prostredia (`PROSTR`) a zvieratá, jedlo, autá a predmety (`K`) na konci
+  obrazky.js, bez emoji (test to stráži). Prostredia: lúka, izba, kuchyňa, mesto, vesmír,
   more, les, hrad, obchod…) s postavičkami a predmetmi. Emoji v obrázkoch tém aj v odpovediach kvízov
   sa kreslia obrázkami **OpenMoji** z priečinka `e/` (licencia CC BY-SA 4.0, pozri `e/LICENCIA.txt`), aby vyzerali na každom
   telefóne rovnako. Pri nových témach s novými emoji: stiahnuť balík `openmoji` (npm), spustiť
