@@ -49,6 +49,83 @@ service cloud.firestore {
       allow create, update: if jeMoj(uid) && platnyPokrok(request.resource.data);
     }
 
+    // ---- Priatelia (verzia 2.0) ----
+    function prihlaseny() { return request.auth != null; }
+    function cesta(p) { return /databases/$(database)/documents/profily/$(p); }
+    // profil dieťaťa patrí prihlásenému rodičovi
+    function majitel(p) { return prihlaseny() && exists(cesta(p)) && get(cesta(p)).data.rodina == request.auth.uid; }
+    function zapnuty(p) { return exists(cesta(p)) && get(cesta(p)).data.zapnute == true; }
+
+    // Verejný profil dieťaťa pre priateľov: len meno, postavička a pokrok z hry (nikdy e-mail, vek ani fotka)
+    function platnyProfil(d) {
+      return d.keys().hasOnly(['meno', 'avatar', 'body', 'seria', 'temy', 'odznaky', 'posledne', 'tyzKey', 'tyzStart', 'kod', 'rodina', 'zapnute', 'upravene'])
+        && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
+        && d.avatar is map
+        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'kuzlo', 'pozadie'])
+        && d.body is int && d.body >= 0 && d.body <= 1000000
+        && d.seria is int && d.seria >= 0 && d.seria <= 5000
+        && d.temy is int && d.temy >= 0 && d.temy <= 1000
+        && d.odznaky is int && d.odznaky >= 0 && d.odznaky <= 500
+        && d.posledne is list && d.posledne.size() <= 5
+        && d.tyzKey is string && d.tyzKey.size() <= 10
+        && d.tyzStart is int && d.tyzStart >= 0 && d.tyzStart <= 1000000
+        && d.kod is string && d.kod.size() <= 12
+        && d.rodina == request.auth.uid && d.zapnute is bool
+        && d.upravene == request.time;
+    }
+    match /profily/{pid} {
+      allow get: if prihlaseny();
+      allow create: if prihlaseny() && pid.matches('^[a-z0-9]{6,32}$')
+        && exists(/databases/$(database)/documents/rodiny/$(request.auth.uid)/deti/$(pid)) && platnyProfil(request.resource.data);
+      allow update: if prihlaseny() && resource.data.rodina == request.auth.uid && platnyProfil(request.resource.data);
+      allow delete: if prihlaseny() && resource.data.rodina == request.auth.uid;
+
+      // žiadosť o priateľstvo od dieťaťa {od}; nikto nemôže deti hľadať, len zadať kód
+      match /ziadosti/{od} {
+        allow read: if majitel(pid) || (prihlaseny() && resource.data.rodina == request.auth.uid);
+        allow create: if od != pid && majitel(od) && zapnuty(pid) && zapnuty(od)
+          && request.resource.data.keys().hasOnly(['meno', 'avatar', 'rodina', 'kedy'])
+          && request.resource.data.meno is string && request.resource.data.meno.size() >= 1 && request.resource.data.meno.size() <= 20
+          && request.resource.data.avatar is map && request.resource.data.rodina == request.auth.uid
+          && request.resource.data.kedy == request.time
+          && !exists(/databases/$(database)/documents/profily/$(pid)/priatelia/$(od));
+        allow delete: if majitel(pid) || (prihlaseny() && resource.data.rodina == request.auth.uid);
+      }
+      // priateľ {fid}: zápis len pri prijatí žiadosti (oboma smermi naraz)
+      match /priatelia/{fid} {
+        allow read: if majitel(pid);
+        allow create: if request.resource.data.keys().hasOnly(['kedy']) && request.resource.data.kedy == request.time
+          && ((majitel(pid) && exists(/databases/$(database)/documents/profily/$(pid)/ziadosti/$(fid)))
+            || (majitel(fid) && exists(/databases/$(database)/documents/profily/$(fid)/ziadosti/$(pid))));
+        allow delete: if majitel(pid) || majitel(fid);
+      }
+    }
+
+    // kód priateľa (napríklad SOVA-K7M2) → profil dieťaťa; dá sa len prečítať podľa presného kódu
+    match /kody/{kod} {
+      allow get: if prihlaseny();
+      allow create: if prihlaseny() && kod.matches('^[A-Z]{4}-[A-Z0-9]{4}$')
+        && request.resource.data.keys().hasOnly(['pid', 'rodina']) && request.resource.data.rodina == request.auth.uid
+        && exists(/databases/$(database)/documents/rodiny/$(request.auth.uid)/deti/$(request.resource.data.pid));
+      allow delete: if prihlaseny() && resource.data.rodina == request.auth.uid;
+    }
+
+    // správy medzi dvoma priateľmi: rozhovor {a_b} (a < b), len nálepka alebo hotová veta, žiadny vlastný text
+    function platnaSprava(d) {
+      return d.keys().hasOnly(['od', 'k', 'n', 'kedy']) && d.kedy == request.time
+        && (('k' in d && !('n' in d) && d.k in ['ahoj', 'ako', 'super', 'grat', 'sisuper', 'tema', 'odznak', 'seria', 'sutaz', 'dobiehaj', 'ucit', 'dakujem', 'haha', 'noc', 'ano', 'nie'])
+          || ('n' in d && !('k' in d) && d.n in ['sova', 'ohen', 'hviezda', 'srdce', 'pohar', 'raketa', 'duha', 'koruna', 'konfety', 'palec', 'smiech', 'diamant', 'blesk', 'mozog', 'jednorozec', 'kniha']));
+    }
+    match /rozhovory/{rid}/spravy/{sid} {
+      allow read: if prihlaseny() && rid.split('_').size() == 2 && (majitel(rid.split('_')[0]) || majitel(rid.split('_')[1]));
+      allow create: if prihlaseny() && rid.split('_').size() == 2 && rid.split('_')[0] < rid.split('_')[1]
+        && request.resource.data.od in rid.split('_') && majitel(request.resource.data.od)
+        && zapnuty(rid.split('_')[0]) && zapnuty(rid.split('_')[1])
+        && exists(/databases/$(database)/documents/profily/$(rid.split('_')[0])/priatelia/$(rid.split('_')[1]))
+        && exists(/databases/$(database)/documents/profily/$(rid.split('_')[1])/priatelia/$(rid.split('_')[0]))
+        && platnaSprava(request.resource.data);
+    }
+
     match /{dokument=**} {
       allow read, write: if false;
     }

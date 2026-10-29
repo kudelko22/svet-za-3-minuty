@@ -84,6 +84,11 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Priatelia (verzia 2.0):** rodič ich zapne v karte Priatelia. Dieťa má kód (napr. SOVA-K7M2), priateľa pridá jeho kódom
+  a ten musí žiadosť prijať (deti sa nedajú vyhľadať). Priatelia vidia postavičku, meno, sériu, body, témy, odznaky a strom
+  múdrosti, posielajú si len kreslené nálepky a hotové vety (`VETY`, `NALEPKY`; rovnaký zoznam je vo firestore.rules),
+  majú týždenný rebríček. Rodič vidí priateľov a správy v časti Pre rodiča. Údaje: `profily/<id dieťaťa>` (verejný profil,
+  žiadosti, priatelia), `kody/<KÓD>`, `rozhovory/<id1_id2>/spravy`. Pravidlá overuje `node zdroj/pravidla-test.js` na emulátore.
 - Témy sú v 4 oblastiach (`SKUPINY` v zdroj/appka.html): Príroda a vesmír, Ľudia a život, Svet a dejiny, Veda a technika;
   v každej sú menšie kategórie. Každá kategória musí patriť práve do jednej oblasti (test to stráži).
 - Verzia sa v profile ukazuje ako `VERZIA_NAZOV` (napr. 1.26); `VERZIA_APPKY` je poradové číslo pre telefón a novinky.

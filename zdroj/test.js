@@ -19,6 +19,7 @@ global.addEventListener = () => {};
 global.innerWidth = 390; global.innerHeight = 844;
 global.requestAnimationFrame = () => {}; global.scrollTo = () => {};
 global.localStorage = { d: {}, getItem(k) { return k in this.d ? this.d[k] : null; }, setItem(k, v) { this.d[k] = String(v); }, removeItem(k) { delete this.d[k]; } };
+global.PRAVIDLA = fs.readFileSync(path.join(R, 'firestore.rules'), 'utf8'); // zoznam viet a nálepiek musí sedieť s pravidlami
 global.Audio = class { play() { setTimeout(() => this.onended && this.onended(), 0); return Promise.resolve(); } pause() {} };
 global.ULOZ_VETY = v => fs.writeFileSync(path.join(__dirname, 'vety.json'), JSON.stringify(v, null, 0)); // pre zdroj/hlas.js
 global.EMO_SUBORY = new Set(fs.existsSync(path.join(R, 'e')) ? fs.readdirSync(path.join(R, 'e')) : []); // obrázky emoji pre test verzie 23
@@ -176,6 +177,21 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   for (const id of SKUPINY.flatMap(g => g.kat)) if (!KAT[id]) chyby.push("oblast ma neznamu kategoriu " + id);
   for (const vek of ["mladsi", "starsi"]) { st.vek = vek; for (const sk of ["", ...SKUPINY.map(g => g.id)]) { st.skupina = sk; st.kat = ""; st.q = ""; fillTemy(); } }
   st.kat = "fav"; fillTemy(); st.kat = ""; st.q = "srdce"; fillTemy(); st.q = ""; st.skupina = ""; st.view = "domov"; render(); }
+/* V27_TEST */
+{ for (const k of [...Object.keys(VETY), ...Object.keys(NALEPKY)]) if (!PRAVIDLA.includes("'" + k + "'")) chyby.push("v pravidlach chyba " + k);
+  for (const k of Object.keys(NALEPKY)) if (!String(NALEPKY[k]()).startsWith("<svg")) chyby.push("nalepka " + k);
+  const zal = { dietaId: st.dietaId, view: st.view, priatel: st.priatel }; st.dietaId = "d1";
+  window.Cloud = { soc: { pid: "d1", nacitane: true, zapnute: false, profil: null, ziadosti: [], priatelia: {}, profily: {}, spravy: {} } };
+  st.view = "priatelia"; render();
+  const So = window.Cloud.soc, tk = tyzKluc();
+  Object.assign(So, { zapnute: true, profil: { kod: "SOVA-K7M2", body: 10, tyzKey: tk, tyzStart: 5 }, ziadosti: [{ id: "f2", meno: "Tomáš", avatar: {} }], priatelia: { f1: true },
+    profily: { f1: { meno: "Ema", avatar: {}, seria: 3, body: 120, tyzKey: tk, tyzStart: 100, temy: 5, odznaky: 4, posledne: ["prva"] } },
+    spravy: { f1: [{ id: "m1", od: "f1", n: "sova", kedy: Date.now() + 5 }, { id: "m2", od: "d1", k: "ahoj", kedy: Date.now() }] } });
+  localStorage.removeItem("svet3:soc-videl-d1-f1"); render(); if (socNove() !== 2) chyby.push("soc nove " + socNove());
+  if (!rebricekHtml().includes("Ema") || tyzBody(So.profily.f1) !== 20 || tyzBody({ body: 50, tyzKey: "2000-01-03", tyzStart: 1 }) !== 0) chyby.push("rebricek");
+  st.priatel = "f1"; st.view = "priatel"; render(); socZmena(); if (!chatHtml("f1").includes("msg moja") || !chatHtml("f1").includes("Ahoj!")) chyby.push("chat");
+  if (!prehladPriatelov().includes("SOVA-K7M2")) chyby.push("prehlad priatelov"); st.view = "ja"; render();
+  Object.assign(st, zal); window.Cloud = undefined; }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
