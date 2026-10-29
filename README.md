@@ -84,6 +84,8 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Verzia 2.5:** všetky kvízy majú životy a prestávku po dohraní aj po prehre (`KVIZY`): rýchly 2 životy a 5 minút,
+  ťažký 3 životy a 15 minút, výzva 3 životy a 30 minút. Iná téma ako téma dňa dá najviac 10 bodov (aj v režime do auta).
 - **Verzia 2.4:** úvodná obrazovka so Sovičkou (`#uvod`; iPhone a iPad ju ukážu ešte pred načítaním z `ikony/start`,
   obrázky kreslí `node zdroj/uvod-obrazky.js` podľa `STARTY` v zostav.js). Kreslený návod Pridať na plochu (`Plocha`, `PLOCHA`)
   pre iPhone, iPad, Mac, Android a prehliadač v inej appke, karta na Domove, tip pri prihlásení, tlačidlo v profile.

@@ -24,6 +24,8 @@ global.Audio = class { play() { setTimeout(() => this.onended && this.onended(),
 global.ULOZ_VETY = v => fs.writeFileSync(path.join(__dirname, 'vety.json'), JSON.stringify(v, null, 0)); // pre zdroj/hlas.js
 global.EMO_SUBORY = new Set(fs.existsSync(path.join(R, 'e')) ? fs.readdirSync(path.join(R, 'e')) : []); // obrázky emoji pre test verzie 23
 new Function(src + `
+// kvízy majú po dohraní prestávku; testy ju pred každým kvízom zrušia
+const odomkni = () => Object.keys(localStorage.d).filter(k => k.includes("kviz-zamok")).forEach(k => localStorage.removeItem(k));
 /* BRANY */
 for (const fz of ["nacitava", "bezNetu", "prihlasenie"]) { st.faza = fz; render(); }
 window.Cloud = { deti: [{ id: "d1", meno: "Emka", vek: "mladsi", avatar: nahodnyAvatar(), body: 10 }, { id: "d2", meno: "Tomi <b>", vek: "starsi", avatar: nahodnyAvatar(), body: 0 }], pouzivatel: { email: "a@b.sk" }, chyba: "", stavUlozenia: "", naplanuj() {}, ulozHned() {}, ulozDieta(u) { this.ulozene = u; }, zmazDieta() {} };
@@ -63,7 +65,7 @@ for (const vek of ['mladsi','starsi']) {
 /* ODMENY_TEST */
 if (najdlhsiaSeria(["2026-10-20", "2026-10-21", "2026-10-22", "2026-10-24", "2026-10-25"]) !== 3) chyby.push("seria");
 Object.assign(st, { dietaId: "d1", vek: "mladsi", body: 20, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka" });
-startTema("dazd"); { const fl = st.flow; fl.kroky.forEach((k, i) => { if (k.t === "q") fl.odp[i] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl); fl.i++; renderFlow();
+startTema(temaDna().id); { const fl = st.flow; /* téma dňa: plné body, iná téma najviac 10 */ fl.kroky.forEach((k, i) => { if (k.t === "q") fl.odp[i] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl); fl.i++; renderFlow();
   const ids = fl.noveOdznaky.map(o => o.id); if (!ids.includes("prva") || !ids.includes("bezchyby")) chyby.push("odznaky po teme: " + ids);
   if (!fl.noveOdmeny.some(o => o.kluc === "zvieratko:macka")) chyby.push("odmena macka: " + st.body); }
 startKviz(); { const fl = st.flow; fl.kroky.forEach((k, i) => { if (k.t === "q") fl.odp[i] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl); fl.i++; renderFlow();
@@ -107,8 +109,8 @@ if (!odmenyHtml({ noveHry: noveHry(140, 160) }).includes("Pexeso")) chyby.push("
 st.view = "ja"; render(); st.view = "domov"; render();
 /* TAZKE_TEST */
 for (const t of T.filter(t => !(t.vek || KAT[t.k].vek))) if (t.z.filter(q => q.v === 's').length < 2) chyby.push("tazke otazky " + t.id);
-st.vek = "starsi"; startKviz("tazky"); if (!st.flow.tazky || st.flow.kroky.filter(k => k.t === "q").some(k => k.q.v !== "s") || st.flow.kroky.length !== 9) chyby.push("tazky kviz");
-st.flow = null; st.vek = "mladsi"; startKviz(); if (st.flow.kroky.some(k => k.q && k.q.v === "s")) chyby.push("rychly kviz mladsi"); st.flow = null;
+st.vek = "starsi"; odomkni(); startKviz("tazky"); if (!st.flow.tazky || st.flow.kroky.filter(k => k.t === "q").some(k => k.q.v !== "s") || st.flow.kroky.length !== 9) chyby.push("tazky kviz");
+st.flow = null; st.vek = "mladsi"; odomkni(); startKviz(); if (st.flow.kroky.some(k => k.q && k.q.v === "s")) chyby.push("rychly kviz mladsi"); st.flow = null;
 /* TAZSIE_TEST */
 for (const t of T.filter(t => (t.vek || KAT[t.k].vek) !== "mladsi")) t.z.forEach((x, i) => { if (x.h && (x.h.length !== 3 || x.h.includes(x.a[0][1]) || new Set(x.h).size !== 3)) chyby.push("tazsie " + t.id + " " + i); if (!x.h && x.a.length < 4) chyby.push("chyba tazsia odpoved " + t.id + " " + i); });
 st.vek = "starsi"; startTema("ruky"); if (st.flow.kroky.filter(k => k.t === "q").some(k => k.q.a.length !== 4)) chyby.push("starsi maju 4 odpovede"); renderFlow();
@@ -117,11 +119,11 @@ st.flow = null; st.chyby = []; st.vek = "mladsi"; startTema("ruky"); if (st.flow
 /* VEK_TEST */
 st.vek = "mladsi"; if (TV().some(t => (t.vek || KAT[t.k].vek) === "starsi") || kats().some(k => k.vek === "starsi")) chyby.push("mladsi vidi temy starsich");
 st.vek = "starsi"; if (TV().some(t => (t.vek || KAT[t.k].vek) === "mladsi")) chyby.push("starsi vidi temy mladsich");
-startKviz("vyzva"); if (!st.flow.vyzva || st.flow.kroky.length !== 11 || st.flow.kroky.some(k => k.q && k.q.a.length !== 4)) chyby.push("vyzva"); zapisChybu(st.flow.kroky[0], false); st.flow = null;
+odomkni(); startKviz("vyzva"); if (!st.flow.vyzva || st.flow.kroky.length !== 11 || st.flow.kroky.some(k => k.q && k.q.a.length !== 4)) chyby.push("vyzva"); zapisChybu(st.flow.kroky[0], false); st.flow = null;
 for (const x of VYZVA) if (!byId(x.tid)) chyby.push("vyzva tema " + x.tid);
 for (const v of ["mladsi", "starsi"]) { st.vek = v; for (const w of ["domov", "temy", "hry", "odznaky", "ja"]) { st.view = w; render(); } }
 /* DENNY_LIMIT_TEST */
-st.vek = "starsi"; st.dietaId = "limit"; for (const i of [0, 1]) { localStorage.removeItem("svet3:vyzva-zamok-limit"); startKviz("vyzva"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl);
+st.vek = "starsi"; st.dietaId = "limit"; for (const i of [0, 1]) { odomkni(); startKviz("vyzva"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl);
   if (i === 0 && fl.zisk !== 200) chyby.push("vyzva body " + fl.zisk); if (i === 1 && (fl.zisk !== 0 || !fl.dnesUz)) chyby.push("vyzva druhykrat " + fl.zisk); fl.i++; renderFlow(); st.flow = null; }
 st.dietaId = "d1";
 /* VYBER_TEST */
@@ -162,7 +164,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   for (const vek of ["mladsi", "starsi"]) { st.vek = vek;
     for (const t of T) { startTema(t.id); const f = st.flow; f.kroky.forEach((k, i) => { f.i = i; pridaj(textKroku(f)); }); st.flow = null;
       autoPlan(t).kroky.forEach(k => { if (k.typ === "veta") pridaj(k.text); }); }
-    for (const druh of ["", "tazky", "vyzva"]) { if (druh && vek !== "starsi") continue; startKviz(druh); const f = st.flow; f.kroky.forEach((k, i) => { f.i = i; pridaj(textKroku(f)); }); st.flow = null; } }
+    for (const druh of ["", "tazky", "vyzva"]) { if (druh && vek !== "starsi") continue; odomkni(); startKviz(druh); const f = st.flow; f.kroky.forEach((k, i) => { f.i = i; pridaj(textKroku(f)); }); st.flow = null; } }
   // otázky a odpovede v inom poradí: každá možnosť zvlášť
   for (const q of [...T.flatMap(t => t.z), ...VYZVA]) { q.a.forEach(a => pridaj(a[1])); (q.h || []).forEach(pridaj); vetyZ(q.q).forEach(pridaj); }
   ["alebo", "Výborne! Téma je prebratá.", "O chvíľu pokračujeme ďalšou témou.", "Ahoj!", "Takto ti budem čítať témy o svete.", ...[...Array(10).keys()].map(i => "Otázka " + (i + 1) + ".")].forEach(pridaj);
@@ -224,7 +226,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (!NOVINKY.some(n => n.v === VERZIA_APPKY)) chyby.push("novinky " + VERZIA_APPKY); }
 /* V31B_TEST */
 { Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi" });
-  localStorage.removeItem("svet3:vyzva-zamok-d1");
+  odomkni();
   startTema("hory"); const f = st.flow; f.kroky.forEach((k, i) => { if (k.t === "q") f.odp[i] = { v: 1, ok: false, p: "x" }; });
   if (!vsetkoZle(f) || Oslava.treba(f)) chyby.push("tema vsetko zle");
   f.zle = true; f.i = f.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("data-znova")) chyby.push("tlacidlo skus znova");
@@ -232,11 +234,28 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   for (let i = 0; i < 3; i++) { v.i = i; odpovedz(v, 1); renderFlow(false); }
   if (!v.prehra || v.zivoty !== 0 || !main.innerHTML.includes("zivoty")) chyby.push("vyzva tri zle");
   v.i = v.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("Došli životy")) chyby.push("vyzva prehra");
-  st.flow = null; vyzvaZamkni(); startKviz("vyzva"); if (st.flow) chyby.push("vyzva zamok");
+  st.flow = null; kvizZamkni("vyzva"); startKviz("vyzva"); if (st.flow) chyby.push("vyzva zamok");
   st.view = "domov"; render(); if (!main.innerHTML.includes("Znova o")) chyby.push("vyzva cas na domove");
-  localStorage.removeItem("svet3:vyzva-zamok-d1");
+  odomkni();
   const dniPred = JSON.stringify(st.dni); startKviz(""); dokonci(st.flow); if (JSON.stringify(st.dni) !== dniPred) chyby.push("kviz bez spravnej pridal den");
   st.flow = null; st.body = 500; Hra.start("sova"); if (!st.hra) chyby.push("sova start"); Hra.sovaKresli(st.hra); Hra.zrus(); render(); }
+/* V32_TEST */
+{ Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi" }); odomkni();
+  startKviz(""); const rk = st.flow; if (!rk || rk.zivoty !== 2) chyby.push("rychly 2 zivoty");
+  for (let i = 0; i < 2; i++) { rk.i = i; odpovedz(rk, 1); } if (!rk.prehra) chyby.push("rychly prehra po 2");
+  rk.i = rk.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("5 min")) chyby.push("rychly prehra text");
+  st.flow = null; startKviz("tazky"); const tz = st.flow; if (!tz || tz.zivoty !== 3) chyby.push("tazky 3 zivoty");
+  tz.kroky.forEach((k, i) => { if (k.t === "q") tz.odp[i] = { v: 0, ok: true, p: "x" }; }); dokonci(tz);
+  if (kvizMinuty("tazky") !== 15) chyby.push("tazky prestavka " + kvizMinuty("tazky"));
+  tz.i = tz.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("Ďalší ťažký kvíz môžeš hrať o 15 min")) chyby.push("tazky koniec text");
+  st.flow = null; startKviz("tazky"); if (st.flow) chyby.push("tazky zamok");
+  kvizZamkni("vyzva"); kvizZamkni("rychly"); if (kvizMinuty("vyzva") !== 30 || kvizMinuty("rychly") !== 5) chyby.push("prestavky 30 a 5");
+  st.view = "domov"; render(); if ((main.innerHTML.match(/Znova o/g) || []).length !== 3) chyby.push("domov tri prestavky");
+  odomkni(); const ina = TV().find(x => x.id !== temaDna().id && !st.done.includes(x.id)); startTema(ina.id); const fi = st.flow;
+  fi.kroky.forEach((k, i) => { if (k.t === "q") fi.odp[i] = { v: 0, ok: true, p: "x" }; }); dokonci(fi); if (fi.zisk !== 10) chyby.push("ina tema body " + fi.zisk);
+  const dna = temaDna(); st.done = st.done.filter(x => x !== dna.id); startTema(dna.id); const fd = st.flow;
+  fd.kroky.forEach((k, i) => { if (k.t === "q") fd.odp[i] = { v: 0, ok: true, p: "x" }; }); dokonci(fd); if (fd.zisk <= 10) chyby.push("tema dna body " + fd.zisk);
+  st.flow = null; render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
@@ -247,7 +266,7 @@ Auto.start("hory");
 if (st.auto.stav !== "rucne") chyby.push("auto bez hlasu ma byt rucne");
 for (let i = 0; i < 40 && st.auto && st.auto.stav !== "koniec"; i++) Auto.ovladaj("dalej");
 if (!st.done.includes("hory")) chyby.push("auto neoznacilo temu");
-if (st.body !== byId("hory").z.length * 10 + 10) chyby.push("auto body " + st.body);
+if (st.body !== (temaDna().id === "hory" ? byId("hory").z.length * 10 + 10 : 10)) chyby.push("auto body " + st.body);
 Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }

@@ -1074,10 +1074,10 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=31"></script>
-<script src="obrazky.js?v=31"></script>
+<script src="temy.js?v=32"></script>
+<script src="obrazky.js?v=32"></script>
 <script>
-const VERZIA_APPKY = 31; const VERZIA_NAZOV = '2.4'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 32; const VERZIA_NAZOV = '2.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1831,7 +1831,7 @@ function povedzAuto(text, hotovo) {
 }
 function dokonciAuto(t) {
   const qn = t.z.filter(pre).length, bodyPred = st.body, dnes = key(new Date()), prvy = !st.done.includes(t.id);
-  const zisk = prvy ? qn * 10 + 10 : st.kedy[t.id] === dnes ? 0 : qn + 1; // zopakovaná téma: desatina, raz za deň
+  const zisk = Math.min(t.id === temaDna().id ? Infinity : 10, prvy ? qn * 10 + 10 : st.kedy[t.id] === dnes ? 0 : qn + 1); // zopakovaná téma: desatina, raz za deň
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
   zapisPrebrate(t.id);
   st.body += zisk; S.set('body', st.body);
@@ -2772,10 +2772,10 @@ const views = {
         <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
       ${kartaDalsiaOdmena()}
       <div class="acts">
-        <button class="act" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>5 otázok z rôznych tém, body raz za deň</small></button>
-        <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">${IK.kocka}</span><b>Iná téma</b><small>Nechajte sa prekvapiť</small></button>
-        ${st.vek === 'starsi' ? `<button class="act siroky" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>8 ťažkých otázok, 15 bodov za každú, body raz za deň</small></button>
-        <button class="act siroky${vyzvaMinuty() ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${vyzvaMinuty() ? `Znova o ${vyzvaMinuty()} min. Medzitým skús iný kvíz!` : '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň'}</small></button>` : ''}
+        <button class="act${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
+        <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">${IK.kocka}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 bodov</small></button>
+        ${st.vek === 'starsi' ? `<button class="act siroky${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
+        <button class="act siroky${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
       </div>
       ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
         <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
@@ -2997,13 +2997,20 @@ function startTema(id) {
   st.flow = { typ: 'tema', id, i: 0, odp: {}, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
-// Výzva (verzia 2.4): 3 životy; po dohraní alebo po strate životov sa dá hrať znova až o hodinu
-const vyzvaKluc = () => 'vyzva-zamok-' + (st.dietaId || 'x');
-const vyzvaMinuty = () => Math.max(0, Math.ceil((S.get(vyzvaKluc(), 0) - Date.now()) / 60000));
-const vyzvaZamkni = () => S.set(vyzvaKluc(), Date.now() + 3600e3);
+// Kvízy (verzia 2.5): životy a prestávka po každom kvíze, aj keď je všetko správne (aby to nebolo príliš ľahké)
+const KVIZY = {
+  rychly: { zivoty: 2, min: 5, koho: 'Rýchly kvíz', dalsi: 'Ďalší rýchly kvíz', koniec: 'Kvíz sa skončil' },
+  tazky: { zivoty: 3, min: 15, koho: 'Ťažký kvíz', dalsi: 'Ďalší ťažký kvíz', koniec: 'Kvíz sa skončil' },
+  vyzva: { zivoty: 3, min: 30, koho: 'Výzvu', dalsi: 'Ďalšiu výzvu', koniec: 'Výzva sa skončila' },
+};
+const druhKvizu = f => f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'rychly';
+const kvizKluc = d => 'kviz-zamok-' + d + '-' + (st.dietaId || 'x');
+const kvizMinuty = d => Math.max(0, Math.ceil((S.get(kvizKluc(d), 0) - Date.now()) / 60000));
+const kvizZamkni = d => S.set(kvizKluc(d), Date.now() + KVIZY[d].min * 60000);
+const kvizPopis = (d, text) => kvizMinuty(d) ? `Znova o ${kvizMinuty(d)} min. Medzitým skús niečo iné!` : text;
 // téma bez jedinej správnej odpovede sa nezapíše a strom múdrosti nenarastie: treba skúsiť otázky ešte raz
 const vsetkoZle = f => f.typ === 'tema' && f.kroky.some(k => k.t === 'q') && !Object.values(f.odp).some(o => o.ok);
-// zapíše odpoveď; vo Výzve zlá odpoveď zoberie život a po treťom sa výzva končí
+// zapíše odpoveď; v kvíze zlá odpoveď zoberie život a po poslednom sa kvíz končí bez bodov
 function odpovedz(f, v) {
   const ok = v === 0;
   f.odp[f.i] = { v, ok, p: pick(POCHVALA) };
@@ -3012,12 +3019,12 @@ function odpovedz(f, v) {
 }
 // rýchly kvíz: 5 otázok; ťažký kvíz (väčšie deti): 8 otázok len pre väčšie deti; výzva: 10 extra ťažkých otázok za dvojnásobné body
 function startKviz(druh = '') {
-  const tazky = druh === 'tazky', vyzva = druh === 'vyzva';
-  if (vyzva && vyzvaMinuty()) { Zvuk.play('boing'); toast(`Výzvu môžeš znova hrať o ${vyzvaMinuty()} min.`); return; }
+  const tazky = druh === 'tazky', vyzva = druh === 'vyzva', d = vyzva ? 'vyzva' : tazky ? 'tazky' : 'rychly';
+  if (kvizMinuty(d)) { Zvuk.play('boing'); toast(`${KVIZY[d].koho} môžeš znova hrať o ${kvizMinuty(d)} min.`); return; }
   const vsetky = vyzva ? VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid }))
     : TV().flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id })));
   const qs = mix(vsetky.length).slice(0, vyzva ? 10 : tazky ? 8 : 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
-  st.flow = { typ: 'kviz', tazky, vyzva, zivoty: vyzva ? 3 : null, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
+  st.flow = { typ: 'kviz', tazky, vyzva, zivoty: KVIZY[d].zivoty, maxZivoty: KVIZY[d].zivoty, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
 const citaj = typ => `<button class="read" data-citaj="${typ}">${ii(IK.repro)} Prečítať nahlas</button>`;
@@ -3052,7 +3059,7 @@ function krok(f, k) {
   }
   if (k.t === 'q') {
     const qn = f.kroky.filter(x => x.t === 'q'), odp = f.odp[f.i], q = k.q, zdroj = f.typ === 'kviz' ? byId(k.tid) : null;
-    return `<div class="step"><div class="qhead"><div class="qhead-r"><span class="sticker sm">Otázka ${qn.indexOf(k) + 1} z ${qn.length}</span>${f.zivoty != null ? `<span class="zivoty" aria-label="Životy: ${f.zivoty} z 3">${[0, 1, 2].map(i => `<i class="${i < f.zivoty ? 'ma' : 'strata'}${i === f.zivoty && f.prave ? ' prave' : ''}">${i < f.zivoty ? IK.srdce : IK.srdcePrazdne}</i>`).join('')}</span>` : ''}${citaj('q')}</div>
+    return `<div class="step"><div class="qhead"><div class="qhead-r"><span class="sticker sm">Otázka ${qn.indexOf(k) + 1} z ${qn.length}</span>${f.zivoty != null ? `<span class="zivoty" aria-label="Životy: ${f.zivoty} z ${f.maxZivoty}">${[...Array(f.maxZivoty).keys()].map(i => `<i class="${i < f.zivoty ? 'ma' : 'strata'}${i === f.zivoty && f.prave ? ' prave' : ''}">${i < f.zivoty ? IK.srdce : IK.srdcePrazdne}</i>`).join('')}</span>` : ''}${citaj('q')}</div>
         ${zdroj ? `<span class="chip" style="--c:${KAT[zdroj.k].c}">${ii(ikKat(zdroj.k))} ${zdroj.t}</span>` : ''}
         <h1 class="qt">${q.q}</h1></div>
       <div class="answers">${k.poradie.map((j, pos) => {
@@ -3070,8 +3077,8 @@ function krok(f, k) {
         <button class="btn blue wide" data-znova="tema">Prečítať tému ešte raz</button><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
   if (f.prehra) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
       <h1 class="h1">Došli životy!</h1>
-      <div class="zivoty velke">${[0, 1, 2].map(() => `<i class="strata">${IK.srdcePrazdne}</i>`).join('')}</div>
-      <p class="muted">Výzva sa skončila, tentoraz bez bodov. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>Ďalšia výzva sa dá hrať o hodinu.</p>
+      <div class="zivoty velke">${[...Array(f.maxZivoty).keys()].map(() => `<i class="strata">${IK.srdcePrazdne}</i>`).join('')}</div>
+      <p class="muted">${KVIZY[druhKvizu(f)].koniec}, tentoraz bez bodov. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</p>
       <div class="win-acts"><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
   const hv = c === qn ? 3 : c * 2 >= qn ? 2 : c ? 1 : 0;
   const rel = t ? t.r.map(byId).filter(Boolean) : [];
@@ -3080,12 +3087,12 @@ function krok(f, k) {
       <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? '#FFD23F' : '#E4E0EE')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
-      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
+      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 bodov. Najviac bodov dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
       ${odmenyHtml(f)}
       ${(So => So && So.zapnute && f.typ === 'tema' && Object.keys(So.priatelia).length && !S.get('soc-pochvala-' + So.pid + '-' + f.id, false) ? `<button class="btn wide cta soc-pochval" data-soc-pochval="${f.id}:${hv}">${ii(IK.rodina)} Pochváliť sa priateľom</button>` : '')(socC())}
       <div class="win-acts">
         ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
-        ${f.vyzva ? `<div class="earn plain">${ii(IK.pohar)} Ďalšiu výzvu môžeš hrať o hodinu.</div>` : `<button class="btn blue wide" data-${f.typ === 'kviz' ? `kviz="${f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : ''}"` : 'nahodna'}>${f.typ === 'kviz' ? (f.vyzva ? ii(IK.pohar) + ' Ďalšia výzva' : f.tazky ? ii(IK.mozog) + ' Ďalší ťažký kvíz' : ii(IK.blesk) + ' Ďalší kvíz') : ii(IK.kocka) + ' Ďalšia téma'}</button>`}
+        ${f.typ === 'kviz' ? `<div class="earn plain">${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</div>` : `<button class="btn blue wide" data-${f.typ === 'kviz' ? `kviz="${f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : ''}"` : 'nahodna'}>${f.typ === 'kviz' ? (f.vyzva ? ii(IK.pohar) + ' Ďalšia výzva' : f.tazky ? ii(IK.mozog) + ' Ďalší ťažký kvíz' : ii(IK.blesk) + ' Ďalší kvíz') : ii(IK.kocka) + ' Ďalšia téma'}</button>`}
         <button class="btn ghost wide" data-zavriet>Späť domov</button>
       </div></div>`;
 }
@@ -3177,7 +3184,8 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
-  { v: 31, obr: () => IK.srdce, n: 'Výzva s tromi životmi', p: 'Za každú zlú odpoveď zmizne srdiečko. Po treťom sa výzva skončí bez bodov. Znova sa dá hrať o hodinu.' },
+  { v: 32, obr: () => IK.srdce, n: 'Životy vo všetkých kvízoch', p: 'Rýchly kvíz má 2 srdiečka, ťažký kvíz a výzva 3. Po každom kvíze je prestávka: rýchly 5 minút, ťažký 15 minút, výzva 30 minút.' },
+  { v: 32, obr: () => IK.kocka, n: 'Najviac bodov za tému dňa', p: 'Za inú tému ako tému dňa sa dá získať najviac 10 bodov.' },
   { v: 31, obr: () => owl('oops'), n: 'Všetko zle? Nevadí!', p: 'Keď v téme nevyjde ani jedna odpoveď, strom múdrosti nenarastie. Stačí skúsiť otázky ešte raz.' },
   { v: 31, obr: () => OBR_HRY.sova, n: 'Plynulejšia Lietajúca sova', p: 'Hra sa kreslí rýchlejšie, sovička letí plynulo aj na starších telefónoch.' },
   { v: 31, obr: () => plPlocha(), n: 'Appka na ploche ako naozajstná', p: 'Kreslený návod ukáže, ako si appku pridať na plochu iPhonu, iPadu, Macu aj Androidu. Pri spustení vás privíta Sovička.' },
@@ -3502,6 +3510,8 @@ function dokonci(f) {
     const prvy = !st.done.includes(f.id), dnesUz = !prvy && st.kedy[f.id] === dnes;
     // zopakovaná téma: desatina bodov, za tú istú tému najviac raz za deň
     f.zisk = prvy ? c * 10 + 10 : dnesUz ? 0 : c + 1;
+    f.ina = f.id !== temaDna().id;
+    if (f.ina) f.zisk = Math.min(10, f.zisk); // najviac bodov je za tému dňa
     Object.assign(f, { opakovanie: !prvy, dnesUz });
     if (prvy) { st.done.push(f.id); S.set('done', st.done); }
     zapisPrebrate(f.id);
@@ -3511,7 +3521,7 @@ function dokonci(f) {
     f.dnesUz = S.get(kl, '') === dnes;
     f.zisk = f.dnesUz ? 0 : c * (f.vyzva ? 20 : f.tazky ? 15 : 10);
     S.set(kl, dnes);
-    if (f.vyzva) vyzvaZamkni();
+    kvizZamkni(druhKvizu(f));
   }
   st.body += f.zisk; S.set('body', st.body);
   // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
@@ -3745,7 +3755,7 @@ document.addEventListener('click', e => {
     Zvuk.play('start'); renderFlow(); window.scrollTo(0, 0);
   } else if (d.dalej !== undefined && f) {
     Hlas.stop(); f.prave = false;
-    if (f.prehra) { vyzvaZamkni(); f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
+    if (f.prehra) { kvizZamkni(druhKvizu(f)); f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec' && vsetkoZle(f)) { f.zle = true; f.i++; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec') {
       const oslava = Oslava.treba(f); dokonci(f);
