@@ -616,7 +616,15 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .plus2 { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border: 2px solid var(--ink); border-radius: 999px; background: var(--sun); color: var(--ink); font: 800 .85rem/1.2 var(--f-display); }
 .plus2 svg { width: 16px; height: 16px; }
 .vyber-tip { margin: 8px 0 0; padding: 10px 12px; border: 2px dashed var(--ink); border-radius: 14px; background: #FFF6CC; font-weight: 800; text-align: center; }
-.leti { position: fixed; z-index: 60; width: 34px; height: 34px; margin: -17px 0 0 -17px; pointer-events: none; transition: transform .7s cubic-bezier(.5, -.3, .7, 1); }
+.leti { position: fixed; z-index: 60; width: 36px; height: 36px; margin: -18px 0 0 -18px; pointer-events: none; filter: drop-shadow(0 0 8px rgb(255 210 63 / .9)); }
+.odznak.prevzaty { animation: prevzaty .6s var(--spring); }
+.odznak.prevzaty .medaila { animation: medaila-otoc .9s ease-out; }
+@keyframes prevzaty { 30% { scale: 1.15; } }
+@keyframes medaila-otoc { to { transform: rotateY(720deg); } }
+.vlna { position: fixed; z-index: 59; width: 24px; height: 24px; margin: -12px 0 0 -12px; border: 5px solid #FFD23F; border-radius: 50%; box-shadow: 0 0 12px #FFD23F; pointer-events: none; animation: vlna .75s ease-out forwards; }
+@keyframes vlna { to { transform: scale(7); opacity: 0; } }
+.plus-velke { position: fixed; z-index: 61; translate: -50% -50%; font: 800 2.4rem/1 var(--f-display); color: #FFD23F; -webkit-text-stroke: 2px var(--ink); text-shadow: 0 3px 0 var(--ink), 0 0 14px rgb(255 210 63 / .8); pointer-events: none; animation: plus-velke 1.15s ease-out forwards; }
+@keyframes plus-velke { 0% { transform: scale(.3); opacity: 0; } 25% { transform: scale(1.35) translateY(-12px); opacity: 1; } 100% { transform: scale(1) translateY(-80px); opacity: 0; } }
 .leti svg { display: block; width: 100%; height: 100%; }
 .chip.tmavy { color: var(--ink); text-shadow: none; }
 .ok-info .chip { justify-self: start; }
@@ -663,7 +671,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 20; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 21; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -748,6 +756,9 @@ const Zvuk = (() => {
     bum: c => { tone(c, 160, 0, .3, 'sine', .35, 50); sum(c, 0, .35, .25, 2500, 400); },
     ton0: c => tone(c, 330, 0, .42, 'triangle', .34), ton1: c => tone(c, 392, 0, .42, 'triangle', .34),
     ton2: c => tone(c, 494, 0, .42, 'triangle', .34), ton3: c => tone(c, 587, 0, .42, 'triangle', .34),
+    cink: c => { [1047, 1319, 1568, 2093].forEach((f, i) => { tone(c, f, i * .07, .32, 'sine', .22); tone(c, f * 2, i * .07, .18, 'triangle', .05); }); tone(c, 2637, .3, .45, 'sine', .1, 3136); },
+    dopad1: c => { tone(c, 1319, 0, .3, 'triangle', .26); tone(c, 2637, 0, .2, 'sine', .08); },
+    dopad2: c => { tone(c, 1760, 0, .4, 'triangle', .28); tone(c, 3520, .02, .28, 'sine', .08); tone(c, 880, 0, .35, 'sine', .14); },
   };
 
   // --- iPhone ---
@@ -781,7 +792,7 @@ const Zvuk = (() => {
   }
 
   // Záloha: zvuky vopred vyrobené ako krátke súbory a prehrávané ako bežné audio
-  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55 };
+  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55, ton0: .5, ton1: .5, ton2: .5, ton3: .5, cink: .8, dopad1: .35, dopad2: .45 };
   const urly = {}, banka = {};
   const nahraj = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
   async function priprav() {
@@ -1228,19 +1239,34 @@ function vyberOdznak(id, el) {
   document.getElementById('nav-ja').classList.toggle('novinka', zost > 0);
   if (tip) { if (zost) tip.textContent = `✨ Ťukni na žiariace odznaky a vyzdvihni si ${zost * 2} ⭐`; else tip.remove(); }
   const [x, y] = stred(el), ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30];
-  FX.burst(x, y, 16, ['star', 'dot'], 6); Zvuk.play('coin'); vibruj(30);
-  [0, 1].forEach(i => setTimeout(() => {
-    const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = STAR();
-    h.style.left = x + 'px'; h.style.top = y + 'px'; document.body.appendChild(h);
-    requestAnimationFrame(() => requestAnimationFrame(() => { h.style.transform = `translate(${cx - x}px, ${cy - y}px) scale(.6)`; }));
-    setTimeout(() => {
-      h.remove(); Zvuk.play('star');
-      const b = document.getElementById('body'), s = document.getElementById('stars');
-      if (b) b.textContent = st.body - 1 + i;
-      if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
-      if (i) { const nove = noveOdznaky(); oznamOdznaky(nove); if (nove.length && st.view === 'odznaky') setTimeout(render, 1500); }
-    }, 750);
-  }, i * 220));
+  el.classList.add('prevzaty'); Zvuk.play('cink'); vibruj([20, 40, 20]);
+  for (const [trieda, text, dlzka] of [['vlna', '', 800], ['plus-velke', '+2', 1200]]) {
+    const e = document.createElement('span'); e.className = trieda; e.textContent = text;
+    e.style.left = x + 'px'; e.style.top = y + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), dlzka);
+  }
+  FX.burst(x, y, 24, ['star', 'dot'], 8);
+  [0, 1].forEach(i => setTimeout(() => letHviezdu(x, y, cx, cy, i, () => {
+    Zvuk.play(i ? 'dopad2' : 'dopad1'); FX.burst(cx, cy, 10, ['star', 'dot'], 4);
+    const b = document.getElementById('body'), s = document.getElementById('stars');
+    if (b) b.textContent = st.body - 1 + i;
+    if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+    if (i) { const nove = noveOdznaky(); oznamOdznaky(nove); if (nove.length && st.view === 'odznaky') setTimeout(render, 1500); }
+  }), 250 + i * 260));
+}
+// hviezdička letí z odznaku do hlavičky po oblúku, točí sa a nechá za sebou iskry
+function letHviezdu(x, y, cx, cy, i, hotovo) {
+  const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = STAR();
+  h.style.left = x + 'px'; h.style.top = y + 'px'; document.body.appendChild(h);
+  if (!h.animate) { h.remove(); hotovo(); return; }
+  const dx = cx - x, dy = cy - y, bok = i ? -70 : 70;
+  const a = h.animate([
+    { transform: 'translate(0, 0) scale(.3) rotate(0deg)', opacity: 0 },
+    { transform: `translate(${bok}px, -80px) scale(1.7) rotate(160deg)`, opacity: 1, offset: .3 },
+    { transform: `translate(${dx * .55 + bok * .6}px, ${dy * .55 - 60}px) scale(1.2) rotate(300deg)`, offset: .65 },
+    { transform: `translate(${dx}px, ${dy}px) scale(.55) rotate(420deg)`, opacity: 1 },
+  ], { duration: 950, easing: 'cubic-bezier(.45, 0, .55, 1)' });
+  const stopa = setInterval(() => { const q = h.getBoundingClientRect(); FX.burst(q.left + q.width / 2, q.top + q.height / 2, 2, ['star', 'dot'], 1.5); }, 60);
+  a.onfinish = () => { clearInterval(stopa); h.remove(); hotovo(); };
 }
 // odznaky pre vek dieťaťa (Majster kategórie len pre jeho kategórie)
 const odznakyVek = () => ODZNAKY.filter(o => !o.vek || o.vek === st.vek);
