@@ -23,7 +23,9 @@ self.addEventListener('fetch', e => {
     || (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/'));
   if (vlastne) {
     e.respondWith(caches.open(VERZIA).then(async c => {
-      const ulozene = await c.match(r, { ignoreSearch: true });
+      // súbor s číslom verzie (temy.js?v=22) z pamäte len vtedy, keď je to tá istá verzia; inak počkať na sieť
+      const pamat = await c.match(r, { ignoreSearch: true });
+      const ulozene = pamat && url.searchParams.has('v') && new URL(pamat.url).search !== url.search ? null : pamat;
       const zo_siete = fetch(r).then(res => { if (res.ok) c.put(r, res.clone()); return res; });
       const zaloha = () => ulozene || (r.mode === 'navigate' ? c.match('index.html') : Response.error());
       if (!ulozene) return zo_siete.catch(zaloha);

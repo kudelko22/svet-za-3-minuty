@@ -626,8 +626,8 @@ const AV = {
   kuzlo: ['ziadne', 'iskry', 'motyl', 'aura', 'anjel', 'drakie', 'duha'],
   pozadie: ['#D6E6FF', '#FFE1E8', '#D9F8E6', '#FFF0B3', '#EBDDFF', '#FFE3C7', '#C8F1F6'],
 };
-const AV_KAT = [['vlasy', '💇 Účes'], ['farbaVlasov', '🎨 Farba vlasov'], ['koza', '🙂 Pleť'], ['oci', '👀 Oči'], ['usta', '😄 Úsmev'],
-  ['okuliare', '👓 Okuliare'], ['tricko', '👕 Tričko'], ['vzor', '⭐ Na tričko'], ['doplnok', '👑 Doplnok'], ['zvieratko', '🐾 Zvieratko'], ['kuzlo', '✨ Kúzlo'], ['pozadie', '🌈 Pozadie']];
+const AV_KAT = [['vlasy', 'Účes'], ['farbaVlasov', 'Farba vlasov'], ['koza', 'Pleť'], ['oci', 'Oči'], ['usta', 'Úsmev'],
+  ['okuliare', 'Okuliare'], ['tricko', 'Tričko'], ['vzor', 'Na tričko'], ['doplnok', 'Doplnok'], ['zvieratko', 'Zvieratko'], ['kuzlo', 'Kúzlo'], ['pozadie', 'Pozadie']];
 const AV_FARBY = ['farbaVlasov', 'koza', 'tricko', 'pozadie'];
 const AV_ZAKLAD = { zvieratko: 'ziadne', kuzlo: 'ziadne' }; // diely, ktoré staršie postavičky ešte nemali
 

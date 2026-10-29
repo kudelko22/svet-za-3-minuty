@@ -4,6 +4,10 @@ const fs = require('fs'), path = require('path');
 const zdroj = path.join(__dirname, 'appka.html'), ciel = path.join(__dirname, '..', 'index.html');
 let s = fs.readFileSync(zdroj, 'utf8');
 s = s.replace(/^<title>.*<\/title>\n/, '').replace(/^<meta name="claude:viewport-fit-sides"[^\n]*\n/, '');
+// temy.js a obrazky.js s číslom verzie: telefón tak nikdy nespojí novú appku so starým súborom z pamäte
+const verzia = (s.match(/const VERZIA_APPKY = (\d+);/) || [])[1];
+if (!verzia) throw new Error('VERZIA_APPKY sa nenašla');
+s = s.replace(/src="(temy|obrazky)\.js"/g, (m, n) => `src="${n}.js?v=${verzia}"`);
 const koniecHlavy = s.indexOf('</style>') + '</style>'.length;
 let hlava = s.slice(0, koniecHlavy), telo = s.slice(koniecHlavy).trim();
 hlava = hlava.replace('<style>\n', `<style>

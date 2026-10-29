@@ -50,6 +50,8 @@ v telefóne pre každé dieťa zvlášť.
 
 - **Pexeso** (od 150 bodov): dvojice obrázkov z tém, 12 kariet pre menšie deti, 16 pre väčšie.
 - **Hádaj tému** (od 250 bodov): 8 obrázkov, ku každému sa vyberá správny názov témy.
+- **Lietajúca sova** (od 300 bodov): ťukaním sovička mávne krídlami a letí pomedzi ceruzky; bod za každú prekážku
+  aj chytenú hviezdu. Menšie deti majú 3 srdiečka, väčšiu medzeru a pomalší let, väčšie 2 srdiečka.
 - **Chytaj hviezdičky** (od 400 bodov): 30 sekúnd, hviezda +1, oranžová +3, búrka −2.
 - **Opakuj po mne** (od 550 bodov): farby zasvietia a zahrajú tón, dieťa ich zopakuje; každé kolo o jednu viac.
 - **Bubliny s počtami** (od 700 bodov): minúta príkladov, menšie deti do 10, väčšie do 50 a malá násobilka.
@@ -95,6 +97,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
   ťažšie nesprávne odpovede pri všetkých otázkach (odpovede A–D bez obrázkov) a Ťažký kvíz s 8 otázkami za 15 bodov
 - kvíz s obrázkovými odpoveďami, rýchly kvíz z rôznych tém, body, hviezdy a séria dní
 - maskot sovička Múdra, kreslené pohyblivé obrázky, zvuky (dajú sa vypnúť) a čítanie nahlas
+- ovládanie, kategórie a odznaky majú vlastné kreslené ikony (`IK`, `IK_KAT` v zdroj/appka.html), aby vyzerali na každom
+  telefóne rovnako; emoji ostali len v odpovediach kvízov a v obrázkoch novších tém
+- po téme dňa veľká oslava „Strom múdrosti“: strom vyrastie, za každý deň série pribudne plod, priletí sovička (raz za deň)
 
 ## Súbory
 
@@ -123,7 +128,8 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 1. Upraviť `zdroj/appka.html` (prípadne `temy.js` a `obrazky.js`).
 2. `node zdroj/test.js` – testy musia skončiť riadkom `OK …`.
-3. `node zdroj/zostav.js` – vytvorí nový `index.html`.
+3. `node zdroj/zostav.js` – vytvorí nový `index.html`; `temy.js` a `obrazky.js` v ňom dostanú číslo verzie (`?v=22`),
+   aby telefón nespojil novú appku so starým súborom z pamäte. Pri každom nasadení zvýšiť `VERZIA_APPKY`.
 4. Vyskúšať na emulátore a nasadiť (pozri Firebase vyššie).
 
 Fakty v témach treba pred pridaním skontrolovať.

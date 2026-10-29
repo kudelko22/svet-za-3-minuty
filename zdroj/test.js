@@ -7,7 +7,7 @@ const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
 const src = ['temy.js', 'obrazky.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
-const ctx2d = new Proxy({}, { get: () => () => {}, set: () => true });
+const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
   querySelector: () => el(), querySelectorAll: () => [], getBoundingClientRect: () => ({ left: 0, top: 0, width: 10, height: 10 }), getContext: () => ctx2d, isConnected: false, offsetWidth: 0 });
@@ -98,7 +98,7 @@ if (st.chyby[0] !== "ruky:1" || !prehladRodica().includes("Kedy si umývame ruky
 zapisChybu({ tid: "ruky", q: byId("ruky").z[1] }, true); if (st.chyby.length) chyby.push("chyba sa nezmazala");
 Hra.start("opakuj"); { const h = st.hra; h.seq = [2]; h.faza = "hra"; h.krok = 0; Hra.pad(2); if (h.faza !== "cakaj") chyby.push("opakuj dobre"); h.seq = [1, 3]; h.faza = "hra"; h.krok = 0; Hra.pad(0); if (h.faza !== "koniec") chyby.push("opakuj zle"); }
 Hra.start("hviezdy"); Hra.zrus(); if (st.hra) chyby.push("hra zrus");
-if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,hadaj,hviezdy") chyby.push("nove hry");
+if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,hadaj,sova,hviezdy") chyby.push("nove hry");
 if (!odmenyHtml({ noveHry: noveHry(140, 160) }).includes("Pexeso")) chyby.push("odmena hra");
 st.view = "ja"; render(); st.view = "domov"; render();
 /* TAZKE_TEST */
@@ -125,10 +125,25 @@ Object.assign(st, { dietaId: "d1", vek: "mladsi", body: 10, odznaky: ["prva"], v
 if (st.body !== 12 || !st.vybrate.includes("prva")) chyby.push("vyber odznaku " + st.body); vyberOdznak("prva", document.createElement("button")); if (st.body !== 12) chyby.push("vyber dvakrat");
 st.view = "odznaky"; render(); st.view = "ja"; render();
 st.done = ["ruky"]; st.kedy = {}; for (const ocak of [4, 0]) { startTema("ruky"); const fl = st.flow; fl.kroky.forEach((k, j) => { if (k.t === "q") fl.odp[j] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl); if (fl.zisk !== ocak) chyby.push("opakovanie body " + fl.zisk + " cakal " + ocak); fl.i++; renderFlow(); st.flow = null; }
+/* V22_TEST */
+for (const o of ODZNAKY) { const v = ikOdznaku(o); if (!v || !v.startsWith('<svg')) chyby.push("ikona odznaku " + o.id); }
+for (const k of Object.keys(KAT)) if (!IK_KAT[k]) chyby.push("ikona kategorie " + k);
+const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.vek = "mladsi"; st.dietaId = "d1"; st.body = 9999; Hra.start("sova"); render();
+{ const h = st.hra; if (!h || h.id !== "sova" || h.zivoty !== 3) chyby.push("sova start");
+  Object.assign(h, sovaSvet(360, 480, true), { beh: true }); let konec = false;
+  for (let i = 0; i < 2000 && !konec; i++) { const u = sovaKrok(h, 1 / 60); if (u.includes("koniec")) konec = true; }
+  if (!konec || h.zivoty !== 0) chyby.push("sova bez mavania nepadla " + h.zivoty);
+  Object.assign(h, sovaSvet(360, 480, true), { beh: true, zivoty: 3, skore: 0 });
+  for (let i = 0; i < 600; i++) { if (h.y > 240) h.vy = h.skok; sovaKrok(h, 1 / 60); }
+  if (!h.prekazky.length) chyby.push("sova bez ceruziek"); Hra.sovaKresli(h); Hra.koniec(false, 31);
+  if (!st.odznaky.includes("sova30") || !st.odznaky.includes("sova10")) chyby.push("odznaky sova"); Hra.zrus(); }
+{ const f = { typ: "tema", id: temaDna().id }; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f)) chyby.push("oslava treba"); Oslava.ukaz(() => {});
+  if (Oslava.treba(f)) chyby.push("oslava druhykrat"); if (Oslava.treba({ typ: "kviz", id: "" })) chyby.push("oslava pri kvize"); }
+Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
-  if (plan.segs.filter(x => x.e === "❓").length !== qn) chyby.push("auto kviz segmenty");
+  if (plan.segs.filter(x => x.e === "otaznik").length !== qn) chyby.push("auto kviz segmenty");
   if (!plan.segs.some(x => x.label === "Do hĺbky")) chyby.push("auto starsie");
   if (plan.kroky.filter(k => k.typ === "pauza").length !== qn + byId("hory").o.length) chyby.push("auto pauzy"); }
 Auto.start("hory");
