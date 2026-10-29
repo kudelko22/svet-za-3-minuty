@@ -84,6 +84,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Verzia 2.7:** nový účet rodiča (bez detí) dostane celého sprievodcu: `SPR_UCET` na obrazovke tvorby profilu (účet,
+  meno, vek, postavička, uloženie) a po uložení prvého dieťaťa `SPR_RODIC` (celá appka pre rodiča, 19 krokov). Ďalšie deti
+  a karta Ja spúšťajú len pôvodného sprievodcu pre dieťa `SPR_KROKY`. `Sprievodca.start(kroky, o)`, kroky môžu mať `tl`, `ak`, `oslava`.
 - **Verzia 2.6:** Lietajúca sova kreslí kopce, ceruzky (`sovaCeruzka`), trávu, oblaky, hviezdy aj sovu z bitmáp
   (`sovaSprite`), počas hier je skryté pohyblivé pozadie (`body.hra-rezim`), šum krídel sa vyrába raz. Nové veci pre
   postavičku: čiapka na oslavu, kuchárska čiapka, jednorožcový roh, karnevalová maska, sovička a planéta na tričko, panda,

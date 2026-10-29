@@ -264,6 +264,21 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   hs.prekazky.push({ x: 120, stred: 220, f: 0, f2: 3, presla: false }); hs.hviezdy.push({ x: 150, y: 200 });
   for (let i = 0; i < 120; i++) { sovaKrok(hs, .016); Hra.sovaKresli(hs); } if (!(hs.posun > 0)) chyby.push("sova sa nehybe");
   Hra.zrus(); render(); }
+/* V34_TEST */
+{ Object.assign(st, { faza: "tvorba", upravuje: noveUpravovanie(true), flow: null, hra: null, auto: null }); render();
+  Sprievodca.start(SPR_UCET, { brana: true }); if (!Sprievodca.el || Sprievodca.kroky !== SPR_UCET) chyby.push("sprievodca ucet nezacal");
+  for (let i = 0; i < 30 && Sprievodca.el; i++) Sprievodca.dalej(); if (Sprievodca.el) chyby.push("sprievodca ucet neskoncil");
+  Object.assign(st, { faza: "appka", dietaId: "d1", view: "domov" }); render();
+  Sprievodca.start(SPR_RODIC); if (Sprievodca.kroky !== SPR_RODIC) chyby.push("sprievodca rodic nezacal");
+  for (let i = 0; i < 60 && Sprievodca.el; i++) { const k = SPR_RODIC[Sprievodca.i];
+    if (k.v && st.view !== k.v) chyby.push("sprievodca rodic krok " + Sprievodca.i + " na " + st.view);
+    if (k.id === "koniec" && st.view !== "ja") chyby.push("sprievodca rodic konci mimo profilu");
+    Sprievodca.ciel(); if (k.tap) Sprievodca.tukni(); else Sprievodca.dalej(); }
+  if (Sprievodca.el) chyby.push("sprievodca rodic neskoncil");
+  for (const k of SPR_RODIC.filter(k => k.v && k.v !== "priatelia" && typeof k.cil === "string" && k.cil[0] === "." && !k.ak)) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca rodic ciel " + k.cil); }
+  for (const k of SPR_UCET.filter(k => typeof k.cil === "string")) { const x = k.cil.replace(".tvorba ", "").replace("#", "").replace(".", "").replace("[", "").replace("]", ""); if (!brany.tvorba().includes(x)) chyby.push("sprievodca ucet ciel " + k.cil); }
+  Sprievodca.start(); if (Sprievodca.kroky !== SPR_KROKY) chyby.push("sprievodca pre dieta"); Sprievodca.zavri(true);
+  st.view = "domov"; render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

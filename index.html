@@ -1076,10 +1076,10 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=33"></script>
-<script src="obrazky.js?v=33"></script>
+<script src="temy.js?v=34"></script>
+<script src="obrazky.js?v=34"></script>
 <script>
-const VERZIA_APPKY = 33; const VERZIA_NAZOV = '2.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 34; const VERZIA_NAZOV = '2.7'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3196,6 +3196,7 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 34, obr: () => owl('cheer'), n: 'Sprievodca pre nových rodičov', p: 'Nový účet rodiča dostane celú prehliadku: ako funguje účet a profil dieťaťa, téma dňa, body, kvízy, hry, priatelia aj nastavenia.' },
   { v: 33, obr: () => postavicka({ vlasy: 'kucery', farbaVlasov: '#B5713C', koza: '#F6C9A0', oci: 'velke', usta: 'smiech', okuliare: 'ziadne', tricko: '#4C7DFF', vzor: 'planeta', doplnok: 'roh', zvieratko: 'panda', kuzlo: 'srdcia', pozadie: '#FFE1E8' }, true),
     n: '8 nových vecí pre postavičku', p: 'Jednorožcový roh, kuchárska čiapka, čiapka na oslavu, karnevalová maska, sovička a planéta na tričko, panda a lietajúce srdiečka.' },
   { v: 33, obr: () => OBR_HRY.sova, n: 'Lietajúca sova ešte plynulejšia', p: 'Kopce, ceruzky aj tráva sa kreslia len raz a počas hry sa zastaví pohyblivé pozadie, takže telefón má oveľa menej práce.' },
@@ -3242,7 +3243,7 @@ const SPR_RUKA = `<svg viewBox="0 0 64 72" aria-hidden="true"><g stroke="${INK}"
   <path d="M20 40 V9 C20 2 30 2 30 9 V28 C31 23 39 23 39 29 C40 24 48 24 48 31 C49 27 56 28 56 34 V48 C56 61 48 69 37 69 H33 C25 69 20 65 16 58 L8 44 C5 38 12 34 16 39 L20 44Z" fill="#fff"/>
   <path d="M30 28 V37 M39 29 V37 M48 31 V38" fill="none" stroke-width="3"/></g></svg>`;
 const SPR_KROKY = [
-  { id: 'vitaj', nalada: 'hi', p: 'Ja som Sovička Múdra. Ukážem ti, čo všetko v appke nájdeš. Bude to rýchle, sľubujem!' },
+  { id: 'vitaj', nalada: 'hi', tl: [['dalej', 'Ukáž mi to! →', 1], ['zavri', 'Teraz nie']], p: 'Ja som Sovička Múdra. Ukážem ti, čo všetko v appke nájdeš. Bude to rýchle, sľubujem!' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň ťa tu čaká nová téma. S rodičom si ju prečítate za 3 minúty a potom odpovieš na pár otázok.' },
   { v: 'domov', cil: '.tyzden', n: 'Tento týždeň', p: 'Za každý deň s témou dostaneš hviezdičku. Keď sa učíš deň po dni, horí ti plamienok a rastie strom múdrosti.' },
   { v: 'domov', cil: '#stars', n: 'Tvoje body', nalada: 'cheer', p: 'Za správne odpovede zbieraš body. Za body sa odomykajú hry a nové veci pre tvoju postavičku.' },
@@ -3258,17 +3259,55 @@ const SPR_KROKY = [
   { v: 'ja', cil: '.prof-top', n: 'Tvoj profil', nalada: 'happy', p: 'Tu je tvoja postavička. Ťukni na ňu a môžeš ju prezliecť.' },
   { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky', nalada: 'cheer', p: 'Za úspechy dostávaš odznaky. Koľko ich nazbieraš?' },
   { v: 'ja', cil: '.spr-karta', n: 'Kedykoľvek znova', p: 'Keď budeš chcieť, ukážem ti všetko znova. Stačí ťuknúť sem.' },
-  { id: 'koniec', nalada: 'cheer', p: 'Teraz už vieš, kde je čo. Poďme spolu na tému dňa?' },
+  { id: 'koniec', nalada: 'cheer', oslava: true, tl: [['tema', 'Poďme na tému dňa! →', 1], ['domov', 'Zavrieť']], p: 'Teraz už vieš, kde je čo. Poďme spolu na tému dňa?' },
+];
+// Nový účet rodiča (verzia 2.7): najprv pri tvorbe profilu dieťaťa (SPR_UCET), po uložení celá appka (SPR_RODIC).
+// Ďalšie deti a karta Ja už spúšťajú len sprievodcu pre dieťa (SPR_KROKY).
+const SPR_UCET = [
+  { id: 'vitaj', n: 'Vitajte!', nalada: 'hi', tl: [['dalej', 'Ukážte mi to →', 1], ['zavri', 'Teraz nie']], p: 'Účet rodiča je vytvorený. Som Sovička Múdra a ukážem vám krok za krokom, ako appka funguje. Najprv spolu pripravíme profil dieťaťa.' },
+  { id: 'ucet', n: 'Ako funguje účet', nalada: 'happy', p: 'Pod jedným účtom rodiča môžu byť profily viacerých detí. Každé dieťa má vlastnú postavičku, body a pokrok. Všetko sa ukladá do cloudu, takže sa nič nestratí ani pri výmene telefónu a prihlásiť sa dá aj na ďalšom zariadení.' },
+  { cil: '#meno-dietata', n: 'Meno dieťaťa', p: 'Sem napíšte meno alebo prezývku. Appka ním dieťa oslovuje a uvidia ho aj priatelia, ak ich neskôr zapnete.' },
+  { cil: '.tvorba .seg2', n: 'Vek', p: '5 – 8 rokov: jednoduchšie otázky s obrázkami. 9 – 12 rokov: ťažšie otázky, časť Do hĺbky a navyše ťažký kvíz a výzva. Vek sa dá kedykoľvek zmeniť.' },
+  { cil: '#av-nahlad', n: 'Postavička', nalada: 'cheer', p: 'Toto je postavička dieťaťa. Bude hore v appke, v profile aj u priateľov.' },
+  { cil: '#av-tabs', n: 'Účes, oblečenie, doplnky', p: 'Tu si dieťa vyberá účes, oči, tričko, okuliare, doplnky aj zvieratko. Veci so zámkom sa odomknú za body z tém.' },
+  { cil: '[data-nahodne]', n: 'Náhodná postavička', p: 'Ťuknutím na kocku appka vymyslí postavičku sama. Ťukať sa dá, koľkokrát chcete.' },
+  { cil: '[data-ulozit-dieta]', n: 'Uložiť profil', p: 'Keď je meno vyplnené, ťuknite na Uložiť. Potom vám ukážem celú appku.' },
+  { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Vyplňte meno, vyberte vek a postavičku a profil uložte. Hneď potom pokračujeme prehliadkou appky.' },
+];
+const SPR_RODIC = [
+  { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko →', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
+  { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň jedna krátka téma na 3 minúty. Prečítate ju dieťaťu (alebo ju appka prečíta nahlas), porozprávate sa a dieťa odpovie na otázky. Za tému dňa je najviac bodov.' },
+  { v: 'domov', cil: '.tyzden', n: 'Séria a strom múdrosti', p: 'Každý deň s témou pribudne hviezdička a rastie séria. Prvá téma dňa spustí oslavu a na strome múdrosti pribudne plod. Keď sú všetky odpovede zlé, treba otázky skúsiť ešte raz.' },
+  { v: 'domov', cil: '#stars', n: 'Body', nalada: 'cheer', p: 'Body sú za správne odpovede a odomykajú hry aj nové veci pre postavičku. Za inú tému ako tému dňa je najviac 10 bodov.' },
+  { v: 'domov', cil: '.auto-karta', n: 'Režim do auta', p: 'Jedno ťuknutie a appka prečíta tému aj otázky nahlas, s prestávkou na odpoveď. Hodí sa na cestu, keď šoférujete.' },
+  { v: 'domov', cil: '.acts', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a body sú raz za deň.' },
+  { v: 'domov', cil: '.plocha-karta', ak: () => !!document.querySelector('.plocha-karta'), n: 'Appka na ploche', p: 'Pridajte si appku na plochu telefónu. Bude sa otvárať ako naozajstná aplikácia, s ikonkou a cez celú obrazovku.' },
+  { tap: 'temy', cil: '#nav-temy', n: 'Ťuknite na Témy', p: 'Teraz si to vyskúšajte: ťuknite dole na Témy.' },
+  { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${T.length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
+  { tap: 'hry', cil: '#nav-hry', n: 'Ťuknite na Hry', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Hry.' },
+  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za body. Hraním sa body neminú, sú to odmeny za učenie.' },
+  { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťuknite na Priatelia', p: 'Ťuknite na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
+  { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia zapína rodič', p: 'Deti si posielajú len kreslené nálepky a hotové vety, nič iné sa napísať nedá. Priateľa pridajú len jeho kódom a druhá strana musí súhlasiť. Zapnúť aj vypnúť to môžete len vy.' },
+  { tap: 'ja', cil: '#nav-ja', n: 'Ťuknite na Ja', nalada: 'happy', p: 'Posledná časť je profil. Ťuknite na Ja.' },
+  { v: 'ja', cil: '.prof-top', n: 'Profil dieťaťa', nalada: 'happy', p: 'Postavička, meno a vek. Ťuknutím na postavičku ju dieťa prezlečie.' },
+  { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky a odmeny', p: 'Za úspechy prichádzajú odznaky a za body nové veci pre postavičku.' },
+  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('section') : null)([...document.querySelectorAll('main .h2')].find(x => x.textContent.trim() === 'Pre rodiča')), n: 'Pre rodiča', p: 'Tu vidíte, čo dieťa tento týždeň prebralo a v ktorých otázkach sa pomýlilo, aby ste sa o nich mohli porozprávať.' },
+  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('#hlasy')), n: 'Čítanie nahlas', p: 'Tu vyberiete hlas, ktorým appka číta témy a otázky. Hneď nad tým je skúška zvuku.' },
+  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('main [data-deti]')), n: 'Rodina a ďalšie deti', p: 'Cez Zmeniť dieťa pridáte ďalšie dieťa alebo prepnete medzi deťmi, prepnúť sa dá aj ťuknutím na postavičku hore. Je tu aj odhlásenie a pridanie appky na plochu.' },
+  { v: 'ja', cil: '.spr-karta', n: 'Sprievodca pre dieťa', p: 'Keď bude chcieť, Sovička ukáže appku aj dieťaťu, jeho slovami. Spustíte ho tu.' },
+  { id: 'koniec', n: 'Všetko pripravené!', nalada: 'cheer', oslava: true, tl: [['dieta', 'Ukázať sprievodcu dieťaťu', 1], ['tema', 'Poďme na tému dňa →']], p: 'Teraz už viete všetko. Ukážte appku aj dieťaťu, alebo rovno začnite tému dňa.' },
 ];
 const Sprievodca = {
-  el: null, i: 0,
-  ciel() { const k = SPR_KROKY[this.i]; return k && k.cil ? document.querySelector(k.cil) : null; },
-  nadpis: k => k.id === 'vitaj' ? (st.meno ? `Ahoj, ${st.meno}!` : 'Ahoj!') : k.id === 'koniec' ? 'Hotovo!' : k.n,
+  el: null, i: 0, kroky: SPR_KROKY, o: {},
+  ciel() { const k = this.kroky[this.i]; return !k || !k.cil ? null : typeof k.cil === 'function' ? k.cil() : document.querySelector(k.cil); },
+  nadpis: k => k.n || (k.id === 'vitaj' ? (st.meno ? `Ahoj, ${st.meno}!` : 'Ahoj!') : 'Hotovo!'),
   veta: k => typeof k.p === 'function' ? k.p() : k.p,
-  start() {
-    if (st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto) return;
+  // o.brana: kroky na obrazovke tvorby profilu; o.zavriet: čo povedať, keď ho niekto zavrie
+  start(kroky = SPR_KROKY, o = {}) {
+    if (o.brana ? st.faza !== 'tvorba' : st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto) return;
     const ine = document.querySelector('.novinky, .oslava');
-    if (ine && ine.isConnected) { setTimeout(() => this.start(), 700); return; } // počká, kým sa zavrie iné okno
+    if (ine && ine.isConnected) { setTimeout(() => this.start(kroky, o), 700); return; } // počká, kým sa zavrie iné okno
+    this.kroky = kroky; this.o = o;
     if (this.el) this.el.remove();
     const el = document.createElement('div');
     el.className = 'spr'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Sprievodca appkou');
@@ -3280,12 +3319,11 @@ const Sprievodca = {
     requestAnimationFrame(tik);
   },
   ukaz() {
-    const k = SPR_KROKY[this.i], el = this.el, velka = !k.cil, n = SPR_KROKY.length - 2, nadpis = this.nadpis(k);
+    const k = this.kroky[this.i], el = this.el, velka = !k.cil, n = this.kroky.length - 2, nadpis = this.nadpis(k);
     Hlas.stop();
     if (k.v && st.view !== k.v) go(k.v);
     el.classList.toggle('velka', velka); el.classList.toggle('tap', !!k.tap);
-    const tl = k.id === 'vitaj' ? '<button class="btn wide cta" data-spr="dalej">Ukáž mi to! →</button><button class="btn wide ghost" data-spr="zavri">Teraz nie</button>'
-      : k.id === 'koniec' ? '<button class="btn wide cta" data-spr="tema">Poďme na tému dňa! →</button><button class="btn wide ghost" data-spr="domov">Zavrieť</button>'
+    const tl = k.tl ? k.tl.map(([a, text, hlavne]) => `<button class="btn wide ${hlavne ? 'cta' : 'ghost'}" data-spr="${a}">${text}</button>`).join('')
       : k.tap ? '' : `<button class="btn cta" data-spr="dalej">${this.i === n ? 'Hotovo' : 'Ďalej'} →</button>`;
     el.querySelector('.spr-obsah').innerHTML = `${velka ? `<div class="spr-hviezdy">${[[6, 30], [86, 22], [90, 58], [4, 66], [72, 84], [18, 88]].map(([x, y], i) => `<i style="left:${x}%;top:${y}%;--k:${i}">${STAR()}</i>`).join('')}</div>` : ''}
       <div class="spr-hlava"><button class="spr-sova" data-spr="sova" aria-label="Sovička Múdra">${owl(k.nalada || 'hi')}</button>
@@ -3293,14 +3331,14 @@ const Sprievodca = {
         <button class="ib spr-citaj" data-spr="citaj" aria-label="Prečítať nahlas">${IK.repro}</button>
         ${k.id === 'koniec' ? '' : `<button class="ib spr-x" data-spr="zavri" aria-label="Zavrieť sprievodcu">${IKO.zavriet}</button>`}</div>
       <p class="spr-text">${this.veta(k).split(' ').map((w, i) => `<span style="--k:${i}">${esc(w)}</span>`).join(' ')}</p>
-      ${k.tap ? `<p class="spr-tip"><i class="spr-tip-ruka">${SPR_RUKA}</i>Ťukni na svietiace tlačidlo</p>` : ''}
+      ${k.tap ? `<p class="spr-tip"><i class="spr-tip-ruka">${SPR_RUKA}</i>${this.kroky === SPR_KROKY ? 'Ťukni' : 'Ťuknite'} na svietiace tlačidlo</p>` : ''}
       ${tl ? `<div class="spr-tlacidla">${tl}</div>` : ''}`;
     const b = el.querySelector('.spr-bublina'); b.classList.remove('nova', 'tras'); void b.offsetWidth; b.classList.add('nova');
     el.querySelector('.spr-pruh i').style.width = Math.round(this.i / (n + 1) * 100) + '%';
     if (k.id === 'vitaj') { Zvuk.play('hoot'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .3, 24, ['star', 'dot']), 250); }
-    else if (k.id === 'koniec') { Zvuk.play('win'); FX.ohnostroj(3); setTimeout(() => FX.rain(70), 500); }
+    else if (k.oslava) { Zvuk.play('win'); FX.ohnostroj(3); setTimeout(() => FX.rain(70), 500); }
     else Zvuk.play('pop');
-    const f = el.querySelector('[data-spr="dalej"], [data-spr="tema"]');
+    const f = el.querySelector('.spr-tlacidla .cta');
     if (f && f.focus) setTimeout(() => f.focus({ preventScroll: true }), 60);
     if (k.cil) setTimeout(() => this.posun(), 80);
   },
@@ -3313,7 +3351,7 @@ const Sprievodca = {
   },
   // každý snímok: kruh, bublina a ruka idú za tlačidlom (aj keď sa stránka posúva)
   poloha() {
-    const el = this.el, k = SPR_KROKY[this.i], c = this.ciel(), D = el.querySelector('.spr-diera'), B = el.querySelector('.spr-bublina'), H = innerHeight, bh = B.offsetHeight;
+    const el = this.el, k = this.kroky[this.i], c = this.ciel(), D = el.querySelector('.spr-diera'), B = el.querySelector('.spr-bublina'), H = innerHeight, bh = B.offsetHeight;
     if (!c) { Object.assign(D.style, { left: innerWidth / 2 + 'px', top: H / 2 + 'px', width: '0px', height: '0px' }); B.style.top = Math.max(12, (H - bh) / 2) + 'px'; return; }
     const r = c.getBoundingClientRect(), x = r.left - 8, y = r.top - 8, w = r.width + 16, h = r.height + 16;
     Object.assign(D.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px', borderRadius: Math.min(h / 2, 26) + 'px' });
@@ -3322,7 +3360,7 @@ const Sprievodca = {
   },
   klik(e) {
     e.stopPropagation();
-    const k = SPR_KROKY[this.i], b = e.target.closest('[data-spr]');
+    const k = this.kroky[this.i], b = e.target.closest('[data-spr]');
     if (b) {
       const a = b.dataset.spr;
       if (a === 'dalej') this.dalej();
@@ -3333,6 +3371,8 @@ const Sprievodca = {
         const o = b.querySelector('.owl'); if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
         const [x, y] = stred(b); FX.burst(x, y, 14, ['star', 'dot'], 6);
       } else if (a === 'tema') { this.zavri(true); startTema(temaDna().id); }
+      else if (a === 'hotovo') { Zvuk.play('tap'); this.zavri(true); }
+      else if (a === 'dieta') { this.zavri(true); setTimeout(() => this.start(SPR_KROKY), 400); }
       else if (a === 'domov') { this.zavri(true); Zvuk.play('whoosh'); go('domov'); }
       return;
     }
@@ -3347,17 +3387,22 @@ const Sprievodca = {
     const B = this.el.querySelector('.spr-bublina'); B.classList.remove('tras'); void B.offsetWidth; B.classList.add('tras');
   },
   tukni() {
-    const k = SPR_KROKY[this.i], c = this.ciel();
+    const k = this.kroky[this.i], c = this.ciel();
     if (c) { const [x, y] = stred(c); FX.burst(x, y, 16, ['star', 'dot'], 6); }
     if (k.pred) k.pred();
     vibruj(20); go(k.tap); this.dalej();
   },
-  dalej() { if (this.i >= SPR_KROKY.length - 1) { this.zavri(true); return; } this.i++; this.ukaz(); },
+  dalej() {
+    if (this.i >= this.kroky.length - 1) { this.zavri(true); return; }
+    let i = this.i + 1;
+    while (i < this.kroky.length - 1 && this.kroky[i].ak && !this.kroky[i].ak()) i++; // krok, ktorý sa netýka (napr. appka už je na ploche)
+    this.i = i; this.ukaz();
+  },
   zavri(hotovo) {
     const el = this.el; if (!el) return;
     this.el = null; Hlas.stop();
     el.classList.add('pryc'); setTimeout(() => el.remove(), 350);
-    if (!hotovo) toast('Sprievodcu spustíš znova v karte Ja.');
+    if (!hotovo) toast(this.o.zavriet || (this.kroky === SPR_KROKY ? 'Sprievodcu spustíš znova v karte Ja.' : 'Sprievodcu pre dieťa nájdete v karte Ja.'));
   },
 };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && Sprievodca.el) Sprievodca.zavri(); });
@@ -3919,7 +3964,8 @@ const Cloud = {
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
     zapis(id, d);
     this.vyber(id, stare ? 'ja' : 'domov');
-    if (!stare) setTimeout(() => Sprievodca.start(), 1500); // nové dieťa: Sovička ukáže appku
+    // nové dieťa: Sovička ukáže appku; pri úplne novom účte rodičovi celú prehliadku
+    if (!stare) { const rodic = this.novyUcet; this.novyUcet = false; setTimeout(() => Sprievodca.start(rodic ? SPR_RODIC : SPR_KROKY), 1500); }
   },
   zmazDieta(id) {
     this.deti = this.deti.filter(x => x.id !== id);
@@ -4134,7 +4180,11 @@ function zobrazPoNacitani() {
   const a = Cloud.deti.find(x => x.id === S.get('aktivne', null));
   if (a) { nastavAktivne(a); noveOdznaky(); socStart(a.id); Object.assign(st, { faza: 'appka', view: 'domov' }); }
   else if (Cloud.deti.length) st.faza = 'vyber';
-  else { st.faza = 'tvorba'; st.upravuje = noveUpravovanie(true); }
+  else {
+    // nový účet rodiča: sprievodca už pri tvorbe profilu dieťaťa a po uložení celá prehliadka appky
+    st.faza = 'tvorba'; st.upravuje = noveUpravovanie(true); Cloud.novyUcet = true;
+    setTimeout(() => Sprievodca.start(SPR_UCET, { brana: true, zavriet: 'Po uložení profilu vám ukážem celú appku.' }), 900);
+  }
   render();
 }
 // pokrok z verzie 5 (dokument pokrok/<uid>) sa prenesie ako prvé dieťa
