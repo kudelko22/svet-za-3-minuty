@@ -210,6 +210,18 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   for (const k of SPR_KROKY.filter(k => k.v && k.v !== "priatelia" && k.cil[0] === ".")) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca ciel " + k.cil); }
   if (!NOVINKY.some(n => n.v === VERZIA_APPKY)) chyby.push("novinky " + VERZIA_APPKY);
   st.view = "domov"; render(); }
+/* V31_TEST */
+{ for (const zar of Object.keys(PLOCHA)) { if (!PLOCHA[zar].length) chyby.push("plocha " + zar);
+    for (const k of PLOCHA[zar]) if (!String(k.obr()).startsWith("<svg") || !k.n || !k.p) chyby.push("plocha krok " + zar); Plocha.navod(zar); }
+  if (Plocha.zariadenie() !== "pocitac") chyby.push("plocha zariadenie " + Plocha.zariadenie());
+  Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "domov" }); render();
+  if (main.innerHTML.includes("data-plocha")) chyby.push("plocha karta na pocitaci bez instalacie");
+  Plocha.udalost = { prompt() {}, userChoice: Promise.resolve({ outcome: "dismissed" }) }; render();
+  if (!main.innerHTML.includes("data-plocha") || !main.innerHTML.includes("tyzden")) chyby.push("plocha karta");
+  Plocha.navod(); if (Plocha.udalost) chyby.push("plocha instalacia");
+  st.view = "ja"; render(); if (!main.innerHTML.includes("data-plocha")) chyby.push("plocha v profile");
+  st.faza = "prihlasenie"; render(); st.faza = "appka"; st.view = "domov"; render(); Uvod.skontroluj(); Uvod.skry();
+  if (!NOVINKY.some(n => n.v === VERZIA_APPKY)) chyby.push("novinky " + VERZIA_APPKY); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
@@ -226,3 +238,8 @@ render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);
 `)();
+// úvodné obrázky pre iPhone a iPad: index.html na ne odkazuje a každý musí existovať
+{ const idx = fs.readFileSync(path.join(R, 'index.html'), 'utf8'), linky = [...idx.matchAll(/rel="apple-touch-startup-image"[^>]*href="([^"]+)"/g)].map(m => m[1]);
+  const zle = linky.length < 20 ? ['malo uvodnych obrazkov: ' + linky.length] : linky.filter(h => !fs.existsSync(path.join(R, h)));
+  if (!idx.includes('id="uvod"')) zle.push('chyba uvodna obrazovka');
+  if (zle.length) { console.log('CHYBY uvod', zle); process.exit(1); } }
