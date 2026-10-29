@@ -190,6 +190,8 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   localStorage.removeItem("svet3:soc-videl-d1-f1"); render(); if (socNove() !== 2) chyby.push("soc nove " + socNove());
   if (!rebricekHtml().includes("Ema") || tyzBody(So.profily.f1) !== 20 || tyzBody({ body: 50, tyzKey: "2000-01-03", tyzStart: 1 }) !== 0) chyby.push("rebricek");
   st.priatel = "f1"; st.view = "priatel"; render(); socZmena(); if (!chatHtml("f1").includes("msg moja") || !chatHtml("f1").includes("Ahoj!")) chyby.push("chat");
+  for (const tab of ["spravy", "rebricek", "pridat"]) { st.socTab = tab; st.view = "priatelia"; render(); } st.view = "priatelProfil"; render();
+  if (!nahladSpravy("f1").includes("Ty: Ahoj!") && !nahladSpravy("f1").includes("nálepka")) chyby.push("nahlad spravy " + nahladSpravy("f1"));
   if (!prehladPriatelov().includes("SOVA-K7M2")) chyby.push("prehlad priatelov"); st.view = "ja"; render();
   Object.assign(st, zal); window.Cloud = undefined; }
 /* AUTO_TEST */
