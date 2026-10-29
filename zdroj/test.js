@@ -19,6 +19,8 @@ global.addEventListener = () => {};
 global.innerWidth = 390; global.innerHeight = 844;
 global.requestAnimationFrame = () => {}; global.scrollTo = () => {};
 global.localStorage = { d: {}, getItem(k) { return k in this.d ? this.d[k] : null; }, setItem(k, v) { this.d[k] = String(v); }, removeItem(k) { delete this.d[k]; } };
+global.Audio = class { play() { setTimeout(() => this.onended && this.onended(), 0); return Promise.resolve(); } pause() {} };
+global.ULOZ_VETY = v => fs.writeFileSync(path.join(__dirname, 'vety.json'), JSON.stringify(v, null, 0)); // pre zdroj/hlas.js
 global.EMO_SUBORY = new Set(fs.existsSync(path.join(R, 'e')) ? fs.readdirSync(path.join(R, 'e')) : []); // obrázky emoji pre test verzie 23
 new Function(src + `
 /* BRANY */
@@ -153,6 +155,20 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
 { const stare = T.filter(t => String(ART[t.id]).includes("ez(")); if (stare.length) chyby.push("temy len z emoji: " + stare.map(t => t.id).join(" "));
   Novinky.ukaz(NOVINKY); localStorage.removeItem("svet3:videl-verziu"); Novinky.bolo = false; st.faza = "appka"; st.flow = null; st.hra = null; Novinky.skontroluj();
   if (S.get("videl-verziu", 0) !== VERZIA_APPKY) chyby.push("novinky verzia"); }
+/* V25_TEST */
+{ const vety = new Set(), pridaj = c => (Array.isArray(c) ? c : [c]).forEach(x => { const n = normVeta(x); if (n) vety.add(n); });
+  const zaloha = { vek: st.vek, flow: st.flow };
+  for (const vek of ["mladsi", "starsi"]) { st.vek = vek;
+    for (const t of T) { startTema(t.id); const f = st.flow; f.kroky.forEach((k, i) => { f.i = i; pridaj(textKroku(f)); }); st.flow = null;
+      autoPlan(t).kroky.forEach(k => { if (k.typ === "veta") pridaj(k.text); }); }
+    for (const druh of ["", "tazky", "vyzva"]) { if (druh && vek !== "starsi") continue; startKviz(druh); const f = st.flow; f.kroky.forEach((k, i) => { f.i = i; pridaj(textKroku(f)); }); st.flow = null; } }
+  // otázky a odpovede v inom poradí: každá možnosť zvlášť
+  for (const q of [...T.flatMap(t => t.z), ...VYZVA]) { q.a.forEach(a => pridaj(a[1])); (q.h || []).forEach(pridaj); vetyZ(q.q).forEach(pridaj); }
+  ["alebo", "Výborne! Téma je prebratá.", "O chvíľu pokračujeme ďalšou témou.", "Ahoj!", "Takto ti budem čítať témy o svete.", ...[...Array(10).keys()].map(i => "Otázka " + (i + 1) + ".")].forEach(pridaj);
+  Object.assign(st, zaloha); ULOZ_VETY([...vety].sort());
+  if (spojVety(["Čo dáva krava?", "Mlieko", "Vajíčka", "alebo", "Vlnu"]) !== "Čo dáva krava? Mlieko, Vajíčka alebo Vlnu?") chyby.push("spojVety " + spojVety(["Čo dáva krava?", "Mlieko", "Vajíčka", "alebo", "Vlnu"]));
+  Nahravky.zoznam = new Set(["Ahoj!", "Takto ti budem čítať témy o svete."].map(klucVety)); Hlas.citaj(["Ahoj!", "Takto ti budem čítať témy o svete."]);
+  if (!Nahravky.hra || !Hlas.hovori) chyby.push("hlas nahravky"); Hlas.stop(); if (Nahravky.hra) chyby.push("hlas stop"); Nahravky.zoznam = null; }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

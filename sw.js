@@ -18,6 +18,7 @@ self.addEventListener('fetch', e => {
   const r = e.request;
   if (r.method !== 'GET') return;
   const url = new URL(r.url);
+  if (url.origin === location.origin && url.pathname.includes('/a/')) return; // nahrávky hlasu: bez pamäte
   const vlastne = url.origin === location.origin, emoji = vlastne && /\/e\/[0-9a-f-]+\.svg$/.test(url.pathname);
   const stale = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com'
     || (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/')) || emoji;

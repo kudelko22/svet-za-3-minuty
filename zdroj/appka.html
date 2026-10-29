@@ -754,7 +754,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 24; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 25; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -972,24 +972,71 @@ const Zvuk = (() => {
 const vibruj = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
 
 /* Čítanie nahlas (hlas telefónu) */
+/* Krásny hlas: vety nahraté vopred hlasom Microsoft Viktória (a/<kľúč>.mp3, zoznam a/zoznam.json, skript zdroj/hlas.js).
+   Čo nahraté nie je (napríklad meno dieťaťa) alebo keď nie je signál, prečíta hlas telefónu. */
+const normVeta = t => String(t).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+const klucVety = t => { let h = 0x811c9dc5; for (const c of normVeta(t)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36); };
+// vety a kúsky viet spojené pre hlas telefónu (možnosti v kvíze dostanú čiarky a otáznik)
+const spojVety = c => c.map((x, i) => i < c.length - 1 ? (/[.!?:,…]$/.test(x) || x === 'alebo' || c[i + 1] === 'alebo' ? x : x + ',') : (/[.!?…]$/.test(x) ? x : x + (c.includes('alebo') ? '?' : '.'))).join(' ');
+const moznostiNahlas = m => m.flatMap((o, i) => i === m.length - 1 && i > 0 ? ['alebo', o] : [o]);
+const Nahravky = {
+  zoznam: null, el: null, gen: 0, hra: false,
+  nacitaj() {
+    try {
+      fetch('a/zoznam.json').then(x => x.ok ? x.json() : null).then(z => {
+        if (!Array.isArray(z)) return;
+        this.zoznam = new Set(z);
+        const el = document.getElementById('hlasy'); if (el) el.innerHTML = hlasyHtml();
+      }).catch(() => {});
+    } catch (e) {}
+  },
+  zapnute: () => !S.get('hlas-telefon', false),
+  moze(casti) { return this.zapnute() && !!this.zoznam && casti.length > 0 && casti.every(c => this.zoznam.has(klucVety(c))); },
+  hraj(casti, hotovo, chyba) {
+    const a = this.el || (this.el = new Audio()), g = ++this.gen;
+    let i = 0;
+    const zle = () => { if (g !== this.gen) return; this.gen++; this.hra = false; chyba(); };
+    const dalsi = () => {
+      if (g !== this.gen) return;
+      if (i >= casti.length) { this.hra = false; hotovo(); return; }
+      a.src = 'a/' + klucVety(casti[i++]) + '.mp3';
+      const p = a.play(); if (p && p.catch) p.catch(zle);
+    };
+    a.onended = () => { if (g === this.gen) setTimeout(dalsi, 150); };
+    a.onerror = zle;
+    this.hra = true; dalsi();
+  },
+  stop() { const hral = this.hra; this.gen++; this.hra = false; if (this.el) { try { this.el.pause(); } catch (e) {} } return hral; },
+};
+Nahravky.nacitaj();
 const Hlas = {
   hovori: false,
   citaj(text, btn) {
+    if (this.hovori) { this.stop(); return; }
+    const casti = (Array.isArray(text) ? text : vetyZ(normVeta(text))).filter(Boolean);
+    if (Nahravky.moze(casti)) {
+      this.hovori = true; if (btn) btn.classList.add('on');
+      Nahravky.hraj(casti, () => this.hotovo(), () => { this.hovori = false; this.telefonom(spojVety(casti), btn); });
+      return;
+    }
+    this.telefonom(spojVety(casti), btn);
+  },
+  telefonom(text, btn) {
     try {
       const s = window.speechSynthesis;
       if (!s) { toast('Tento telefón nevie čítať nahlas.'); return; }
-      if (this.hovori) { this.stop(); return; }
       const u = new SpeechSynthesisUtterance(text), v = hlasSk();
       u.lang = 'sk-SK'; u.rate = .95; if (v) u.voice = v;
       if (!v && s.getVoices().length) toast('Slovenský hlas v telefóne chýba, číta sa iným hlasom.');
-      u.onend = u.onerror = () => { this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); };
+      u.onend = u.onerror = () => this.hotovo();
       this.hovori = true; if (btn) btn.classList.add('on');
       // Safari na iPhone niekedy nič neprečíta, keď sa cancel() zavolá tesne pred speak()
       if (s.speaking || s.pending) s.cancel();
       s.speak(u);
     } catch (e) { toast('Čítanie nahlas sa nepodarilo spustiť.'); }
   },
-  stop() { try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); },
+  hotovo() { this.hovori = false; document.querySelectorAll('.read.on').forEach(b => b.classList.remove('on')); },
+  stop() { Nahravky.stop(); try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} this.hotovo(); },
 };
 
 /* Efekty: konfety, hviezdičky, srdiečka a ohňostroj na plátne cez celú obrazovku */
@@ -1416,28 +1463,30 @@ function autoPlan(t) {
     vety.forEach(text => kroky.push({ seg: i, typ: 'veta', text }));
     navyse.forEach(k => kroky.push({ seg: i, ...k }));
   };
-  pridaj('auto', 'Téma', [`Téma: ${t.t}`]);
+  pridaj('auto', 'Téma', [['Téma:', ...vetyZ(t.t)]]);
   pridaj('kniha', 'Vysvetlenie', vetyZ(t.m));
   if (st.vek === 'starsi') pridaj('ciapka', 'Do hĺbky', vetyZ(t.s));
   pridaj('ziarovka', 'Príklad zo života', ['Príklad zo života.', ...vetyZ(t.p)]);
-  t.o.forEach((o, i) => pridaj('bublina', `Porozprávajte sa · ${i + 1} z ${t.o.length}`, [o], [{ typ: 'pauza', s: 12, co: 'Čas na rozhovor' }]));
+  t.o.forEach((o, i) => pridaj('bublina', `Porozprávajte sa · ${i + 1} z ${t.o.length}`, [vetyZ(o)], [{ typ: 'pauza', s: 12, co: 'Čas na rozhovor' }]));
   const qs = t.z.filter(pre).map(naVek);
   qs.forEach((q, i) => {
     const moznosti = mix(q.a.length).map(j => q.a[j][1]);
     pridaj('otaznik', `Kvíz · ${i + 1} z ${qs.length}`,
-      [`Otázka ${i + 1}: ${q.q}`, `Je to: ${moznosti.slice(0, -1).join(', ')}, alebo ${moznosti[moznosti.length - 1]}?`],
-      [{ typ: 'pauza', s: 8, co: 'Čas na odpoveď' }, { typ: 'veta', text: `Správna odpoveď je: ${q.a[0][1]}.` },
-        ...(q.w ? [{ typ: 'veta', text: q.w }] : []), { typ: 'zvuk', z: 'star' }]);
+      [[`Otázka ${i + 1}.`, ...vetyZ(q.q)], ['Je to:', ...moznostiNahlas(moznosti)]],
+      [{ typ: 'pauza', s: 8, co: 'Čas na odpoveď' }, { typ: 'veta', text: ['Správna odpoveď je:', q.a[0][1]] },
+        ...(q.w ? [{ typ: 'veta', text: vetyZ(q.w) }] : []), { typ: 'zvuk', z: 'star' }]);
   });
   pridaj('vlajka', 'Hotovo', [], [{ typ: 'koniec' }]);
   return { segs, kroky };
 }
 function povedzAuto(text, hotovo) {
+  const casti = Array.isArray(text) ? text : [text], veta = spojVety(casti);
   let hotove = false;
   const koniec = () => { if (hotove) return; hotove = true; clearTimeout(poistka); hotovo(); };
-  const poistka = setTimeout(koniec, 3000 + text.length * 110); // niektoré telefóny koniec vety neohlásia
+  const poistka = setTimeout(koniec, 3000 + veta.length * 110); // niektoré telefóny koniec vety neohlásia
+  if (Nahravky.moze(casti)) { Nahravky.hraj(casti, koniec, () => povedzAuto(veta, hotovo)); return; }
   try {
-    const u = new SpeechSynthesisUtterance(text), v = hlasSk();
+    const u = new SpeechSynthesisUtterance(veta), v = hlasSk();
     u.lang = 'sk-SK'; u.rate = .95; if (v) u.voice = v;
     u.onend = koniec;
     u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') koniec(); };
@@ -1479,8 +1528,9 @@ const Auto = {
     const a = st.auto;
     if (!a) return;
     a.gen++; clearInterval(a.odpocet); a.odpocet = null; clearTimeout(a.neskor);
+    const hral = Nahravky.stop();
     try { if ('speechSynthesis' in window && (speechSynthesis.speaking || speechSynthesis.pending)) { speechSynthesis.cancel(); return true; } } catch (e) {}
-    return false;
+    return hral;
   },
   hraj() {
     const a = st.auto;
@@ -1522,7 +1572,8 @@ const Auto = {
     };
     setTimeout(() => {
       if (st.auto !== a || a.gen !== gen) return;
-      if (bezHlasu) pokracuj(); else povedzAuto(veta, pokracuj);
+      const kratko = ['Výborne! Téma je prebratá.', ...(a.pokracovat && a.dalsia ? ['O chvíľu pokračujeme ďalšou témou.'] : [])];
+      if (bezHlasu) pokracuj(); else povedzAuto(Nahravky.moze(kratko) ? kratko : veta, pokracuj);
     }, 1500);
   },
   ovladaj(co) {
@@ -1555,7 +1606,7 @@ function textAuto(a) {
   const krok = a.kroky[a.k] || {}, seg = krok.seg ?? a.segs.length - 1;
   const vety = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg && k.typ === 'veta');
   const ukaz = a.stav === 'rucne' ? vety : vety.filter(k => k.i <= a.k);
-  return ukaz.map(k => `<span class="${k.i === a.k && a.stav === 'hovori' ? 'teraz' : 'minula'}">${esc(k.text)}</span>`).join(' ');
+  return ukaz.map(k => `<span class="${k.i === a.k && a.stav === 'hovori' ? 'teraz' : 'minula'}">${esc(Array.isArray(k.text) ? spojVety(k.text) : k.text)}</span>`).join(' ');
 }
 function obnovAuto() {
   const a = st.auto, el = id => document.getElementById(id);
@@ -1789,11 +1840,12 @@ const radaHlas = () => Zvuk.ios
     ? 'Krajší hlas zadarmo: v Nastaveniach telefónu vyhľadajte „Prevod textu na reč“, pri službe Google stiahnite slovenčinu a vyberte hlas vo vysokej kvalite. Potom appku zavrite a otvorte znova.'
     : 'Na počítači číta najkrajšie prehliadač Microsoft Edge (hlasy Viktória a Lukáš).';
 function hlasyHtml() {
-  if (!('speechSynthesis' in window)) return '<p class="muted">Tento telefón nevie čítať nahlas.</p>';
-  const z = hlasy(), vyb = hlasSk();
-  if (!z.length) return `<p class="muted">Slovenský hlas sa v telefóne zatiaľ nenašiel.</p><p class="rada">${radaHlas()}</p>`;
-  return `<div class="hlasy">${z.map(v => `<button class="hlas" data-hlas="${esc(v.voiceURI)}" aria-pressed="${v === vyb}"><b>${esc(menoHlasu(v))}</b><small>${kvalitaHlasu(v) ? ii(STAR()) + ' kvalitný' : 'základný'}</small></button>`).join('')}</div>
-    <p class="muted">Ťuknite na hlas a vypočujte si ho.</p>${kvalitaHlasu(z[0]) ? '' : `<p class="rada">${radaHlas()}</p>`}`;
+  const vik = Nahravky.zoznam ? `<button class="hlas" data-hlas="viktoria" aria-pressed="${Nahravky.zapnute()}"><b>Viktória</b><small>${ii(STAR())} najkrajší, na každom telefóne</small></button>` : '';
+  if (!('speechSynthesis' in window)) return vik ? `<div class="hlasy">${vik}</div>` : '<p class="muted">Tento telefón nevie čítať nahlas.</p>';
+  const z = hlasy(), vyb = vik && Nahravky.zapnute() ? null : hlasSk();
+  if (!z.length) return vik ? `<div class="hlasy">${vik}</div>` : `<p class="muted">Slovenský hlas sa v telefóne zatiaľ nenašiel.</p><p class="rada">${radaHlas()}</p>`;
+  return `<div class="hlasy">${vik}${z.map(v => `<button class="hlas" data-hlas="${esc(v.voiceURI)}" aria-pressed="${v === vyb}"><b>${esc(menoHlasu(v))}</b><small>${kvalitaHlasu(v) ? ii(STAR()) + ' kvalitný' : 'hlas telefónu'}</small></button>`).join('')}</div>
+    <p class="muted">Ťuknite na hlas a vypočujte si ho.</p>${vik || kvalitaHlasu(z[0]) ? '' : `<p class="rada">${radaHlas()}</p>`}`;
 }
 try { speechSynthesis.addEventListener('voiceschanged', () => { const el = document.getElementById('hlasy'); if (el) el.innerHTML = hlasyHtml(); }); } catch (e) {}
 
@@ -2440,11 +2492,11 @@ function startKviz(druh = '') {
 const citaj = typ => `<button class="read" data-citaj="${typ}">${ii(IK.repro)} Prečítať nahlas</button>`;
 function textKroku(f) {
   const k = f.kroky[f.i], t = f.id && byId(f.id);
-  if (k.t === 'uvod') return t.t + ' ' + t.m + (st.vek === 'starsi' ? ' ' + t.s : '');
-  if (k.t === 'priklad') return 'Príklad zo života. ' + t.p;
-  if (k.t === 'rozhovor') return 'Porozprávajte sa. ' + t.o.join(' ');
-  if (k.t === 'q') return k.q.q + ' ' + k.poradie.map(j => k.q.a[j][1]).join(', alebo ') + '?';
-  return '';
+  if (k.t === 'uvod') return [...vetyZ(t.t), ...vetyZ(t.m), ...(st.vek === 'starsi' ? vetyZ(t.s) : [])];
+  if (k.t === 'priklad') return ['Príklad zo života.', ...vetyZ(t.p)];
+  if (k.t === 'rozhovor') return ['Porozprávajte sa.', ...t.o.flatMap(vetyZ)];
+  if (k.t === 'q') return [...vetyZ(k.q.q), ...moznostiNahlas(k.poradie.map(j => k.q.a[j][1]))];
+  return [];
 }
 
 function krok(f, k) {
@@ -2715,9 +2767,9 @@ document.addEventListener('click', e => {
   if (d.pad !== undefined) { Hra.pad(+d.pad); return; }
   if (d.diel) { Hra.diel(+d.diel); return; }
   if (d.hlas !== undefined) {
-    S.set('hlas', d.hlas);
+    if (d.hlas === 'viktoria') S.set('hlas-telefon', false); else { S.set('hlas', d.hlas); S.set('hlas-telefon', true); }
     document.querySelectorAll('[data-hlas]').forEach(x => x.setAttribute('aria-pressed', x === b));
-    const ukazka = () => Hlas.citaj(`Ahoj${st.meno ? ', ' + st.meno : ''}! Takto ti budem čítať témy o svete.`);
+    const ukazka = () => Hlas.citaj(Nahravky.moze(['Ahoj!', 'Takto ti budem čítať témy o svete.']) ? ['Ahoj!', 'Takto ti budem čítať témy o svete.'] : `Ahoj${st.meno ? ', ' + st.meno : ''}! Takto ti budem čítať témy o svete.`);
     if (Hlas.hovori) { Hlas.stop(); setTimeout(ukazka, 150); } else ukazka();
     return;
   }
