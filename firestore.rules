@@ -112,9 +112,11 @@ service cloud.firestore {
 
     // správy medzi dvoma priateľmi: rozhovor {a_b} (a < b), len nálepka alebo hotová veta, žiadny vlastný text
     function platnaSprava(d) {
-      return d.keys().hasOnly(['od', 'k', 'n', 'kedy']) && d.kedy == request.time
-        && (('k' in d && !('n' in d) && d.k in ['ahoj', 'ako', 'super', 'grat', 'sisuper', 'tema', 'odznak', 'seria', 'sutaz', 'dobiehaj', 'ucit', 'dakujem', 'haha', 'noc', 'ano', 'nie'])
-          || ('n' in d && !('k' in d) && d.n in ['sova', 'ohen', 'hviezda', 'srdce', 'pohar', 'raketa', 'duha', 'koruna', 'konfety', 'palec', 'smiech', 'diamant', 'blesk', 'mozog', 'jednorozec', 'kniha']));
+      return d.keys().hasOnly(['od', 'k', 'n', 't', 'h', 'kedy']) && d.kedy == request.time
+        // pochvala témou: id témy a počet hviezd (0 až 3)
+        && (('t' in d && !('k' in d) && !('n' in d) && d.t is string && d.t.matches('^[a-z0-9-]{2,30}$') && d.h is int && d.h >= 0 && d.h <= 3)
+          || ('k' in d && !('n' in d) && !('t' in d) && !('h' in d) && d.k in ['ahoj', 'ako', 'super', 'grat', 'sisuper', 'tema', 'odznak', 'seria', 'sutaz', 'dobiehaj', 'ucit', 'dakujem', 'haha', 'noc', 'ano', 'nie'])
+          || ('n' in d && !('k' in d) && !('t' in d) && !('h' in d) && d.n in ['sova', 'ohen', 'hviezda', 'srdce', 'pohar', 'raketa', 'duha', 'koruna', 'konfety', 'palec', 'smiech', 'diamant', 'blesk', 'mozog', 'jednorozec', 'kniha']));
     }
     match /rozhovory/{rid}/spravy/{sid} {
       allow read: if prihlaseny() && rid.split('_').size() == 2 && (majitel(rid.split('_')[0]) || majitel(rid.split('_')[1]));
@@ -124,6 +126,17 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[0])/priatelia/$(rid.split('_')[1]))
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[1])/priatelia/$(rid.split('_')[0]))
         && platnaSprava(request.resource.data);
+      // srdiečko: dá ho len ten, komu správa prišla, a zmení len pole r
+      allow update: if prihlaseny() && rid.split('_').size() == 2
+        && majitel(resource.data.od == rid.split('_')[0] ? rid.split('_')[1] : rid.split('_')[0])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['r'])
+        && (!('r' in request.resource.data) || request.resource.data.r == 'srdce');
+    }
+    // „Videné“: kedy si dieťa {pid} naposledy pozrelo rozhovor
+    match /rozhovory/{rid}/citane/{pid} {
+      allow read: if prihlaseny() && rid.split('_').size() == 2 && (majitel(rid.split('_')[0]) || majitel(rid.split('_')[1]));
+      allow create, update: if prihlaseny() && rid.split('_').size() == 2 && pid in rid.split('_') && majitel(pid)
+        && request.resource.data.keys().hasOnly(['kedy']) && request.resource.data.kedy == request.time;
     }
 
     match /{dokument=**} {

@@ -4,7 +4,7 @@
 const fs = require('fs'), path = require('path');
 const kniznica = m => require(require.resolve(m, { paths: [path.join(__dirname, '..', '..', 'Metlina')] }));
 const { initializeTestEnvironment, assertSucceeds, assertFails } = kniznica('@firebase/rules-unit-testing');
-const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, serverTimestamp, query, orderBy, limit } = kniznica('firebase/firestore');
+const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc, deleteField, serverTimestamp, query, orderBy, limit } = kniznica('firebase/firestore');
 
 (async () => {
   const env = await initializeTestEnvironment({ projectId: 'demo-svet-za-3-minuty', firestore: { rules: fs.readFileSync(path.join(__dirname, '..', 'firestore.rules'), 'utf8'), host: '127.0.0.1', port: 8180 } });
@@ -47,6 +47,19 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, serverTime
   await t('nálepka aj veta naraz neprejde', addDoc(rozh(fa), { od: A, k: 'ahoj', n: 'sova', kedy }), false);
   await t('A nepíše za B', addDoc(rozh(fa), { od: B, n: 'sova', kedy }), false);
   await t('A číta rozhovor', getDocs(query(rozh(fa), orderBy('kedy', 'desc'), limit(40))), true);
+  await t('B pošle tému s hviezdami', addDoc(rozh(fb), { od: B, t: 'farma', h: 3, kedy }), true);
+  await t('téma so zlým id neprejde', addDoc(rozh(fb), { od: B, t: 'Zlé ID!', h: 3, kedy }), false);
+  await t('téma so 7 hviezdami neprejde', addDoc(rozh(fb), { od: B, t: 'farma', h: 7, kedy }), false);
+  { const m = await addDoc(rozh(fb), { od: B, n: 'srdce', kedy });
+    await t('A dá srdiečko na správu B', updateDoc(doc(fa, 'rozhovory', rid, 'spravy', m.id), { r: 'srdce' }), true);
+    await t('B nedá srdiečko na vlastnú správu', updateDoc(doc(fb, 'rozhovory', rid, 'spravy', m.id), { r: 'srdce' }), false);
+    await t('A nezmení obsah správy B', updateDoc(doc(fa, 'rozhovory', rid, 'spravy', m.id), { n: 'sova' }), false);
+    await t('C nedá srdiečko', updateDoc(doc(fc, 'rozhovory', rid, 'spravy', m.id), { r: 'srdce' }), false);
+    await t('A zruší srdiečko', updateDoc(doc(fa, 'rozhovory', rid, 'spravy', m.id), { r: deleteField() }), true); }
+  await t('A zapíše Videné', setDoc(doc(fa, 'rozhovory', rid, 'citane', A), { kedy }), true);
+  await t('A nezapíše Videné za B', setDoc(doc(fa, 'rozhovory', rid, 'citane', B), { kedy }), false);
+  await t('B číta Videné od A', getDoc(doc(fb, 'rozhovory', rid, 'citane', A)), true);
+  await t('C nečíta Videné', getDoc(doc(fc, 'rozhovory', rid, 'citane', A)), false);
   await t('C nečíta rozhovor A a B', getDocs(rozh(fc)), false);
   await t('C nepíše do rozhovoru A a B', addDoc(rozh(fc), { od: C, n: 'sova', kedy }), false);
   await t('C nepíše A, keď nie sú priatelia', addDoc(collection(fc, 'rozhovory', [A, C].sort().join('_'), 'spravy'), { od: C, n: 'sova', kedy }), false);

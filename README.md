@@ -88,7 +88,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
   a ten musí žiadosť prijať (deti sa nedajú vyhľadať). Priatelia vidia postavičku, meno, sériu, body, témy, odznaky a strom
   múdrosti, posielajú si len kreslené nálepky a hotové vety (`VETY`, `NALEPKY`; rovnaký zoznam je vo firestore.rules),
   majú týždenný rebríček. Od verzie 2.1 sú správy ako na Instagrame: v Priateľoch zoznam rozhovorov (karty Správy,
-  Rebríček, Pridať), ťuknutím na kamaráta chat na celú obrazovku s nálepkami dole. Rodič vidí priateľov a správy v časti Pre rodiča. Údaje: `profily/<id dieťaťa>` (verejný profil,
+  Rebríček, Pridať), ťuknutím na kamaráta chat na celú obrazovku s nálepkami dole. Od 2.2: po téme „Pochváliť sa priateľom“
+  (karta témy s tlačidlom Skúsiť tiež, aj tlačidlo s knihou v chate), srdiečko dvojitým ťuknutím, „Videné“
+  (rozhovory/<a_b>/citane/<id>), upozornenie hore pri novej správe. Rodič vidí priateľov a správy v časti Pre rodiča. Údaje: `profily/<id dieťaťa>` (verejný profil,
   žiadosti, priatelia), `kody/<KÓD>`, `rozhovory/<id1_id2>/spravy`. Pravidlá overuje `node zdroj/pravidla-test.js` na emulátore.
 - Témy sú v 4 oblastiach (`SKUPINY` v zdroj/appka.html): Príroda a vesmír, Ľudia a život, Svet a dejiny, Veda a technika;
   v každej sú menšie kategórie. Každá kategória musí patriť práve do jednej oblasti (test to stráži).

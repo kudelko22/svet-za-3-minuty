@@ -186,8 +186,10 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   const So = window.Cloud.soc, tk = tyzKluc();
   Object.assign(So, { zapnute: true, profil: { kod: "SOVA-K7M2", body: 10, tyzKey: tk, tyzStart: 5 }, ziadosti: [{ id: "f2", meno: "Tomáš", avatar: {} }], priatelia: { f1: true },
     profily: { f1: { meno: "Ema", avatar: {}, seria: 3, body: 120, tyzKey: tk, tyzStart: 100, temy: 5, odznaky: 4, posledne: ["prva"] } },
-    spravy: { f1: [{ id: "m1", od: "f1", n: "sova", kedy: Date.now() + 5 }, { id: "m2", od: "d1", k: "ahoj", kedy: Date.now() }] } });
-  localStorage.removeItem("svet3:soc-videl-d1-f1"); render(); if (socNove() !== 2) chyby.push("soc nove " + socNove());
+    spravy: { f1: [{ id: "m1", od: "f1", n: "sova", kedy: Date.now() + 5, r: "srdce" }, { id: "m3", od: "f1", t: "ruky", h: 2, kedy: Date.now() + 6 }, { id: "m2", od: "d1", k: "ahoj", kedy: Date.now() + 7 }] }, citane: { f1: Date.now() + 9 } });
+  if (!chatHtml("f1").includes("Skúsiť tiež") || !chatHtml("f1").includes("msg-r") || !chatHtml("f1").includes("Videné")) chyby.push("chat 2.2");
+  st.socTemy = true; st.done = ["ruky"]; st.priatel = "f1"; st.view = "priatel"; render(); st.socTemy = false; socNovaSprava("f1");
+  localStorage.removeItem("svet3:soc-videl-d1-f1"); render(); if (socNove() !== 3) chyby.push("soc nove " + socNove());
   if (!rebricekHtml().includes("Ema") || tyzBody(So.profily.f1) !== 20 || tyzBody({ body: 50, tyzKey: "2000-01-03", tyzStart: 1 }) !== 0) chyby.push("rebricek");
   st.priatel = "f1"; st.view = "priatel"; render(); socZmena(); if (!chatHtml("f1").includes("msg moja") || !chatHtml("f1").includes("Ahoj!")) chyby.push("chat");
   for (const tab of ["spravy", "rebricek", "pridat"]) { st.socTab = tab; st.view = "priatelia"; render(); } st.view = "priatelProfil"; render();

@@ -793,6 +793,35 @@ body.dm-rezim::before { display: none; }
 .dm-nalepky, .dm-vety { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
 .dm-nalepky .nal { flex: none; width: 60px; height: 60px; padding: 6px; border-radius: 16px; }
 .dm-vety .chip { flex: none; padding: 7px 13px; color: var(--ink); text-shadow: none; background: #F2EEFB; font-size: .95rem; }
+/* priatelia 2.2: téma v správe, srdiečko, Videné, upozornenie */
+.msg-obal { position: relative; display: block; }
+.msg-r { position: absolute; right: -6px; bottom: -8px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--paper); animation: pop .4s var(--spring) both; }
+.dm .msg.srdce { margin-bottom: 12px; }
+.msg-tema { display: grid; gap: 4px; width: 200px; padding: 8px; border: 2.5px solid var(--ink); border-radius: 20px; background: var(--paper); box-shadow: 0 3px 0 var(--ink); }
+.msg-tema-obr { display: block; height: 100px; overflow: hidden; border-radius: 14px; border: 2px solid var(--ink); }
+.msg-tema-obr > svg { width: 100%; height: 100%; }
+.msg-tema small { color: var(--muted); font-weight: 800; }
+.msg-tema b { font: 700 1rem/1.2 var(--f-display); }
+.msg-hv { display: flex; gap: 2px; }
+.msg-hv svg { width: 20px; height: 20px; }
+.msg-tema .btn { padding: 8px 12px; font-size: .95rem; }
+.dm-videne { align-self: flex-end; margin: -2px 4px 6px; color: var(--muted); font: 800 .78rem var(--f-body); }
+.dm-temy { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.dm-tema { flex: none; display: grid; gap: 3px; width: 108px; padding: 4px; border: 2.5px solid var(--ink); border-radius: 14px; background: var(--paper); text-align: left; font: inherit; }
+.dm-tema > span { display: block; height: 56px; overflow: hidden; border-radius: 10px; }
+.dm-tema > span > svg { width: 100%; height: 100%; }
+.dm-tema small { font-weight: 800; font-size: .72rem; line-height: 1.2; }
+.dm-temy-btn { background: #DCEBFF !important; }
+.dm-temy-btn.on { background: var(--sun) !important; }
+.soc-pochval { margin: 6px 0; }
+.soc-ozn { position: fixed; z-index: 58; top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 auto; padding: 8px 14px 8px 8px;
+  border: 3px solid var(--ink); border-radius: 22px; background: var(--paper); box-shadow: 0 6px 0 var(--ink); text-align: left; font: inherit; color: inherit; animation: ozn .45s var(--spring) both; }
+.soc-ozn > span:nth-child(2) { flex: 1; min-width: 0; display: grid; }
+.soc-ozn b { font: 700 1.05rem var(--f-display); }
+.soc-ozn small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-weight: 800; }
+.soc-ozn.pryc { animation: oznPryc .4s ease-in both; }
+@keyframes ozn { from { transform: translateY(-140%); } }
+@keyframes oznPryc { to { transform: translateY(-140%); opacity: 0; } }
 /* oblasti tém */
 .skupiny { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .tile.skupina { min-height: 150px; }
@@ -864,7 +893,7 @@ body.dm-rezim::before { display: none; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 28; const VERZIA_NAZOV = '2.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 29; const VERZIA_NAZOV = '2.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1195,7 +1224,7 @@ function toast(text) { const t = document.getElementById('toast'); t.textContent
 const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
 const st = {
   meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [], dietaId: null, avatar: null,
-  faza: 'nacitava', upravuje: null, view: 'domov', kat: '', skupina: '', q: '', flow: null, priatel: null, socTab: 'spravy',
+  faza: 'nacitava', upravuje: null, view: 'domov', kat: '', skupina: '', q: '', flow: null, priatel: null, socTab: 'spravy', socTemy: false,
 };
 const main = document.getElementById('main');
 const byId = id => T.find(t => t.id === id);
@@ -2620,21 +2649,22 @@ const stromMaly = n => `<svg class="strom-mini" viewBox="56 20 208 222" aria-hid
   ${PLODY.slice(0, Math.min(n, PLODY.length)).map(([x, y], i) => `<g transform="translate(${x} ${y})">${plod(i)}</g>`).join('')}</g></svg>`;
 const casSpravy = t => { const d = new Date(t), dnes = key(new Date()) === key(d); return (dnes ? '' : d.getDate() + '. ' + (d.getMonth() + 1) + '. ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 const SIPKA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-const spravaObsah = x => x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`;
+const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? '#FFD23F' : '#E4E0EE')).join('')}</span>${moja ? '' : `<button class="btn blue" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
+  : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`;
 function chatHtml(fid) {
   const So = socC(), m = (So && So.spravy[fid]) || [], p = So && So.profily[fid];
   if (!m.length) return `<div class="dm-prazdny"><span class="soc-av velky">${avatarMaly(p && p.avatar)}</span><b>${esc(p ? p.meno : '')}</b><small class="muted">Pošli prvú nálepku alebo vetu dole!</small></div>`;
   return m.map((x, i) => {
     const moja = x.od === So.pid, dalsia = m[i + 1], posledna = !dalsia || dalsia.od !== x.od, cas = i === 0 || x.kedy - m[i - 1].kedy > 30 * 60000;
-    return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n ? ' nalepka' : ''}${posledna ? ' posl' : ''}">
-      ${!moja ? `<span class="msg-av">${posledna ? avatarMaly(p && p.avatar) : ''}</span>` : ''}${spravaObsah(x)}</div>`;
-  }).join('');
+    return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n || x.t ? ' nalepka' : ''}${posledna ? ' posl' : ''}${x.r ? ' srdce' : ''}"${moja ? '' : ` data-soc-msg="${x.id}"`}>
+      ${!moja ? `<span class="msg-av">${posledna ? avatarMaly(p && p.avatar) : ''}</span>` : ''}<span class="msg-obal">${spravaObsah(x, moja)}${x.r ? `<i class="msg-r">${IK.srdce}</i>` : ''}</span></div>`;
+  }).join('') + (vid => vid ? '<div class="dm-videne">Videné</div>' : '')((ja => ja && (So.citane[fid] || 0) >= ja.kedy && m[m.length - 1] === ja)(m.filter(x => x.od === So.pid).slice(-1)[0]));
 }
 // náhľad poslednej správy v zozname rozhovorov
 function nahladSpravy(f) {
   const So = socC(), m = (So.spravy[f] || []).slice(-1)[0];
   if (!m) return '<small class="muted">Napíš prvú správu</small>';
-  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
+  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ii(IK.kniha)} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
 }
 function rebricekHtml() {
   const So = socC(), ja = { pid: So.pid, meno: 'Ty', avatar: st.avatar, b: tyzBody(So.profil && { ...So.profil, body: st.body }), s: seria(), ja: true };
@@ -2675,7 +2705,8 @@ Object.assign(views, {
     return `<div class="dm"><header class="dm-hlava"><button class="dm-spat" data-go="priatelia" aria-label="Späť na správy">${SIPKA}</button>
       ${p ? `<button class="dm-kto" data-soc-profil="${f}"><span class="soc-av">${avatarMaly(p.avatar)}</span><span><b>${esc(p.meno)}</b><small>${ii(IK.ohen)} ${p.seria || 0} · ${ii(STAR())} ${p.body || 0} · pozrieť profil</small></span></button>` : '<b>Načítava sa…</b>'}</header>
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : ''}</div>
-      <footer class="dm-pisanie"><div class="dm-nalepky">${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
+      <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="muted">Najprv preber nejakú tému.</small>'}</div>` : ''}
+        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="chip" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
   priatelProfil() {
@@ -2701,7 +2732,7 @@ function socZmena() {
     if (ch && So && So.profily[st.priatel] && document.querySelector('.dm-kto')) {
       const dole = ch.scrollHeight - ch.scrollTop - ch.clientHeight < 80;
       ch.innerHTML = chatHtml(st.priatel); if (dole) ch.scrollTop = ch.scrollHeight;
-      S.set(videlKluc(st.priatel), Date.now()); socZnacka();
+      S.set(videlKluc(st.priatel), Date.now()); socZnacka(); if (So.precitaj) So.precitaj(st.priatel);
     } else { render(); main.classList.remove('anim'); }
   } else if (st.view === 'priatelia' || st.view === 'priatelProfil') {
     const v = document.getElementById('soc-kod'), hodnota = v ? v.value : '', fokus = v && document.activeElement === v, y = scrollY;
@@ -2709,7 +2740,21 @@ function socZmena() {
     const n = document.getElementById('soc-kod'); if (n) { n.value = hodnota; if (fokus) n.focus(); }
   }
 }
-let socPosledna = 0;
+let socPosledna = 0, socTap = {}, socOznCas = 0;
+// nová správa, kým je dieťa inde v appke: bublina hore (ťuknutím otvorí rozhovor)
+function socNovaSprava(f) {
+  if (st.faza !== 'appka' || st.flow || st.hra || st.auto || (st.view === 'priatel' && st.priatel === f)) return;
+  const So = socC(), p = So && So.profily[f];
+  if (!p) return;
+  if (Date.now() - socOznCas > 1500) { Zvuk.play('heart'); vibruj([30, 40, 30]); } // viac správ naraz = jeden zvuk
+  socOznCas = Date.now();
+  document.querySelectorAll('.soc-ozn').forEach(x => x.remove());
+  const el = document.createElement('button');
+  el.className = 'soc-ozn'; el.dataset.socOtvor = f;
+  el.innerHTML = `<span class="soc-av">${avatarMaly(p.avatar)}</span><span><b>${esc(p.meno)}</b>${nahladSpravy(f)}</span>`;
+  document.body.appendChild(el);
+  setTimeout(() => { el.classList.add('pryc'); setTimeout(() => el.remove(), 400); }, 4500);
+}
 function socAkcia(sl, ok, zle) { sl.then(x => { if (ok) ok(x); }, e => { Zvuk.play('bad'); toast(typeof e === 'string' ? e : 'Nepodarilo sa. Skúste to, keď bude internet.'); if (zle) zle(e); }); }
 
 function fillTemy() {
@@ -2795,6 +2840,7 @@ function krok(f, k) {
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
       ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
       ${odmenyHtml(f)}
+      ${(So => So && So.zapnute && f.typ === 'tema' && Object.keys(So.priatelia).length && !S.get('soc-pochvala-' + So.pid + '-' + f.id, false) ? `<button class="btn wide cta soc-pochval" data-soc-pochval="${f.id}:${hv}">${ii(IK.rodina)} Pochváliť sa priateľom</button>` : '')(socC())}
       <div class="win-acts">
         ${rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''}
         <button class="btn blue wide" data-${f.typ === 'kviz' ? `kviz="${f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : ''}"` : 'nahodna'}>${f.typ === 'kviz' ? (f.vyzva ? ii(IK.pohar) + ' Ďalšia výzva' : f.tazky ? ii(IK.mozog) + ' Ďalší ťažký kvíz' : ii(IK.blesk) + ' Ďalší kvíz') : ii(IK.kocka) + ' Ďalšia téma'}</button>
@@ -2889,6 +2935,7 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 29, obr: () => IK.srdce, n: 'Pochváľ sa témou a daj srdiečko', p: 'Po téme ju pošli priateľom, oni ju skúsia tiež. Dvojité ťuknutie na správu dá srdiečko a uvidíš, či je správa Videná.' },
   { v: 28, obr: () => IK.bublina, n: 'Správy ako v chate', p: 'V Priateľoch sú hneď rozhovory. Ťukni na kamaráta a nálepky posielaš jedným ťuknutím.' },
   { v: 27, obr: () => IK.rodina, n: 'Verzia 2.0: Priatelia', p: 'Pridaj si kamaráta kódom, posielajte si nálepky a súťažte v týždennom rebríčku. Rodič ich zapne v karte Priatelia.' },
   { v: 26, obr: () => IKS(SKUPINY.map((g, i) => `<rect x="${5 + (i % 2) * 21}" y="${5 + Math.floor(i / 2) * 21}" width="17" height="17" rx="5" fill="${g.c}"/>`).join('')), n: 'Témy v 4 oblastiach', p: 'Príroda a vesmír, Ľudia a život, Svet a dejiny, Veda a technika. Vnútri sú menšie kategórie.' },
@@ -2983,7 +3030,7 @@ function render() {
   main.innerHTML = views[st.view]();
   ocisluj();
   if (st.view === 'domov' && !document.querySelector('.oslava')) Novinky.skontroluj();
-  if (st.view === 'priatel') { const ch = document.getElementById('chat'); if (ch) ch.scrollTop = ch.scrollHeight; }
+  if (st.view === 'priatel') { const ch = document.getElementById('chat'); if (ch) ch.scrollTop = ch.scrollHeight; const So = socC(); if (So && So.precitaj) So.precitaj(st.priatel); }
   if (st.view === 'temy') {
     const inp = document.getElementById('hladaj');
     inp.value = st.q;
@@ -3009,6 +3056,15 @@ document.addEventListener('click', e => {
     Zvuk.play('hoot'); vibruj(30);
     const o = sova.querySelector('.owl'); if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
     const [x, y] = stred(sova); FX.burst(x, y, 14, ['star', 'dot'], 6);
+    return;
+  }
+  const msg = e.target.closest('[data-soc-msg]');
+  if (msg && !e.target.closest('button')) {
+    const id = msg.dataset.socMsg, t = Date.now();
+    if (socTap.id === id && t - socTap.t < 400) {
+      socTap = {}; const C = window.Cloud;
+      if (C && C.soc) { const [x, y] = stred(msg); Zvuk.play('heart'); vibruj(20); FX.hearts(x, y); socAkcia(C.soc.reaguj(st.priatel, id)); socZmena(); }
+    } else socTap = { id, t };
     return;
   }
   const b = e.target.closest('button');
@@ -3080,8 +3136,20 @@ document.addEventListener('click', e => {
   }
   else if (d.socPrijmi) { const C = window.Cloud; socAkcia(C.soc.prijmi(d.socPrijmi), () => { Zvuk.play('win'); FX.hearts(innerWidth / 2, innerHeight / 2); toast('Ste priatelia!'); }); }
   else if (d.socOdmietni) { const C = window.Cloud; socAkcia(C.soc.odmietni(d.socOdmietni), () => Zvuk.play('tap')); }
-  else if (d.socOtvor) { Zvuk.play('whoosh'); st.priatel = d.socOtvor; S.set(videlKluc(d.socOtvor), Date.now()); go('priatel'); }
+  else if (d.socOtvor) { document.querySelectorAll('.soc-ozn').forEach(x => x.remove()); Zvuk.play('whoosh'); st.priatel = d.socOtvor; S.set(videlKluc(d.socOtvor), Date.now()); go('priatel'); }
   else if (d.socTab) { Zvuk.play('tap'); st.socTab = d.socTab; if (st.view !== 'priatelia') go('priatelia'); else { render(); main.classList.remove('anim'); } }
+  else if (d.socTemy !== undefined) { Zvuk.play('tap'); st.socTemy = !st.socTemy; render(); main.classList.remove('anim'); }
+  else if (d.socTema) {
+    const C = window.Cloud; if (Date.now() - socPosledna < 350) return; socPosledna = Date.now();
+    Zvuk.play('pop'); const [x, y] = stred(b); FX.burst(x, y, 12, ['star', 'dot'], 5); st.socTemy = false;
+    socAkcia(C.soc.posli(st.priatel, { t: d.socTema, h: 3 }), null, () => socZmena()); render(); main.classList.remove('anim');
+  }
+  else if (d.socPochval) {
+    const [tid, h] = d.socPochval.split(':'), C = window.Cloud, So = socC();
+    S.set('soc-pochvala-' + So.pid + '-' + tid, true); b.disabled = true; b.innerHTML = ii(IK.fajka) + ' Poslané priateľom';
+    Zvuk.play('win'); FX.ohnostroj(2);
+    socAkcia(C.soc.pochval(tid, Math.max(0, Math.min(3, +h || 0))));
+  }
   else if (d.socProfil) { Zvuk.play('whoosh'); st.priatel = d.socProfil; go('priatelProfil'); }
   else if (d.socNal || d.socVeta) {
     if (Date.now() - socPosledna < 350) return; // nie príliš rýchlo za sebou
@@ -3164,7 +3232,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache,
-  collection, doc, onSnapshot, getDoc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, writeBatch, addDoc,
+  collection, doc, onSnapshot, getDoc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, writeBatch, addDoc, updateDoc, deleteField,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname); // skúšanie na emulátore, nie ostré dáta
@@ -3298,7 +3366,8 @@ window.Cloud = Cloud;
 
 // ---- Priatelia (verzia 2.0): verejný profil profily/<id dieťaťa>, kód kody/<KÓD>, žiadosti a priatelia pod profilom,
 // správy rozhovory/<id1_id2>/spravy. Čo kto smie, stráži firestore.rules (len nálepky a hotové vety, len medzi priateľmi).
-const Soc = { pid: null, nacitane: false, zapnute: false, profil: null, ziadosti: [], priatelia: {}, profily: {}, spravy: {} };
+const Soc = { pid: null, nacitane: false, zapnute: false, profil: null, ziadosti: [], priatelia: {}, profily: {}, spravy: {}, citane: {} };
+const socCitanie = {}; // čo sme už zapísali ako prečítané
 let socOdbery = [], socZozn = [], socPriatelia = {}, socZoznamy = false, socOtlacok = '';
 const rozhovor = (a, b) => [a, b].sort().join('_');
 const socObnov = () => { if (typeof socZmena === 'function') socZmena(); };
@@ -3307,7 +3376,7 @@ const novyKod = () => KOD_SLOVA[Math.floor(Math.random() * KOD_SLOVA.length)] + 
 function socZastav() {
   [...socOdbery, ...socZozn].forEach(f => f()); Object.values(socPriatelia).forEach(f => f());
   socOdbery = []; socZozn = []; socPriatelia = {}; socZoznamy = false; socOtlacok = '';
-  Object.assign(Soc, { pid: null, nacitane: false, zapnute: false, profil: null, ziadosti: [], priatelia: {}, profily: {}, spravy: {} });
+  Object.assign(Soc, { pid: null, nacitane: false, zapnute: false, profil: null, ziadosti: [], priatelia: {}, profily: {}, spravy: {}, citane: {} });
 }
 function socStart(pid) {
   if (Soc.pid === pid && socOdbery.length) return;
@@ -3339,11 +3408,17 @@ function socZoznamyStart(pid) {
 }
 function socSleduj(pid, f) {
   const a = onSnapshot(doc(db, 'profily', f), sn => { Soc.profily[f] = sn.exists() ? sn.data() : null; socObnov(); }, () => {});
+  let prvy = true;
   const b = onSnapshot(query(collection(db, 'rozhovory', rozhovor(pid, f), 'spravy'), orderBy('kedy', 'desc'), limit(40)), sn => {
-    Soc.spravy[f] = sn.docs.map(x => { const m = x.data({ serverTimestamps: 'estimate' }); return { id: x.id, od: m.od, k: m.k, n: m.n, kedy: m.kedy && m.kedy.toMillis ? m.kedy.toMillis() : Date.now() }; }).reverse();
+    const cas = m => m.kedy && m.kedy.toMillis ? m.kedy.toMillis() : Date.now();
+    Soc.spravy[f] = sn.docs.map(x => { const m = x.data({ serverTimestamps: 'estimate' }); return { id: x.id, od: m.od, k: m.k, n: m.n, t: m.t, h: m.h, r: m.r, kedy: cas(m) }; }).reverse();
+    // nová správa od priateľa, kým appka beží: upozornenie
+    if (!prvy) sn.docChanges().filter(c => c.type === 'added' && c.doc.data().od === f).forEach(c => { if (typeof socNovaSprava === 'function') socNovaSprava(f); });
+    prvy = false;
     socObnov();
   }, () => {});
-  socPriatelia[f] = () => { a(); b(); };
+  const c = onSnapshot(doc(db, 'rozhovory', rozhovor(pid, f), 'citane', f), sn => { const k = sn.exists() && sn.data({ serverTimestamps: 'estimate' }).kedy; Soc.citane[f] = k && k.toMillis ? k.toMillis() : 0; socObnov(); }, () => {});
+  socPriatelia[f] = () => { a(); b(); c(); };
 }
 // verejný profil: len meno, postavička a pokrok z hry; body za týždeň = body - tyzStart (od pondelka)
 function socData(kod, zapnute = true) {
@@ -3429,6 +3504,22 @@ Object.assign(Soc, {
   posli(f, m) {
     if (!Soc.priatelia[f]) return Promise.reject('Už nie ste priatelia.');
     return addDoc(collection(db, 'rozhovory', rozhovor(Soc.pid, f), 'spravy'), { od: Soc.pid, ...m, kedy: serverTimestamp() });
+  },
+  // pochvala témou všetkým priateľom naraz
+  pochval(t, h) { return Promise.all(Object.keys(Soc.priatelia).map(f => Soc.posli(f, { t, h }))); },
+  // srdiečko na správu priateľa (druhé ťuknutie ho zruší)
+  reaguj(f, id) {
+    const m = (Soc.spravy[f] || []).find(x => x.id === id);
+    if (!m || m.od === Soc.pid) return Promise.resolve();
+    m.r = m.r ? undefined : 'srdce';
+    return updateDoc(doc(db, 'rozhovory', rozhovor(Soc.pid, f), 'spravy', id), { r: m.r ? 'srdce' : deleteField() });
+  },
+  // „Videné“: zapíšeme, len keď pribudla nová správa od priateľa
+  precitaj(f) {
+    const m = (Soc.spravy[f] || []).filter(x => x.od === f).slice(-1)[0];
+    if (!m || (socCitanie[f] || 0) >= m.kedy) return;
+    socCitanie[f] = m.kedy;
+    setDoc(doc(db, 'rozhovory', rozhovor(Soc.pid, f), 'citane', Soc.pid), { kedy: serverTimestamp() }).catch(() => { socCitanie[f] = 0; });
   },
 });
 Cloud.soc = Soc;
