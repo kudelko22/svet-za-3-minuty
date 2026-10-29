@@ -256,6 +256,14 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   const dna = temaDna(); st.done = st.done.filter(x => x !== dna.id); startTema(dna.id); const fd = st.flow;
   fd.kroky.forEach((k, i) => { if (k.t === "q") fd.odp[i] = { v: 0, ok: true, p: "x" }; }); dokonci(fd); if (fd.zisk <= 10) chyby.push("tema dna body " + fd.zisk);
   st.flow = null; render(); }
+/* V33_TEST */
+{ const zaklad = { vlasy: "kratke", farbaVlasov: "#2B2240", koza: "#FFE0C7", oci: "bodky", usta: "usmev", okuliare: "ziadne", tricko: "#FF5A5F", vzor: "ziadny", doplnok: "ziadny", zvieratko: "ziadne", kuzlo: "ziadne", pozadie: "#D6E6FF" };
+  for (const k of ["vlasy", "oci", "usta", "okuliare", "vzor", "doplnok", "zvieratko", "kuzlo"]) { if (new Set(AV[k].map(v => postavicka({ ...zaklad, [k]: v }))).size !== AV[k].length) chyby.push("kreslenie " + k); }
+  for (const kl of ["doplnok:oslava", "doplnok:kuchar", "doplnok:roh", "okuliare:karneval", "vzor:sova", "vzor:planeta", "zvieratko:panda", "kuzlo:srdcia"]) if (!ODOMKNI[kl] || !NAZVY_ODMIEN[kl]) chyby.push("nova vec " + kl);
+  Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, body: 500 }); Hra.start("sova"); const hs = st.hra; Hra.sovaStart();
+  hs.prekazky.push({ x: 120, stred: 220, f: 0, f2: 3, presla: false }); hs.hviezdy.push({ x: 150, y: 200 });
+  for (let i = 0; i < 120; i++) { sovaKrok(hs, .016); Hra.sovaKresli(hs); } if (!(hs.posun > 0)) chyby.push("sova sa nehybe");
+  Hra.zrus(); render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

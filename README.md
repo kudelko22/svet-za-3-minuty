@@ -84,6 +84,10 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Verzia 2.6:** Lietajúca sova kreslí kopce, ceruzky (`sovaCeruzka`), trávu, oblaky, hviezdy aj sovu z bitmáp
+  (`sovaSprite`), počas hier je skryté pohyblivé pozadie (`body.hra-rezim`), šum krídel sa vyrába raz. Nové veci pre
+  postavičku: čiapka na oslavu, kuchárska čiapka, jednorožcový roh, karnevalová maska, sovička a planéta na tričko, panda,
+  lietajúce srdiečka (obrazky.js, `ODOMKNI`, `NAZVY_ODMIEN`).
 - **Verzia 2.5:** všetky kvízy majú životy a prestávku po dohraní aj po prehre (`KVIZY`): rýchly 2 životy a 5 minút,
   ťažký 3 životy a 15 minút, výzva 3 životy a 30 minút. Iná téma ako téma dňa dá najviac 10 bodov (aj v režime do auta).
 - **Verzia 2.4:** úvodná obrazovka so Sovičkou (`#uvod`; iPhone a iPad ju ukážu ešte pred načítaním z `ikony/start`,

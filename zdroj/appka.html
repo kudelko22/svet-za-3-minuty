@@ -300,6 +300,8 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 /* Téma krok za krokom */
 .ftop { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; align-items: center; gap: 10px; padding-block: 12px; background: rgb(255 255 255 / .6); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 100vmax rgb(255 255 255 / .6); clip-path: inset(0 -100vmax); }
 .tinted .blobs i { opacity: .45; }
+.blobs i, .blobs::after { will-change: transform; }
+body.hra-rezim .blobs { display: none; } /* počas hry pozadie stojí, hra beží plynulejšie */
 .ib { flex: none; width: 44px; height: 44px; border-radius: 14px; border: 3px solid var(--ink); background: var(--paper); font: 700 1.2rem/1 var(--f-display); box-shadow: 0 3px 0 var(--ink); }
 .ib.heart[aria-pressed="true"] { background: #FFD6DE; color: var(--coral); animation: jelly .6s; }
 .fbar { flex: 1; height: 24px; border-radius: 99px; background: var(--paper); border: 3px solid var(--ink); overflow: hidden; }
@@ -1036,7 +1038,7 @@ body.dm-rezim::before { display: none; }
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script>
-const VERZIA_APPKY = 32; const VERZIA_NAZOV = '2.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 33; const VERZIA_NAZOV = '2.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1096,8 +1098,10 @@ const Zvuk = (() => {
     o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + d + .03);
   }
   function sum(c, t, d, v, f1, f2) {
-    const len = Math.floor(c.sampleRate * d), buf = c.createBuffer(1, len, c.sampleRate), ch = buf.getChannelData(0);
-    for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+    // šum sa vyrobí raz pre každú dĺžku (mávnutie krídel v hre ho pri každom ťuknutí nevyrába znova)
+    const pamat = c.sumy || (c.sumy = {});
+    let buf = pamat[d];
+    if (!buf) { const len = Math.floor(c.sampleRate * d), ch = (buf = pamat[d] = c.createBuffer(1, len, c.sampleRate)).getChannelData(0); for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1; }
     const s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime + t;
     s.buffer = buf; fl.type = 'bandpass'; fl.Q.value = 1.4;
     fl.frequency.setValueAtTime(f1, t0); fl.frequency.exponentialRampToValueAtTime(f2, t0 + d);
@@ -2221,7 +2225,7 @@ function sovaKrok(h, dt) {
     else if (Math.random() < .6) h.hviezdy.push({ x: h.W + 20 + SIRKA_CERUZKY + (h.rozostup - SIRKA_CERUZKY) / 2, y: 60 + Math.random() * (zem - 120) });
   }
   for (const p of h.prekazky) { p.x -= v * dt; if (!p.presla && p.x + SIRKA_CERUZKY < h.x - SOVA_R) { p.presla = true; h.skore++; u.push('bod'); } }
-  h.prekazky = h.prekazky.filter(p => p.x > -SIRKA_CERUZKY - 10);
+  while (h.prekazky.length && h.prekazky[0].x <= -SIRKA_CERUZKY - 10) h.prekazky.shift();
   for (const z of h.hviezdy) {
     z.x -= v * dt;
     if (!z.vzata && Math.hypot(z.x - h.x, z.y - h.y) < SOVA_R + 15) {
@@ -2229,8 +2233,8 @@ function sovaKrok(h, dt) {
       for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28; h.iskry.push({ x: z.x, y: z.y, vx: Math.cos(a) * 140, vy: Math.sin(a) * 140, ziv: .6, c: i % 2 ? '#FFD23F' : '#fff' }); }
     }
   }
-  h.hviezdy = h.hviezdy.filter(z => !z.vzata && z.x > -30);
-  h.iskry.forEach(q => { q.x += q.vx * dt; q.y += q.vy * dt; q.ziv -= dt; }); h.iskry = h.iskry.filter(q => q.ziv > 0);
+  if (h.hviezdy.some(z => z.vzata || z.x <= -30)) h.hviezdy = h.hviezdy.filter(z => !z.vzata && z.x > -30);
+  if (h.iskry.length) { h.iskry.forEach(q => { q.x += q.vx * dt; q.y += q.vy * dt; q.ziv -= dt; }); h.iskry = h.iskry.filter(q => q.ziv > 0); }
   // náraz: hrot ceruzky je užší, aby to bolo spravodlivé
   const naZemi = h.y + SOVA_R > zem;
   const vCeruzke = h.prekazky.some(p => {
@@ -2245,18 +2249,15 @@ function sovaKrok(h, dt) {
   if (naZemi) { h.y = zem - SOVA_R; if (h.zivoty > 0) h.vy = h.skok * .85; else h.vy = 0; }
   return u;
 }
-// dvojica ceruziek: horná hrotom dole, dolná hrotom hore
-function sovaCeruzky(g, p, h, zem) {
-  const w = SIRKA_CERUZKY, x = p.x, hore = p.stred - h.medzera / 2, dole = p.stred + h.medzera / 2;
-  [[hore, -1, p.f], [dole, 1, p.f2]].forEach(([spicka, smer, f]) => {
-    const koniec = spicka + smer * HROT, kraj = smer < 0 ? -10 : zem + 10;
-    g.lineWidth = 3;
-    g.fillStyle = CERUZKY[f]; g.fillRect(x, Math.min(kraj, koniec), w, Math.abs(koniec - kraj)); g.strokeRect(x, Math.min(kraj, koniec), w, Math.abs(koniec - kraj));
-    g.fillStyle = 'rgb(255 255 255 / .35)'; g.fillRect(x + w * .2, Math.min(kraj, koniec), w * .16, Math.abs(koniec - kraj));
-    g.fillStyle = 'rgb(0 0 0 / .1)'; g.fillRect(x + w * .68, Math.min(kraj, koniec), w * .16, Math.abs(koniec - kraj));
-    g.fillStyle = '#FFE3BD'; g.beginPath(); g.moveTo(x, koniec); g.lineTo(x + w, koniec); g.lineTo(x + w / 2, spicka); g.closePath(); g.fill(); g.stroke();
-    g.fillStyle = CERUZKY[f]; g.beginPath(); g.moveTo(x + w * .37, spicka + smer * HROT * .26); g.lineTo(x + w * .63, spicka + smer * HROT * .26); g.lineTo(x + w / 2, spicka); g.closePath(); g.fill(); g.stroke();
-  });
+// jedna ceruzka: hrot na výške spicka, telo smerom ku kraj (smer -1 = horná ceruzka hrotom dole, 1 = dolná hrotom hore)
+function sovaCeruzka(g, x, spicka, smer, kraj, f) {
+  const w = SIRKA_CERUZKY, koniec = spicka + smer * HROT, y0 = Math.min(kraj, koniec), dl = Math.abs(koniec - kraj);
+  g.strokeStyle = INK; g.lineJoin = 'round'; g.lineWidth = 3;
+  g.fillStyle = CERUZKY[f]; g.fillRect(x, y0, w, dl); g.strokeRect(x, y0, w, dl);
+  g.fillStyle = 'rgb(255 255 255 / .35)'; g.fillRect(x + w * .2, y0, w * .16, dl);
+  g.fillStyle = 'rgb(0 0 0 / .1)'; g.fillRect(x + w * .68, y0, w * .16, dl);
+  g.fillStyle = '#FFE3BD'; g.beginPath(); g.moveTo(x, koniec); g.lineTo(x + w, koniec); g.lineTo(x + w / 2, spicka); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = CERUZKY[f]; g.beginPath(); g.moveTo(x + w * .37, spicka + smer * HROT * .26); g.lineTo(x + w * .63, spicka + smer * HROT * .26); g.lineTo(x + w / 2, spicka); g.closePath(); g.fill(); g.stroke();
 }
 const Hra = {
   start(id) {
@@ -2357,12 +2358,22 @@ const Hra = {
       kruhy.forEach(([a, b, rr]) => { c.beginPath(); c.arc(a, b, rr, 0, 7); c.fill(); });
     });
     for (let i = 0; i < 3 && oblak; i++) g.drawImage(oblak, ((i * 190 + 80 - pos * .2) % (W + 160) + W + 160) % (W + 160) - 80 - 21, 70 + i * 52 - 34, 84, 56);
-    // kopce v diaľke
-    g.fillStyle = '#B9EBC0'; g.lineWidth = 3; g.beginPath(); g.moveTo(0, H);
-    for (let x = 0; x <= W + 8; x += 8) g.lineTo(x, zem - 34 - 20 * Math.sin((x + pos * .35) / 64));
-    g.lineTo(W, H); g.closePath(); g.fill(); g.stroke();
-    // ceruzky
-    (h.prekazky || []).forEach(p => sovaCeruzky(g, p, h, zem));
+    // kopce v diaľke: pás nakreslený raz a len posúvaný (vlna sa opakuje po 2π·64 bodoch)
+    const P = Math.PI * 128, kh = zem - 58, ks = Math.ceil(W + P) + 2;
+    const kopce = sovaSprite('kopce' + W + 'x' + H, ks, H - kh, dpr, c => {
+      c.strokeStyle = INK; c.lineJoin = 'round'; c.fillStyle = '#B9EBC0'; c.lineWidth = 3; c.beginPath(); c.moveTo(0, H - kh);
+      for (let x = 0; x <= ks + 8; x += 8) c.lineTo(x, zem - 34 - 20 * Math.sin(x / 64) - kh);
+      c.lineTo(ks, H - kh); c.closePath(); c.fill(); c.stroke();
+    });
+    if (kopce) g.drawImage(kopce, -(pos * .35 % P), kh, ks, H - kh);
+    // ceruzky: bitmapa pre každú farbu a smer, dlhšia ako ihrisko (čo prečnieva, sa neukáže)
+    const L = H + 14, cs = SIRKA_CERUZKY + 6;
+    const ceruzka = (f, smer) => sovaSprite('ceruzka' + f + (smer < 0 ? 'h' : 'd') + H, cs, L, dpr, c => sovaCeruzka(c, 3, smer < 0 ? L - 2 : 2, smer, smer < 0 ? -4 : L + 4, f));
+    (h.prekazky || []).forEach(p => {
+      const hore = ceruzka(p.f, -1), dole = ceruzka(p.f2, 1);
+      if (hore) g.drawImage(hore, p.x - 3, p.stred - h.medzera / 2 - (L - 2), cs, L);
+      if (dole) g.drawImage(dole, p.x - 3, p.stred + h.medzera / 2 - 2, cs, L);
+    });
     // hviezdy
     const hv = sovaSprite('hviezda', 38, 38, dpr, c => {
       c.translate(19, 19); c.fillStyle = 'rgb(255 255 255 / .55)'; c.beginPath(); c.arc(0, 0, 18, 0, 7); c.fill();
@@ -2376,11 +2387,12 @@ const Hra = {
     // iskry po chytenej hviezde
     (h.iskry || []).forEach(q => { g.globalAlpha = Math.max(0, q.ziv / .6); g.fillStyle = q.c; g.beginPath(); g.arc(q.x, q.y, 4, 0, 7); g.fill(); });
     g.globalAlpha = 1;
-    // zem s trávou (všetky trsy jednou cestou)
-    g.fillStyle = '#7ED957'; g.fillRect(0, zem, W, H - zem); g.lineWidth = 3; g.beginPath(); g.moveTo(0, zem); g.lineTo(W, zem); g.stroke();
-    g.fillStyle = '#5BB85B'; g.beginPath();
-    for (let x = -((pos % 30) + 30) % 30; x < W; x += 30) { g.moveTo(x, zem + 8); g.lineTo(x + 6, zem + 18); g.lineTo(x + 12, zem + 8); }
-    g.fill();
+    // zem s trávou: pás o jeden trs širší, posúvaný (trsy sa opakujú po 30 bodoch)
+    const zemObr = sovaSprite('zem' + W + 'x' + H, W + 30, H - zem + 2, dpr, c => {
+      c.fillStyle = '#7ED957'; c.fillRect(0, 2, W + 30, H - zem); c.strokeStyle = INK; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 2); c.lineTo(W + 30, 2); c.stroke();
+      c.fillStyle = '#5BB85B'; c.beginPath(); for (let x = 0; x < W + 30; x += 30) { c.moveTo(x, 10); c.lineTo(x + 6, 20); c.lineTo(x + 12, 10); } c.fill();
+    });
+    if (zemObr) g.drawImage(zemObr, -((pos % 30) + 30) % 30, zem - 2, W + 30, H - zem + 2);
     // sovička
     const y = h.y != null ? h.y : H * .42, x = h.x != null ? h.x : W * .28, uhol = Math.max(-.45, Math.min(.8, (h.vy || 0) / 700));
     g.save(); g.translate(x, y + (h.beh || h.hotovo || h.zivoty < (h.mal ? 3 : 2) ? 0 : Math.sin(performance.now() / 300) * 4)); g.rotate(uhol);
@@ -3143,10 +3155,12 @@ const Oslava = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 33, obr: () => postavicka({ vlasy: 'kucery', farbaVlasov: '#B5713C', koza: '#F6C9A0', oci: 'velke', usta: 'smiech', okuliare: 'ziadne', tricko: '#4C7DFF', vzor: 'planeta', doplnok: 'roh', zvieratko: 'panda', kuzlo: 'srdcia', pozadie: '#FFE1E8' }, true),
+    n: '8 nových vecí pre postavičku', p: 'Jednorožcový roh, kuchárska čiapka, čiapka na oslavu, karnevalová maska, sovička a planéta na tričko, panda a lietajúce srdiečka.' },
+  { v: 33, obr: () => OBR_HRY.sova, n: 'Lietajúca sova ešte plynulejšia', p: 'Kopce, ceruzky aj tráva sa kreslia len raz a počas hry sa zastaví pohyblivé pozadie, takže telefón má oveľa menej práce.' },
   { v: 32, obr: () => IK.srdce, n: 'Životy vo všetkých kvízoch', p: 'Rýchly kvíz má 2 srdiečka, ťažký kvíz a výzva 3. Po každom kvíze je prestávka: rýchly 5 minút, ťažký 15 minút, výzva 30 minút.' },
   { v: 32, obr: () => IK.kocka, n: 'Najviac bodov za tému dňa', p: 'Za inú tému ako tému dňa sa dá získať najviac 10 bodov.' },
   { v: 31, obr: () => owl('oops'), n: 'Všetko zle? Nevadí!', p: 'Keď v téme nevyjde ani jedna odpoveď, strom múdrosti nenarastie. Stačí skúsiť otázky ešte raz.' },
-  { v: 31, obr: () => OBR_HRY.sova, n: 'Plynulejšia Lietajúca sova', p: 'Hra sa kreslí rýchlejšie, sovička letí plynulo aj na starších telefónoch.' },
   { v: 31, obr: () => plPlocha(), n: 'Appka na ploche ako naozajstná', p: 'Kreslený návod ukáže, ako si appku pridať na plochu iPhonu, iPadu, Macu aj Androidu. Pri spustení vás privíta Sovička.' },
   { v: 30, obr: () => owl('cheer'), n: 'Sovička ťa prevedie appkou', p: 'Nový sprievodca ukáže, čo kde je, a všetko si vyskúšaš ťuknutím. Spustíš ho kedykoľvek v karte Ja.' },
   { v: 29, obr: () => IK.srdce, n: 'Pochváľ sa témou a daj srdiečko', p: 'Po téme ju pošli priateľom, oni ju skúsia tiež. Dvojité ťuknutie na správu dá srdiečko a uvidíš, či je správa Videná.' },
@@ -3521,6 +3535,7 @@ function render() {
   document.getElementById('nav').hidden = brana || auto || hra || flow || dm;
   document.body.classList.toggle('auto-rezim', auto);
   document.body.classList.toggle('dm-rezim', dm);
+  document.body.classList.toggle('hra-rezim', hra);
   if (brana) { renderBrana(); return; }
   if (auto) { renderAuto(); return; }
   if (hra) { renderHra(); return; }

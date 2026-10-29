@@ -550,12 +550,12 @@ const AV = {
   koza: ['#FFE0C7', '#F6C9A0', '#E0A87A', '#B97A50', '#8A5634'],
   oci: ['bodky', 'velke', 'vesele', 'mrk'],
   usta: ['usmev', 'smiech', 'jazyk'],
-  okuliare: ['ziadne', 'okruhle', 'hranate', 'srdiecka', 'slnecne', 'hviezdy', 'potapac', 'kocicie', 'monokel', 'lyziarske', 'robot'],
+  okuliare: ['ziadne', 'okruhle', 'hranate', 'srdiecka', 'slnecne', 'hviezdy', 'potapac', 'kocicie', 'monokel', 'lyziarske', 'robot', 'karneval'],
   tricko: ['#FF5A5F', '#FF9F1C', '#FFD23F', '#2FBF71', '#16BFAE', '#4C7DFF', '#7C6CFF', '#FF6FA8', '#FFFFFF', '#2B2240', '#8FD3FF', '#C9A0FF'],
-  vzor: ['ziadny', 'pruhy', 'hviezda', 'srdce', 'blesk', 'duha', 'motylik', 'jahoda', 'kravata', 'futbal', 'sal', 'nahrdelnik', 'medaila', 'raketa'],
-  doplnok: ['ziadny', 'siltovka', 'ciapka', 'masla', 'kvietok', 'sluchadla', 'pirat', 'korunka', 'cylinder', 'carodej', 'zajacie', 'macacie', 'kovboj', 'veniec', 'tiara', 'viking', 'svatozar', 'cisarska'],
-  zvieratko: ['ziadne', 'macka', 'psik', 'sovicka', 'dino', 'jednorozec', 'zajko', 'tucniak', 'liska', 'drak', 'fenix'],
-  kuzlo: ['ziadne', 'iskry', 'motyl', 'aura', 'anjel', 'drakie', 'duha'],
+  vzor: ['ziadny', 'pruhy', 'hviezda', 'srdce', 'blesk', 'duha', 'motylik', 'jahoda', 'kravata', 'futbal', 'sal', 'nahrdelnik', 'medaila', 'raketa', 'sova', 'planeta'],
+  doplnok: ['ziadny', 'siltovka', 'ciapka', 'masla', 'kvietok', 'sluchadla', 'pirat', 'korunka', 'cylinder', 'carodej', 'zajacie', 'macacie', 'kovboj', 'veniec', 'tiara', 'viking', 'svatozar', 'cisarska', 'oslava', 'kuchar', 'roh'],
+  zvieratko: ['ziadne', 'macka', 'psik', 'sovicka', 'dino', 'jednorozec', 'zajko', 'tucniak', 'liska', 'drak', 'fenix', 'panda'],
+  kuzlo: ['ziadne', 'iskry', 'motyl', 'aura', 'anjel', 'drakie', 'duha', 'srdcia'],
   pozadie: ['#D6E6FF', '#FFE1E8', '#D9F8E6', '#FFF0B3', '#EBDDFF', '#FFE3C7', '#C8F1F6'],
 };
 const AV_KAT = [['vlasy', 'Účes'], ['farbaVlasov', 'Farba vlasov'], ['koza', 'Pleť'], ['oci', 'Oči'], ['usta', 'Úsmev'],
@@ -578,6 +578,8 @@ const ODOMKNI = {
   // mýtické veci
   'kuzlo:iskry': 1600, 'kuzlo:motyl': 2000, 'doplnok:svatozar': 2400, 'zvieratko:drak': 2800, 'kuzlo:aura': 3200,
   'kuzlo:anjel': 3600, 'zvieratko:fenix': 4000, 'kuzlo:drakie': 4500, 'doplnok:cisarska': 5000, 'kuzlo:duha': 5000,
+  // verzia 2.6
+  'doplnok:oslava': 190, 'doplnok:kuchar': 270, 'vzor:sova': 330, 'okuliare:karneval': 470, 'vzor:planeta': 560, 'doplnok:roh': 760, 'zvieratko:panda': 1050, 'kuzlo:srdcia': 2200,
 };
 // názvy odmien vo vete „Odomkneš …“
 const NAZVY_ODMIEN = {
@@ -595,6 +597,8 @@ const NAZVY_ODMIEN = {
   'doplnok:tiara': 'tiaru', 'doplnok:viking': 'vikingskú prilbu', 'zvieratko:zajko': 'zajka', 'zvieratko:tucniak': 'tučniaka', 'zvieratko:liska': 'líšku',
   'kuzlo:iskry': 'čarovné iskry', 'kuzlo:motyl': 'motýlie krídla', 'doplnok:svatozar': 'svätožiaru', 'zvieratko:drak': 'dráčika', 'kuzlo:aura': 'zlatú žiaru',
   'kuzlo:anjel': 'anjelské krídla', 'zvieratko:fenix': 'fénixa', 'kuzlo:drakie': 'dračie krídla', 'doplnok:cisarska': 'cisársku korunu', 'kuzlo:duha': 'dúhovú žiaru',
+  'doplnok:oslava': 'čiapku na oslavu', 'doplnok:kuchar': 'kuchársku čiapku', 'vzor:sova': 'sovičku na tričko', 'okuliare:karneval': 'karnevalovú masku',
+  'vzor:planeta': 'planétu na tričko', 'doplnok:roh': 'jednorožcový roh', 'zvieratko:panda': 'pandu', 'kuzlo:srdcia': 'lietajúce srdiečka',
 };
 const cenaDielu = (k, v) => ODOMKNI[k + ':' + v] || 0;
 const odomknute = (k, v, body) => cenaDielu(k, v) <= (body || 0);
@@ -660,6 +664,7 @@ function postavicka(a, kruh = false) {
     kocicie: `<path d="M38 58 Q48 54 58 58 Q57 71 48 71 Q39 71 38 58Z M62 58 Q72 54 82 58 Q81 71 72 71 Q63 71 62 58Z" fill="${sklo}"/><path d="M38 58 L33 52 M82 58 L87 52" stroke="#FF6FA8" stroke-width="4"/><path d="M58 61 H62 M38 60 L32 59 M82 60 L88 59" fill="none"/>`,
     monokel: `<circle cx="71" cy="64" r="9" fill="${sklo}" stroke="#FFC233" stroke-width="3"/><path d="M79 70 Q88 84 82 100" fill="none" stroke="#FFC233" stroke-width="2"/>`,
     lyziarske: `<path d="M28 63 H92" stroke-width="7"/><path d="M28 63 H92" stroke="#FF5A5F" stroke-width="3"/><rect x="36" y="54" width="48" height="20" rx="10" fill="#FFB020"/><path d="M42 60 l9 -2.5" stroke="#fff" stroke-width="2.5"/>`,
+    karneval: `<path fill-rule="evenodd" d="M33 60 Q46 50 60 58 Q74 50 87 60 Q90 75 75 75 Q66 75 60 68 Q54 75 45 75 Q30 75 33 60Z M42 64 a7 4.5 0 1 0 14 0 a7 4.5 0 1 0 -14 0Z M64 64 a7 4.5 0 1 0 14 0 a7 4.5 0 1 0 -14 0Z" fill="#B36BFF"/><path d="M86 59 Q99 45 94 33 Q90 45 83 53" fill="#FF6FA8" stroke-width="2.5"/><circle cx="37" cy="62" r="1.8" fill="#FFD23F" stroke="none"/><circle cx="60" cy="62" r="1.8" fill="#FFD23F" stroke="none"/><circle cx="83" cy="64" r="1.8" fill="#FFD23F" stroke="none"/>`,
     robot: `<rect x="31" y="55" width="58" height="17" rx="8" fill="${INK}"/><rect x="37" y="60" width="46" height="6" rx="3" fill="#FF5A5F" stroke="none" class="beam"/>`,
   }[a.okuliare] || '';
   const vzor = {
@@ -675,6 +680,8 @@ function postavicka(a, kruh = false) {
     sal: `<path d="M43 94 Q60 106 77 94 L81 102 Q60 116 39 102Z" fill="#FF9F1C" stroke-width="2.5"/><path d="M68 105 L71 126 L80 124 L77 103Z" fill="#FF9F1C" stroke-width="2.5"/><path d="M46 99 l4 5 M55 102 l2 5 M65 102 l-2 5" stroke="#fff" stroke-width="2"/>`,
     nahrdelnik: [...Array(9).keys()].map(i => { const u = Math.PI * (.12 + i * .095); return `<circle cx="${(60 + Math.cos(u) * 17).toFixed(1)}" cy="${(97 + Math.sin(u) * 11).toFixed(1)}" r="2.8" fill="#fff" stroke-width="1.5"/>`; }).join(''),
     medaila: `<path d="M53 96 L58 110 M67 96 L62 110" stroke="#4C7DFF" stroke-width="4"/><circle cx="60" cy="116" r="7.5" fill="#FFD23F" stroke-width="2.5"/><path d="M60 112 l1.2 2.6 2.8.3 -2.1 1.9.6 2.8 -2.5 -1.4 -2.5 1.4.6 -2.8 -2.1 -1.9 2.8 -.3z" fill="#FF9F1C" stroke="none"/>`,
+    sova: `<path d="M52 111 L50 104 L56 108Z M68 111 L70 104 L64 108Z" fill="#7650E6" stroke-width="2"/><ellipse cx="60" cy="119" rx="10" ry="11" fill="#9B6BFF" stroke-width="2.5"/><circle cx="56" cy="116" r="3.6" fill="#fff" stroke-width="1.5"/><circle cx="64" cy="116" r="3.6" fill="#fff" stroke-width="1.5"/><circle cx="56.5" cy="116.5" r="1.6" fill="${INK}" stroke="none"/><circle cx="64.5" cy="116.5" r="1.6" fill="${INK}" stroke="none"/><path d="M58.5 120 h3 l-1.5 2.5Z" fill="#FF9F1C" stroke="none"/>`,
+    planeta: `<circle cx="60" cy="116" r="8" fill="#FF9F1C" stroke-width="2.5"/><path d="M55 113 q4 -2 8 0" fill="none" stroke="#FFD23F" stroke-width="2"/><ellipse cx="60" cy="117" rx="16" ry="4.5" fill="none" stroke-width="4.5" transform="rotate(-14 60 117)"/><ellipse cx="60" cy="117" rx="16" ry="4.5" fill="none" stroke="#FFD23F" stroke-width="2" transform="rotate(-14 60 117)"/><path d="M44 106 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1z M77 124 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1z" fill="#fff" stroke-width="1.2"/>`,
     raketa: `<path d="M60 104 Q67 110 66 122 H54 Q53 110 60 104Z" fill="#fff" stroke-width="2.5"/><circle cx="60" cy="113" r="2.5" fill="#8FD3FF" stroke-width="1.5"/><path d="M54 117 l-4 6 h5 M66 117 l4 6 h-5" fill="#FF5A5F" stroke-width="2"/><path d="M57 123 L60 129 L63 123" fill="#FFB020" stroke-width="2"/>`,
   }[a.vzor] || '';
   const doplnok = {
@@ -693,6 +700,9 @@ function postavicka(a, kruh = false) {
     veniec: [[36, 44, '#FF9EC7'], [46, 35, '#FFD23F'], [60, 31, '#8FD3FF'], [74, 35, '#FF9EC7'], [84, 44, '#FFD23F']].map(([x, y, c]) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map(u => `<circle cx="0" cy="-4.5" r="3.6" fill="${c}" stroke-width="1.8" transform="rotate(${u})"/>`).join('')}<circle r="2.8" fill="#FF9F1C" stroke-width="1.5"/></g>`).join(''),
     tiara: `<path d="M38 41 Q60 31 82 41 L79 31 L71 36 L66 22 L60 33 L54 22 L49 36 L41 31Z" fill="#E6E9F5"/><circle cx="60" cy="27" r="3.4" fill="#8FD3FF" stroke-width="2"/><circle cx="49" cy="33" r="2" fill="#FF9EC7" stroke-width="1.5"/><circle cx="71" cy="33" r="2" fill="#FF9EC7" stroke-width="1.5"/>`,
     viking: `<path d="M32 40 Q14 36 16 12 Q24 28 37 30Z M88 40 Q106 36 104 12 Q96 28 83 30Z" fill="#FFF3D6"/><path d="M30 52 Q30 24 60 24 Q90 24 90 52Z" fill="#B8BCCB"/><path d="M30 50 H90" stroke-width="7"/><path d="M30 50 H90" stroke="#C98A4B" stroke-width="3"/><path d="M60 25 V48" stroke-width="2.5"/>`,
+    oslava: `<g transform="rotate(-12 62 30)"><path d="M46 40 L62 0 L78 40Z" fill="#4C7DFF"/>${[[56, 30, '#FFD23F'], [66, 21, '#fff'], [68, 33, '#FF6FA8'], [61, 14, '#2FBF71']].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${c}" stroke="none"/>`).join('')}<path d="M45 40 Q49 45 53 40 Q57 45 61 40 Q65 45 69 40 Q73 45 77 40" fill="#FF6FA8" stroke-width="2.5"/><circle cx="62" cy="1" r="6" fill="#FFD23F"/></g>`,
+    kuchar: `<path d="M37 46 V33 Q25 32 27 20 Q30 9 42 13 Q46 1 60 2 Q74 1 78 13 Q90 9 93 20 Q95 32 83 33 V46Z" fill="#fff"/><path d="M37 39 H83" stroke-width="2.5"/><path d="M50 14 Q52 24 49 31 M70 14 Q68 24 71 31" fill="none" stroke-width="2"/>`,
+    roh: `<path d="M29 50 Q60 22 91 50" fill="none" stroke-width="7"/><path d="M29 50 Q60 22 91 50" fill="none" stroke="#FF9EC7" stroke-width="3.5"/><path d="M53 36 L60 3 L67 36Z" fill="#FFD23F"/><path d="M55 28 L65 25 M57 19 L63 17 M58.5 11 L61.5 10" stroke-width="2"/><circle cx="41" cy="38" r="4" fill="#B36BFF" stroke-width="2"/><circle cx="79" cy="38" r="4" fill="#8FD3FF" stroke-width="2"/>`,
     svatozar: `<g class="bob"><ellipse cx="60" cy="17" rx="25" ry="7" fill="none" stroke-width="9"/><ellipse cx="60" cy="17" rx="25" ry="7" fill="none" stroke="#FFD23F" stroke-width="5"/><ellipse cx="60" cy="17" rx="25" ry="7" fill="none" stroke="#FFF3B0" stroke-width="1.5"/></g>`,
     cisarska: `<path d="M31 43 L28 11 L43 26 L51 5 L60 21 L69 5 L77 26 L92 11 L89 43Z" fill="#FFC233"/><rect x="31" y="36" width="58" height="10" rx="3" fill="#FF5A5F"/><circle cx="60" cy="30" r="4" fill="#4C7DFF" stroke-width="2"/><circle cx="44" cy="33" r="3" fill="#2FBF71" stroke-width="2"/><circle cx="76" cy="33" r="3" fill="#B36BFF" stroke-width="2"/>${[[28, 9], [51, 3], [69, 3], [92, 9]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#fff" stroke-width="2"/>`).join('')}<g transform="translate(101 22)"><g class="twinkle"><path d="M0 -7 L2 -2 L7 0 L2 2 L0 7 L-2 2 L-7 0 L-2 -2Z" fill="#FFD23F" stroke-width="1.5"/></g></g>`,
   }[a.doplnok] || '';
@@ -707,6 +717,7 @@ function postavicka(a, kruh = false) {
     tucniak: `<ellipse rx="12" ry="13" fill="${INK}" stroke-width="2.5"/><ellipse cy="3" rx="8" ry="9" fill="#fff" stroke="none"/><circle cx="-4" cy="-4" r="3" fill="#fff" stroke="none"/><circle cx="4" cy="-4" r="3" fill="#fff" stroke="none"/>${oko(-4, -4)}${oko(4, -4)}<path d="M-3 0 h6 l-3 4Z" fill="#FF9F1C" stroke-width="1.5"/>`,
     liska: `<path d="M-12 -2 L-11 -19 L-3 -11Z M12 -2 L11 -19 L3 -11Z" fill="#FF7A1A" stroke-width="2.5"/><path d="M-13 -4 Q-13 -13 0 -13 Q13 -13 13 -4 Q10 8 0 12 Q-10 8 -13 -4Z" fill="#FF7A1A" stroke-width="2.5"/><path d="M-9 2 Q-4 4 0 11 Q4 4 9 2 Q5 9 0 11.5 Q-5 9 -9 2Z" fill="#fff" stroke="none"/>${oko(-4.5, -3)}${oko(4.5, -3)}<circle cy="9" r="1.8" fill="${INK}" stroke="none"/>`,
     drak: `<path d="M-10 -4 L-23 -17 L-19 -3 L-25 -5 L-14 4Z M10 -4 L23 -17 L19 -3 L25 -5 L14 4Z" fill="#7C6CFF" stroke-width="2"/><ellipse rx="13" ry="11" fill="#B36BFF" stroke-width="2.5"/><path d="M-7 -10 l2 -6 2 5 M3 -10 l2 -6 2 5" fill="#FFD23F" stroke-width="1.5"/>${oko(-5, -3)}${oko(5, -3)}<path d="M-4 4 q4 3 8 0" fill="none" stroke-width="2"/><path d="M13 2 q9 -4 12 2 q-5 0 -3 5 q-5 -3 -9 -3Z" fill="#FF9F1C" stroke-width="1.5"/>`,
+    panda: `<circle cx="-9" cy="-10" r="5" fill="${INK}" stroke-width="2"/><circle cx="9" cy="-10" r="5" fill="${INK}" stroke-width="2"/><circle r="12" fill="#fff" stroke-width="2.5"/><ellipse cx="-4.5" cy="-1.5" rx="3.4" ry="4.4" fill="${INK}" stroke="none" transform="rotate(25 -4.5 -1.5)"/><ellipse cx="4.5" cy="-1.5" rx="3.4" ry="4.4" fill="${INK}" stroke="none" transform="rotate(-25 4.5 -1.5)"/><circle cx="-4" cy="-2" r="1.3" fill="#fff" stroke="none"/><circle cx="4" cy="-2" r="1.3" fill="#fff" stroke="none"/><path d="M-1.8 3 h3.6 l-1.8 2Z" fill="${INK}" stroke="none"/><path d="M-3 6.5 q3 2.5 6 0" fill="none" stroke-width="1.8"/>`,
     fenix: `<path d="M-8 5 Q-21 16 -27 7 Q-19 8 -16 1Z M8 5 Q21 16 27 7 Q19 8 16 1Z" fill="#FF9F1C" stroke-width="2"/><path d="M-6 -10 Q-9 -23 0 -27 Q-2 -19 2 -15 Q4 -23 11 -23 Q6 -17 6 -10Z" fill="#FFD23F" stroke-width="2"/><circle r="12" fill="#FF5A5F" stroke-width="2.5"/>${oko(-4.5, -2)}${oko(4.5, -2)}<path d="M-2 2 h4 l-2 4Z" fill="#FFD23F" stroke-width="1.5"/>`,
   }[a.zvieratko];
   const krid = p => `<path d="${p}"/><path d="${p}" transform="matrix(-1 0 0 1 120 0)"/>`;
@@ -715,6 +726,7 @@ function postavicka(a, kruh = false) {
     aura: `<circle cx="60" cy="64" r="58" fill="#FFE27A" opacity=".6" stroke="none"/><circle cx="60" cy="64" r="47" fill="#FFF3B0" opacity=".7" stroke="none"/>${[...Array(12).keys()].map(i => `<path d="M${(60 + Math.cos(i * Math.PI / 6) * 44).toFixed(1)} ${(64 + Math.sin(i * Math.PI / 6) * 44).toFixed(1)} L${(60 + Math.cos(i * Math.PI / 6) * 58).toFixed(1)} ${(64 + Math.sin(i * Math.PI / 6) * 58).toFixed(1)}" stroke="#FFC233" stroke-width="4" opacity=".7"/>`).join('')}`,
     anjel: `<g fill="#fff">${krid('M44 104 Q10 98 3 64 Q15 74 21 72 Q11 62 13 49 Q25 65 33 63 Q29 55 33 45 Q41 70 52 92Z')}</g>`,
     drakie: `<g fill="#7C6CFF">${krid('M45 100 L7 50 L17 69 L3 71 L19 83 L7 92 L41 107Z')}</g><g fill="none" stroke-width="2">${krid('M41 102 L17 69 M39 104 L19 83')}</g>`,
+    srdcia: `<circle cx="60" cy="64" r="56" fill="#FFD1E3" opacity=".55" stroke="none"/>`,
     duha: ['#FF5A5F', '#FF9F1C', '#FFD23F', '#2FBF71', '#4C7DFF', '#B36BFF'].map((c, i) => `<path d="M${4 + i * 5} 76 A${56 - i * 5} ${56 - i * 5} 0 0 1 ${116 - i * 5} 76" fill="none" stroke="${c}" stroke-width="5.5"/>`).join(''),
   }[a.kuzlo] || '';
   const iskra = (x, y, d, c = '#FFD23F') => `<g transform="translate(${x} ${y})"><g class="twinkle" style="animation-delay:${d}s"><path d="M0 -7 L2 -2 L7 0 L2 2 L0 7 L-2 2 L-7 0 L-2 -2Z" fill="${c}" stroke-width="1.5"/></g></g>`;
@@ -722,6 +734,7 @@ function postavicka(a, kruh = false) {
     iskry: [[16, 30, 0], [104, 24, .6], [12, 90, 1.2], [106, 78, .3], [60, 8, .9, '#FF9EC7']].map(p => iskra(...p)).join(''),
     duha: iskra(14, 40, 0) + iskra(106, 40, .7, '#FF9EC7'),
     aura: iskra(20, 26, .2) + iskra(100, 26, .9),
+    srdcia: [[16, 34, 0, '#FF5A5F'], [104, 26, .5, '#FF9EC7'], [14, 92, 1, '#FF9EC7'], [106, 84, .3, '#FF5A5F'], [60, 6, .8, '#FF6FA8']].map(([x, y, d, c]) => `<g transform="translate(${x} ${y})"><g class="twinkle" style="animation-delay:${d}s"><path d="M0 6 C-8 1 -8 -6 -3.5 -6 C-1.5 -6 0 -4.5 0 -3 C0 -4.5 1.5 -6 3.5 -6 C8 -6 8 1 0 6Z" fill="${c}" stroke-width="1.5"/></g></g>`).join(''),
   }[a.kuzlo] || '';
   return `<svg class="postavicka" viewBox="0 0 120 130" aria-hidden="true"><g stroke="${INK}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
     ${kruh ? `<circle cx="60" cy="64" r="58" fill="${a.pozadie}" stroke="none"/>` : ''}
