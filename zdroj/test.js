@@ -19,6 +19,7 @@ global.addEventListener = () => {};
 global.innerWidth = 390; global.innerHeight = 844;
 global.requestAnimationFrame = () => {}; global.scrollTo = () => {};
 global.localStorage = { d: {}, getItem(k) { return k in this.d ? this.d[k] : null; }, setItem(k, v) { this.d[k] = String(v); }, removeItem(k) { delete this.d[k]; } };
+global.EMO_SUBORY = new Set(fs.existsSync(path.join(R, 'e')) ? fs.readdirSync(path.join(R, 'e')) : []); // obrázky emoji pre test verzie 23
 new Function(src + `
 /* BRANY */
 for (const fz of ["nacitava", "bezNetu", "prihlasenie"]) { st.faza = fz; render(); }
@@ -140,6 +141,14 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
 { const f = { typ: "tema", id: temaDna().id }; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f)) chyby.push("oslava treba"); Oslava.ukaz(() => {});
   if (Oslava.treba(f)) chyby.push("oslava druhykrat"); if (Oslava.treba({ typ: "kviz", id: "" })) chyby.push("oslava pri kvize"); }
 Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
+/* V23_TEST */
+{ const RE = new RegExp(EMO_ODP.source, 'gu'), chybaSubor = new Set();
+  for (const q of [...T.flatMap(t => t.z), ...VYZVA]) for (const a of q.a) for (const e of String(a[0]).match(RE) || []) if (!EMO_SUBORY.has(emoSubor(e).slice(2))) chybaSubor.add(e);
+  for (const t of T) { const o = svg(t); for (const e of o.replace(/aria-label="[^"]*"/, '').match(RE) || []) chybaSubor.add(t.id + ' text ' + e);
+    for (const m of o.matchAll(/href="(e\\/[^"]+)"/g)) if (!EMO_SUBORY.has(m[1].slice(2))) chybaSubor.add(t.id + ' ' + m[1]); }
+  if (chybaSubor.size) chyby.push("emoji bez obrazka: " + [...chybaSubor].slice(0, 8).join(" "));
+  if (emo("🦁") !== '<img class="emo" src="e/1f981.svg" alt="🦁" draggable="false" onerror="this.replaceWith(this.alt)">') chyby.push("emo " + emo("🦁"));
+  if (!emo("1️⃣").includes("e/31-20e3.svg") || emo("a<b") !== "a&lt;b") chyby.push("emo klavesa"); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

@@ -716,6 +716,8 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes osPrilet { from { transform: translate(190px, -150px) rotate(25deg) scale(.6); } 60% { transform: translate(-6px, 6px) rotate(-6deg); } }
 @keyframes osPismeno { from { opacity: 0; transform: translateY(26px) scale(.4); } }
 @keyframes osPadne { from { opacity: 0; transform: translateY(-120px) scale(1.6); } 70% { opacity: 1; transform: translateY(0) scale(.85); } }
+/* emoji z OpenMoji */
+.emo { display: block; width: 1.4em; height: 1.4em; pointer-events: none; user-select: none; -webkit-user-select: none; }
 /* Lietajúca sova */
 .sova-hra { position: relative; }
 .sova-cv { display: block; width: 100%; height: min(62vh, 520px); border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
@@ -753,14 +755,18 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=22"></script>
-<script src="obrazky.js?v=22"></script>
+<script src="temy.js?v=23"></script>
+<script src="obrazky.js?v=23"></script>
 <script>
-const VERZIA_APPKY = 22; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 23; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
 const EMBG = ['#FFF0B3', '#D6E6FF', '#FFD9EA'];
+// emoji v odpovediach ako kreslené obrázky OpenMoji (e/<kód>.svg); bez signálu sa ukáže obyčajné emoji
+const EMO_ODP = /(\p{RI}\p{RI}|[0-9#*]\uFE0F?\u20E3|\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}\uFE0F?|[\u{1F3FB}-\u{1F3FF}])*)/u;
+const emoSubor = e => 'e/' + [...e].map(c => c.codePointAt(0).toString(16)).filter(x => x !== 'fe0f').join('-') + '.svg';
+const emo = text => String(text).split(EMO_ODP).map((g, i) => i % 2 ? `<img class="emo" src="${emoSubor(g)}" alt="${g}" draggable="false" onerror="this.replaceWith(this.alt)">` : esc(g)).join('');
 const TBG = ['#D6E6FF', '#D9F8E6', '#FFE3C7'];
 const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovný!', 'Bomba!'];
 const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2405,7 +2411,7 @@ const views = {
         <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
         <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
       </section>
-      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.</p>`;
+      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_APPKY} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
   },
 };
 
@@ -2472,7 +2478,7 @@ function krok(f, k) {
         <h1 class="qt">${q.q}</h1></div>
       <div class="answers">${k.poradie.map((j, pos) => {
         const cls = odp ? (j === 0 ? ' ok' : j === odp.v ? ' bad' : '') : '';
-        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em${st.vek === 'starsi' ? ' pismeno' : ''}" style="--e:${EMBG[pos % 3]}">${st.vek === 'starsi' ? 'ABCD'[pos] : q.a[j][0]}</span><span>${q.a[j][1]}</span></button>`;
+        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em${st.vek === 'starsi' ? ' pismeno' : ''}" style="--e:${EMBG[pos % 3]}">${st.vek === 'starsi' ? 'ABCD'[pos] : emo(q.a[j][0])}</span><span>${q.a[j][1]}</span></button>`;
       }).join('')}</div>
       ${odp ? `<div class="fbk ${odp.ok ? 'ok' : 'bad'}" aria-live="polite"><span class="fbk-owl">${owl(odp.ok ? 'happy' : 'oops')}</span><div><b>${odp.ok ? odp.p : 'Nevadí, nabudúce!'}</b><p>${odp.ok ? '' : 'Správne je: ' + q.a[0][1] + '. '}${q.w || ''}</p></div></div>` : ''}</div>`;
   }

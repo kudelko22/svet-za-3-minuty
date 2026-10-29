@@ -1,6 +1,6 @@
 // Offline pre Svet za 3 minúty: appka sa pri prvom otvorení uloží do telefónu.
 // Vlastné súbory: najprv zo siete, aby nová verzia prišla hneď; bez signálu alebo keď sieť
-// mešká viac ako 3 sekundy, z pamäte. Písma a knižnice Firebase: z pamäte (nemenia sa).
+// mešká viac ako 3 sekundy, z pamäte. Písma, knižnice Firebase a obrázky emoji (e/): z pamäte (nemenia sa).
 const VERZIA = 'svet3-v2';
 const JADRO = ['./', 'index.html', 'temy.js', 'obrazky.js', 'manifest.webmanifest', 'ikony/ikona-192.png', 'ikony/ikona-512.png'];
 
@@ -18,10 +18,10 @@ self.addEventListener('fetch', e => {
   const r = e.request;
   if (r.method !== 'GET') return;
   const url = new URL(r.url);
-  const vlastne = url.origin === location.origin;
+  const vlastne = url.origin === location.origin, emoji = vlastne && /\/e\/[0-9a-f-]+\.svg$/.test(url.pathname);
   const stale = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com'
-    || (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/'));
-  if (vlastne) {
+    || (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/')) || emoji;
+  if (vlastne && !emoji) {
     e.respondWith(caches.open(VERZIA).then(async c => {
       // súbor s číslom verzie (temy.js?v=22) z pamäte len vtedy, keď je to tá istá verzia; inak počkať na sieť
       const pamat = await c.match(r, { ignoreSearch: true });

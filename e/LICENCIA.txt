@@ -1,0 +1,3 @@
+Obrázky emoji v tomto priečinku sú z projektu OpenMoji (https://openmoji.org), verzia 17.0.0,
+licencia CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+Úpravy: vybraté len použité emoji, zmenšený zápis, čierne obrysy prefarbené na #2B2240.

@@ -585,7 +585,18 @@ const ez = (obloha, zem, ...em) => `${bg(obloha)}${zem
   : [[30, 30], [90, 152], [150, 22], [250, 36], [292, 150], [62, 96]].map(([x, y], i) => hviezdicka(x, y, .6, '#FFE27A', i * .3)).join('')}
   ${em.map((e, i) => `<g transform="translate(${160 + (i - (em.length - 1) / 2) * (em.length > 2 ? 92 : 110)} ${zem ? 104 : 92})"><g class="${i % 2 ? 'swap' : 'bob'}" style="animation-delay:${i * .4}s"><text font-size="${em.length > 2 ? 62 : 74}" text-anchor="middle" dominant-baseline="central" stroke="none">${e}</text></g></g>`).join('')}`;
 
-const svg = t => `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Obrázok: ${t.t}"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${ART[t.id]()}</g></svg>`;
+// Emoji v obrázkoch tém sa kreslia obrázkami OpenMoji (e/<kód>.svg), aby vyzerali na každom telefóne rovnako
+const EMO_RE = /\p{RI}\p{RI}|[0-9#*]\uFE0F?\u20E3|\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}\uFE0F?|[\u{1F3FB}-\u{1F3FF}])*/gu;
+const emoKod = e => [...e].map(c => c.codePointAt(0).toString(16)).filter(x => x !== 'fe0f').join('-');
+const emoObr = s => s.replace(/<text([^>]*)>([^<]*)<\/text>/g, (m, at, obsah) => {
+  const e = obsah.trim();
+  if (!e || e.replace(EMO_RE, '') !== '' || e.match(EMO_RE).length !== 1) return m;
+  const a = n => (at.match(new RegExp(`(?:^|\\s)${n}="([^"]*)"`)) || [])[1];
+  const f = +a('font-size') || 30, x = +a('x') || 0, y = +a('y') || 0, v = f * 1.3;
+  const cy = a('dominant-baseline') === 'central' ? y : y - f * .36, cls = a('class'), st = a('style');
+  return `<image href="e/${emoKod(e)}.svg" x="${x - v / 2}" y="${cy - v / 2}" width="${v}" height="${v}"${cls ? ` class="${cls}"` : ''}${st ? ` style="${st}"` : ''}/>`;
+});
+const svg = t => `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Obrázok: ${t.t}"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${emoObr(ART[t.id]())}</g></svg>`;
 const scene = (t, cls = '') => `<div class="scene ${cls}">${svg(t)}</div>`;
 
 /* Maskot: sovička Múdra (hi = máva, happy = teší sa, cheer = oslavuje, oops = ľutuje) */
