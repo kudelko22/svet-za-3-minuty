@@ -92,7 +92,8 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 - Väčšie deti majú aj **Výzvu**: 10 extra ťažkých otázok, za každú správnu 20 bodov (dvojnásobok).
 - Body za kvízy (rýchly, ťažký aj Výzvu) sa dajú získať len raz za deň, za každý druh zvlášť, aby sa nezbierali opakovaním.
   Zopakovaná téma dá desatinu bodov (počet správnych odpovedí + 1), za tú istú tému najviac raz za deň.
-- Obrázky k novším témam sú poskladané z emoji (funkcia `ez` v obrazky.js). Emoji v obrázkoch tém aj v odpovediach kvízov
+- Obrázky k novším témam (79) sú nakreslené prostredia (`PROSTR` na konci obrazky.js: lúka, izba, kuchyňa, mesto, vesmír,
+  more, les, hrad, obchod…) s postavičkami a predmetmi. Emoji v obrázkoch tém aj v odpovediach kvízov
   sa kreslia obrázkami **OpenMoji** z priečinka `e/` (licencia CC BY-SA 4.0, pozri `e/LICENCIA.txt`), aby vyzerali na každom
   telefóne rovnako. Pri nových témach s novými emoji: stiahnuť balík `openmoji` (npm), spustiť
   `node zdroj/emoji.js <cesta k rozbalenému package>` a potom testy (hlásia emoji bez obrázka).
@@ -102,7 +103,10 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 - maskot sovička Múdra, kreslené pohyblivé obrázky, zvuky (dajú sa vypnúť) a čítanie nahlas
 - ovládanie, kategórie a odznaky majú vlastné kreslené ikony (`IK`, `IK_KAT` v zdroj/appka.html), aby vyzerali na každom
   telefóne rovnako
-- po téme dňa veľká oslava „Strom múdrosti“: strom vyrastie, za každý deň série pribudne plod, priletí sovička (raz za deň)
+- pri prvej téme alebo kvíze dňa (séria sa predĺži) veľká oslava „Strom múdrosti“: strom vyrastie, za každý deň série
+  pribudne plod, priletí sovička
+- po veľkej aktualizácii okno „Čo je nové“ s obrázkami (`NOVINKY` v zdroj/appka.html; pri novej verzii doplniť položky
+  s `v: <verzia>`); nový používateľ ho nedostane
 
 ## Súbory
 

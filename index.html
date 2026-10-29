@@ -716,6 +716,21 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes osPrilet { from { transform: translate(190px, -150px) rotate(25deg) scale(.6); } 60% { transform: translate(-6px, 6px) rotate(-6deg); } }
 @keyframes osPismeno { from { opacity: 0; transform: translateY(26px) scale(.4); } }
 @keyframes osPadne { from { opacity: 0; transform: translateY(-120px) scale(1.6); } 70% { opacity: 1; transform: translateY(0) scale(.85); } }
+/* okno Čo je nové */
+.novinky { position: fixed; inset: 0; z-index: 54; display: grid; place-items: center; padding: 16px; background: rgb(43 34 64 / .45); animation: osIn .3s ease-out both; }
+.novinky.pryc { animation: osOut .3s ease-in both; }
+.nov-karta { display: grid; gap: 12px; width: min(100%, 420px); max-height: calc(100vh - 32px); overflow: auto; padding: 18px; border: 3px solid var(--ink); border-radius: 28px; background: var(--paper); box-shadow: 0 8px 0 var(--ink); animation: osPop .5s cubic-bezier(.3, 1.5, .5, 1) both; }
+.nov-hlava { display: flex; align-items: center; gap: 12px; }
+.nov-hlava .owl { flex: none; width: 70px; height: auto; animation: hop 1.8s ease-in-out infinite; }
+.nov-hlava small { color: var(--muted); font-weight: 800; }
+.nov-hlava h2 { margin: 0; font: 700 1.8rem/1.1 var(--f-display); }
+.nov-zoznam { display: grid; gap: 10px; }
+.nov-polozka { display: flex; align-items: center; gap: 12px; padding: 10px; border: 2.5px solid var(--ink); border-radius: 20px; background: #FFF8EC; animation: osIn .45s cubic-bezier(.3, 1.4, .5, 1) calc(.25s + var(--i) * .15s) both; }
+.nov-polozka b { display: block; font: 700 1.05rem/1.2 var(--f-display); }
+.nov-polozka small { display: block; color: var(--muted); font-weight: 700; line-height: 1.3; }
+.nov-obr { flex: none; display: grid; place-items: center; width: 64px; height: 64px; padding: 6px; border: 2.5px solid var(--ink); border-radius: 18px; background: #fff; overflow: hidden; }
+.nov-obr.siroky { width: 96px; padding: 0; }
+.nov-obr > svg { width: 100%; height: 100%; }
 /* emoji z OpenMoji */
 .emo { display: block; width: 1.4em; height: 1.4em; pointer-events: none; user-select: none; -webkit-user-select: none; }
 /* Lietajúca sova */
@@ -755,10 +770,10 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=23"></script>
-<script src="obrazky.js?v=23"></script>
+<script src="temy.js?v=24"></script>
+<script src="obrazky.js?v=24"></script>
 <script>
-const VERZIA_APPKY = 23; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 24; // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -2540,15 +2555,15 @@ function oslava(f) {
   }, 1500);
 }
 
-/* Veľká oslava po téme dňa: vyrastie strom múdrosti, za každý deň série na ňom pribudne plod a priletí sovička */
+/* Veľká oslava pri prvej téme alebo kvíze dňa (séria sa predĺži): vyrastie strom múdrosti, za každý deň série pribudne plod a priletí sovička */
 const slovoPlody = n => n === 1 ? 'plod' : n >= 2 && n <= 4 ? 'plody' : 'plodov';
 const KORUNA = [[160, 112, 50, '#4CD07D'], [112, 128, 34, '#3DBB6A'], [208, 126, 36, '#3DBB6A'], [130, 84, 34, '#5FDB8A'], [190, 82, 34, '#5FDB8A'], [160, 62, 30, '#6BE39A']];
 const PLODY = [[150, 92], [186, 104], [124, 118], [168, 128], [204, 130], [140, 68], [194, 74], [112, 96], [158, 106], [218, 104], [132, 142], [182, 148]];
 const plod = i => `<circle r="10" fill="${['#FF5A5F', '#FFD23F', '#FF9F1C', '#FF6FA8', '#B36BFF'][i % 5]}" stroke-width="3"/><path d="M0 -10 C1 -14 4 -16 7 -16 C6 -12 3 -10 0 -10Z" fill="#2FBF71" stroke-width="2"/><path d="M-5.5 -2 A6 6 0 0 1 -2 -6" fill="none" stroke="#fff" stroke-width="2.4"/>`;
 const Oslava = {
   kluc: () => 'oslava-' + (st.dietaId || 'x'),
-  // len prvýkrát za deň a len pri téme dňa
-  treba: f => f.typ === 'tema' && f.id === temaDna().id && S.get(Oslava.kluc(), '') !== key(new Date()),
+  // volá sa pred dokonci(): dnes ešte nič hotové = séria sa práve predĺži
+  treba: f => !!f && !st.dni.includes(key(new Date())) && S.get(Oslava.kluc(), '') !== key(new Date()),
   ukaz(dalej) {
     const dnes = key(new Date()); S.set(this.kluc(), dnes);
     const s = Math.max(1, seria()), n = Math.min(s, PLODY.length), casy = [];
@@ -2556,7 +2571,7 @@ const Oslava = {
     const tyzden = DNI.map((d, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x); return { d, dnes: k === dnes, h: st.dni.includes(k) }; });
     const tSova = 1.35 + n * .14, tHviezda = tSova + .55, tTlacidlo = tHviezda + .5;
     const el = document.createElement('div');
-    el.className = 'oslava'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Téma dňa hotová');
+    el.className = 'oslava'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Séria rastie');
     el.innerHTML = `<div class="os-lucy"></div><div class="os-obsah">
       <svg class="os-strom" viewBox="0 -40 320 290" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
         <path d="M-200 250 V230 C40 202 280 202 520 230 V250Z" fill="#7ED957"/>
@@ -2565,7 +2580,7 @@ const Oslava = {
         ${KORUNA.map(([x, y, rr, c], i) => `<circle class="os-k" style="--d:${.5 + i * .09}s" cx="${x}" cy="${y}" r="${rr}" fill="${c}" stroke="none"/>`).join('')}
         ${PLODY.slice(0, n).map(([x, y], i) => `<g transform="translate(${x} ${y})"><g class="os-plod" style="--d:${1.3 + i * .14}s">${plod(i)}</g></g>`).join('')}</g>
         <g class="os-sova" style="--d:${tSova}s">${owl('cheer').replace('<svg ', '<svg x="150" y="-24" width="64" height="70" ')}</g></svg>
-      <h2 class="os-nadpis">${[...'Téma dňa hotová!'].map((ch, i) => `<span style="--k:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
+      <h2 class="os-nadpis">${[...(s === 1 ? 'Skvelý začiatok!' : 'Séria rastie!')].map((ch, i) => `<span style="--k:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
       <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b id="os-cislo">${s - 1}</b><span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
       <p class="os-veta">${s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
       <div class="os-tyzden">${tyzden.map((x, i) => `<div class="os-den${x.h ? ' h' : ''}${x.dnes ? ' dnes' : ''}" style="--c:${PASTEL[i]}"><i>${x.dnes ? `<span class="os-padne" style="--d:${tHviezda}s">${STAR()}</span>` : x.h ? STAR() : ''}</i>${x.d}</div>`).join('')}</div>
@@ -2583,6 +2598,36 @@ const Oslava = {
       e.stopPropagation(); casy.forEach(clearTimeout); Zvuk.play('tap');
       el.classList.add('pryc'); setTimeout(() => el.remove(), 320); dalej();
     });
+  },
+};
+/* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
+const NOVINKY = [
+  { v: 24, obr: () => svg(byId('vikingovia')), siroky: true, n: 'Nové obrázky k 79 témam', p: 'Nakreslené prostredia: lúka, izba, mesto, vesmír, more, hrad a ďalšie, s postavičkami.' },
+  { v: 24, obr: () => IK.ohen, n: 'Veľká oslava série', p: 'Prvá téma alebo kvíz dňa: vyrastie strom múdrosti a pribudne na ňom plod.' },
+  { v: 22, obr: () => OBR_HRY.sova, n: 'Nová hra Lietajúca sova', p: 'Ťukaj a sovička letí pomedzi ceruzky. Odomkne sa za 300 bodov.' },
+  { v: 23, obr: () => IK.iskra, n: 'Kreslené obrázky namiesto emoji', p: 'Ikony, odznaky aj odpovede v kvízoch vyzerajú na každom telefóne rovnako.' },
+];
+const Novinky = {
+  skontroluj() {
+    if (this.bolo || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto) return;
+    this.bolo = true;
+    const videl = S.get('videl-verziu', 0);
+    if (videl >= VERZIA_APPKY) return;
+    const odkedy = videl || (st.done.length || st.body ? 21 : VERZIA_APPKY);
+    S.set('videl-verziu', VERZIA_APPKY);
+    const z = NOVINKY.filter(n => n.v > odkedy);
+    if (z.length) setTimeout(() => this.ukaz(z), 700);
+  },
+  ukaz(z) {
+    const el = document.createElement('div');
+    el.className = 'novinky'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Čo je nové');
+    el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('cheer')}<div><small>Verzia ${VERZIA_APPKY}</small><h2>Čo je nové?</h2></div></div>
+      <div class="nov-zoznam">${z.map((n, i) => `<div class="nov-polozka" style="--i:${i}"><span class="nov-obr${n.siroky ? ' siroky' : ''}">${n.obr()}</span><div><b>${n.n}</b><small>${n.p}</small></div></div>`).join('')}</div>
+      <button class="btn wide cta" data-novinky-ok>Super, poďme na to!</button></div>`;
+    document.body.appendChild(el);
+    Zvuk.play('cink'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .25, 24, ['star', 'dot']), 300);
+    const b = el.querySelector('[data-novinky-ok]');
+    if (b) b.addEventListener('click', e => { e.stopPropagation(); Zvuk.play('tap'); el.classList.add('pryc'); setTimeout(() => el.remove(), 300); });
   },
 };
 function dokonci(f) {
@@ -2645,6 +2690,7 @@ function render() {
   main.classList.add('anim');
   main.innerHTML = views[st.view]();
   ocisluj();
+  if (st.view === 'domov' && !document.querySelector('.oslava')) Novinky.skontroluj();
   if (st.view === 'temy') {
     const inp = document.getElementById('hladaj');
     inp.value = st.q;

@@ -138,8 +138,8 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   for (let i = 0; i < 600; i++) { if (h.y > 240) h.vy = h.skok; sovaKrok(h, 1 / 60); }
   if (!h.prekazky.length) chyby.push("sova bez ceruziek"); Hra.sovaKresli(h); Hra.koniec(false, 31);
   if (!st.odznaky.includes("sova30") || !st.odznaky.includes("sova10")) chyby.push("odznaky sova"); Hra.zrus(); }
-{ const f = { typ: "tema", id: temaDna().id }; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f)) chyby.push("oslava treba"); Oslava.ukaz(() => {});
-  if (Oslava.treba(f)) chyby.push("oslava druhykrat"); if (Oslava.treba({ typ: "kviz", id: "" })) chyby.push("oslava pri kvize"); }
+{ const f = { typ: "tema", id: "ruky" }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f) || !Oslava.treba({ typ: "kviz" })) chyby.push("oslava prva tema dna"); Oslava.ukaz(() => {});
+  if (Oslava.treba(f)) chyby.push("oslava druhykrat"); S.set(Oslava.kluc(), ""); st.dni = [key(new Date())]; if (Oslava.treba(f)) chyby.push("oslava ked uz dnes nieco"); st.dni = dniPred; }
 Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
 /* V23_TEST */
 { const RE = new RegExp(EMO_ODP.source, 'gu'), chybaSubor = new Set();
@@ -149,6 +149,10 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (chybaSubor.size) chyby.push("emoji bez obrazka: " + [...chybaSubor].slice(0, 8).join(" "));
   if (emo("🦁") !== '<img class="emo" src="e/1f981.svg" alt="🦁" draggable="false" onerror="this.replaceWith(this.alt)">') chyby.push("emo " + emo("🦁"));
   if (!emo("1️⃣").includes("e/31-20e3.svg") || emo("a<b") !== "a&lt;b") chyby.push("emo klavesa"); }
+/* V24_TEST */
+{ const stare = T.filter(t => String(ART[t.id]).includes("ez(")); if (stare.length) chyby.push("temy len z emoji: " + stare.map(t => t.id).join(" "));
+  Novinky.ukaz(NOVINKY); localStorage.removeItem("svet3:videl-verziu"); Novinky.bolo = false; st.faza = "appka"; st.flow = null; st.hra = null; Novinky.skontroluj();
+  if (S.get("videl-verziu", 0) !== VERZIA_APPKY) chyby.push("novinky verzia"); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;

@@ -26,6 +26,7 @@ const zmensi = s => s
 
 const ciel = path.join(R, 'e');
 fs.rmSync(ciel, { recursive: true, force: true }); fs.mkdirSync(ciel);
+fs.writeFileSync(path.join(ciel, 'LICENCIA.txt'), 'Obrázky emoji v tomto priečinku sú z projektu OpenMoji (https://openmoji.org), verzia 17.0.0,\nlicencia CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).\nÚpravy: vybraté len použité emoji, zmenšený zápis, čierne obrysy prefarbené na #2B2240.\n');
 const chyba = []; let spolu = 0;
 for (const e of pouzite) {
   const k = kod(e), f = index[k];

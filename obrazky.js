@@ -497,85 +497,6 @@ const ART = {
   cisla: () => `${bg('#EBDDFF')}
     ${[['1', 'one', '#FF5A5F'], ['2', 'two', '#FFB020'], ['3', 'three', '#2FBF71'], ['4', 'four', '#3D8BFF']].map(([n, w, c], i) => `<g transform="translate(${46 + i * 76} 80)"><g class="bob" style="animation-delay:${i * .3}s"><circle r="30" fill="${c}"/><text y="14" font-size="40" ${TXT} fill="#fff">${n}</text></g><text y="62" font-size="18" ${TXT} fill="${INK}">${w}</text></g>`).join('')}
     ${[60, 140, 220, 290].map((x, i) => hviezdicka(x, 160, .7, '#FFD23F', i * .4)).join('')}`,
-  farma: () => ez('#DFF3FF', '#9BE3A8', '🐄', '🐔', '🐑'),
-  mladata: () => ez('#FFF0D9', '#9BE3A8', '🐣', '🐶', '🐱'),
-  les: () => ez('#E3F6E8', '#6FCF7F', '🦔', '🐿️', '🦌'),
-  zvuky: () => ez('#FFE9F2', '#9BE3A8', '🐓', '🐮', '🦆'),
-  tvary: () => ez('#FFF6E6', '#FFD9A8', '🔺', '🟦', '🟡'),
-  miesanie: () => ez('#F3EFFF', '#D9CFFF', '🎨', '🖌️', '🌈'),
-  protiklady: () => ez('#E8F7FF', '#9BE3A8', '🐘', '🐭'),
-  pocitanie: () => ez('#FFF0B3', '#FFD9A8', '🖐️', '🍓', '🔢'),
-  rodina: () => ez('#FFE9F2', '#9BE3A8', '👨‍👩‍👧', '👵', '❤️'),
-  izby: () => ez('#FFF6E6', '#E8C9A0', '🛋️', '🛏️', '🍳'),
-  pomahanie: () => ez('#E6F7EC', '#9BE3A8', '🧹', '🪴', '🧸'),
-  zdrave: () => ez('#F0FFE6', '#C9F0A8', '🍎', '🥕', '💧'),
-  tyzden: () => ez('#E8F0FF', '#C9D8FF', '📅', '🎈', '🎒'),
-  dennoc: () => ez('#1D2557', null, '🌍', '☀️', '🌙'),
-  pocasie: () => ez('#DDF2FF', '#9BE3A8', '☂️', '⛄', '🪁'),
-  hodiny: () => ez('#FFF6E6', '#FFD9A8', '⏰', '🕒'),
-  zachranari: () => ez('#FFE9E6', '#C9C9D6', '🚒', '🚑', '🚓'),
-  stratil: () => ez('#E8F7FF', '#C9D8FF', '🧒', '🏬', '👮'),
-  cudzi: () => ez('#FFF0D9', '#9BE3A8', '🙅', '🍬', '👩'),
-  pozor: () => ez('#FFF6E6', '#E8C9A0', '🔥', '✂️', '💊'),
-  jedlo: () => ez('#FFF6E6', '#FFD9A8', '🍎', '🍞', '🥛'),
-  oblecenie: () => ez('#F3EFFF', '#D9CFFF', '👕', '👟', '🧢'),
-  vdome: () => ez('#E8F7FF', '#E8C9A0', '🏠', '🛏️', '🚪'),
-  planety: () => ez('#141A40', null, '🪐', '🌍', '☀️'),
-  hviezdy: () => ez('#1D2557', null, '⭐', '🌟', '✨'),
-  ciernadiera: () => ez('#0E1330', null, '🕳️', '🌌'),
-  iss: () => ez('#1D2557', null, '🧑‍🚀', '🛰️', '🌍'),
-  tlac: () => ez('#FFF6E6', '#E8C9A0', '📖', '🖋️', '📜'),
-  ziarovka: () => ez('#2B2240', null, '💡', '🕯️'),
-  penicilin: () => ez('#EFFAF4', '#C9E7D2', '🔬', '🧫', '💊'),
-  slovaci: () => ez('#DDF2FF', '#9BE3A8', '🪂', '📻', '🚁'),
-  klima: () => ez('#FFE9C7', '#E8C27A', '🌡️', '🏭', '🌍'),
-  prales: () => ez('#D8F5DC', '#4CAF6A', '🦜', '🌴', '🐒'),
-  oceany: () => ez('#CDEBFF', '#3DA5FF', '🐢', '🐋', '🐠'),
-  obnovitelna: () => ez('#E6F7FF', '#9BE3A8', '☀️', '🌬️', '💧'),
-  rim: () => ez('#FFF0D9', '#E8C9A0', '🏛️', '⚔️', '🛡️'),
-  morava: () => ez('#F3EFFF', '#9BE3A8', '🏰', '📜', '⛪'),
-  objavitelia: () => ez('#CDEBFF', '#3DA5FF', '⛵', '🧭', '🗺️'),
-  priemysel: () => ez('#E6E9F5', '#C9C9D6', '🚂', '🏭', '⚙️'),
-  mozog: () => ez('#FFE9F2', '#F3C9DA', '🧠', '⚡'),
-  zrak: () => ez('#E8F7FF', '#C9D8FF', '👁️', '🔍', '🌈'),
-  dna: () => ez('#F3EFFF', '#D9CFFF', '🧬', '👪'),
-  imunita: () => ez('#EFFAF4', '#C9E7D2', '🛡️', '🦠', '💉'),
-  obchod: () => ez('#FFF6E6', '#E8C9A0', '🛒', '💷', '🛍️'),
-  cesta: () => ez('#E8F7FF', '#C9C9D6', '🗺️', '🚉', '✈️'),
-  restauracia: () => ez('#FFF0D9', '#E8C9A0', '🍽️', '🍕', '🧾'),
-  osebe: () => ez('#FFE9F2', '#9BE3A8', '👋', '🧒', '⚽'),
-  vikingovia: () => ez('#CDEBFF', '#3DA5FF', '⛵', '🛡️', '🪓'),
-  starosta: () => ez('#E8F7FF', '#9BE3A8', '🏛️', '🗳️', '🏘️'),
-  predaj: () => ez('#FFF6E6', '#E8C9A0', '🏪', '🍎', '💶'),
-  chlieb: () => ez('#FFF0D9', '#E8C27A', '🌾', '🍞', '🥖'),
-  chladnicka: () => ez('#E8F7FF', '#C9D8FF', '🧊', '🥛', '❄️'),
-  magnet: () => ez('#F3EFFF', '#D9CFFF', '🧲', '📎', '🧭'),
-  semienko: () => ez('#E8F7FF', '#8B5A3C', '🌱', '🌻', '💧'),
-  dychanie: () => ez('#E3F6FF', '#9BE3A8', '🌬️', '🌳', '🏃'),
-  kontinenty: () => ez('#141A40', null, '🌍', '🌎', '🌏'),
-  omyly: () => ez('#FFF0B3', '#FFD9A8', '✏️', '🧩', '💪'),
-  animacia: () => ez('#FFE9F2', '#F3C9DA', '🎬', '🎞️', '✏️'),
-  family: () => ez('#FFE9F2', '#9BE3A8', '👪', '👵', '👴'),
-  starostlivost: () => ez('#FFF0D9', '#9BE3A8', '🐕', '🥣', '🐹'),
-  smer: () => ez('#E8F0FF', '#C9D8FF', '⬅️', '⬆️', '➡️'),
-  povolania: () => ez('#E6F7EC', '#C9E7D2', '👩‍⚕️', '👨‍🍳', '👷'),
-  mesiace: () => ez('#FFF6E6', '#FFD9A8', '📅', '🎂', '🎄'),
-  'pri-vode': () => ez('#CDEBFF', '#3DA5FF', '🦺', '🏊', '⛱️'),
-  cestujeme: () => ez('#DDF2FF', '#9BE3A8', '🚗', '✈️', '🚢'),
-  vlak: () => ez('#E8F7FF', '#C9C9D6', '🚂', '🚃', '🚉'),
-  pracovne: () => ez('#FFF6E6', '#E8C27A', '🚜', '🏗️', '🚛'),
-  bicykel: () => ez('#E6F7EC', '#C9C9D6', '🚲', '⛑️', '🔔'),
-  lode: () => ez('#CDEBFF', '#3DA5FF', '⛵', '⚓', '🚢'),
-  mars: () => ez('#3A1D1D', null, '🔴', '🚀', '🤖'),
-  automobil: () => ez('#E6E9F5', '#C9C9D6', '🚗', '🏭', '🔋'),
-  ohrozene: () => ez('#E6F7EC', '#6FCF7F', '🦏', '🐼', '🦅'),
-  ceskoslovensko: () => ez('#F3EFFF', '#9BE3A8', '🏰', '📜', '🕊️'),
-  travenie: () => ez('#FFE9F2', '#F3C9DA', '🍎', '😋', '🦷'),
-  pocitac: () => ez('#1D2557', null, '💻', '🖱️', '💾'),
-  umela: () => ez('#1D2557', null, '🤖', '💬', '🧠'),
-  programovanie: () => ez('#E8F7FF', '#C9D8FF', '⌨️', '🧩', '🐛'),
-  bezpecnenet: () => ez('#E6F7EC', '#C9E7D2', '🔐', '🛡️', '📱'),
-  roboty: () => ez('#E6E9F5', '#C9C9D6', '🤖', '🦾', '⚙️'),
 };
 // päťcípa hviezda pre obrázky (vlajka EÚ)
 const HV5 = 'M0 -10 L2.9 -4 9.5 -3.1 4.7 1.5 5.9 8.1 0 5 -5.9 8.1 -4.7 1.5 -9.5 -3.1 -2.9 -4Z';
@@ -813,3 +734,179 @@ function postavicka(a, kruh = false) {
     ${oci}${usta}${vpredu}${okuliare}${doplnok}
     ${zvieratko ? `<g transform="translate(97 106) scale(1.3)"><g class="bob">${zvieratko}</g></g>` : ''}${kuzloP}</g></svg>`;
 }
+
+// Obrázky novších tém: nakreslené prostredie (lúka, izba, mesto, vesmír…), postavičky a kreslené predmety
+// (emoji sa pri kreslení menia na obrázky OpenMoji z priečinka e/, pozri emoObr)
+Object.assign(ART, (() => {
+  const pr = (e, x, y, v = 50, a = 'bob', d = 0) => `<g transform="translate(${x} ${y})"><g${a ? ` class="${a}" style="animation-delay:${d}s"` : ''}><text font-size="${v}" text-anchor="middle" dominant-baseline="central" stroke="none">${e}</text></g></g>`;
+  // predmet stojí na zemi (y = výška zeme) a má pod sebou tieň
+  const na = (e, x, v = 50, a = 'bob', d = 0, y = 140) => `<ellipse cx="${x}" cy="${y + 2}" rx="${v * .42}" ry="5" fill="#2B2240" opacity=".15" stroke="none"/>${pr(e, x, y - v * .55, v, a, d)}`;
+  const bub = (x, y, t, c = '#fff') => { const w = t.length * 8.4 + 22; return `<g transform="translate(${x} ${y})"><g class="bob"><path d="M${-w / 2} -15 H${w / 2} A6 6 0 0 1 ${w / 2 + 6} -9 V9 A6 6 0 0 1 ${w / 2} 15 H8 L0 24 L-6 15 H${-w / 2} A6 6 0 0 1 ${-w / 2 - 6} 9 V-9 A6 6 0 0 1 ${-w / 2} -15Z" fill="${c}" stroke-width="2.5"/><text y="6" font-size="16" ${TXT} fill="${INK}">${t}</text></g></g>`; };
+  const tabula = (x, y, t, c = '#FFE27A') => { const w = t.length * 8.6 + 18; return `<rect x="${x - w / 2}" y="${y - 13}" width="${w}" height="26" rx="5" fill="${c}" stroke-width="2.5"/><text x="${x}" y="${y + 6}" font-size="16" ${TXT} fill="${INK}">${t}</text>`; };
+  const kvietky = `${[[44, 158, '#FF8FB1'], [126, 170, '#FFD23F'], [206, 156, '#fff'], [266, 168, '#B36BFF']].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="${c}" stroke-width="1.5"/>`).join('')}<path d="M84 162 l3 -7 l3 7 M170 156 l3 -7 l3 7 M234 174 l3 -7 l3 7" fill="none" stroke="#3E9B4F" stroke-width="2"/>`;
+  const plot = x => `<g transform="translate(${x} 0)"><rect x="0" y="114" width="78" height="6" rx="2" fill="#F3D2A2"/><rect x="0" y="127" width="78" height="6" rx="2" fill="#F3D2A2"/>${[4, 32, 60].map(a => `<path d="M${a} 140 V110 L${a + 7} 102 L${a + 14} 110 V140Z" fill="#F3D2A2"/>`).join('')}</g>`;
+  const okno = (x, y) => `<rect x="${x}" y="${y}" width="78" height="62" rx="6" fill="#BFE7FF"/><circle cx="${x + 60}" cy="${y + 16}" r="7" fill="#FFD23F" stroke-width="2"/><path d="M${x + 39} ${y} V${y + 62} M${x} ${y + 31} H${x + 78}" stroke-width="4"/>
+    <path d="M${x - 8} ${y - 4} C${x + 6} ${y + 18} ${x} ${y + 48} ${x - 10} ${y + 70}Z M${x + 86} ${y - 4} C${x + 72} ${y + 18} ${x + 78} ${y + 48} ${x + 88} ${y + 70}Z" fill="#FF8FB1"/><rect x="${x - 14}" y="${y - 8}" width="106" height="6" rx="3" fill="#B5651D"/>`;
+  const domcek = (x, y, s = 1, c = '#FFB3C7') => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="22" y="-86" width="12" height="22" fill="#C9CED8"/><rect x="-40" y="-52" width="80" height="52" fill="#FFF4E0"/><path d="M-50 -48 L0 -90 L50 -48Z" fill="${c}"/>
+    <rect x="-11" y="-30" width="22" height="30" rx="3" fill="#B5651D"/><circle cx="6" cy="-14" r="2" fill="${INK}"/><rect x="-33" y="-42" width="16" height="14" fill="#BFE7FF" stroke-width="2.5"/><rect x="17" y="-42" width="16" height="14" fill="#BFE7FF" stroke-width="2.5"/></g>`;
+  const koleso = (x, y, r, c, d = 0) => `<g transform="translate(${x} ${y})"><g class="spin" style="animation-delay:${d}s">${[0, 45, 90, 135].map(a => `<rect x="${-r - 6}" y="-5" width="${2 * r + 12}" height="10" rx="2" fill="${c}" transform="rotate(${a})"/>`).join('')}<circle r="${r}" fill="${c}"/><circle r="${r * .35}" fill="#fff"/></g></g>`;
+  const lopatky = (x, y, r, c = '#fff') => `<g transform="translate(${x} ${y})"><g class="spin"><circle r="${r}" fill="none" stroke="none"/>${[0, 120, 240].map(a => `<path d="M0 0 C6 ${-r * .3} 5 ${-r * .8} 0 ${-r} C-5 ${-r * .8} -6 ${-r * .3} 0 0Z" fill="${c}" transform="rotate(${a})"/>`).join('')}</g><circle r="4" fill="${c}"/></g>`;
+  const dym = (x, y) => `<g class="steam"><circle cx="${x}" cy="${y}" r="9" fill="#C9CED8"/><circle cx="${x + 10}" cy="${y - 14}" r="12" fill="#D9DCE6"/></g>`;
+  const tovaren = x => `<g transform="translate(${x} 140)"><rect x="16" y="-92" width="14" height="92" fill="#9A6234"/>${dym(23, -104)}<path d="M-52 0 V-42 L-30 -58 V-42 L-8 -58 V-42 L14 -58 V0Z" fill="#E09A6B"/>${[-44, -22, 0].map(a => `<rect x="${a}" y="-30" width="12" height="10" fill="#FFE27A" stroke-width="2"/>`).join('')}</g>`;
+  const kolaj = y => `<path d="M0 ${y} H320 M0 ${y + 8} H320" stroke-width="3"/>${[...Array(12).keys()].map(i => `<path d="M${i * 28 + 6} ${y - 2} V${y + 10}" stroke="#9A6234" stroke-width="4"/>`).join('')}`;
+  const kalendar = (x, y) => `<rect x="${x}" y="${y}" width="66" height="56" rx="5" fill="#fff"/><path d="M${x} ${y + 5} A5 5 0 0 1 ${x + 5} ${y} H${x + 61} A5 5 0 0 1 ${x + 66} ${y + 5} V${y + 16} H${x}Z" fill="#FF5A5F"/>
+    ${[0, 1, 2, 3, 4, 5, 6].map(i => `<circle cx="${x + 10 + (i % 4) * 15}" cy="${y + 27 + Math.floor(i / 4) * 15}" r="4" fill="${i === 5 ? '#FFD23F' : '#E4E0EE'}" stroke-width="${i === 5 ? 2 : 1}"/>`).join('')}`;
+  const ludko = (x, y, c, o = {}) => kid(x, y, c, { s: 1.25, ...o });
+  const PROSTR = {
+    luka: (o = {}) => `${bg(o.obloha || '#CDEBFF')}${o.bezSlnka ? '' : sun(282, 30, 14)}${cloud(18, 18, .7)}${cloud(146, 8, .55, -3)}
+      <path d="M0 134 C50 104 112 108 162 126 C212 104 272 100 320 124 V180 H0Z" fill="${o.kopce || '#B5E8A0'}"/>${o.plot ? plot(6) : pine(22, 142, .85)}${o.plot2 ? plot(236) : tree(298, 142, .85)}
+      <rect y="140" width="320" height="40" fill="${o.trava || '#8EE07A'}"/><path d="M0 140 H320"/>${o.bezKvetov ? '' : kvietky}`,
+    izba: (o = {}) => `${bg(o.stena || '#FFF1DC')}<g fill="${o.vzor || '#FFE1BA'}" stroke="none">${[20, 80, 140, 200, 260, 320].map(x => `<circle cx="${x}" cy="16" r="4"/><circle cx="${x - 30}" cy="46" r="4"/><circle cx="${x}" cy="76" r="4"/><circle cx="${x - 30}" cy="106" r="4"/>`).join('')}</g>
+      ${o.okno === false ? '' : okno(216, 24)}${o.obraz === false ? '' : `<rect x="34" y="28" width="50" height="38" rx="3" fill="#fff"/><path d="M38 62 L52 46 L62 56 L68 50 L80 62Z" fill="#8EE07A" stroke-width="2"/><circle cx="72" cy="39" r="5" fill="#FFD23F" stroke-width="2"/>`}
+      <rect y="130" width="320" height="10" fill="#fff"/><rect y="140" width="320" height="40" fill="${o.podlaha || '#E8B67A'}"/><path d="M0 130 H320 M0 140 H320 M0 160 H320" stroke-width="2"/><path d="M60 140 V160 M150 140 V160 M240 140 V160 M105 160 V180 M195 160 V180 M285 160 V180" stroke-width="2"/>`,
+    kuchyna: () => `${bg('#E9F7FF')}<path d="${[...Array(17).keys()].map(i => `M${i * 20} 62 V118`).join(' ')} M0 62 H320 M0 82 H320 M0 102 H320" fill="none" stroke="#C8DDEE" stroke-width="1.5"/>
+      <rect x="24" y="40" width="112" height="7" rx="2" fill="#B5651D"/><rect x="34" y="20" width="18" height="20" rx="5" fill="#FFD23F"/><rect x="60" y="24" width="16" height="16" rx="4" fill="#FF8FB1"/><rect x="84" y="18" width="18" height="22" rx="5" fill="#8FD3FF"/><rect x="110" y="26" width="16" height="14" rx="4" fill="#9BE36A"/>
+      ${okno(218, 10)}<rect y="118" width="320" height="12" rx="2" fill="#F4F7FB"/><rect y="130" width="320" height="50" fill="#7FC8A9"/><path d="M0 118 H320 M0 130 H320 M80 130 V180 M160 130 V180 M240 130 V180"/>${[66, 94, 226, 254].map(x => `<rect x="${x}" y="146" width="4" height="14" rx="2" fill="${INK}" stroke="none"/>`).join('')}`,
+    mesto: (o = {}) => `${bg(o.obloha || '#CDEBFF')}${cloud(120, 10, .55)}${sun(292, 24, 12)}
+      ${[[6, 58, 58, '#FFB3C7'], [68, 36, 50, '#B9D7FF'], [122, 66, 62, '#FFE08A'], [188, 42, 52, '#C6F0C8'], [244, 62, 72, '#D9C8FF']].map(([x, y, w, c]) => `<rect x="${x}" y="${y}" width="${w}" height="${124 - y}" fill="${c}"/>${[...Array(Math.floor((112 - y) / 18)).keys()].map(i => `<rect x="${x + 8}" y="${y + 10 + i * 18}" width="12" height="10" fill="#fff" stroke-width="2"/><rect x="${x + w - 20}" y="${y + 10 + i * 18}" width="12" height="10" fill="#fff" stroke-width="2"/>`).join('')}`).join('')}
+      <rect y="124" width="320" height="14" fill="#E4E2EC"/><rect y="138" width="320" height="42" fill="#8C8FA8"/><path d="M0 124 H320 M0 138 H320"/><path d="M8 162 H38 M78 162 H108 M148 162 H178 M218 162 H248 M288 162 H318" stroke="#fff" stroke-width="4"/>`,
+    vesmir: (o = {}) => `${bg(o.farba || '#141A40')}<circle cx="60" cy="40" r="70" fill="#4A3BA8" opacity=".35" stroke="none"/><circle cx="270" cy="150" r="80" fill="#1E6AA8" opacity=".3" stroke="none"/>
+      ${[[24, 24], [88, 156], [150, 16], [214, 40], [300, 96], [40, 112], [190, 166], [272, 18], [118, 84]].map(([x, y], i) => hviezdicka(x, y, .45 + (i % 3) * .2, '#FFE27A', i * .3)).join('')}
+      ${o.planeta === false ? '' : `<circle cx="292" cy="160" r="28" fill="#FF9F6B"/><path d="M266 150 C284 160 306 160 318 150" fill="none" stroke="#FFD9A8" stroke-width="3"/>`}`,
+    more: () => `${bg('#CDEBFF')}${sun(52, 28, 14)}${cloud(176, 10, .6)}${cloud(262, 30, .5, -2)}<path d="M0 98 H320 V180 H0Z" fill="#3DA5FF"/>
+      <path d="M0 98 Q20 90 40 98 T80 98 T120 98 T160 98 T200 98 T240 98 T280 98 T320 98" fill="#7CC8FF"/><path d="M18 132 q10 -6 20 0 M118 154 q10 -6 20 0 M232 128 q10 -6 20 0 M272 162 q10 -6 20 0" fill="none" stroke="#fff" stroke-width="2.5"/>`,
+    voda: () => `${bg('#4FB3F0')}<path d="M40 0 H76 L140 180 H110Z M180 0 H206 L262 180 H236Z" fill="#fff" opacity=".14" stroke="none"/><path d="M0 152 C60 140 120 158 180 148 C240 138 290 152 320 146 V180 H0Z" fill="#F3D9A0"/>
+      ${[24, 58, 270, 302].map((x, i) => `<g class="leaf" style="animation-delay:${i * .4}s"><path d="M${x} 156 C${x - 10} 134 ${x + 10} 118 ${x} 94" fill="none" stroke-width="7"/><path d="M${x} 156 C${x - 10} 134 ${x + 10} 118 ${x} 94" fill="none" stroke="#2FBF71" stroke-width="3.5"/></g>`).join('')}
+      ${[[96, 40, 5], [104, 70, 3.5], [226, 26, 6], [212, 60, 4]].map(([x, y, r], i) => `<g class="bob" style="animation-delay:${i * .5}s"><circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity=".7" stroke-width="1.5"/></g>`).join('')}`,
+    les: () => `${bg('#DDF3E0')}${sun(282, 26, 12)}${[[18, 132, 1.1], [56, 126, .9], [92, 134, 1.2], [226, 130, 1], [262, 126, 1.3], [302, 134, .9]].map(([x, y, s]) => pine(x, y, s)).join('')}
+      <rect y="138" width="320" height="42" fill="#6FCF7F"/><path d="M0 138 H320"/><path d="M150 162 v-9 h7 v9Z" fill="#fff" stroke-width="2"/><path d="M144 155 a10 8 0 0 1 20 0Z" fill="#FF5A5F" stroke-width="2"/>${list(60, 160, '#F2A541', 0)}${list(280, 166, '#E0533F', .8)}`,
+    prales: () => `${bg('#BDEFC6')}${[[30, 0, 20, 70, 36, 120], [292, 0, 306, 60, 286, 110]].map(([a, b, c, d, e, f]) => `<path d="M${a} ${b} C${c} ${d} ${e} ${d + 20} ${e} ${f}" fill="none" stroke-width="7"/><path d="M${a} ${b} C${c} ${d} ${e} ${d + 20} ${e} ${f}" fill="none" stroke="#3E9B4F" stroke-width="3.5"/>`).join('')}
+      ${[[0, 150, -30, '#2FB36A'], [40, 160, -60, '#4CD07D'], [320, 150, 210, '#2FB36A'], [284, 162, 240, '#4CD07D'], [150, 0, 70, '#3E9B4F'], [200, 0, 110, '#2FB36A']].map(([x, y, r, c]) => `<g transform="translate(${x} ${y}) rotate(${r})"><path d="M0 0 C20 -26 58 -26 80 0 C58 20 20 20 0 0Z" fill="${c}"/><path d="M4 0 H76" stroke-width="2"/></g>`).join('')}
+      <rect y="150" width="320" height="30" fill="#4CAF6A"/><path d="M0 150 H320"/>`,
+    trieda: (t = '') => `${bg('#FFF4DE')}<rect x="56" y="14" width="208" height="92" rx="6" fill="#B5651D"/><rect x="64" y="22" width="192" height="76" rx="3" fill="#2F6B4F"/>${t ? `<text x="160" y="72" font-size="34" ${TXT} fill="#fff" opacity=".9">${t}</text>` : ''}
+      <rect x="120" y="106" width="80" height="6" rx="2" fill="#B5651D"/><rect x="206" y="102" width="16" height="5" rx="2" fill="#fff" stroke-width="1.5"/><rect y="140" width="320" height="40" fill="#E8B67A"/><path d="M0 140 H320 M0 160 H320" stroke-width="2"/>`,
+    lab: () => `${bg('#EAF6FF')}<rect x="20" y="44" width="130" height="7" rx="2" fill="#B5651D"/>${[[34, '#8FD3FF'], [64, '#FF8FB1'], [96, '#9BE36A'], [126, '#FFD23F']].map(([x, c]) => `<path d="M${x - 5} 18 V28 L${x - 12} 44 H${x + 12} L${x + 5} 28 V18Z" fill="#fff" stroke-width="2.5"/><path d="M${x - 9} 38 L${x - 12} 44 H${x + 12} L${x + 9} 38Z" fill="${c}" stroke-width="2"/>`).join('')}
+      ${okno(220, 14)}<rect y="118" width="320" height="10" fill="#C9CED8"/><rect y="128" width="320" height="52" fill="#E4E8F0"/><path d="M0 118 H320 M0 128 H320 M100 128 V180 M220 128 V180"/>`,
+    hrad: () => `${bg('#CDEBFF')}${cloud(118, 12, .6)}${sun(36, 26, 12)}<path d="M10 140 V74 h16 v-10 h14 v10 h16 v-10 h14 v10 h16 v-10 h14 v10 h16 V140Z" fill="#D9D3E8"/><path d="M60 140 V114 A12 12 0 0 1 84 114 V140Z" fill="#8C6A4A"/>
+      <rect x="226" y="44" width="56" height="96" fill="#D9D3E8"/><path d="M220 46 L254 10 L288 46Z" fill="#FF6B6B"/><path d="M254 10 V-4" stroke-width="3"/><path d="M254 -4 l16 6 l-16 6Z" fill="#FFD23F" stroke-width="2"/><path d="M248 80 V68 A6 6 0 0 1 260 68 V80Z" fill="#4A3B6B"/>
+      <path d="M30 96 h14 M100 110 h14 M238 104 h14 M262 124 h12" stroke="#B8B0CC" stroke-width="2.5"/><rect y="140" width="320" height="40" fill="#8EE07A"/><path d="M0 140 H320"/>`,
+    obchod: () => `${bg('#FFF6E6')}${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${i * 40} 0 H${i * 40 + 40} V18 A20 9 0 0 1 ${i * 40} 18Z" fill="${i % 2 ? '#fff' : '#FF6B6B'}"/>`).join('')}
+      ${[52, 92].map(y => `<rect x="14" y="${y}" width="292" height="6" rx="2" fill="#B5651D"/>${[24, 52, 80, 108, 196, 224, 252, 280].map((x, i) => `<rect x="${x}" y="${y - 20 + (i % 2) * 4}" width="20" height="${20 - (i % 2) * 4}" rx="3" fill="${['#FFD23F', '#8FD3FF', '#FF8FB1', '#9BE36A'][(i + y) % 4]}" stroke-width="2"/>`).join('')}`).join('')}
+      <rect y="140" width="320" height="40" fill="#D9C8B4"/><path d="M0 140 H320"/>`,
+    cesta: () => `${bg('#CDEBFF')}${sun(284, 26, 13)}${cloud(30, 14, .6)}<path d="M0 124 C70 100 140 106 200 118 C250 104 290 104 320 116 V180 H0Z" fill="#B5E8A0"/>${tree(40, 132, .8)}${pine(260, 130, .8)}
+      <rect y="132" width="320" height="8" fill="#8EE07A"/><rect y="140" width="320" height="30" fill="#8C8FA8"/><rect y="170" width="320" height="10" fill="#8EE07A"/><path d="M0 140 H320 M0 170 H320"/><path d="M8 155 H34 M74 155 H100 M140 155 H166 M206 155 H232 M272 155 H298" stroke="#fff" stroke-width="4"/>`,
+    digi: () => `${bg('#1D2557')}<path d="${[...Array(9).keys()].map(i => `M${i * 40} 0 V180`).join(' ')} M0 45 H320 M0 90 H320 M0 135 H320" stroke="#2E3A87" stroke-width="2" fill="none"/>
+      ${[[30, 30, '#8FD3FF'], [292, 40, '#FF9EC7'], [40, 150, '#9BE36A'], [286, 150, '#FFD23F']].map(([x, y, c], i) => `<g class="twinkle" style="animation-delay:${i * .4}s"><path d="M${x - 8} ${y - 8} L${x - 16} ${y} L${x - 8} ${y + 8} M${x + 8} ${y - 8} L${x + 16} ${y} L${x + 8} ${y + 8}" fill="none" stroke="${c}" stroke-width="3"/></g>`).join('')}`,
+    papier: () => `${bg('#F5E6C4')}<rect x="10" y="10" width="300" height="160" rx="10" fill="none" stroke="#C9A46A" stroke-width="3" stroke-dasharray="8 6"/><path d="M30 140 C80 110 120 150 170 120 S260 100 290 128" fill="none" stroke="#C9A46A" stroke-width="2.5" stroke-dasharray="3 6"/>
+      <g transform="translate(276 44)"><circle r="16" fill="#FFF4DE" stroke-width="2"/><path d="M0 -14 L4 0 L0 14 L-4 0Z" fill="#E0533F" stroke-width="1.5"/></g>`,
+    telo: (c = '#FFE9F2') => `${bg(c)}<path d="M0 132 H86 L98 108 L112 156 L126 98 L138 132 H320" fill="none" stroke="#FF8FB1" stroke-width="4"/>${plus(30, 30, '#FF9EC7')}${plus(290, 36, '#FF9EC7', .6)}${plus(272, 156, '#B36BFF', 1)}`,
+    mars: () => `${bg('#F2B38A')}<circle cx="270" cy="34" r="10" fill="#FFF3B0" stroke-width="2"/><path d="M0 122 C60 100 120 116 170 104 C230 92 280 110 320 102 V180 H0Z" fill="#D9663A"/><rect y="140" width="320" height="40" fill="#C1440E"/><path d="M0 140 H320"/>
+      <ellipse cx="60" cy="160" rx="18" ry="5" fill="#9A3209" stroke-width="2"/><ellipse cx="250" cy="166" rx="24" ry="6" fill="#9A3209" stroke-width="2"/><path d="M150 140 l8 -8 l10 8Z" fill="#9A3209"/>`,
+    savana: () => `${bg('#FFE9C7')}${sun(60, 34, 20)}<path d="M0 128 C80 112 200 118 320 110 V180 H0Z" fill="#F3D08A"/><path d="M270 140 C272 120 266 104 270 88" fill="none" stroke-width="5"/><path d="M234 92 C250 72 300 72 312 92Z" fill="#7FB04A"/><rect y="140" width="320" height="40" fill="#E8C27A"/><path d="M0 140 H320"/>`,
+  };
+  const P = PROSTR;
+  const helma = c => `<path d="M-16 -54 A16 15 0 0 1 16 -54 H18 V-50 H-18Z" fill="${c}"/>`;
+  return {
+    farma: () => `${P.luka({ plot: 1 })}<g transform="translate(262 140)"><rect x="-34" y="-52" width="68" height="52" fill="#E0533F"/><path d="M-42 -48 L0 -80 L42 -48Z" fill="#B5352A"/><rect x="-14" y="-30" width="28" height="30" fill="#fff"/><path d="M-14 -30 L14 0 M14 -30 L-14 0" stroke-width="2.5"/></g>
+      ${na('🐄', 104, 62)}${na('🐔', 166, 40, 'hop')}${na('🐑', 214, 46, 'bob', .6)}`,
+    mladata: () => `${P.luka()}<path d="M70 140 C70 122 116 122 116 140Z" fill="#C98A4B"/><path d="M74 132 l6 -6 M88 128 l4 -7 M104 130 l5 -6" stroke-width="2"/>${pr('🐣', 93, 112, 34, 'hop')}${na('🐶', 170, 52)}${na('🐱', 236, 48, 'bob', .5)}`,
+    les: () => `${P.les()}${jezko(96, 140)}${na('🐿️', 172, 42, 'hop')}${na('🦌', 236, 66)}`,
+    zvuky: () => `${P.luka({ plot: 1 })}${na('🐓', 84, 46, 'hop')}${na('🐄', 166, 58)}${na('🦆', 250, 40, 'bob', .6)}${bub(84, 52, 'Kikirikí!')}${bub(170, 30, 'Bú!')}${bub(262, 58, 'Kvák!')}`,
+    tvary: () => `${P.izba({ obraz: false })}${na('🔺', 70, 44, 'bob')}${na('🟦', 130, 44, 'bob', .3)}${na('🟡', 190, 44, 'bob', .6)}${kid(262, 152, '#4C7DFF', { flip: true, arm: -30 })}`,
+    miesanie: () => `${P.izba({ okno: false })}<g transform="translate(124 140)"><path d="M-30 0 L-8 -98 M30 0 L8 -98" stroke-width="5"/><rect x="-42" y="-94" width="84" height="62" rx="3" fill="#fff"/>
+      <path d="M-30 -46 C-20 -72 0 -72 10 -52 C20 -38 26 -62 32 -68" fill="none" stroke="#FF5A5F" stroke-width="5"/><circle cx="-14" cy="-78" r="8" fill="#4C7DFF" stroke-width="2"/><circle cx="20" cy="-48" r="7" fill="#FFD23F" stroke-width="2"/></g>
+      ${na('🎨', 218, 46, '')}${pr('🖌️', 262, 96, 38, 'swap')}${pr('🌈', 252, 34, 40)}`,
+    protiklady: () => `${P.luka()}${na('🐘', 110, 84)}${na('🐭', 224, 30, 'hop')}${tabula(110, 26, 'veľký')}${tabula(224, 88, 'malý', '#8FD3FF')}`,
+    pocitanie: () => `${P.trieda('1 + 2 = 3')}${na('🍓', 96, 34, 'hop')}${na('🍓', 136, 34, 'hop', .3)}${na('🍓', 176, 34, 'hop', .6)}${na('🖐️', 250, 46, 'swap')}`,
+    rodina: () => `${P.izba()}${ludko(78, 150, '#4C7DFF', { hair: '#3B2A1A' })}${ludko(132, 150, '#FF6FA8', { hair: '#B5651D', d: .3 })}${kid(184, 150, '#FFD23F', { s: .85, d: .6 })}${ludko(246, 150, '#B36BFF', { hair: '#E4E0EE', d: .9 })}
+      ${srdiecko(158, 40, 1.3, '#FF5A5F', 0)}${srdiecko(204, 26, .9, '#FF8FB1', .7)}`,
+    izby: () => `${P.izba()}${na('🛋️', 104, 78, '')}${na('🪴', 182, 50, '')}${kid(256, 152, '#2FBF71', { arm: -40, flip: true })}`,
+    pomahanie: () => `${P.izba()}${na('🪴', 50, 46, '')}${kid(124, 152, '#FF9F1C', { arm: -20 })}${na('🧹', 160, 64, 'swap')}${na('🧸', 236, 44)}`,
+    zdrave: () => `${P.kuchyna()}${na('🍎', 70, 40, 'bob', 0, 118)}${na('🥕', 122, 44, 'bob', .3, 118)}${na('🥛', 174, 40, '', 0, 118)}${kid(250, 168, '#2FBF71', { arm: -30, flip: true })}`,
+    tyzden: () => `${P.izba({ obraz: false })}${kalendar(34, 24)}${na('🎒', 150, 52, '')}${pr('🎈', 244, 98, 46)}<path d="M244 128 C240 136 248 140 244 150" fill="none" stroke-width="2"/>`,
+    dennoc: () => `<rect width="160" height="180" fill="#BFE7FF" stroke="none"/><rect x="160" width="160" height="180" fill="#1D2557" stroke="none"/>${sun(64, 46, 18)}${pr('🌙', 252, 44, 44)}${[[200, 30], [290, 70], [220, 90], [300, 24]].map(([x, y], i) => hviezdicka(x, y, .5, '#FFE27A', i * .4)).join('')}
+      <path d="M0 132 C60 112 110 118 160 128 V180 H0Z" fill="#8EE07A"/><path d="M160 128 C210 116 270 112 320 126 V180 H160Z" fill="#2E5A4A"/><path d="M0 140 H320" stroke="none"/>${domcek(160, 150, .9)}`,
+    pocasie: () => `${P.luka({ obloha: '#D6E6F5', bezSlnka: true })}${[30, 60, 90, 120, 150].map((x, i) => drop(x, 30 + (i % 2) * 20, i * .25)).join('')}${kid(110, 152, '#FFD23F', { arm: 0 })}${pr('☂️', 122, 70, 58, '')}${na('⛄', 226, 64)}${pr('🪁', 280, 48, 36, 'swap')}`,
+    hodiny: () => `${P.izba({ okno: false, obraz: false })}<g transform="translate(160 66)"><circle r="44" fill="#fff" stroke-width="4"/>${[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(a => `<path d="M0 -38 V-32" transform="rotate(${a})" stroke-width="${a % 90 ? 2 : 3.5}"/>`).join('')}
+      <path d="M0 0 L16 8" stroke-width="4"/><g class="spin"><circle r="30" fill="none" stroke="none"/><path d="M0 0 V-30" stroke="#FF5A5F" stroke-width="3"/></g><circle r="4" fill="${INK}"/></g>${na('⏰', 62, 46, 'swap')}${kid(258, 152, '#B36BFF', { arm: -20, flip: true })}`,
+    zachranari: () => `${P.mesto()}${na('🚒', 76, 68, '', 0, 160)}${na('🚑', 164, 62, '', .3, 160)}${na('🚓', 250, 58, '', .6, 160)}${plus(76, 80, '#FF5A5F')}${plus(250, 90, '#4C7DFF', .5)}`,
+    stratil: () => `${P.mesto()}${kid(116, 162, '#FF9F1C', { s: .85 })}${ludko(204, 164, '#2E3A87', { flip: true, arm: -50, extra: '<path d="M-15 -60 H15 L11 -70 H-11Z" fill="#2E3A87"/><path d="M-17 -60 H17" stroke-width="3"/>' })}${bub(160, 34, 'Pomôžem ti!')}`,
+    cudzi: () => `${P.luka()}${kid(100, 152, '#FF6FA8', { arm: -10 })}${ludko(220, 154, '#8C8FA8', { flip: true, arm: -60, hair: '#2B2240' })}${pr('🍬', 186, 84, 30, 'swap')}${bub(96, 40, 'Nie, ďakujem!')}`,
+    pozor: () => `${P.kuchyna()}<path d="M160 22 L186 66 H134Z" fill="#FFD23F"/><path d="M160 36 V52" stroke-width="4"/><circle cx="160" cy="59" r="2.6" fill="${INK}"/>${na('🔥', 72, 44, 'flame', 0, 118)}${na('✂️', 160, 42, '', 0, 118)}${na('💊', 246, 38, '', 0, 118)}`,
+    jedlo: () => `${P.kuchyna()}${na('🍎', 86, 42, 'bob', 0, 118)}${na('🍞', 160, 48, '', 0, 118)}${na('🥛', 236, 42, 'bob', .5, 118)}`,
+    oblecenie: () => `${P.izba({ okno: false })}<path d="M170 30 H300 M178 30 V140 M292 30 V140" stroke-width="4"/>${[204, 262].map(x => `<path d="M${x} 30 V40 M${x - 14} 50 L${x} 40 L${x + 14} 50" fill="none" stroke-width="2.5"/>`).join('')}
+      ${pr('👕', 204, 72, 42, 'swap')}${pr('🧥', 262, 76, 44, 'swap', .5)}${na('👟', 236, 34, '')}${kid(96, 152, '#4C7DFF', { arm: -30 })}`,
+    vdome: () => `${P.luka()}${domcek(150, 140, 1.15)}${kid(236, 154, '#FF6FA8', { arm: -40, flip: true })}${pr('🐱', 74, 120, 34, 'hop')}`,
+    planety: () => `${P.vesmir({ planeta: false })}<ellipse cx="40" cy="96" rx="240" ry="64" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 8" opacity=".5"/>${sun(40, 96, 30)}${pr('🌍', 196, 150, 34)}${pr('🪐', 270, 60, 54, 'bob', .5)}${pr('🔴', 120, 40, 22, 'bob', .8)}`,
+    hviezdy: () => `${P.vesmir({ planeta: false })}<path d="M70 40 L118 30 L160 46 L196 70 L250 66 L262 104 L206 112 Z" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 6" opacity=".6"/>
+      ${[[70, 40], [118, 30], [160, 46], [196, 70], [250, 66], [262, 104], [206, 112]].map(([x, y], i) => `<g transform="translate(${x} ${y}) scale(.9)"><g class="twinkle" style="animation-delay:${i * .3}s"><path d="${HV5}" fill="#FFE27A" stroke-width="2"/></g></g>`).join('')}
+      <path d="M0 160 C60 140 120 150 160 158 V180 H0Z" fill="#2E3A87"/>${kid(62, 166, '#FFD23F', { s: .8, arm: 30 })}`,
+    ciernadiera: () => `${P.vesmir({ planeta: false })}<g transform="translate(160 92)"><g class="breathe"><ellipse rx="104" ry="26" fill="#FF9F1C"/><ellipse rx="80" ry="17" fill="#FFD23F"/></g><circle r="34" fill="#05060F" stroke="#FF9F1C" stroke-width="5"/></g>${pr('🧑‍🚀', 272, 46, 40, 'swap')}`,
+    iss: () => `${P.vesmir({ planeta: false })}<circle cx="160" cy="268" r="130" fill="#4FC3F7"/><path d="M70 170 C90 150 130 156 140 176 Z M190 150 C220 144 250 156 256 176 H200Z" fill="#4CD07D" stroke-width="2.5"/>${pr('🛰️', 206, 64, 64, 'bob')}${pr('🧑‍🚀', 96, 70, 46, 'swap')}`,
+    tlac: () => `${P.papier()}${pr('📖', 96, 100, 70, '')}${pr('🖋️', 190, 84, 46, 'swap')}${pr('📜', 254, 116, 46, 'bob', .5)}`,
+    ziarovka: () => `${P.izba({ stena: '#3B3F7A', vzor: '#4A4F8F', podlaha: '#8C6A4A', okno: false, obraz: false })}<circle cx="190" cy="70" r="56" fill="#FFF3B0" opacity=".45" stroke="none"/><path d="M190 0 V38" stroke-width="3"/>${pr('💡', 190, 66, 54, 'pulse')}${na('🕯️', 84, 52, 'flame')}`,
+    penicilin: () => `${P.lab()}${na('🔬', 106, 70, '', 0, 118)}${na('🧫', 186, 40, '', 0, 118)}${bacil(256, 66, '#9BE36A', 0)}`,
+    slovaci: () => `${P.luka()}${pr('🪂', 108, 62, 60, 'bob')}${pr('🚁', 232, 46, 54, 'swap')}${na('📻', 270, 40, '')}`,
+    klima: () => `${P.luka({ obloha: '#FFE0B0', trava: '#C9D97A', kopce: '#E2D99A' })}${tovaren(84)}${pr('🌡️', 196, 84, 68, '')}${na('🌍', 262, 46)}`,
+    prales: () => `${P.prales()}${pr('🦜', 84, 64, 46, 'swap')}${pr('🐒', 232, 82, 54, 'bob')}${na('🐸', 156, 34, 'hop', 0, 150)}`,
+    oceany: () => `${P.voda()}${pr('🐢', 100, 84, 54, 'bob')}${pr('🐋', 216, 62, 70, 'swap')}${pr('🐠', 160, 128, 36, 'bob', .5)}`,
+    obnovitelna: () => `${P.luka()}<g transform="translate(82 140)"><path d="M-3 0 L-1.5 -86 H1.5 L3 0Z" fill="#fff"/></g>${lopatky(82, 54, 34)}<g transform="translate(206 140)"><path d="M0 0 V-22" stroke-width="3"/><path d="M-38 -20 L-26 -52 H26 L38 -20Z" fill="#3D4FB8"/><path d="M-13 -52 L-19 -20 M13 -52 L19 -20 M-32 -36 H32" stroke="#8FD3FF" stroke-width="2"/></g>${drop(270, 70, 0)}${drop(284, 94, .5)}`,
+    rim: () => `${P.luka({ obloha: '#FFE9C7', trava: '#E8D7A0', kopce: '#F0DDB0' })}<g transform="translate(160 140)"><rect x="-70" y="-10" width="140" height="10" fill="#FFF4E0"/><path d="M-76 -76 L0 -104 L76 -76Z" fill="#FFF4E0"/><rect x="-70" y="-78" width="140" height="10" fill="#FFF4E0"/>
+      ${[-56, -28, 0, 28, 56].map(x => `<rect x="${x - 6}" y="-68" width="12" height="58" fill="#fff"/>`).join('')}</g>${pr('🛡️', 50, 108, 44, '')}${pr('⚔️', 272, 108, 42, 'swap')}`,
+    morava: () => `${P.hrad()}${pr('📜', 152, 112, 46, 'bob')}${pr('⛪', 152, 60, 50, '')}`,
+    objavitelia: () => `${P.more()}<path d="M218 104 C240 86 290 86 312 104Z" fill="#F3D9A0"/><path d="M266 92 C262 70 268 56 274 46" fill="none" stroke-width="5"/><path d="M274 46 C258 40 248 46 244 52 M274 46 C288 36 300 40 304 46 M274 46 C272 32 262 28 256 30" fill="none" stroke="#2FB36A" stroke-width="6"/>
+      ${pr('⛵', 112, 88, 72, 'bob')}${pr('🧭', 50, 146, 36, 'spin')}`,
+    priemysel: () => `${P.luka({ obloha: '#E2E4EE', trava: '#B5C99A', kopce: '#C9D3B0' })}${tovaren(70)}${kolaj(152)}${pr('🚂', 214, 124, 62, '')}`,
+    mozog: () => `${P.telo()}${pr('🧠', 160, 80, 84, 'breathe')}${pr('⚡', 72, 58, 36, 'twinkle')}${pr('⚡', 250, 104, 36, 'twinkle', .6)}`,
+    zrak: () => `${P.telo('#E8F7FF')}${pr('👁️', 116, 84, 76, '')}${pr('🔍', 214, 84, 58, 'swap')}${pr('🌈', 270, 30, 34)}`,
+    dna: () => `${P.lab()}<g transform="translate(96 74)"><g class="spinY"><path d="M-14 -46 C-14 -26 14 -26 14 -4 C14 18 -14 18 -14 40 M14 -46 C14 -26 -14 -26 -14 -4 C-14 18 14 18 14 40" fill="none" stroke-width="8"/><path d="M-14 -46 C-14 -26 14 -26 14 -4 C14 18 -14 18 -14 40" fill="none" stroke="#9B4DCA" stroke-width="4"/><path d="M14 -46 C14 -26 -14 -26 -14 -4 C-14 18 14 18 14 40" fill="none" stroke="#FF6FA8" stroke-width="4"/></g></g>
+      ${na('👪', 214, 70, '', 0, 118)}`,
+    imunita: () => `${P.telo('#EFFAF4')}${pr('🛡️', 108, 86, 80, 'pulse')}${bacil(222, 64, '#9BE36A', 0)}${bacil(270, 112, '#FF9EC7', .6)}${pr('💉', 190, 140, 34, '')}`,
+    obchod: () => `${P.obchod()}${na('🛒', 92, 66, '')}${kid(184, 156, '#FF6FA8', { arm: -30 })}${na('🛍️', 254, 50, 'swap')}`,
+    cesta: () => `${P.cesta()}<path d="M70 168 V100" stroke-width="5"/>${tabula(90, 104, 'AIRPORT →', '#8FD3FF')}${tabula(56, 130, '← STATION', '#FFE27A')}${kid(190, 168, '#4C7DFF', { arm: -40 })}${pr('🗺️', 212, 102, 30, '')}${pr('✈️', 262, 44, 46, 'drift')}`,
+    restauracia: () => `${P.izba({ stena: '#FFE9D6' })}<rect x="74" y="98" width="150" height="10" rx="3" fill="#FF8FB1"/><path d="M96 108 V140 M202 108 V140" stroke-width="6"/>${pr('🍕', 120, 82, 40, '')}${pr('🍽️', 178, 84, 36, '')}
+      ${ludko(272, 154, '#2B2240', { flip: true, arm: -60, skin: '#E8B38A', extra: '<path d="M-6 -36 L0 -30 L6 -36" fill="#fff" stroke-width="2"/>' })}${pr('🧾', 252, 90, 28, 'swap')}`,
+    osebe: () => `${P.luka()}${kid(118, 152, '#FF9F1C', { arm: 20 })}${bub(126, 36, 'Hello! I am Ema.')}${na('⚽', 214, 34, 'hop')}`,
+    vikingovia: () => `${P.more()}<g transform="translate(150 106)"><g class="bob"><path d="M-6 -12 V-86" stroke-width="4"/><path d="M-40 -82 H32 V-30 H-40Z" fill="#fff"/><path d="M-40 -70 H32 M-40 -56 H32 M-40 -42 H32" stroke="#FF5A5F" stroke-width="7"/>
+      <path d="M-86 -14 C-62 16 62 16 86 -14Z" fill="#B5651D"/><path d="M86 -14 C98 -30 92 -44 80 -42 C76 -36 82 -32 86 -34" fill="none" stroke-width="5"/>${[-54, -27, 0, 27, 54].map((x, i) => `<circle cx="${x}" cy="-4" r="9" fill="${['#FFD23F', '#4C7DFF', '#FF5A5F'][i % 3]}" stroke-width="2.5"/>`).join('')}</g></g>${pr('🪓', 280, 46, 36, 'swap')}`,
+    starosta: () => `${P.mesto()}${na('🗳️', 96, 52, '', 0, 162)}${ludko(206, 164, '#4C7DFF', { flip: true, arm: -40, extra: '<path d="M-12 -34 L12 -6" stroke="#FFD23F" stroke-width="5"/>' })}${bub(208, 34, 'Dobrý deň!')}`,
+    predaj: () => `${P.luka({ plot: 1 })}<g transform="translate(176 140)"><path d="M-80 -62 V0 M80 -62 V0" stroke-width="5"/>${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<path d="M${-84 + i * 21} -88 H${-63 + i * 21} V-66 A10.5 6 0 0 1 ${-84 + i * 21} -66Z" fill="${i % 2 ? '#fff' : '#2FBF71'}"/>`).join('')}<rect x="-80" y="-34" width="160" height="34" fill="#E8B67A"/></g>
+      ${pr('🍎', 128, 92, 30, 'bob')}${pr('🍐', 158, 92, 30, 'bob', .3)}${pr('💶', 222, 92, 30, 'swap')}${kid(196, 104, '#FF6FA8', { s: .7 })}`,
+    chlieb: () => `${P.luka({ obloha: '#FFF0C8', trava: '#E8C27A', kopce: '#F3D99A', bezKvetov: true })}<g transform="translate(74 140)"><path d="M-16 0 L-8 -66 H8 L16 0Z" fill="#FFF4E0"/><path d="M-12 -66 L0 -80 L12 -66Z" fill="#E0533F"/></g>${lopatky(74, -66 + 140, 40, '#F3D2A2')}
+      ${[130, 146, 162, 178, 280, 296, 312].map((x, i) => `<g class="leaf" style="animation-delay:${i * .2}s"><path d="M${x} 176 V146" stroke="#C99A2E" stroke-width="2.5"/><ellipse cx="${x}" cy="142" rx="4" ry="9" fill="#F0C24A" stroke-width="2"/></g>`).join('')}${pr('🍞', 232, 104, 52, 'bob')}`,
+    chladnicka: () => `${P.kuchyna()}<rect x="30" y="22" width="76" height="158" rx="8" fill="#F4F7FB"/><path d="M30 76 H106 M44 44 V62 M44 92 V118" stroke-width="3"/>${pr('❄️', 68, 140, 30, 'twinkle')}${na('🧊', 166, 40, 'bob', 0, 118)}${na('🥛', 230, 42, '', 0, 118)}`,
+    magnet: () => `${P.lab()}${na('🧲', 112, 58, 'swap', 0, 118)}${na('📎', 168, 30, 'hop', 0, 118)}${na('📎', 196, 30, 'hop', .4, 118)}${na('🧭', 258, 46, '', 0, 118)}`,
+    semienko: () => `${P.luka({ bezKvetov: true })}${[76, 160, 244].map(x => `<path d="M${x - 20} 116 H${x + 20} L${x + 14} 144 H${x - 14}Z" fill="#E07B4A"/><rect x="${x - 23}" y="110" width="46" height="8" rx="3" fill="#C9653A"/>`).join('')}
+      <ellipse cx="76" cy="108" rx="5" ry="3.5" fill="#9A6234" stroke-width="2"/><path d="M160 110 V92" stroke-width="3"/><path d="M160 98 C150 96 146 88 148 84 C156 84 160 90 160 98 M160 94 C168 90 174 92 176 86 C168 82 162 86 160 94" fill="#4CD07D" stroke-width="2"/>
+      <path d="M244 110 V70" stroke-width="3"/><path d="M244 96 C232 94 228 86 230 82 C238 82 244 88 244 96" fill="#4CD07D" stroke-width="2"/>${pr('🌻', 244, 60, 40, 'breathe')}${drop(118, 40, 0)}${drop(132, 66, .6)}`,
+    dychanie: () => `${P.luka()}${kid(132, 152, '#FF5A5F', { arm: 40 })}<g class="steam"><circle cx="156" cy="96" r="5" fill="#fff" stroke-width="2"/><circle cx="170" cy="88" r="7" fill="#fff" stroke-width="2"/></g>${tree(230, 142, 1.3)}${pr('🌬️', 66, 62, 46, 'drift')}`,
+    kontinenty: () => `${P.vesmir({ planeta: false })}${pr('🌍', 70, 92, 66)}${pr('🌎', 160, 92, 66, 'bob', .4)}${pr('🌏', 250, 92, 66, 'bob', .8)}`,
+    omyly: () => `${P.trieda('2 + 2 = 4')}${kid(96, 160, '#FF9F1C', { arm: -20 })}${bub(102, 132 - 100, 'Skúsim znova!')}${na('✏️', 190, 40, 'swap')}${na('🧩', 250, 44, 'bob', .5)}`,
+    animacia: () => `${P.izba({ okno: false, obraz: false })}<rect x="20" y="18" width="280" height="64" fill="#2B2240"/>${[0, 1, 2, 3].map(i => `<rect x="${32 + i * 68}" y="28" width="56" height="44" rx="3" fill="#fff" stroke-width="2"/><circle cx="${60 + i * 68}" cy="${[60, 40, 36, 58][i]}" r="8" fill="#FF5A5F" stroke-width="2"/>`).join('')}
+      ${[...Array(14).keys()].map(i => `<rect x="${26 + i * 20}" y="21" width="8" height="4" rx="1" fill="#fff" stroke="none"/><rect x="${26 + i * 20}" y="75" width="8" height="4" rx="1" fill="#fff" stroke="none"/>`).join('')}${na('🎬', 104, 56, '')}${na('✏️', 206, 40, 'swap')}`,
+    family: () => `${P.izba()}${ludko(70, 150, '#4C7DFF', { hair: '#3B2A1A' })}${ludko(124, 150, '#FF6FA8', { hair: '#B5651D', d: .3 })}${kid(178, 150, '#FFD23F', { s: .85, d: .6 })}${ludko(244, 150, '#B36BFF', { hair: '#E4E0EE', d: .9 })}
+      ${tabula(70, 168, 'dad')}${tabula(124, 168, 'mum', '#FFB3C7')}${tabula(178, 168, 'me', '#9BE36A')}${tabula(244, 168, 'granny', '#D9C8FF')}`,
+    starostlivost: () => `${P.izba()}${kid(64, 152, '#2FBF71', { arm: -30 })}${na('🐕', 132, 60)}${na('🥣', 192, 34, '')}${na('🐹', 248, 36, 'hop')}`,
+    smer: () => `${P.luka()}<path d="M160 142 V54" stroke-width="5"/>${tabula(202, 64, 'RIGHT →', '#9BE36A')}${tabula(118, 92, '← LEFT', '#FFE27A')}${tabula(160, 30, '↑ UP', '#8FD3FF')}${kid(240, 152, '#FF6FA8', { arm: 40, flip: true })}`,
+    povolania: () => `${P.mesto()}${ludko(72, 164, '#fff', { extra: '<path d="M-6 -28 H6 M0 -34 V-22" stroke="#FF5A5F" stroke-width="3"/>' })}${ludko(160, 164, '#fff', { d: .3, extra: '<path d="M-14 -60 C-20 -76 -6 -84 0 -76 C6 -84 20 -76 14 -60Z" fill="#fff"/>' })}${ludko(248, 164, '#FF9F1C', { d: .6, extra: helma('#FFD23F') })}
+      ${tabula(72, 30, 'lekárka', '#fff')}${tabula(160, 30, 'kuchár', '#fff')}${tabula(248, 30, 'stavbár', '#FFE27A')}`,
+    mesiace: () => `${P.izba({ obraz: false })}${kalendar(30, 24)}<rect x="104" y="100" width="100" height="8" rx="3" fill="#FF8FB1"/><path d="M118 108 V140 M190 108 V140" stroke-width="5"/>${pr('🎂', 154, 80, 42, '')}${pr('🎄', 252, 96, 76, '')}`,
+    'pri-vode': () => `${P.more()}<path d="M0 150 C60 136 140 140 200 150 C250 158 290 150 320 146 V180 H0Z" fill="#F3D9A0"/>${pr('⛱️', 70, 124, 64, '')}${kid(176, 170, '#FF9F1C', { extra: '<rect x="-15" y="-34" width="30" height="20" rx="6" fill="#FF6B1A"/>' })}${pr('🏊', 262, 112, 42, 'bob')}`,
+    cestujeme: () => `${P.cesta()}${na('🚗', 104, 60, '', 0, 166)}${na('🚌', 210, 66, '', .4, 166)}${pr('✈️', 236, 40, 46, 'drift')}${pr('🚢', 52, 110, 30, '')}`,
+    vlak: () => `${P.luka({ bezKvetov: true })}${kolaj(152)}${pr('🚂', 92, 124, 64, '')}${pr('🚃', 170, 124, 60, '')}${pr('🚃', 238, 124, 60, '')}${tabula(160, 30, 'STANICA', '#fff')}`,
+    pracovne: () => `${P.luka({ trava: '#C9A27A', bezKvetov: true })}${pr('🏗️', 244, 76, 92, '')}${na('🚜', 84, 62)}${na('🚛', 164, 62, 'bob', .4)}`,
+    bicykel: () => `${P.cesta()}${kid(140, 124, '#2FBF71', { s: .8, extra: helma('#FF5A5F') })}${pr('🚲', 142, 136, 72, '')}${pr('🔔', 222, 76, 30, 'swap')}`,
+    lode: () => `${P.more()}${pr('⛵', 82, 90, 60, 'bob')}${pr('🚢', 206, 86, 84, 'bob', .5)}${pr('⚓', 282, 140, 34, 'swap')}`,
+    mars: () => `${P.mars()}${pr('🚀', 84, 84, 74, 'bob')}${na('🤖', 222, 60, 'hop')}`,
+    automobil: () => `${P.mesto()}${na('🚗', 120, 74, '', 0, 164)}<rect x="226" y="96" width="32" height="66" rx="5" fill="#2FBF71"/><rect x="232" y="104" width="20" height="14" rx="2" fill="#BFFFD9" stroke-width="2"/><path d="M226 140 C200 146 180 150 160 148" fill="none" stroke-width="3"/>${pr('🔋', 242, 76, 30, 'pulse')}`,
+    ohrozene: () => `${P.savana()}${na('🦏', 104, 70)}${na('🐼', 214, 56, 'bob', .5)}${pr('🦅', 228, 44, 44, 'drift')}`,
+    ceskoslovensko: () => `${P.hrad()}<g transform="translate(130 44)"><path d="M0 0 V96" stroke-width="3"/><g class="leaf"><path d="M0 0 H62 V21 H0Z" fill="#fff"/><path d="M0 21 H62 V42 H0Z" fill="#E0533F"/><path d="M0 0 L28 21 L0 42Z" fill="#2E5BD6"/></g></g>${pr('🕊️', 214, 52, 40, 'drift')}${pr('📜', 176, 120, 36, '')}`,
+    travenie: () => `${P.telo()}${pr('🍎', 70, 70, 44, 'bob')}<path d="M98 72 C120 72 120 92 140 92" fill="none" stroke-width="3" stroke-dasharray="5 6"/>${pr('😋', 170, 92, 64, '')}${pr('🦷', 256, 96, 46, 'hop')}`,
+    pocitac: () => `${P.digi()}<rect x="40" y="132" width="240" height="10" rx="3" fill="#B5651D"/>${pr('💻', 150, 102, 84, '')}${pr('🖱️', 244, 120, 30, '')}${pr('💾', 66, 70, 34, 'bob')}`,
+    umela: () => `${P.digi()}${pr('🤖', 116, 100, 80, 'bob')}${bub(226, 58, 'Ahoj! Pomôžem?', '#BFE7FF')}${pr('🧠', 236, 122, 38, 'breathe')}`,
+    programovanie: () => `${P.digi()}<rect x="70" y="22" width="180" height="112" rx="8" fill="#0E1330" stroke-width="3"/>${[[84, 40, 60, '#FF9EC7'], [96, 58, 90, '#8FD3FF'], [96, 76, 70, '#9BE36A'], [84, 94, 50, '#FFD23F'], [96, 112, 80, '#8FD3FF']].map(([x, y, w, c]) => `<rect x="${x}" y="${y}" width="${w}" height="8" rx="4" fill="${c}" stroke="none"/>`).join('')}
+      ${pr('🐛', 226, 112, 34, 'hop')}${pr('🧩', 290, 120, 36, 'bob')}${pr('⌨️', 160, 158, 40, '')}`,
+    bezpecnenet: () => `${P.digi()}${pr('📱', 112, 96, 84, '')}${pr('🔐', 212, 82, 56, 'pulse')}<path d="M262 120 L282 128 V140 C282 152 274 158 262 162 C250 158 242 152 242 140 V128Z" fill="#2FBF71"/><path d="M254 140 L260 146 L271 134" fill="none" stroke="#fff" stroke-width="3"/>`,
+    roboty: () => `${P.lab()}${koleso(60, 72, 18, '#FFD23F')}${koleso(92, 52, 12, '#8FD3FF', .3)}${na('🤖', 150, 70, 'hop', 0, 118)}${pr('🦾', 240, 84, 64, 'swap')}`,
+  };
+})());
