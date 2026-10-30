@@ -84,6 +84,9 @@ Projekt `svet-za-3-minuty` (plán Spark, zadarmo): prihlásenie, databáza Fires
 
 ## Čo v nej je
 
+- **Verzia 2.8:** strom múdrosti rastie s dňami učenia v 6 stupňoch (`STROM_STUPNE`: semienko, stromček, mladý, veľký,
+  kvitnúci, zlatý), plody sú dni série (navyše v košíku). Kreslí ho `stromSvg`; oslava (`Oslava`) má nový plod padajúci
+  z oblohy, vyrastenie stromu pri novom stupni a padajúce listy. Ťuknutie na kartu Tento týždeň otvorí okno stromu (`Strom`).
 - **Verzia 2.7:** nový účet rodiča (bez detí) dostane celého sprievodcu: `SPR_UCET` na obrazovke tvorby profilu (účet,
   meno, vek, postavička, uloženie) a po uložení prvého dieťaťa `SPR_RODIC` (celá appka pre rodiča, 19 krokov). Ďalšie deti
   a karta Ja spúšťajú len pôvodného sprievodcu pre dieťa `SPR_KROKY`. `Sprievodca.start(kroky, o)`, kroky môžu mať `tl`, `ak`, `oslava`.

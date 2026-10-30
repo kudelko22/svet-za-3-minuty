@@ -279,6 +279,16 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   for (const k of SPR_UCET.filter(k => typeof k.cil === "string")) { const x = k.cil.replace(".tvorba ", "").replace("#", "").replace(".", "").replace("[", "").replace("]", ""); if (!brany.tvorba().includes(x)) chyby.push("sprievodca ucet ciel " + k.cil); }
   Sprievodca.start(); if (Sprievodca.kroky !== SPR_KROKY) chyby.push("sprievodca pre dieta"); Sprievodca.zavri(true);
   st.view = "domov"; render(); }
+/* V35_TEST */
+{ const ocak = [[0, 0], [1, 1], [2, 1], [3, 2], [6, 2], [7, 3], [13, 3], [14, 4], [29, 4], [30, 5], [60, 5]];
+  for (const [n, i] of ocak) if (stromStupen(n) !== i) chyby.push("stupen stromu " + n + " -> " + stromStupen(n));
+  for (let i = 0; i < STROM_STUPNE.length; i++) { const sv = stromSvg({ stupen: i, plody: STROM_STUPNE[i].plody, kos: 2, novy: 'kos', z: .8, sova: true }); if (!sv.startsWith("<svg") || (i && !sv.includes("os-koruna"))) chyby.push("strom svg " + i); }
+  if (PLODY.length < Math.max(...STROM_STUPNE.map(x => x.plody))) chyby.push("malo miest na plody");
+  Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "domov" }); render();
+  if (!main.innerHTML.includes("data-strom") || !main.innerHTML.includes("tyzden-strom")) chyby.push("karta strom");
+  const dniPred = st.dni; for (const n of [0, 1, 5, 20, 40]) { st.dni = Array.from({ length: n }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz(); Oslava.ukaz(() => {}); }
+  if (!stromStavHtml(5, 2).includes("Ešte 2 dni")) chyby.push("strom stav text " + stromStavHtml(5, 2));
+  st.dni = dniPred; render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });
 { const plan = autoPlan(byId("hory")); const qn = byId("hory").z.length;
