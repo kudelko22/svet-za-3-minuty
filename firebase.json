@@ -1,7 +1,7 @@
 {
   "hosting": {
     "public": ".",
-    "ignore": ["firebase.json", "firestore.rules", "README.md", "**/*.log", ".git/**", "**/.*", "**/node_modules/**", "zdroj/**"],
+    "ignore": ["firebase.json", "firestore.rules", "README.md", "CLAUDE.md", "**/*.log", ".git/**", "**/.*", "**/node_modules/**", "zdroj/**"],
     "headers": [
       { "source": "**", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
     ]
