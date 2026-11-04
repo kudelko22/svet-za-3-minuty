@@ -6,7 +6,7 @@ const skript = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m)[1];
 const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
-const src = ['temy.js', 'obrazky.js', 'misie.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
+const src = ['temy.js', 'obrazky.js', 'misie.js', 'anglictina.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
@@ -37,7 +37,7 @@ st.upravuje.meno = "Ema"; tvorbaKlik(document.createElement("button"), { ulozitD
 if (!window.Cloud.ulozene || window.Cloud.ulozene.vek !== "starsi") throw new Error("tvorba neulozila");
 for (const a of [nahodnyAvatar(), nahodnyAvatar(), nahodnyAvatar()]) postavicka(a, true);
 st.faza = "appka"; st.dietaId = "d1"; st.avatar = nahodnyAvatar(); st.meno = "Emka";
-for (const v of ['domov','temy','hry','odznaky','ja','misia']) { st.view = v; render(); }
+for (const v of ['domov','temy','hry','odznaky','ja','misia','anglictina']) { st.view = v; render(); }
 /* MISIA DNA */
 {
   const kl = (d) => Misie.klik(document.createElement("button"), d);
@@ -70,6 +70,35 @@ for (const v of ['domov','temy','hry','odznaky','ja','misia']) { st.view = v; re
   for (const mm of MISIE) { st.misia = Misie.nova(mm, true); if (mm.t === 'keby') kl({ miVol: "1" }); render(); st.misia.koniec = { zisk: 0, noveOdznaky: [], noveOdmeny: [], noveHry: [] }; render(); }
   kl({ miSpat: "" }); kl({ miU: "3" }); render(); if (Misie.uroven() !== 3) throw new Error("misie: uroven");
   go("domov"); go("misia"); go("domov");
+}
+/* ANGLICTINA: samostatny bonus */
+{
+  if (SKUPINY.some(g => g.kat.includes("anglictina")) || TV().some(x => x.k === "anglictina")) throw new Error("ang: v beznych temach");
+  if (!ANGT().length) throw new Error("ang: lekcie");
+  const slova = new Set(ANG_SLOVA.map(w => w.en));
+  if (slova.size !== ANG_SLOVA.length) throw new Error("ang: duplicitne slovo");
+  if (ANG_SLOVA.length < 100 || ANG_VETY.length < 40) throw new Error("ang: malo obsahu");
+  for (const w of ANG_SLOVA) if (!ANG_SKUPINY[w.g] || !w.en || !w.sk || !w.cit || ![1,2].includes(w.u)) throw new Error("ang: slovo " + w.en);
+  for (const v of ANG_VETY) if (!v.en || !v.sk || !ANG_SKUPINY[v.g] || ![1,2].includes(v.u)) throw new Error("ang: veta " + v.en);
+  for (const vek of ["mladsi", "starsi"]) {
+    st.vek = vek;
+    for (let d = 20000; d < 20060; d++) for (const ex of [0, 1]) {
+      const qs = Ang.otazky(d, ex);
+      if (qs.length !== 6) throw new Error("ang: pocet otazok");
+      for (const q of qs) { if (q.s < 0 || q.o.length !== 3 || new Set(q.o).size !== 3 || !q.vys) throw new Error("ang: otazka " + JSON.stringify(q)); }
+    }
+  }
+  st.vek = "mladsi";
+  const A = (d) => Ang.klik(document.createElement("button"), d);
+  localStorage.d = Object.fromEntries(Object.entries(localStorage.d).filter(([k]) => !k.includes("ang-")));
+  st.view = "anglictina"; st.ang = null; const pred = st.body; render();
+  A({ angStart: "" }); render();
+  A({ angVol: String((st.ang.qs[0].s + 1) % 3) }); if (st.ang.chyby !== 1) throw new Error("ang: zle");
+  for (let i = 0; i < 6; i++) { A({ angVol: String(st.ang.qs[st.ang.i].s) }); render(); A({ angDalej: "" }); render(); }
+  if (!st.ang.koniec || st.body <= pred || !Ang.splnenaDnes() || !st.odznaky.includes("ang1")) throw new Error("ang: koniec/body/odznak");
+  const po = st.body; A({ angStart: "" }); for (let i = 0; i < 6; i++) { A({ angVol: String(st.ang.qs[st.ang.i].s) }); A({ angDalej: "" }); }
+  if (st.body !== po) throw new Error("ang: body dvakrat");
+  A({ angSpat: "" }); render(); go("domov"); go("anglictina"); go("domov");
 }
 const chyby = [];
 for (const t of T) {
@@ -208,7 +237,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
 /* V25B_TEST */
 { const RE = new RegExp(EMO_RE.source, "u"), zle = T.filter(t => String(ART[t.id]).includes("P.") && RE.test(ART[t.id]())); if (zle.length) chyby.push("nove obrazky s emoji: " + zle.map(t => t.id).join(" ")); }
 /* V26_TEST */
-{ for (const id of Object.keys(KAT)) { const n = SKUPINY.filter(g => g.kat.includes(id)).length; if (n !== 1) chyby.push("kategoria " + id + " v oblastiach " + n + "x"); }
+{ for (const id of Object.keys(KAT)) { const n = SKUPINY.filter(g => g.kat.includes(id)).length; if (n !== 1 && id !== "anglictina") chyby.push("kategoria " + id + " v oblastiach " + n + "x"); }
   for (const id of SKUPINY.flatMap(g => g.kat)) if (!KAT[id]) chyby.push("oblast ma neznamu kategoriu " + id);
   for (const vek of ["mladsi", "starsi"]) { st.vek = vek; for (const sk of ["", ...SKUPINY.map(g => g.id)]) { st.skupina = sk; st.kat = ""; st.q = ""; fillTemy(); } }
   st.kat = "fav"; fillTemy(); st.kat = ""; st.q = "srdce"; fillTemy(); st.q = ""; st.skupina = ""; st.view = "domov"; render(); }

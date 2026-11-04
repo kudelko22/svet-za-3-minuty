@@ -64,3 +64,15 @@ Nie je hotové / vedieť:
 3. Obrazovku nebolo možné poriadne prezrieť očami (okno prehliadača bolo skryté); logika a vykreslenie prešli testom, základné
    zobrazenie som videl. Treba vyskúšať na telefóne.
 4. 30 misií vydrží cca 2 týždne na jednu náročnosť, potom sa opakujú. Ďalšie sa dopíšu do `misie.js`.
+
+## Etapa B: Angličtina ako samostatný bonus (verzia 3.0, nenasadené)
+
+Hotové (4. 11. 2026):
+- Angličtina už nie je medzi bežnými témami a oblasťami. `TV()` ju vynecháva, `ANGT()` vracia anglické lekcie (13 pôvodných tém, rovnaké id, takže `st.done`, hviezdičky a odznaky ostávajú).
+- Vlastné miesto: karta „Angličtina na každý deň“ na Domove, pohľad `anglictina` (kvízik dňa, môj postup, zoznam pôvodných anglických lekcií).
+- Denný kvízik: 6 otázok, vysvetlenie pri každej. Dáta v `anglictina.js` (100+ slov so spôsobom čítania, 40+ viet, skupiny); otázky sa skladajú podľa čísla dňa, takže každý deň sú iné (mladší len ľahšie položky). Body 8 raz za deň, ďalší kvízik bez bodov.
+- Uložený stav `ang-<dieťa>` (dni, body, počet bez chyby); odznaky ang1, ang7, ang20, ang50, angBezChyby. Nič sa neresetuje, migrácia netreba.
+- Žiadny tlak: vynechaný deň nič nestojí. Novinka v `NOVINKY` pod verziou 36 (číslo verzie ostalo 36 do vydania 3.0).
+- Súbory: `anglictina.js` (nový, pridaný do `sw.js` a `zostav.js`), `appka.html`, `test.js` (nové skúšky). `zdroj\spusti.cmd test` OK, build OK, vyskúšané na emulátore.
+
+Nezvládnuté / na rozhodnutie: ikony odznakov pre angličtinu sú existujúce (bublina, čiapka, koruna, terč), vlastné kresby nie sú. Obsahu je zhruba na 4 týždne bez opakovania slov, viac slov sa dá pridať riadkom do `ANG_SLOVA`.

@@ -526,6 +526,26 @@ body.auto-rezim .blobs { opacity: .3; }
 .auto-play { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); color: var(--ink); font-size: 1.4rem; animation: pulse 1.6s ease-in-out infinite; }
 .btn.auto-mini { background: #2E3A87; }
 
+/* Angličtina: bonus na každý deň */
+.ang-karta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; text-align: left; border: 3px solid var(--ink); border-radius: 22px; background: #FFE0EC; box-shadow: 0 4px 0 var(--ink); }
+.ang-karta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.ang-ik { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: #fff; }
+.ang-ik svg { width: 70%; height: 70%; }
+.ang-karta div { display: grid; gap: 1px; flex: 1; min-width: 0; }
+.ang-karta b { font: 700 1.15rem/1.1 var(--f-display); }
+.ang-karta small { font-weight: 700; color: var(--muted); }
+.ang-karta .misia-sip { background: #D6336C; }
+.ang-karta.hotova { background: #E7F9EC; }
+.ang-otazka { font: 700 1.3rem/1.3 var(--f-display); background: #FFF6D6; text-align: center; }
+.ang-otazka .ang-slovo { display: block; margin-top: 4px; font-size: 1.9rem; color: #D6336C; }
+.ang-ans { display: grid; gap: 12px; }
+.ang-pokrok { display: flex; gap: 6px; }
+.ang-pokrok i { flex: 1; height: 12px; border-radius: 8px; border: 2.5px solid var(--ink); background: #fff; }
+.ang-pokrok i.ok { background: var(--grass); }
+.ang-pokrok i.ted { background: var(--sun); }
+.ang-vys { display: grid; gap: 4px; background: #E8F7FF; }
+.ang-vys p { margin: 0; }
+.ang-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 /* Misia dňa */
 .misia-casti { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
 .misia-cast { display: flex; align-items: center; gap: 8px; padding: 6px 10px; text-align: left; border: 3px solid var(--ink); border-radius: 18px; background: var(--paper); box-shadow: 0 3px 0 var(--ink); min-width: 0; }
@@ -1179,6 +1199,7 @@ body.dm-rezim::before { display: none; }
 <script src="temy.js?v=36"></script>
 <script src="obrazky.js?v=36"></script>
 <script src="misie.js?v=36"></script>
+<script src="anglictina.js?v=36"></script>
 <script>
 const VERZIA_APPKY = 36; const VERZIA_NAZOV = '3.0'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
@@ -1527,7 +1548,7 @@ const pick = a => a[Math.floor(Math.random() * a.length)];
 const SKUPINY = [
   { id: 'priroda', nazov: 'Príroda a vesmír', c: '#16BFAE', ikona: () => IK_KAT.priroda, kat: ['zvieratka', 'priroda', 'cas', 'telo', 'vesmir', 'planeta', 'biologia'] },
   { id: 'ludia', nazov: 'Ľudia a život', c: '#FF6FA8', ikona: () => IK.rodina, kat: ['domacnost', 'zivot', 'bezpecne', 'psychologia', 'ekonomika', 'kultura'] },
-  { id: 'svet', nazov: 'Svet a dejiny', c: '#FF8A3D', ikona: () => IK_KAT.planeta, kat: ['historia', 'dejiny', 'geografia', 'politika', 'anglictina'] },
+  { id: 'svet', nazov: 'Svet a dejiny', c: '#FF8A3D', ikona: () => IK_KAT.planeta, kat: ['historia', 'dejiny', 'geografia', 'politika'] },
   { id: 'veda', nazov: 'Veda a technika', c: '#7C6CFF', ikona: () => IK_KAT.veda, kat: ['tvary', 'veda', 'technika', 'doprava', 'vynalezy', 'digital'] },
 ];
 const skupinaKat = id => SKUPINY.find(g => g.kat.includes(id));
@@ -1540,7 +1561,9 @@ const kats = () => { const v = TV(); return Object.keys(KAT).map(id => ({ id, ..
 const pre = q => st.vek === 'starsi' || q.v !== 's';
 // témy pre vek dieťaťa: kategória alebo téma s vek: 'mladsi' / 'starsi' patrí len danému veku
 const preVek = t => (!t.vek || t.vek === st.vek) && (!KAT[t.k].vek || KAT[t.k].vek === st.vek);
-const TV = () => T.filter(preVek);
+const TV = () => T.filter(t => t.k !== 'anglictina' && preVek(t));
+// anglické lekcie sú mimo bežných tém: majú vlastné miesto Angličtina (bonus)
+const ANGT = () => T.filter(t => t.k === 'anglictina' && preVek(t));
 // väčšie deti: namiesto ľahkých nesprávnych odpovedí ťažšie (q.h); pôvodná otázka ostáva v povodna
 const naVek = q => st.vek === 'starsi' && q.h ? { ...q, a: [q.a[0], ...q.h.map(t => ['', t])], povodna: q } : q;
 const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
@@ -1757,6 +1780,11 @@ const ODZNAKY = [
   { g: 'Misie', id: 'misia30', n: 'Legenda misií', p: 'Splň 30 misií', ok: x => x.mis.n >= 30 },
   { g: 'Misie', id: 'misiaTypy', n: 'Všestranný mysliteľ', p: 'Splň misiu z každého z 5 typov', ok: x => x.mis.typy >= 5 },
   { g: 'Misie', id: 'vyzva1', n: 'Objaviteľ sveta', p: 'Splň výzvu skutočného sveta', ok: x => x.mis.vyzvy >= 1 },
+  { g: 'Angličtina', id: 'ang1', e: '🔤', n: 'Prvý kvízik', p: 'Dokonči denný kvízik z angličtiny', ok: x => x.ang.n >= 1 },
+  { g: 'Angličtina', id: 'ang7', e: '🇬🇧', n: 'Angličtinár', p: 'Dokonči 7 kvízikov z angličtiny', ok: x => x.ang.n >= 7 },
+  { g: 'Angličtina', id: 'ang20', e: '🎓', n: 'Slovná zásoba', p: 'Dokonči 20 kvízikov z angličtiny', ok: x => x.ang.n >= 20 },
+  { g: 'Angličtina', id: 'ang50', e: '🗣️', n: 'Hovorím po anglicky', p: 'Dokonči 50 kvízikov z angličtiny', ok: x => x.ang.n >= 50 },
+  { g: 'Angličtina', id: 'angBezChyby', e: '🎯', n: 'Bez chyby po anglicky', p: 'Dokonči kvízik z angličtiny bez chyby', ok: x => x.ang.bezChyby >= 1 },
   { g: 'Rôzne', id: 'myticke', e: '🦄', n: 'Mýtický hrdina', p: 'Obleč postavičke mýtickú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) >= 1600) },
   ...Object.entries(KAT).map(([k, c]) => ({
     g: 'Majster kategórie', id: 'kat-' + k, vek: c.vek, e: c.e, n: 'Majster: ' + bezSpojovnika(c.nazov),
@@ -1770,7 +1798,7 @@ const IK_ODZNAKU = { prva: 'klicok', temy3: 'kniha', temy5: 'kat:vesmir', temy10
   body50: 'hviezda', body100: 'hviezda', body250: 'iskra', body500: 'hviezda', body1000: 'kometa', body1500: 'planeta', body2000: 'planeta', body5000: 'drak',
   hra1: 'gamepad', hry10: 'kocka', hry50: 'gamepad', hryvsetky: 'konfety', pexeso: 'hra:pexeso', 'pexeso-genius': 'mozog', hadaj6: 'oko', hadaj8: 'hra:hadaj',
   hviezdy20: 'hra:hviezdy', hviezdy35: 'kometa', bubliny10: 'hra:bubliny', bubliny20: 'pohar', skladacka: 'hra:skladacka', 'skladacka-rychlo': 'stopky', opakuj5: 'nota', opakuj10: 'hra:opakuj',
-  sova10: 'hra:sova', sova30: 'sova', fav1: 'obalka', zberatel: 'srdce', fav10: 'srdce', stylista: 'saty', zvieratko: 'labka', myticke: 'jednorozec', misia1: 'lupa', misia5: 'oko', misia15: 'ziarovka', misia30: 'koruna', misiaTypy: 'mozog', vyzva1: 'vlajka' };
+  sova10: 'hra:sova', sova30: 'sova', fav1: 'obalka', zberatel: 'srdce', fav10: 'srdce', stylista: 'saty', zvieratko: 'labka', myticke: 'jednorozec', misia1: 'lupa', ang1: 'kat:anglictina', ang7: 'kat:anglictina', ang20: 'ciapka', ang50: 'koruna', angBezChyby: 'terc', misia5: 'oko', misia15: 'ziarovka', misia30: 'koruna', misiaTypy: 'mozog', vyzva1: 'vlajka' };
 const ikOdznaku = o => { const v = o.id.startsWith('kat-') ? 'kat:' + o.id.slice(4) : IK_ODZNAKU[o.id] || 'medaila';
   return v.startsWith('kat:') ? ikKat(v.slice(4)) : v.startsWith('hra:') ? OBR_HRY[v.slice(4)] : ik(v); };
 function najdlhsiaSeria(dniList) {
@@ -1789,7 +1817,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   const teraz = new Date(), prebrate = st.done.filter(byId);
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
-    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
+    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
   const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
@@ -2891,6 +2919,7 @@ const views = {
       </section>
       <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
         <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
+      ${Ang.karta()}
       ${kartaDalsiaOdmena()}
       <div class="acts">
         <button class="act${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
@@ -2924,6 +2953,7 @@ const views = {
   },
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
+  anglictina: () => Ang.render(),
   ja() {
     const vsetky = TV().length, h = TV().filter(t => st.done.includes(t.id)).length, s = seria(), obvod = 326.7;
     const f = st.fav.map(byId).filter(Boolean), C = window.Cloud;
@@ -3566,8 +3596,108 @@ function kartaMisiePoTeme(t) {
     <div><small class="lbl-mala">${ok ? 'Misia dňa splnená' : 'Časť 2 misie dňa: skús to'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p} Potom choď von a skús to vo svete.</span></div>
     <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Pokračovať misiou!'}</button></section>`;
 }
+/* Angličtina na každý deň: samostatný bonus. Denný kvízik (6 otázok, 2 až 3 minúty), nový každý deň z dát v anglictina.js.
+   Bez tlaku: vynechaný deň nič nestojí, body sú raz za deň. */
+const Ang = {
+  kluc: () => 'ang-' + st.dietaId,
+  data() { const d = S.get(this.kluc(), null); return d && d.dni ? d : { dni: {}, bodyDen: '', bezChyby: 0 }; },
+  sucet() { const d = this.data(); return { n: Object.keys(d.dni).length, bezChyby: d.bezChyby || 0 }; },
+  splnenaDnes() { return !!this.data().dni[key(new Date())]; },
+  rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; },
+  mix(a, r) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; },
+  /* 6 otázok na daný deň; extra = ďalšie kolo navyše (bez bodov) */
+  otazky(den, extra = 0) {
+    const mlad = st.vek !== 'starsi', W = ANG_SLOVA.filter(w => !mlad || w.u === 1), V = ANG_VETY.filter(v => !mlad || v.u === 1);
+    const ws = this.mix(W, this.rng(11)), vs = this.mix(V, this.rng(23)), r = this.rng(den * 31 + extra * 977 + 5);
+    const w = i => ws[(den * 4 + extra * 4 + i) % ws.length], v = i => vs[(den * 2 + extra * 2 + i) % vs.length];
+    const vyber = (spravne, pool, f) => {
+      const ine = this.mix(pool.filter(x => f(x) !== f(spravne)), r), dobre = [...ine.filter(x => x.g === spravne.g), ...ine.filter(x => x.g !== spravne.g)];
+      const uniq = []; for (const x of dobre) if (!uniq.some(y => f(y) === f(x))) uniq.push(x);
+      return this.mix([spravne, ...uniq.slice(0, 2)], r);
+    };
+    const slovo = (x, smer) => {
+      const o = vyber(x, W, smer ? (y => y.sk) : (y => y.en)).map(y => smer ? y.sk : y.en);
+      return smer ? { t: 'Čo znamená slovo', slovo: x.en, o, s: o.indexOf(x.sk), vys: `${x.en} znamená ${x.sk}. Čítaj ${x.cit}.` }
+        : { t: 'Ako sa povie po anglicky', slovo: x.sk, o, s: o.indexOf(x.en), vys: `${x.sk} sa povie po anglicky ${x.en}. Čítaj ${x.cit}.` };
+    };
+    const veta = (x, medzera) => {
+      const re = new RegExp('\\b' + x.v + '\\b', 'i');
+      if (medzera && re.test(x.en)) {
+        const sl = ANG_SLOVA.find(y => y.en === x.v && y.g === x.g) || { g: x.g, en: x.v }, o = vyber(sl, ANG_SLOVA, y => y.en).map(y => y.en);
+        return { t: 'Doplň chýbajúce slovo', slovo: x.en.replace(re, '_____'), o, s: o.indexOf(x.v), vys: `${x.en} znamená: ${x.sk}` };
+      }
+      const o = this.mix([x, ...this.mix(V.filter(y => y.sk !== x.sk), r).slice(0, 2)], r).map(y => y.sk);
+      return { t: 'Čo znamená veta', slovo: x.en, o, s: o.indexOf(x.sk), vys: `${x.en} znamená: ${x.sk}` };
+    };
+    return [slovo(w(0), true), slovo(w(1), false), veta(v(0), den % 2 === 0), slovo(w(2), (den + 1) % 2 === 0), veta(v(1), den % 2 === 1), slovo(w(3), false)];
+  },
+  nova(nahliad, extra = 0) { return { qs: this.otazky(denCislo(), extra), i: 0, zle: [], chyby: 0, spravne: false, koniec: null, nahliad: !!nahliad }; },
+  body: ch => ch > 2 ? 5 : 8,
+  dokonci() {
+    const q = st.ang, dnes = key(new Date()), d = this.data(), pred = st.body;
+    let zisk = 0;
+    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(q.chyby); d.bodyDen = dnes; st.body += zisk; S.set('body', st.body); }
+    if (!q.nahliad) { d.dni[dnes] = { ch: q.chyby }; if (!q.chyby) d.bezChyby = (d.bezChyby || 0) + 1; S.set(this.kluc(), d); }
+    const odznaky = noveOdznaky('anglictina');
+    q.koniec = { zisk, noveOdznaky: odznaky, noveOdmeny: noveOdmeny(pred, st.body), noveHry: noveHry(pred, st.body) };
+    Zvuk.play('win'); vibruj([40, 30, 40]); FX.burst(innerWidth / 2, innerHeight / 3, 30, ['star', 'dot']);
+    paintHead(); render(); scrollTo(0, 0);
+  },
+  karta() {
+    const ok = this.splnenaDnes();
+    return `<button class="ang-karta${ok ? ' hotova' : ''}" data-go="anglictina"><span class="ang-ik">${IK_KAT.anglictina}</span>
+      <div><b>Angličtina na každý deň</b><small>${ok ? 'Dnešný kvízik je hotový. Môžeš si dať ešte jeden.' : 'Krátky kvízik so slovíčkami, 2 až 3 minúty'}</small></div><span class="misia-sip">${ok ? ii(IK.fajka) : IKO.play}</span></button>`;
+  },
+  hub() {
+    const ok = this.splnenaDnes(), s = this.sucet(), lek = ANGT();
+    return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Angličtina</h1></div>
+      <p class="muted">Bonus na každý deň: nový krátky kvízik so slovíčkami a vetami. Keď ho nestihneš, nič sa nestane, zajtra príde nový.</p>
+      <section class="card misia-dnes" style="--c:#D6336C"><div class="ang-ik">${IK_KAT.anglictina}</div>
+        <div><small class="lbl-mala">${ok ? 'Dnes hotovo' : 'Kvízik dňa'}</small><b class="misia-typ">Slovíčka a vety</b><span class="muted">6 otázok, vysvetlenie pri každej odpovedi.</span></div>
+        <div class="chips misia-chipy"><span class="chip tmavy" style="--c:#FFD23F">2 až 3 minúty</span><span class="chip tmavy" style="--c:#B6F0C8">6 otázok</span></div>
+        ${ok ? `<p class="misia-hotovo">${ii(IK.fajka)} Dnešný kvízik máš splnený. Zajtra príde nový.</p>` : ''}
+        <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-ang-start>${ok ? 'Ešte jeden kvízik (bez bodov)' : 'Začať kvízik'}</button></section>
+      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Môj postup</h2>
+        <div class="ang-stats"><div class="card mini" style="--c:#FFE0EC"><b>${s.n}</b><small>${s.n === 1 ? 'kvízik' : s.n > 1 && s.n < 5 ? 'kvíziky' : 'kvízikov'}</small></div>
+        <div class="card mini" style="--c:#E7F9EC"><b>${s.bezChyby}</b><small>bez chyby</small></div></div></section>
+      <section class="sec"><h2 class="h2" style="--hc:#D6336C">Anglické lekcie</h2><p class="muted">Pôvodné anglické témy, môžeš sa k nim kedykoľvek vrátiť.</p>
+        <div class="list">${lek.map(row).join('')}</div></section>`;
+  },
+  render() {
+    const q = st.ang;
+    if (!q) return this.hub();
+    const o = q.qs[q.i], k = q.koniec;
+    const pokrok = `<div class="ang-pokrok" aria-label="Otázka ${q.i + 1} z ${q.qs.length}">${q.qs.map((_, i) => `<i class="${i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''}"></i>`).join('')}</div>`;
+    const top = `<div class="hra-top"><button class="ib" data-ang-spat aria-label="Späť na angličtinu">${IKO.zavriet}</button><b class="hra-nazov">Kvízik z angličtiny</b></div>`;
+    if (k) return `${top}${pokrok}<section class="card misia-pribeh" style="text-align:center"><b class="misia-typ">Hotovo!</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} Zajtra príde nový kvízik.</p></section>
+      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ii(STAR())}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
+      ${odmenyHtml(k)}<button class="btn wide cta" data-go="anglictina">Hotovo</button>`;
+    return `${top}${pokrok}${q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
+      <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
+      <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:#FFE0EC"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
+      ${q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''}
+      ${q.spravne ? `<div class="card ang-vys nova"><small class="lbl-mala">Vysvetlenie</small><p>${esc(o.vys)}</p></div><button class="btn wide cta" data-ang-dalej>${q.i === q.qs.length - 1 ? 'Dokončiť' : 'Ďalej'}</button>` : ''}`;
+  },
+  klik(b, d) {
+    const q = st.ang;
+    if (d.angStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'anglictina'; const hot = this.splnenaDnes(); st.ang = this.nova(hot, hot ? (Math.floor(Date.now() / 6e4) % 50) + 1 : 0); render(); scrollTo(0, 0); return true; }
+    if (d.angSpat !== undefined) { Zvuk.play('whoosh'); st.ang = null; render(); scrollTo(0, 0); return true; }
+    if (!q || q.koniec) return false;
+    if (d.angVol !== undefined) {
+      const i = +d.angVol, o = q.qs[q.i];
+      if (i === o.s) { q.spravne = true; Zvuk.play('star'); } else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); }
+      render(); return true;
+    }
+    if (d.angDalej !== undefined) {
+      if (q.i >= q.qs.length - 1) { this.dokonci(); return true; }
+      q.i++; q.zle = []; q.spravne = false; Zvuk.play('pop'); render(); scrollTo(0, 0); return true;
+    }
+    return false;
+  },
+};
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 36, obr: () => IK_KAT.anglictina, n: 'Angličtina na každý deň', p: 'Angličtina má nové miesto na Domove. Každý deň nový krátky kvízik so slovíčkami a vetami, s vysvetlením odpovedí. Pôvodné anglické lekcie nájdeš tam tiež.' },
   { v: 36, obr: () => ik('lupa'), n: 'Nová Misia dňa', p: 'Každý deň jedna krátka misia: záhada, rozhodovanie, dve pravdy a lož, príčiny a následky alebo výzva vonku. Nájdeš ju na Domove. Za splnenie sú body a odznaky.' },
   { v: 35, obr: () => stromSvg({ stupen: 4, plody: 6, kos: 0, novy: -1 }), n: 'Strom múdrosti rastie s vami', p: 'Strom má 6 stupňov, od semienka až po zlatý strom múdrosti. Ťuknite na kartu Tento týždeň a uvidíte, ako vyzerá. Oslava je teraz ešte veľkolepejšia.' },
   { v: 34, obr: () => owl('cheer'), n: 'Sprievodca pre nových rodičov', p: 'Nový účet rodiča dostane celú prehliadku: ako funguje účet a profil dieťaťa, téma dňa, body, kvízy, hry, priatelia aj nastavenia.' },
@@ -3657,7 +3787,7 @@ const SPR_RODIC = [
   { v: 'domov', cil: '.acts', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a body sú raz za deň.' },
   { v: 'domov', cil: '.plocha-karta', ak: () => !!document.querySelector('.plocha-karta'), n: 'Appka na ploche', p: 'Pridajte si appku na plochu telefónu. Bude sa otvárať ako naozajstná aplikácia, s ikonkou a cez celú obrazovku.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťuknite na Témy', p: 'Teraz si to vyskúšajte: ťuknite dole na Témy.' },
-  { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${T.length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
+  { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${TV().length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
   { tap: 'hry', cil: '#nav-hry', n: 'Ťuknite na Hry', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Hry.' },
   { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za body. Hraním sa body neminú, sú to odmeny za učenie.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťuknite na Priatelia', p: 'Ťuknite na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
@@ -4016,13 +4146,13 @@ function render() {
   }
   ['domov', 'temy', 'hry', 'priatelia', 'ja'].forEach(v => {
     const b = document.getElementById('nav-' + v);
-    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && st.view === 'misia') || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   socZnacka();
   paintHead();
 }
 
-function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.view = v; render(); window.scrollTo(0, 0); }
+function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.ang = null; st.view = v; render(); window.scrollTo(0, 0); }
 
 // Lietajúca sova: ťuknutie kdekoľvek na oblohu (aj medzerník na počítači)
 document.addEventListener('pointerdown', e => { if (e.target && e.target.id === 'sova-cv' && st.hra && st.hra.id === 'sova') { e.preventDefault(); Hra.mav(); } });
@@ -4052,7 +4182,7 @@ document.addEventListener('click', e => {
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
   if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
   if (d.auto) { Auto.ovladaj(d.auto); return; }
-  if (Misie.klik(b, d)) return;
+  if (Misie.klik(b, d) || Ang.klik(b, d)) return;
   if (d.vyber) { vyberOdznak(d.vyber, b); return; }
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra); return; }
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
