@@ -487,6 +487,14 @@ body.auto-rezim .blobs { opacity: .3; }
 .btn.auto-mini { background: #2E3A87; }
 
 /* Misia dňa */
+.misia-casti { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+.misia-cast { display: flex; align-items: center; gap: 8px; padding: 6px 10px; text-align: left; border: 3px solid var(--ink); border-radius: 18px; background: var(--paper); box-shadow: 0 3px 0 var(--ink); min-width: 0; }
+.misia-cast.druha { background: color-mix(in srgb, var(--c) 22%, #fff); }
+.misia-cast i { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--sun); font: 700 1rem/1 var(--f-display); font-style: normal; }
+.misia-cast.hotova i { background: var(--grass); color: #fff; }
+.misia-cast > span { display: grid; gap: 0; min-width: 0; font: 700 1rem/1.1 var(--f-display); }
+.misia-cast small { font: 700 .75rem/1.2 var(--f-body); color: var(--muted); }
+button.misia-cast:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
 .misia-pas { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; text-align: left; border: 3px solid var(--ink); border-radius: 20px; background: var(--c); color: #fff; box-shadow: 0 4px 0 var(--ink); }
 .misia-pas:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .misia-pas.hotova { opacity: .85; }
@@ -2831,13 +2839,13 @@ const views = {
         <div class="tyzden-strom">${MINI_STROM}<span>Môj strom múdrosti: <b>${STROM_STUPNE[stromStupen()].n}</b></span><i>›</i></div>
       </section>
       <section class="hero" style="--c:${k.c}">
-        <div class="hero-art">${scene(t, 'sm')}<span class="sticker">${ii(STAR())} Téma dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
+        <div class="hero-art">${scene(t, 'sm')}<span class="sticker">${ii(STAR())} Misia dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
         <div class="hero-in">
           <span class="chip" style="--c:${k.c}">${ii(ikKat(t.k))} ${k.nazov}</span>
           <h2 class="tt">${t.t}</h2>
           <p class="muted">${teaser(t)}</p>
           <button class="btn wide ${hot ? 'ghost' : 'cta'}" data-start="${t.id}">${hot ? '↻ Zopakovať tému' : 'Poďme na to! →'}</button>
-          ${kartaMisie()}
+          ${kartaMisie(hot)}
         </div>
       </section>
       <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
@@ -3413,7 +3421,7 @@ const Misie = {
     return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Misia dňa</h1></div>
       <p class="muted">Jedna krátka misia na deň. Keď ju nestihneš, nič sa nestane, zajtra príde nová.</p>
       <section class="card misia-dnes" style="--c:${T.c}"><div class="frame misia-banner">${svg(temaDna())}<span class="sticker">${ii(ik(T.ik))} Misia dňa</span></div>
-        <div><small class="lbl-mala">${ok ? 'Dnes splnené' : 'Dnešná misia'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p}</span></div>
+        <div><small class="lbl-mala">${ok ? 'Dnes splnené' : 'Časť 2 misie dňa'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p}</span></div>
         ${this.chipy(m, u)}
         ${ok ? `<p class="misia-hotovo">${ii(IK.fajka)} Dnešnú misiu máš splnenú. ${esc(T.von)}</p>` : ''}
         <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Začať misiu'}</button></section>
@@ -3504,18 +3512,18 @@ const Misie = {
     return false;
   },
 };
-// pás Misia dňa v téme dňa na Domove
-function kartaMisie() {
+// dve časti jednej misie dňa v karte na Domove: 1 téma (objav), 2 hra (skús)
+function kartaMisie(temaHotova) {
   const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
-  return `<button class="misia-pas${ok ? ' hotova' : ''}" data-go="misia" style="--c:${T.c}"><span class="misia-obr mala">${ik(T.ik)}</span>
-    <span class="misia-pas-t"><b>Misia dňa${ok ? ' splnená' : ''}</b><small>${ok ? 'Zajtra príde nová.' : T.n + ', 2 až 5 minút'}</small></span><span class="misia-sip">${IKO.play}</span></button>`;
+  return `<div class="misia-casti"><span class="misia-cast${temaHotova ? ' hotova' : ''}"><i>${temaHotova ? '✓' : '1'}</i><span><b>Objav</b><small>téma dňa</small></span></span>
+    <button class="misia-cast druha${ok ? ' hotova' : ''}" data-go="misia" style="--c:${T.c}"><i>${ok ? '✓' : '2'}</i><span><b>Skús</b><small>${T.n}</small></span></button></div>`;
 }
 // veľká karta na konci témy dňa: misia viazaná na tému s jej obrázkom
 function kartaMisiePoTeme(t) {
   const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
   return `<section class="card misia-po-teme" style="--c:${T.c}"><div class="frame">${svg(t)}<span class="sticker">${ii(ik(T.ik))} Misia dňa</span></div>
-    <div><small class="lbl-mala">${ok ? 'Dnes splnené' : 'K téme dňa'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p} Potom choď von a skús to vo svete.</span></div>
-    <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Poďme na misiu!'}</button></section>`;
+    <div><small class="lbl-mala">${ok ? 'Misia dňa splnená' : 'Časť 2 misie dňa: skús to'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p} Potom choď von a skús to vo svete.</span></div>
+    <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Pokračovať misiou!'}</button></section>`;
 }
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
