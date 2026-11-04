@@ -636,6 +636,15 @@ button.misia-cast:active { transform: translateY(3px); box-shadow: 0 0 0 var(--i
 .btn.hadaj-btn { font-size: 1.05rem; }
 .btn.hadaj-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
 .btn.hadaj-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+/* Koľko ich je? (hra pre malé deti) */
+.pocitaj { display: grid; gap: 14px; }
+.poc-pole { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; min-height: 190px; background: #FFF8D6; }
+.poc-obr { width: 74px; height: 74px; animation: pop .4s var(--spring) both; animation-delay: var(--d, 0s); }
+.poc-obr svg { width: 100%; height: 100%; }
+.poc-moz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.btn.poc-btn { min-height: 96px; font: 800 3rem/1 var(--f-display); }
+.btn.poc-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
+.btn.poc-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
 /* bubliny s počtami */
 .priklad { text-align: center; font: 700 2.4rem/1.1 var(--f-display); }
 .bub-pole { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, #8ED6FF); }
@@ -1694,7 +1703,7 @@ const ODZNAKY = [
   { g: 'Hry', id: 'hra1', e: '🎮', n: 'Hráč', p: 'Dohraj prvú hru', ok: x => x.hier >= 1 },
   { g: 'Hry', id: 'hry10', e: '🎲', n: 'Hravý', p: 'Dohraj 10 hier', ok: x => x.hier >= 10 },
   { g: 'Hry', id: 'hry50', e: '🕹️', n: 'Herný maratón', p: 'Dohraj 50 hier', ok: x => x.hier >= 50 },
-  { g: 'Hry', id: 'hryvsetky', e: '🎪', n: 'Majster hier', p: 'Zahraj si všetky hry', ok: x => x.hrane >= HRY.length },
+  { g: 'Hry', id: 'hryvsetky', e: '🎪', n: 'Majster hier', p: 'Zahraj si všetky hry', ok: x => x.hrane >= HRY_VID().length },
   { g: 'Hry', id: 'pexeso', e: '🃏', n: 'Pexesár', p: 'Nájdi v pexese všetky dvojice', ok: x => x.hra === 'pexeso' },
   { g: 'Hry', id: 'pexeso-genius', e: '🧠', n: 'Pamäťový génius', p: 'Pexeso len s pár chybami', ok: x => x.hra === 'pexeso' && x.hodnota <= x.pary + 4 },
   { g: 'Hry', id: 'hadaj6', e: '👀', n: 'Bystré oko', p: 'Hádaj tému aspoň 6 z 8', ok: x => x.hra === 'hadaj' && x.hodnota >= 6 },
@@ -1753,7 +1762,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   const teraz = new Date(), prebrate = st.done.filter(byId);
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
-    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
+    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), hrane: HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
   const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
@@ -2263,20 +2272,24 @@ try { speechSynthesis.addEventListener('voiceschanged', () => { const el = docum
 /* Hry: odomykajú sa za body z tém (hraním sa body neminú) */
 const HRY = [
   { id: 'pexeso', n: 'Pexeso', p: 'Nájdi dvojice rovnakých obrázkov.', cena: 150, c: '#FFB3D1' },
+  { id: 'pocitaj', n: 'Koľko ich je?', p: 'Spočítaj obrázky a ťukni na správne číslo. Bez časovača.', cena: 200, c: '#FFE27A', len: 'mladsi' },
   { id: 'hadaj', n: 'Hádaj tému', p: 'Podľa obrázka uhádni, o ktorej téme je.', cena: 250, c: '#CDEBFF' },
   { id: 'sova', n: 'Lietajúca sova', p: 'Ťukaj a sovička letí. Prelet pomedzi ceruzky a zbieraj hviezdy!', cena: 300, c: '#BFE7FF' },
   { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 400, c: '#FFE27A' },
   { id: 'opakuj', n: 'Opakuj po mne', p: 'Zapamätaj si, ktoré farby zasvietili, a zopakuj ich.', cena: 550, c: '#FFD6A5' },
-  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF' },
+  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF', len: 'starsi' },
   { id: 'skladacka', n: 'Skladačka', p: 'Poprehadzovaný obrázok poskladaj späť.', cena: 900, c: '#9FE8DF' },
 ];
-const noveHry = (pred, po) => HRY.filter(h => h.cena > pred && h.cena <= po);
+// hry podľa veku dieťaťa: ťažšie počtové hry nie sú pre malé deti, tie majú svoju ľahkú
+const HRY_VID = () => HRY.filter(h => !h.len || h.len === (st.vek === 'starsi' ? 'starsi' : 'mladsi'));
+const noveHry = (pred, po) => HRY_VID().filter(h => h.cena > pred && h.cena <= po);
 const HVIEZDA = 'M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z';
 const OBLAK = `<svg viewBox="0 0 48 42" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M12 28a8 8 0 0 1-1-15.9A11 11 0 0 1 32 9a8.5 8.5 0 0 1 5 16.3A6 6 0 0 1 35 28z" fill="#8C8FA8"/><path d="M24 26l-5 8h5l-3 7 9-11h-5l3-4z" fill="#FFD23F"/><circle cx="18" cy="19" r="1.6" fill="${INK}"/><circle cx="27" cy="19" r="1.6" fill="${INK}"/><path d="M19.5 24q3-2.5 6 0" fill="none"/></g></svg>`;
 const OBR_HRY = {
   sova: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><rect x="3" y="3" width="74" height="58" rx="12" fill="#BFE7FF"/>
     <path d="M51 4 V16 H63 V4Z" fill="#4C7DFF"/><path d="M51 16 L57 26 L63 16Z" fill="#FFE3BD"/><path d="M51 60 V48 H63 V60Z" fill="#FF5A5F"/><path d="M51 48 L57 38 L63 48Z" fill="#FFE3BD"/>
     <path d="${HVIEZDA}" fill="#FFD23F" transform="translate(50.5 25.5) scale(.55)" stroke-width="3.5"/></g>${owl('cheer').replace('<svg ', '<svg x="9" y="14" width="32" height="35" ')}</svg>`,
+  pocitaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#FFF3B0"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(8 8) scale(1.3)" stroke-width="2.5"/><path d="${HVIEZDA}" fill="#FF9F1C" transform="translate(40 10) scale(1.3)" stroke-width="2.5"/><path d="${HVIEZDA}" fill="#FF6FA8" transform="translate(24 32) scale(1.3)" stroke-width="2.5"/></g></svg>`,
   pexeso: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="8" y="10" width="30" height="42" rx="7" fill="#B36BFF" transform="rotate(-10 23 31)"/><path d="M18 26a5 5 0 1 1 7 4.6c-1.4.7-2 1.6-2 3.4" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" transform="rotate(-10 23 31)"/><circle cx="24" cy="40" r="2" fill="#fff" stroke="none" transform="rotate(-10 23 31)"/><rect x="42" y="12" width="30" height="42" rx="7" fill="#fff" transform="rotate(8 57 33)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(44 18) scale(1.1) rotate(8 12 12)"/></g></svg>`,
   hviezdy: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#2E3A87"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(10 10) scale(1.3)"/><path d="${HVIEZDA}" fill="#FF9F1C" transform="translate(44 28) scale(1.1)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(50 6) scale(.8)"/><circle cx="16" cy="48" r="2" fill="#fff" stroke="none"/><circle cx="36" cy="16" r="1.5" fill="#fff" stroke="none"/></g></svg>`,
   hadaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="6" y="8" width="52" height="40" rx="6" fill="#fff"/><path d="M8 44 L22 30 L34 40 L42 34 L56 44Z" fill="#4CD07D"/><circle cx="44" cy="20" r="5" fill="#FFD23F"/><circle cx="55" cy="42" r="12" fill="#fff" fill-opacity=".55"/><path d="M64 51l9 9" stroke-width="6" stroke-linecap="round"/></g></svg>`,
@@ -2290,10 +2303,10 @@ const slovoHviezdy = n => n === 1 ? 'hviezda' : n >= 2 && n <= 4 ? 'hviezdy' : '
 const slovoPriklady = n => n === 1 ? 'príklad' : n >= 2 && n <= 4 ? 'príklady' : 'príkladov';
 const slovoTony = n => n === 1 ? 'farba' : n >= 2 && n <= 4 ? 'farby' : 'farieb';
 const slovoBody = n => n === 1 ? 'bod' : n >= 2 && n <= 4 ? 'body' : 'bodov';
-const rekordText = (id, r) => id === 'sova' ? `${r} ${slovoBody(r)}` : id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
+const rekordText = (id, r) => id === 'sova' ? `${r} ${slovoBody(r)}` : id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'pocitaj' ? `${r} z 5 hneď správne` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
 // obrázky do hier: najprv z prebratých tém, tie dieťa pozná
 const temyDoHry = n => { const v = TV(), d = mix(v.length).map(i => v[i]); return [...d.filter(t => st.done.includes(t.id)), ...d.filter(t => !st.done.includes(t.id))].slice(0, n); };
-const stavHry = h => h.id === 'sova' ? `Body: ${h.skore}` : h.id === 'opakuj' ? `Farieb: ${h.seq.length}` : h.id === 'hviezdy' ? `Hviezdy: ${h.skore} · ${h.zostava} s` : h.id === 'bubliny' ? `✓ ${h.skore} · ${h.zostava} s` : h.id === 'hadaj' ? `✓ ${h.spravne} z ${h.kola.length}` : `${h.tahy} ${slovoTahy(h.tahy)}`;
+const stavHry = h => h.id === 'sova' ? `Body: ${h.skore}` : h.id === 'opakuj' ? `Farieb: ${h.seq.length}` : h.id === 'hviezdy' ? `Hviezdy: ${h.skore} · ${h.zostava} s` : h.id === 'bubliny' ? `✓ ${h.skore} · ${h.zostava} s` : h.id === 'pocitaj' ? `✓ ${h.spravne} z 5` : h.id === 'hadaj' ? `✓ ${h.spravne} z ${h.kola.length}` : `${h.tahy} ${slovoTahy(h.tahy)}`;
 const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if (el && st.hra) el.textContent = stavHry(st.hra); };
 
 // Lietajúca sova: svet hry (obloha, ceruzky, hviezdy) a jeden krok fyziky; kreslenie je v Hra.sovaKresli
@@ -2384,6 +2397,9 @@ const Hra = {
       st.hra = { id, karty: mix(t.length * 2).map(i => t[i % t.length].id), otocene: [], najdene: [], tahy: 0 };
     } else if (id === 'hviezdy') {
       st.hra = { id, skore: 0, zostava: 30, beh: false, mal };
+    } else if (id === 'pocitaj') {
+      st.hra = { id, kola: mix(5).map(i => i + 1), druh: mix(4), i: 0, spravne: 0, chyba: false, zle: [], odp: null };
+      st.hra.moznosti = moznostiPocitaj(st.hra);
     } else if (id === 'hadaj') {
       st.hra = { id, kola: temyDoHry(8).map(t => t.id), i: 0, spravne: 0, n: mal ? 3 : 4, odp: null };
       st.hra.moznosti = moznostiHadaj(st.hra);
@@ -2606,6 +2622,21 @@ const Hra = {
     b.replaceWith(s); setTimeout(() => s.remove(), 700);
   },
   // Hádaj tému: obrázok a tri alebo štyri názvy tém
+  // Koľko ich je?: malé deti, 1 až 5 obrázkov, bez časovača; zlé číslo sa dá skúsiť znova
+  pocitaj(n) {
+    const h = st.hra;
+    if (!h || h.id !== 'pocitaj' || h.odp || h.hotovo) return;
+    n = +n;
+    if (n !== h.kola[h.i]) { h.chyba = true; h.zle.push(n); Zvuk.play('bad'); vibruj(60); obnovPocitaj(); return; }
+    if (!h.chyba) h.spravne++;
+    h.odp = n; Zvuk.play('ok'); obnovStavHry(); obnovPocitaj();
+    h.dalsia = setTimeout(() => {
+      if (st.hra !== h) return;
+      h.i++; h.odp = null; h.chyba = false; h.zle = [];
+      if (h.i >= h.kola.length) { this.koniec(false, h.spravne); return; }
+      h.moznosti = moznostiPocitaj(h); obnovPocitaj();
+    }, 900);
+  },
   hadaj(id) {
     const h = st.hra;
     if (!h || h.id !== 'hadaj' || h.odp || h.hotovo) return;
@@ -2724,6 +2755,15 @@ function priklad(mal) {
   const a = r(2, 9), b = r(2, 10); return [`${a} × ${b}`, a * b];
 }
 const moznostiHadaj = h => { const sp = h.kola[h.i], v = TV(), ine = mix(v.length).map(i => v[i].id).filter(id => id !== sp).slice(0, h.n - 1); return [sp, ...ine].sort(() => Math.random() - .5); };
+const POC_OBR = [() => STAR('#FFD23F'), () => IK.srdce, () => IK.ohen, () => IK.diamant];
+function moznostiPocitaj(h) { const v = h.kola[h.i], inak = mix(5).map(i => i + 1).filter(x => x !== v).slice(0, 2); return mix(3).map(i => [v, ...inak][i]); }
+function pocitajHtml(h) {
+  const n = h.kola[h.i], obr = POC_OBR[h.druh[h.i % 4]];
+  return `<div class="card poc-pole" aria-label="${n} obrázkov">${Array.from({ length: n }, (_, i) => `<span class="poc-obr" style="--d:${(i * .12).toFixed(2)}s">${obr()}</span>`).join('')}</div>
+    <p class="hadaj-otazka">Koľko ich je?</p>
+    <div class="poc-moz">${h.moznosti.map(m => `<button class="btn ghost poc-btn${h.odp ? (m === n ? ' ok' : '') : h.zle.includes(m) ? ' zle' : ''}" data-pocitaj="${m}"${h.zle.includes(m) ? ' disabled' : ''}>${m}</button>`).join('')}</div>`;
+}
+const obnovPocitaj = () => { const el = document.getElementById('pocitaj'); if (el && st.hra) el.innerHTML = pocitajHtml(st.hra); };
 function hadajHtml(h) {
   const t = byId(h.kola[h.i]);
   return `<div class="frame hadaj-obr">${svg(t)}</div>
@@ -2749,7 +2789,7 @@ function obnovSklad() {
 }
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null;
-  const nadpis = `${['hviezdy', 'bubliny', 'opakuj', 'sova'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
+  const nadpis = `${['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
   return `<div class="card hra-vysledok"><div class="win-owl">${owl('cheer')}</div>
     <h2 class="h2" style="--hc:#FFC233">${nadpis}</h2>
     ${t ? `<p class="muted">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}
@@ -2769,6 +2809,8 @@ function renderHra() {
   } else if (h.id === 'sova') {
     telo = `<div class="sova-hra"><canvas id="sova-cv" class="sova-cv" aria-label="Obloha: ťukni a sovička mávne krídlami"></canvas>${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
       <p class="muted hra-pomoc">Ťukaj na oblohu a sovička mávne krídlami. Prelet pomedzi ceruzky a zbieraj hviezdy. Máš ${h.mal ? 3 : 2} srdiečka.</p>`;
+  } else if (h.id === 'pocitaj') {
+    telo = `<div id="pocitaj" class="pocitaj">${pocitajHtml(h)}</div>`;
   } else if (h.id === 'hadaj') {
     telo = `<div id="hadaj" class="hadaj">${hadajHtml(h)}</div>`;
   } else if (h.id === 'bubliny') {
@@ -2888,7 +2930,7 @@ const views = {
     return `<h1 class="h1">Hry</h1>
       <p class="muted">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
       ${hnStupen() ? `<p class="hn-info">${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} ${ii(STAR())} spí. ${HN_TEXT[hnStupen()].p}</p>` : ''}
-      <div class="hry">${HRY.map(h => {
+      <div class="hry">${HRY_VID().map(h => {
         const ok = bodyHry() >= h.cena, spi = !ok && st.body >= h.cena, rek = S.get(rekordKluc(h.id), null);
         return `<button class="hra-karta${ok ? '' : ' zamknuta'}" data-hra="${h.id}" style="--c:${h.c}"><span class="hra-obr">${OBR_HRY[h.id]}</span>
           <span class="hra-info"><b>${h.n}</b><small>${h.p}</small>${ok
@@ -3562,6 +3604,7 @@ function kartaMisiePoTeme(t) {
 }
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami majú len väčšie deti.' },
   { v: 36, obr: () => svg(byId('raketa')), siroky: true, n: '24 nových tém a ďalšie misie', p: 'Ku každej kategórii pribudla nová téma s obrázkom a kvízom. V Misii dňa je 75 misií, takže sa dlho neopakujú.' },
   { v: 36, obr: () => stromSvg({ stupen: 3, plody: 0, kos: 0, novy: -1, hn: 2 }), n: 'Strom vädne, keď sa nehrá', p: 'Keď dieťa vynechá niekoľko dní, strom pomaly vädne a najdrahšie hry si oddychujú. Po prvej téme strom ožije a nič sa nestratí. Rodič to môže vypnúť v prehľade.' },
   { v: 36, obr: () => IK.bublina, n: 'Voľné písanie v správach', p: 'Rodič môže priateľom zapnúť písanie vlastných slov. Bubliny v rozhovoroch sú teraz tesnejšie pri sebe.' },
@@ -4067,6 +4110,7 @@ document.addEventListener('click', e => {
   if (d.hv) { Hra.chyt(b); return; }
   if (d.hvStart !== undefined) { if (st.hra && st.hra.id === 'sova') Hra.sovaStart(); else if (st.hra && st.hra.id === 'bubliny') Hra.bublinyStart(); else if (st.hra && st.hra.id === 'opakuj') Hra.simonStart(); else Hra.hviezdyStart(); return; }
   if (d.hadaj) { Hra.hadaj(d.hadaj); return; }
+  if (d.pocitaj) { Hra.pocitaj(d.pocitaj); return; }
   if (d.bub !== undefined) { Hra.bub(b); return; }
   if (d.pad !== undefined) { Hra.pad(+d.pad); return; }
   if (d.diel) { Hra.diel(+d.diel); return; }
