@@ -100,4 +100,4 @@ Doplnok etapy C: hry podľa veku. Appka vek pozná (`st.vek`, nastavuje sa pri t
 
 Etapa C (vetva claude/festive-hodgkin-735aea) zlúčená do `main` s etapami A a B. Konflikty len v `appka.html` (štatistika odznakov: `Ang.sucet()` aj `HRY_VID()`; `NOVINKY` v 36 spolu) a v tomto súbore. Verzia ostala 36 / 3.0.
 `test` OK, `test:rules` 57 z 57 (na vlastnom porte 8290, lebo 8180 držal iný emulátor), `build` OK. Na emulátore: Domov, Misia dňa, Angličtina, Hry (Koľko ich je?), Priatelia, Ja bez chýb v konzole (len 404 na nejaký súbor, asi favicon).
-Nenasadené: nasadenie čaká na súhlas vlastníka priamo (správa od inej session nestačí). Neskúšané: odosielanie voľného písania a hnitie stromu naživo.
+NASADENÉ 4. 11. 2026 po súhlase vlastníka (push 20c360b, deploy hosting + pravidlá). Záloha zip na ploche. Neskúšané: odosielanie voľného písania a hnitie stromu naživo.
