@@ -64,9 +64,8 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc,
   await t('C nepíše A, keď nie sú priatelia', addDoc(collection(fc, 'rozhovory', [A, C].sort().join('_'), 'spravy'), { od: C, n: 'sova', kedy }), false);
   await t('A zmení svoj profil', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), body: 50 }), true);
   await t('profil s e-mailom neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), email: 'x@y.sk' }), false);
-  await t('vlastný text bez povolenia rodiča neprejde', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), false);
+  await t('vlastný text medzi priateľmi prejde bez ďalšieho zapínania', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), true);
   await t('A zapne vlastný text', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), pisanie: true }), true);
-  await t('vlastný text, keď ho nemá zapnutý príjemca, neprejde', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), false);
   await t('profil s pisanie nie bool neprejde', setDoc(doc(fb, 'profily', B), { ...prof('ub', 'DUHA-BBBB'), pisanie: 'ano' }), false);
   await t('B zapne vlastný text', setDoc(doc(fb, 'profily', B), { ...prof('ub', 'DUHA-BBBB'), pisanie: true }), true);
   await t('vlastný text prejde, keď je zapnutý obom', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát, ako sa máš?', kedy }), true);

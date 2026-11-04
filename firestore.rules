@@ -128,8 +128,8 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[0])/priatelia/$(rid.split('_')[1]))
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[1])/priatelia/$(rid.split('_')[0]))
         && platnaSprava(request.resource.data)
-        // vlastný text len ak ho rodič zapol obom deťom (odosielateľovi aj príjemcovi)
-        && (!('x' in request.resource.data) || (pisanie(rid.split('_')[0]) && pisanie(rid.split('_')[1])));
+        // vlastný text smú posielať všetci spárovaní priatelia (obe strany už rodič zapol)
+        ;
       // srdiečko: dá ho len ten, komu správa prišla, a zmení len pole r
       allow update: if prihlaseny() && rid.split('_').size() == 2
         && majitel(resource.data.od == rid.split('_')[0] ? rid.split('_')[1] : rid.split('_')[0])
