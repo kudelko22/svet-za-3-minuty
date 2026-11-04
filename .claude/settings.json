@@ -1,0 +1,7 @@
+{
+  "model": "sonnet",
+  "effortLevel": "medium",
+  "enabledPlugins": {
+    "ecc@ecc": false
+  }
+}

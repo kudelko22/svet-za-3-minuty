@@ -36,4 +36,10 @@ Windows má zapnutý Smart App Control: blokuje nepodpísané natívne súbory, 
 - Na tejto appke sa pracuje v session otvorenej v priečinku `Documents\svet-za-3-minuty`, nie v Metline.
 - Každá nová funkcia, ktorá stojí sama o sebe, ide do novej session. V tej istej ostáva oprava, doladenie,
   skúšanie, commit a nasadenie práve urobenej veci.
-- Pred novou session commit, aby začínala z čistého stavu. Naraz mení kód len jedna session.
+- Pred novou session commit, aby začínala z čistého stavu. Na konci session doplniť svoju časť v `ODOVZDANIE.md`,
+  aby ďalšia vedela, kde sme. Naraz mení kód len jedna session.
+- Hlavná session je **AKTUÁLNY STAV APLIKÁCIE**: prehľad o stave, postupe a optimalizácii, vlastník tu rozhoduje a odtiaľto sa
+  spúšťajú nové sessions. Kód sa v nej nemení. Práca ide do session **Vývoj** alebo do session svojej témy.
+- Šetriť limit je trvalá priorita. Session nad 200 tisíc tokenov kontextu (`get_usage`) sa na konci úlohy vymení: commit, svoja časť
+  v `ODOVZDANIE.md`, nová session s tým istým názvom, ktorá číta len tú časť, a archivovať starú. Dlhé sessions nebudiť pre maličkosti.
+  Novú session na tému spúšťať, až keď je pre ňu práca. Bežná práca Sonnet a stredné úsilie, Opus len na ťažké rozhodnutia.
