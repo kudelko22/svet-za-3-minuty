@@ -54,11 +54,12 @@ service cloud.firestore {
     function cesta(p) { return /databases/$(database)/documents/profily/$(p); }
     // profil dieťaťa patrí prihlásenému rodičovi
     function majitel(p) { return prihlaseny() && exists(cesta(p)) && get(cesta(p)).data.rodina == request.auth.uid; }
+    function pisanie(p) { return exists(cesta(p)) && get(cesta(p)).data.get('pisanie', false) == true; }
     function zapnuty(p) { return exists(cesta(p)) && get(cesta(p)).data.zapnute == true; }
 
     // Verejný profil dieťaťa pre priateľov: len meno, postavička a pokrok z hry (nikdy e-mail, vek ani fotka)
     function platnyProfil(d) {
-      return d.keys().hasOnly(['meno', 'avatar', 'body', 'seria', 'temy', 'odznaky', 'posledne', 'tyzKey', 'tyzStart', 'kod', 'rodina', 'zapnute', 'upravene'])
+      return d.keys().hasOnly(['meno', 'avatar', 'body', 'seria', 'temy', 'odznaky', 'posledne', 'tyzKey', 'tyzStart', 'kod', 'rodina', 'zapnute', 'upravene', 'pisanie'])
         && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
         && d.avatar is map
         && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'kuzlo', 'pozadie'])
@@ -70,7 +71,7 @@ service cloud.firestore {
         && d.tyzKey is string && d.tyzKey.size() <= 10
         && d.tyzStart is int && d.tyzStart >= 0 && d.tyzStart <= 1000000
         && d.kod is string && d.kod.size() <= 12
-        && d.rodina == request.auth.uid && d.zapnute is bool
+        && d.rodina == request.auth.uid && d.zapnute is bool && (!('pisanie' in d) || d.pisanie is bool)
         && d.upravene == request.time;
     }
     match /profily/{pid} {
@@ -110,13 +111,14 @@ service cloud.firestore {
       allow delete: if prihlaseny() && resource.data.rodina == request.auth.uid;
     }
 
-    // správy medzi dvoma priateľmi: rozhovor {a_b} (a < b), len nálepka alebo hotová veta, žiadny vlastný text
+    // správy medzi dvoma priateľmi: rozhovor {a_b} (a < b), nálepka, hotová veta alebo vlastný text (x, najviac 200 znakov) len keď ho rodič zapol oboma deťom
     function platnaSprava(d) {
-      return d.keys().hasOnly(['od', 'k', 'n', 't', 'h', 'kedy']) && d.kedy == request.time
+      return d.keys().hasOnly(['od', 'k', 'n', 't', 'h', 'x', 'kedy']) && d.kedy == request.time
         // pochvala témou: id témy a počet hviezd (0 až 3)
-        && (('t' in d && !('k' in d) && !('n' in d) && d.t is string && d.t.matches('^[a-z0-9-]{2,30}$') && d.h is int && d.h >= 0 && d.h <= 3)
-          || ('k' in d && !('n' in d) && !('t' in d) && !('h' in d) && d.k in ['ahoj', 'ako', 'super', 'grat', 'sisuper', 'tema', 'odznak', 'seria', 'sutaz', 'dobiehaj', 'ucit', 'dakujem', 'haha', 'noc', 'ano', 'nie'])
-          || ('n' in d && !('k' in d) && !('t' in d) && !('h' in d) && d.n in ['sova', 'ohen', 'hviezda', 'srdce', 'pohar', 'raketa', 'duha', 'koruna', 'konfety', 'palec', 'smiech', 'diamant', 'blesk', 'mozog', 'jednorozec', 'kniha']));
+        && (('x' in d && !('k' in d) && !('n' in d) && !('t' in d) && !('h' in d) && d.x is string && d.x.size() >= 1 && d.x.size() <= 200)
+          || ('t' in d && !('x' in d) && !('k' in d) && !('n' in d) && d.t is string && d.t.matches('^[a-z0-9-]{2,30}$') && d.h is int && d.h >= 0 && d.h <= 3)
+          || ('k' in d && !('x' in d) && !('n' in d) && !('t' in d) && !('h' in d) && d.k in ['ahoj', 'ako', 'super', 'grat', 'sisuper', 'tema', 'odznak', 'seria', 'sutaz', 'dobiehaj', 'ucit', 'dakujem', 'haha', 'noc', 'ano', 'nie'])
+          || ('n' in d && !('x' in d) && !('k' in d) && !('t' in d) && !('h' in d) && d.n in ['sova', 'ohen', 'hviezda', 'srdce', 'pohar', 'raketa', 'duha', 'koruna', 'konfety', 'palec', 'smiech', 'diamant', 'blesk', 'mozog', 'jednorozec', 'kniha']));
     }
     match /rozhovory/{rid}/spravy/{sid} {
       allow read: if prihlaseny() && rid.split('_').size() == 2 && (majitel(rid.split('_')[0]) || majitel(rid.split('_')[1]));
@@ -125,7 +127,9 @@ service cloud.firestore {
         && zapnuty(rid.split('_')[0]) && zapnuty(rid.split('_')[1])
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[0])/priatelia/$(rid.split('_')[1]))
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[1])/priatelia/$(rid.split('_')[0]))
-        && platnaSprava(request.resource.data);
+        && platnaSprava(request.resource.data)
+        // vlastný text len ak ho rodič zapol obom deťom (odosielateľovi aj príjemcovi)
+        && (!('x' in request.resource.data) || (pisanie(rid.split('_')[0]) && pisanie(rid.split('_')[1])));
       // srdiečko: dá ho len ten, komu správa prišla, a zmení len pole r
       allow update: if prihlaseny() && rid.split('_').size() == 2
         && majitel(resource.data.od == rid.split('_')[0] ? rid.split('_')[1] : rid.split('_')[0])

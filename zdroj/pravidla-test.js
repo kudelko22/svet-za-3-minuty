@@ -6,7 +6,7 @@ const { initializeTestEnvironment, assertSucceeds, assertFails } = require('@fir
 const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc, deleteField, serverTimestamp, query, orderBy, limit } = require('firebase/firestore');
 
 (async () => {
-  const env = await initializeTestEnvironment({ projectId: 'demo-svet-za-3-minuty', firestore: { rules: fs.readFileSync(path.join(__dirname, '..', 'firestore.rules'), 'utf8'), host: '127.0.0.1', port: 8180 } });
+  const env = await initializeTestEnvironment({ projectId: 'demo-svet-za-3-minuty', firestore: { rules: fs.readFileSync(path.join(__dirname, '..', 'firestore.rules'), 'utf8'), host: '127.0.0.1', port: +(process.env.FIRESTORE_EMULATOR_HOST || ':8180').split(':').pop() } });
   await env.clearFirestore();
   const A = 'aaaa11', B = 'bbbb22', C = 'cccc33';
   await env.withSecurityRulesDisabled(async c => { for (const [u, id] of [['ua', A], ['ub', B], ['uc', C]]) await setDoc(doc(c.firestore(), 'rodiny', u, 'deti', id), { meno: 'X' }); });
@@ -64,6 +64,16 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc,
   await t('C nepíše A, keď nie sú priatelia', addDoc(collection(fc, 'rozhovory', [A, C].sort().join('_'), 'spravy'), { od: C, n: 'sova', kedy }), false);
   await t('A zmení svoj profil', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), body: 50 }), true);
   await t('profil s e-mailom neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), email: 'x@y.sk' }), false);
+  await t('vlastný text bez povolenia rodiča neprejde', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), false);
+  await t('A zapne vlastný text', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), pisanie: true }), true);
+  await t('vlastný text, keď ho nemá zapnutý príjemca, neprejde', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), false);
+  await t('profil s pisanie nie bool neprejde', setDoc(doc(fb, 'profily', B), { ...prof('ub', 'DUHA-BBBB'), pisanie: 'ano' }), false);
+  await t('B zapne vlastný text', setDoc(doc(fb, 'profily', B), { ...prof('ub', 'DUHA-BBBB'), pisanie: true }), true);
+  await t('vlastný text prejde, keď je zapnutý obom', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát, ako sa máš?', kedy }), true);
+  await t('prázdny text neprejde', addDoc(rozh(fa), { od: A, x: '', kedy }), false);
+  await t('text nad 200 znakov neprejde', addDoc(rozh(fa), { od: A, x: 'a'.repeat(201), kedy }), false);
+  await t('text s vetou naraz neprejde', addDoc(rozh(fa), { od: A, x: 'hm', k: 'ahoj', kedy }), false);
+  await t('text nie je reťazec neprejde', addDoc(rozh(fa), { od: A, x: 5, kedy }), false);
   await t('B vypne priateľov', setDoc(doc(fb, 'profily', B), prof('ub', '', false)), true);
   await t('vypnutému sa nepíše', addDoc(rozh(fa), { od: A, n: 'sova', kedy }), false);
   { const b = writeBatch(fa); b.delete(doc(fa, 'profily', A, 'priatelia', B)); b.delete(doc(fa, 'profily', B, 'priatelia', A)); await t('A odstráni priateľa B', b.commit(), true); }
