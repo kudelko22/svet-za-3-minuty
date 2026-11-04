@@ -874,7 +874,7 @@ body.dm-rezim::before { display: none; }
 .dm .msg.posl { margin-bottom: 9px; }
 .msg-av { flex: none; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; }
 .msg-av .postavicka { width: 100%; height: auto; }
-.dm .msg-t { padding: 9px 14px; border-radius: 22px; background: #EAE4F7; font: 600 1.1rem/1.25 var(--f-display); }
+.dm .msg-t { display: block; padding: 9px 14px; border-radius: 22px; background: #EAE4F7; font: 600 1.1rem/1.25 var(--f-display); }
 .dm .msg.moja .msg-t { background: linear-gradient(135deg, #8B6CFF, #4C7DFF); color: #fff; }
 .msg-x { font-family: var(--f-body) !important; font-weight: 700 !important; overflow-wrap: anywhere; white-space: pre-wrap; }
 .hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--ink); border-radius: 16px; background: #FFF0C9; font-weight: 700; line-height: 1.35; }
@@ -1175,7 +1175,7 @@ body.dm-rezim::before { display: none; }
 <script src="misie.js"></script>
 <script src="anglictina.js"></script>
 <script>
-const VERZIA_APPKY = 37; const VERZIA_NAZOV = '3.0.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 38; const VERZIA_NAZOV = '3.0.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3733,6 +3733,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 38, obr: () => IK.bublina, n: 'Správy bez prekrývania', p: 'Dlhšie správy sa v bublinách správne zalomia a bubliny sa už neprekrývajú.' },
   { v: 37, obr: () => IK.bublina, n: 'Písanie priateľom pre všetkých', p: 'Keď máš priateľa, môžeš mu písať aj vlastné slová, nič sa nezapína. Bubliny v správach sa už neprekrývajú.' },
   { v: 36, obr: () => IK_KAT.anglictina, n: 'Angličtina na každý deň', p: 'Angličtina má nové miesto na Domove. Každý deň nový krátky kvízik so slovíčkami a vetami, s vysvetlením odpovedí. Pôvodné anglické lekcie nájdeš tam tiež.' },
   { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami majú len väčšie deti.' },
