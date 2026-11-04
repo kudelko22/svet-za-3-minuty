@@ -526,6 +526,44 @@ body.auto-rezim .blobs { opacity: .3; }
 .auto-play { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); color: var(--ink); font-size: 1.4rem; animation: pulse 1.6s ease-in-out infinite; }
 .btn.auto-mini { background: #2E3A87; }
 
+/* Misia dňa */
+.misia-karta { background: linear-gradient(135deg, color-mix(in srgb, var(--c) 70%, #000), var(--c)); }
+.misia-karta.hotova { opacity: .9; }
+.misia-obr { flex: none; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--ink); background: #fff; animation: tileBob 2.6s ease-in-out infinite; }
+.misia-obr svg, .misia-ikona svg, .misia-mini svg { display: block; width: 70%; height: 70%; }
+.misia-dnes { display: grid; gap: 12px; justify-items: start; background: color-mix(in srgb, var(--c) 14%, #fff); }
+.misia-dnes > div { display: grid; gap: 2px; }
+.misia-typ { font: 700 1.4rem/1.2 var(--f-display); }
+.misia-hotovo { margin: 0; display: flex; gap: 8px; align-items: center; }
+.misia-dnes .btn { width: 100%; }
+.misia-chipy { margin: 4px 0; }
+.misia-typy { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.misia-typ-bunka { display: grid; justify-items: center; gap: 2px; padding: 8px 2px; text-align: center; border: 2.5px solid var(--ink); border-radius: 16px; background: var(--paper); opacity: .6; }
+.misia-typ-bunka.ma { opacity: 1; background: color-mix(in srgb, var(--c) 18%, #fff); }
+.misia-typ-bunka small { font: 600 .62rem/1.1 var(--f-display); }
+.misia-ikona { display: grid; place-items: center; width: 34px; height: 34px; }
+.misia-mini { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; border: 2.5px solid var(--ink); background: color-mix(in srgb, var(--c) 30%, #fff); }
+.misia-riadok-t { display: grid; gap: 2px; min-width: 0; font: 600 1.05rem/1.2 var(--f-display); }
+.misia-riadok-t small { font: 700 .8rem/1.2 var(--f-body); color: var(--muted); }
+.misia-pribeh { font: 600 1.1rem/1.5 var(--f-body); background: var(--soft); }
+.misia-ind { display: flex; gap: 12px; align-items: center; }
+.misia-cislo { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--sun); font: 700 1.1rem/1 var(--f-display); }
+.misia-ind.nova, .misia-reakcia.nova { animation: rise .45s var(--spring) both; }
+.misia-ans { display: grid; gap: 12px; }
+.misia-reakcia { background: #FFF6D6; font-weight: 700; }
+.ans.vyb { background: var(--soft); }
+.ans.pravda { background: #fff; }
+.ans.pravda > * { opacity: 1 !important; }
+.misia-kroky { margin: 0; padding-left: 1.3rem; display: grid; gap: 8px; font-weight: 700; }
+.misia-vys, .misia-fakt, .misia-von { display: grid; gap: 4px; }
+.misia-vys p, .misia-fakt p, .misia-von p, .misia-rodic p { margin: 0; }
+.misia-fakt { background: #E8F7FF; }
+.misia-von { background: #E7F9EC; }
+.misia-rodic { display: flex; gap: 12px; align-items: center; background: #FFE9F1; }
+.misia-rodic-ik { flex: none; width: 48px; height: 48px; }
+.misia-rodic-ik svg { width: 100%; height: 100%; }
+.misia-body { margin: 0; text-align: center; font: 700 2rem/1 var(--f-display); color: #FFD23F; -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; }
+
 /* Kreslené ikony */
 .ib svg { display: block; width: 22px; height: 22px; margin: auto; }
 .iko-x { fill: none; stroke: var(--ink); stroke-width: 7; stroke-linecap: round; }
@@ -1120,10 +1158,11 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=35"></script>
-<script src="obrazky.js?v=35"></script>
+<script src="temy.js?v=36"></script>
+<script src="obrazky.js?v=36"></script>
+<script src="misie.js?v=36"></script>
 <script>
-const VERZIA_APPKY = 35; const VERZIA_NAZOV = '2.8'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 36; const VERZIA_NAZOV = '3.0'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1694,6 +1733,12 @@ const ODZNAKY = [
   { g: 'Rôzne', id: 'stylista', e: '👗', n: 'Módny návrhár', p: 'Obleč postavičke odomknutú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) > 0) },
   { g: 'Rôzne', id: 'zvieratko', e: '🐾', n: 'Najlepší kamarát', p: 'Daj postavičke zvieratko', ok: x => !!x.avatar.zvieratko && x.avatar.zvieratko !== 'ziadne' },
   { g: 'Body', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 bodov', ok: x => x.body >= 5000 },
+  { g: 'Misie', id: 'misia1', n: 'Prvá misia', p: 'Splň prvú misiu dňa', ok: x => x.mis.n >= 1 },
+  { g: 'Misie', id: 'misia5', n: 'Pátrač', p: 'Splň 5 misií', ok: x => x.mis.n >= 5 },
+  { g: 'Misie', id: 'misia15', n: 'Majster misií', p: 'Splň 15 misií', ok: x => x.mis.n >= 15 },
+  { g: 'Misie', id: 'misia30', n: 'Legenda misií', p: 'Splň 30 misií', ok: x => x.mis.n >= 30 },
+  { g: 'Misie', id: 'misiaTypy', n: 'Všestranný mysliteľ', p: 'Splň misiu z každého z 5 typov', ok: x => x.mis.typy >= 5 },
+  { g: 'Misie', id: 'vyzva1', n: 'Objaviteľ sveta', p: 'Splň výzvu skutočného sveta', ok: x => x.mis.vyzvy >= 1 },
   { g: 'Rôzne', id: 'myticke', e: '🦄', n: 'Mýtický hrdina', p: 'Obleč postavičke mýtickú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) >= 1600) },
   ...Object.entries(KAT).map(([k, c]) => ({
     g: 'Majster kategórie', id: 'kat-' + k, vek: c.vek, e: c.e, n: 'Majster: ' + bezSpojovnika(c.nazov),
@@ -1707,7 +1752,7 @@ const IK_ODZNAKU = { prva: 'klicok', temy3: 'kniha', temy5: 'kat:vesmir', temy10
   body50: 'hviezda', body100: 'hviezda', body250: 'iskra', body500: 'hviezda', body1000: 'kometa', body1500: 'planeta', body2000: 'planeta', body5000: 'drak',
   hra1: 'gamepad', hry10: 'kocka', hry50: 'gamepad', hryvsetky: 'konfety', pexeso: 'hra:pexeso', 'pexeso-genius': 'mozog', hadaj6: 'oko', hadaj8: 'hra:hadaj',
   hviezdy20: 'hra:hviezdy', hviezdy35: 'kometa', bubliny10: 'hra:bubliny', bubliny20: 'pohar', skladacka: 'hra:skladacka', 'skladacka-rychlo': 'stopky', opakuj5: 'nota', opakuj10: 'hra:opakuj',
-  sova10: 'hra:sova', sova30: 'sova', fav1: 'obalka', zberatel: 'srdce', fav10: 'srdce', stylista: 'saty', zvieratko: 'labka', myticke: 'jednorozec' };
+  sova10: 'hra:sova', sova30: 'sova', fav1: 'obalka', zberatel: 'srdce', fav10: 'srdce', stylista: 'saty', zvieratko: 'labka', myticke: 'jednorozec', misia1: 'lupa', misia5: 'oko', misia15: 'ziarovka', misia30: 'koruna', misiaTypy: 'mozog', vyzva1: 'vlajka' };
 const ikOdznaku = o => { const v = o.id.startsWith('kat-') ? 'kat:' + o.id.slice(4) : IK_ODZNAKU[o.id] || 'medaila';
   return v.startsWith('kat:') ? ikKat(v.slice(4)) : v.startsWith('hra:') ? OBR_HRY[v.slice(4)] : ik(v); };
 function najdlhsiaSeria(dniList) {
@@ -1726,7 +1771,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   const teraz = new Date(), prebrate = st.done.filter(byId);
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
-    hier: S.get('hry-pocet-' + st.dietaId, 0), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
+    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
   const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
@@ -2827,6 +2872,7 @@ const views = {
       </section>
       <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
         <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
+      ${kartaMisie()}
       ${kartaDalsiaOdmena()}
       <div class="acts">
         <button class="act${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
@@ -2859,6 +2905,7 @@ const views = {
       }).join('')}</div>`;
   },
   odznaky: () => zbierkaOdznakov(),
+  misia: () => Misie.render(),
   ja() {
     const vsetky = TV().length, h = TV().filter(t => st.done.includes(t.id)).length, s = seria(), obvod = 326.7;
     const f = st.fav.map(byId).filter(Boolean), C = window.Cloud;
@@ -3346,8 +3393,154 @@ const Strom = {
   },
 };
 const MINI_STROM = `<svg viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 36 V24 H23 V36Z" fill="#B5651D"/><circle cx="20" cy="17" r="13" fill="#4CD07D"/><circle cx="15" cy="15" r="3" fill="#FF5A5F" stroke-width="1.8"/><circle cx="25" cy="19" r="3" fill="#FFD23F" stroke-width="1.8"/></g></svg>`;
+/* Misia dňa: jedna krátka misia na deň (5 typov), body raz za deň, história splnených. Bez tlaku: vynechaný deň nič nestojí. */
+const MISIA_TYPY = {
+  detektiv: { n: 'Detektívna misia', c: '#7C6CFF', ik: 'lupa', p: 'Prečítaj indície a odhaľ záhadu.', von: 'Vymyslite doma vlastnú záhadu a nechajte ostatných hádať.' },
+  keby: { n: 'Keby som bol…', c: '#FF9F1C', ik: 'bublina', p: 'Predstav si situáciu a rozhodni sa.', von: 'Porozprávajte sa, čo by urobil každý z vás.' },
+  pravdy: { n: 'Dve pravdy a jedna lož', c: '#2FBF71', ik: 'otaznik', p: 'Ktoré tvrdenie je vymyslené?', von: 'Vymyslite dve pravdy a jednu lož o svojom dni.' },
+  coak: { n: 'Čo sa stane, keď…?', c: '#4C7DFF', ik: 'ziarovka', p: 'Hádaj, čo bude potom, a zisti prečo.', von: 'Skúste nájsť vo svete okolo príčinu a následok.' },
+  vyzva: { n: 'Výzva skutočného sveta', c: '#E0533F', ik: 'vlajka', p: 'Úloha mimo appky: ulica, príroda, ľudia.', von: 'Choď von a splň úlohu.' },
+};
+const MISIA_PORADIE = ['detektiv', 'keby', 'pravdy', 'coak', 'vyzva'];
+const MISIA_UROVNE = ['Jednoduchá', 'Stredná', 'Zapeklitá'];
+const Misie = {
+  kluc: () => 'misie-' + st.dietaId,
+  data() { const d = S.get(this.kluc(), null); return d && d.hotove ? d : { hotove: {}, bodyDen: '' }; },
+  uroven() { return S.get('misie-uroven-' + st.dietaId, st.vek === 'starsi' ? 2 : 1); },
+  dnesna(u = this.uroven()) {
+    const d = denCislo(), typ = MISIA_PORADIE[d % 5], zoz = MISIE.filter(m => m.t === typ && m.u === u);
+    if (!zoz.length) return MISIE[0];
+    const hotove = this.data().hotove, z = Math.floor(d / 5);
+    for (let i = 0; i < zoz.length; i++) { const m = zoz[(z + i) % zoz.length]; if (!hotove[m.id]) return m; }
+    return zoz[z % zoz.length];
+  },
+  splnenaDnes() { return this.data().bodyDen === key(new Date()); },
+  sucet() {
+    const h = Object.entries(this.data().hotove);
+    return { n: h.length, typy: new Set(h.map(([, v]) => v.t)).size, vyzvy: h.filter(([, v]) => v.t === 'vyzva').length };
+  },
+  tyzden() { const od = key(new Date(Date.now() - 6 * 864e5)); return Object.values(this.data().hotove).filter(v => v.kedy >= od).length; },
+  body: (m, chyby) => { const z = m.t === 'vyzva' ? 20 + 5 * (m.u - 1) : 8 + 2 * m.u; return chyby ? Math.max(5, Math.round(z * .6)) : z; },
+  nova(m, nahliad) { return { m, ind: 1, chyby: 0, zle: [], videl: [], vysl: null, koniec: null, nahliad: !!nahliad, anim: '' }; },
+  dokonci() {
+    const q = st.misia, m = q.m, dnes = key(new Date()), d = this.data(), pred = st.body;
+    let zisk = 0;
+    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; st.body += zisk; S.set('body', st.body); }
+    d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d);
+    const odznaky = noveOdznaky('misia');
+    q.koniec = { zisk, noveOdznaky: odznaky, noveOdmeny: noveOdmeny(pred, st.body), noveHry: noveHry(pred, st.body) };
+    Zvuk.play('win'); vibruj([40, 30, 40]); FX.burst(innerWidth / 2, innerHeight / 3, 30, ['star', 'dot']);
+    paintHead(); render(); scrollTo(0, 0);
+  },
+  chipy(m, u) {
+    const T = MISIA_TYPY[m.t];
+    return `<div class="chips misia-chipy"><span class="chip" style="--c:${T.c}">${ii(ik(T.ik))} ${T.n}</span><span class="chip tmavy" style="--c:#FFD23F">${MISIA_UROVNE[(u || m.u) - 1]}</span><span class="chip tmavy" style="--c:#B6F0C8">2 až 5 minút</span></div>`;
+  },
+  hub() {
+    const m = this.dnesna(), T = MISIA_TYPY[m.t], ok = this.splnenaDnes(), u = this.uroven(), h = this.data().hotove;
+    const hist = Object.entries(h).sort((a, b) => b[1].kedy.localeCompare(a[1].kedy)).slice(0, 12).map(([id, v]) => [MISIE.find(x => x.id === id), v]).filter(([x]) => x);
+    const datum = k => new Date(k + 'T12:00:00').toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric' });
+    return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Misia dňa</h1></div>
+      <p class="muted">Jedna krátka misia na deň. Keď ju nestihneš, nič sa nestane, zajtra príde nová.</p>
+      <section class="card misia-dnes" style="--c:${T.c}"><span class="misia-obr">${ik(T.ik)}</span>
+        <div><small class="lbl-mala">${ok ? 'Dnes splnené' : 'Dnešná misia'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p}</span></div>
+        ${this.chipy(m, u)}
+        ${ok ? `<p class="misia-hotovo">${ii(IK.fajka)} Dnešnú misiu máš splnenú. ${esc(T.von)}</p>` : ''}
+        <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Začať misiu'}</button></section>
+      <section class="sec"><h2 class="h2" style="--hc:#FFC233">Náročnosť</h2>
+        <div class="chips">${MISIA_UROVNE.map((n, i) => `<button class="chip" data-mi-u="${i + 1}" aria-pressed="${u === i + 1}" style="--c:#7C6CFF">${n}</button>`).join('')}</div></section>
+      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Moje misie</h2><p class="muted">Tento týždeň: ${this.tyzden()}</p>
+        <div class="misia-typy">${MISIA_PORADIE.map(t => { const n = Object.values(h).filter(v => v.t === t).length, X = MISIA_TYPY[t];
+          return `<div class="misia-typ-bunka${n ? ' ma' : ''}" style="--c:${X.c}"><span class="misia-ikona">${ik(X.ik)}</span><b>${n}×</b><small>${X.n}</small></div>`; }).join('')}</div>
+        ${hist.length ? `<div class="list">${hist.map(([x, v]) => `<button class="row misia-riadok" data-mi-hist="${x.id}"><span class="misia-mini" style="--c:${MISIA_TYPY[x.t].c}">${ik(MISIA_TYPY[x.t].ik)}</span><span class="misia-riadok-t"><b>${esc(x.n)}</b><small>${datum(v.kedy)} · ${MISIA_TYPY[x.t].n}</small></span></button>`).join('')}</div>`
+          : '<p class="muted">Tu sa ukážu tvoje splnené misie.</p>'}</section>`;
+  },
+  moznosti(q, spravne) {
+    const m = q.m, k = q.koniec;
+    return `<div class="misia-ans">${m.o.map((o, i) => {
+      const t = typeof o === 'string' ? o : o.t, cls = k && i === spravne ? ' ok' : q.zle.includes(i) ? ' bad' : q.videl.includes(i) ? ' vyb' : '';
+      return `<button class="ans${cls}" data-mi-vol="${i}" style="--e:#F3EFFF"${k || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABCD'[i]}</span><span>${esc(t)}</span></button>`;
+    }).join('')}</div>`;
+  },
+  chyba(q) {
+    return q.zle.length && !q.koniec ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} ${q.m.t === 'detektiv' && q.ind < q.m.ind.length ? 'Ešte nie. Odhaľ ďalšiu indíciu alebo skús inú možnosť.' : 'Ešte nie. Skús inú možnosť.'}</div>` : '';
+  },
+  telo(q) {
+    const m = q.m, a = q.anim; q.anim = '';
+    if (m.t === 'detektiv') return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
+      <section class="sec"><h2 class="h2" style="--hc:#7C6CFF">Indície</h2>${m.ind.slice(0, q.ind).map((x, i) => `<div class="card misia-ind${a === 'ind' && i === q.ind - 1 ? ' nova' : ''}"><span class="misia-cislo">${i + 1}</span><span>${esc(x)}</span></div>`).join('')}
+        ${!q.koniec && q.ind < m.ind.length ? `<button class="btn wide blue" data-mi-ind>${ii(IK.lupa)} Ďalšia indícia</button>` : ''}</section>
+      <section class="sec"><h2 class="h2" style="--hc:#FF6FA8">${esc(m.q)}</h2>${this.moznosti(q, m.s)}${this.chyba(q)}</section>`;
+    if (m.t === 'coak') return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
+      <section class="sec"><h2 class="h2" style="--hc:#4C7DFF">${esc(m.q)}</h2>${this.moznosti(q, m.s)}${this.chyba(q)}</section>`;
+    if (m.t === 'keby') {
+      const r = q.videl.map(i => `<div class="card misia-reakcia">${esc(m.o[i].r)}</div>`).join('');
+      return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
+      <section class="sec"><h2 class="h2" style="--hc:#FF9F1C">Čo urobíš?</h2><p class="muted">Tu nie je zlá odpoveď. Ťukni na možnosť a uvidíš, čo sa môže stať. Môžeš skúsiť viac možností.</p>${this.moznosti(q, -1)}${r}
+        ${q.videl.length && !q.koniec ? '<button class="btn wide cta" data-mi-hotovo>Hotovo</button>' : ''}</section>`;
+    }
+    if (m.t === 'pravdy') {
+      const k = q.koniec;
+      return `<p class="muted">Dve tvrdenia sú pravdivé a jedno je vymyslené. Ťukni na to, ktoré je lož.</p><div class="misia-ans">${m.v.map((x, i) => {
+        const hotovo = k || q.zle.includes(i), cls = k ? (x.ok ? ' pravda' : ' ok') : q.zle.includes(i) ? ' bad' : '';
+        return `<button class="ans${cls}" data-mi-vol="${i}" style="--e:#F3EFFF"${hotovo ? ' disabled' : ''}><span class="em pismeno">${i + 1}</span><span>${esc(x.t)}</span></button>${hotovo ? `<div class="card misia-reakcia nova"><b>${x.ok ? 'Pravda' : 'Lož'}.</b> ${esc(x.e)}</div>` : ''}`;
+      }).join('')}</div>${this.chyba(q)}`;
+    }
+    return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
+      <section class="sec"><h2 class="h2" style="--hc:#E0533F">Tvoja úloha</h2>
+        <ol class="misia-kroky">${m.ulohy.map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="muted">${ii(IK.ziarovka)} ${esc(m.tip)}</p></section>
+      ${q.koniec ? '' : `<section class="sec"><h2 class="h2" style="--hc:#FFC233">Ako to dopadlo?</h2><div class="chips">${m.vysl.map((x, i) => `<button class="chip" data-mi-vysl="${i}" aria-pressed="${q.vysl === i}" style="--c:#E0533F">${esc(x)}</button>`).join('')}</div>
+        <p class="muted">Najprv choď von a úlohu splň. Potom sa vráť a ťukni na Splnené.</p>
+        <button class="btn wide cta" data-mi-hotovo>Splnené!</button>
+        <button class="btn wide ghost" data-mi-spat>Idem na to, vrátim sa neskôr</button></section>`}`;
+  },
+  koniec(q) {
+    const m = q.m, k = q.koniec, T = MISIA_TYPY[m.t];
+    return `${m.vys ? `<div class="card misia-vys"><small class="lbl-mala">Vysvetlenie</small><p>${esc(m.vys)}</p></div>` : ''}
+      <div class="card misia-fakt"><small class="lbl-mala">Zaujímavosť</small><p>${ii(IK.iskra)} ${esc(m.fakt)}</p></div>
+      <div class="card misia-rodic"><span class="misia-rodic-ik">${IK.rodina}</span><div><small class="lbl-mala">Pre rodiča</small><p>${esc(m.rodic)}</p></div></div>
+      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ii(STAR())}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o objavovanie.</p>'}
+      ${odmenyHtml(k)}
+      <div class="card misia-von"><small class="lbl-mala">Mimo appky</small><p>${esc(m.von || T.von)}</p></div>
+      <button class="btn wide cta" data-go="domov">Hotovo, idem objavovať</button>`;
+  },
+  render() {
+    const q = st.misia;
+    if (!q) return this.hub();
+    return `<div class="hra-top"><button class="ib" data-mi-spat aria-label="Späť na misie">${IKO.zavriet}</button><b class="hra-nazov">${esc(q.m.n)}</b></div>
+      ${this.chipy(q.m)}
+      ${q.nahliad ? '<p class="muted">Táto misia sa počíta bez bodov.</p>' : ''}
+      ${this.telo(q)}${q.koniec ? this.koniec(q) : ''}`;
+  },
+  klik(b, d) {
+    const q = st.misia;
+    if (d.miStart !== undefined) { Zvuk.play('start'); st.misia = this.nova(this.dnesna(), this.splnenaDnes()); render(); scrollTo(0, 0); return true; }
+    if (d.miHist) { const m = MISIE.find(x => x.id === d.miHist); if (m) { Zvuk.play('pop'); st.misia = this.nova(m, true); render(); scrollTo(0, 0); } return true; }
+    if (d.miU) { S.set('misie-uroven-' + st.dietaId, +d.miU); Zvuk.play('tap'); render(); return true; }
+    if (d.miSpat !== undefined) { Zvuk.play('whoosh'); st.misia = null; render(); scrollTo(0, 0); return true; }
+    if (!q || q.koniec) return false;
+    if (d.miInd !== undefined) { q.ind++; q.anim = 'ind'; Zvuk.play('pop'); render(); return true; }
+    if (d.miVysl !== undefined) { q.vysl = q.vysl === +d.miVysl ? null : +d.miVysl; Zvuk.play('tap'); render(); return true; }
+    if (d.miHotovo !== undefined) { this.dokonci(); return true; }
+    if (d.miVol !== undefined) {
+      const i = +d.miVol, m = q.m;
+      if (m.t === 'keby') { if (!q.videl.includes(i)) q.videl.push(i); Zvuk.play('pop'); render(); return true; }
+      const spravne = m.t === 'pravdy' ? m.v.findIndex(x => !x.ok) : m.s;
+      if (i === spravne) this.dokonci(); else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); render(); }
+      return true;
+    }
+    return false;
+  },
+};
+// karta na Domove: typ dnešnej misie a či je splnená
+function kartaMisie() {
+  const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
+  return `<button class="auto-karta misia-karta${ok ? ' hotova' : ''}" data-go="misia" style="--c:${T.c}"><span class="misia-obr">${ik(T.ik)}</span>
+    <div><b>Misia dňa${ok ? ': splnená' : ''}</b><small>${ok ? 'Skvelé! Zajtra príde nová misia.' : `${T.n}. 2 až 5 minút a potom von!`}</small></div><span class="auto-play">${IKO.play}</span></button>`;
+}
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 36, obr: () => ik('lupa'), n: 'Nová Misia dňa', p: 'Každý deň jedna krátka misia: záhada, rozhodovanie, dve pravdy a lož, príčiny a následky alebo výzva vonku. Nájdeš ju na Domove. Za splnenie sú body a odznaky.' },
   { v: 35, obr: () => stromSvg({ stupen: 4, plody: 6, kos: 0, novy: -1 }), n: 'Strom múdrosti rastie s vami', p: 'Strom má 6 stupňov, od semienka až po zlatý strom múdrosti. Ťuknite na kartu Tento týždeň a uvidíte, ako vyzerá. Oslava je teraz ešte veľkolepejšia.' },
   { v: 34, obr: () => owl('cheer'), n: 'Sprievodca pre nových rodičov', p: 'Nový účet rodiča dostane celú prehliadku: ako funguje účet a profil dieťaťa, téma dňa, body, kvízy, hry, priatelia aj nastavenia.' },
   { v: 33, obr: () => postavicka({ vlasy: 'kucery', farbaVlasov: '#B5713C', koza: '#F6C9A0', oci: 'velke', usta: 'smiech', okuliare: 'ziadne', tricko: '#4C7DFF', vzor: 'planeta', doplnok: 'roh', zvieratko: 'panda', kuzlo: 'srdcia', pozadie: '#FFE1E8' }, true),
@@ -3795,13 +3988,13 @@ function render() {
   }
   ['domov', 'temy', 'hry', 'priatelia', 'ja'].forEach(v => {
     const b = document.getElementById('nav-' + v);
-    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && st.view === 'misia') || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   socZnacka();
   paintHead();
 }
 
-function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.view = v; render(); window.scrollTo(0, 0); }
+function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.view = v; render(); window.scrollTo(0, 0); }
 
 // Lietajúca sova: ťuknutie kdekoľvek na oblohu (aj medzerník na počítači)
 document.addEventListener('pointerdown', e => { if (e.target && e.target.id === 'sova-cv' && st.hra && st.hra.id === 'sova') { e.preventDefault(); Hra.mav(); } });
@@ -3831,6 +4024,7 @@ document.addEventListener('click', e => {
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
   if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
   if (d.auto) { Auto.ovladaj(d.auto); return; }
+  if (Misie.klik(b, d)) return;
   if (d.vyber) { vyberOdznak(d.vyber, b); return; }
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra); return; }
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }

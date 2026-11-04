@@ -6,7 +6,7 @@ const skript = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m)[1];
 const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
-const src = ['temy.js', 'obrazky.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
+const src = ['temy.js', 'obrazky.js', 'misie.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
@@ -37,7 +37,40 @@ st.upravuje.meno = "Ema"; tvorbaKlik(document.createElement("button"), { ulozitD
 if (!window.Cloud.ulozene || window.Cloud.ulozene.vek !== "starsi") throw new Error("tvorba neulozila");
 for (const a of [nahodnyAvatar(), nahodnyAvatar(), nahodnyAvatar()]) postavicka(a, true);
 st.faza = "appka"; st.dietaId = "d1"; st.avatar = nahodnyAvatar(); st.meno = "Emka";
-for (const v of ['domov','temy','hry','odznaky','ja']) { st.view = v; render(); }
+for (const v of ['domov','temy','hry','odznaky','ja','misia']) { st.view = v; render(); }
+/* MISIA DNA */
+{
+  const kl = (d) => Misie.klik(document.createElement("button"), d);
+  for (const typ of MISIA_PORADIE) for (const u of [1,2,3]) if (!MISIE.some(m => m.t === typ && m.u === u)) throw new Error("misie: chyba " + typ + u);
+  if (new Set(MISIE.map(m => m.id)).size !== MISIE.length) throw new Error("misie: id");
+  for (const m of MISIE) {
+    if (!MISIA_TYPY[m.t] || ![1,2,3].includes(m.u) || !m.fakt || !m.rodic) throw new Error("misie: pole " + m.id);
+    if (m.t === 'detektiv' && !(m.ind.length >= 3 && m.o[m.s] && m.vys)) throw new Error("misie: detektiv " + m.id);
+    if (m.t === 'coak' && !(m.o[m.s] && m.vys)) throw new Error("misie: coak " + m.id);
+    if (m.t === 'pravdy' && !(m.v.length === 3 && m.v.filter(x => !x.ok).length === 1)) throw new Error("misie: pravdy " + m.id);
+    if (m.t === 'keby' && !(m.o.length >= 3 && m.o.every(o => o.r))) throw new Error("misie: keby " + m.id);
+    if (m.t === 'vyzva' && !(m.ulohy.length && m.vysl.length)) throw new Error("misie: vyzva " + m.id);
+  }
+  localStorage.d = Object.fromEntries(Object.entries(localStorage.d).filter(([k]) => !k.includes("misie")));
+  st.view = "misia"; st.misia = null; st.body = 0; render();
+  const pred = st.body;
+  kl({ miStart: "" }); render();
+  const m = st.misia.m;
+  if (m.t === 'detektiv') { kl({ miInd: "" }); kl({ miVol: String((m.s + 1) % m.o.length) }); if (st.misia.chyby !== 1) throw new Error("misie: zle"); }
+  if (m.t === 'keby') kl({ miVol: "0" });
+  if (m.t === 'coak') kl({ miVol: String((m.s + 1) % m.o.length) });
+  if (m.t === 'pravdy') kl({ miVol: String(m.v.findIndex(x => x.ok)) });
+  render();
+  if (m.t === 'vyzva' || m.t === 'keby') kl({ miHotovo: "" }); else kl({ miVol: String(m.t === 'pravdy' ? m.v.findIndex(x => !x.ok) : m.s) });
+  if (!st.misia.koniec) throw new Error("misie: koniec");
+  if (st.body <= pred || !Misie.splnenaDnes() || !st.odznaky.includes("misia1")) throw new Error("misie: body/odznak " + st.body);
+  render();
+  const po = st.body; kl({ miStart: "" }); kl({ miHotovo: "" }); kl({ miVol: "0" });
+  if (st.body !== po) throw new Error("misie: body dvakrat");
+  for (const mm of MISIE) { st.misia = Misie.nova(mm, true); if (mm.t === 'keby') kl({ miVol: "1" }); render(); st.misia.koniec = { zisk: 0, noveOdznaky: [], noveOdmeny: [], noveHry: [] }; render(); }
+  kl({ miSpat: "" }); kl({ miU: "3" }); render(); if (Misie.uroven() !== 3) throw new Error("misie: uroven");
+  go("domov"); go("misia"); go("domov");
+}
 const chyby = [];
 for (const t of T) {
   if (!ART[t.id]) chyby.push('obrazok ' + t.id);
