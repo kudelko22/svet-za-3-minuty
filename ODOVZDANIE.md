@@ -106,6 +106,6 @@ NASADENÉ 4. 11. 2026 po súhlase vlastníka (push 20c360b, deploy hosting + pra
 
 Voľné písanie je automatické pre všetkých spárovaných priateľov (pravidlá už nepýtajú `pisanie`, pole ostáva v profile, ale nič nerieši; tlačidlo zapnúť/vypnúť v prehľade rodiča zmizlo, rodič môže vypnúť priateľov). Medzery v chate: srdiečko na bublinke prekrývalo ďalšiu bublinku, margin zväčšený (4/9/18 px), `flex: none`. `test` OK, `test:rules` 56 z 56, `build` OK. Nasadené (hosting aj pravidlá), záloha zip svet-za-3-minuty-3.0.1.zip na ploche.
 
-## Vývoj: 3.0.2 (4. 11. 2026, nenasadené)
+## Vývoj: 3.0.2 (4. 11. 2026, NASADENÉ po súhlase vlastníka)
 
-Skutočná príčina prekrývania bubliniek: text správy `.msg-t` bol inline `span` s paddingom, takže pri viacriadkovom texte sa pozadia riadkov prekrývali. Opravené `display: block`. Overené na rozlome dlhých správ. Čaká na súhlas na push a deploy.
+Skutočná príčina prekrývania bubliniek: text správy `.msg-t` bol inline `span` s paddingom, takže pri viacriadkovom texte sa pozadia riadkov prekrývali. Opravené `display: block`. Overené na rozlome dlhých správ. Nasadené, záloha svet-za-3-minuty-3.0.2.zip na ploche.
