@@ -102,6 +102,6 @@ Etapa C (vetva claude/festive-hodgkin-735aea) zlúčená do `main` s etapami A a
 `test` OK, `test:rules` 57 z 57 (na vlastnom porte 8290, lebo 8180 držal iný emulátor), `build` OK. Na emulátore: Domov, Misia dňa, Angličtina, Hry (Koľko ich je?), Priatelia, Ja bez chýb v konzole (len 404 na nejaký súbor, asi favicon).
 NASADENÉ 4. 11. 2026 po súhlase vlastníka (push 20c360b, deploy hosting + pravidlá). Záloha zip na ploche. Neskúšané: odosielanie voľného písania a hnitie stromu naživo.
 
-## Vývoj: 3.0.1 (4. 11. 2026, nenasadené)
+## Vývoj: 3.0.1 (4. 11. 2026, NASADENÉ po súhlase vlastníka)
 
-Voľné písanie je automatické pre všetkých spárovaných priateľov (pravidlá už nepýtajú `pisanie`, pole ostáva v profile, ale nič nerieši; tlačidlo zapnúť/vypnúť v prehľade rodiča zmizlo, rodič môže vypnúť priateľov). Medzery v chate: srdiečko na bublinke prekrývalo ďalšiu bublinku, margin zväčšený (4/9/18 px), `flex: none`. `test` OK, `test:rules` 56 z 56, `build` OK. Čaká na súhlas vlastníka na push a `deploy` (zmenili sa `firestore.rules`).
+Voľné písanie je automatické pre všetkých spárovaných priateľov (pravidlá už nepýtajú `pisanie`, pole ostáva v profile, ale nič nerieši; tlačidlo zapnúť/vypnúť v prehľade rodiča zmizlo, rodič môže vypnúť priateľov). Medzery v chate: srdiečko na bublinke prekrývalo ďalšiu bublinku, margin zväčšený (4/9/18 px), `flex: none`. `test` OK, `test:rules` 56 z 56, `build` OK. Nasadené (hosting aj pravidlá), záloha zip svet-za-3-minuty-3.0.1.zip na ploche.
