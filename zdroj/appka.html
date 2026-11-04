@@ -2994,7 +2994,7 @@ Object.assign(views, {
     if (!So || !So.nacitane) return `<h1 class="h1">Priatelia</h1><p class="muted">Načítava sa…</p>`;
     if (!So.zapnute) return `<h1 class="h1">Priatelia</h1>
       <section class="card soc-intro">${owl('hi')}<div><span class="lbl">${ii(IK.rodina)} Pre rodiča</span>
-        <p>Priatelia si posielajú len kreslené nálepky a hotové vety, nič iné sa napísať nedá. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
+        <p>Priatelia si posielajú kreslené nálepky a hotové vety. Voľné písanie vlastných slov môžete neskôr zapnúť v profile v časti Pre rodiča. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
         <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidíte v profile v časti Pre rodiča a dá sa to kedykoľvek vypnúť.</p>
         <p class="muted">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p><button class="btn wide cta" data-soc-zapni>Zapnúť priateľov</button></div></section>`;
     const tab = st.socTab || 'spravy', caka = S.get('soc-caka-' + So.pid, []);
@@ -3562,6 +3562,9 @@ function kartaMisiePoTeme(t) {
 }
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 36, obr: () => svg(byId('raketa')), siroky: true, n: '24 nových tém a ďalšie misie', p: 'Ku každej kategórii pribudla nová téma s obrázkom a kvízom. V Misii dňa je 75 misií, takže sa dlho neopakujú.' },
+  { v: 36, obr: () => stromSvg({ stupen: 3, plody: 0, kos: 0, novy: -1, hn: 2 }), n: 'Strom vädne, keď sa nehrá', p: 'Keď dieťa vynechá niekoľko dní, strom pomaly vädne a najdrahšie hry si oddychujú. Po prvej téme strom ožije a nič sa nestratí. Rodič to môže vypnúť v prehľade.' },
+  { v: 36, obr: () => IK.bublina, n: 'Voľné písanie v správach', p: 'Rodič môže priateľom zapnúť písanie vlastných slov. Bubliny v rozhovoroch sú teraz tesnejšie pri sebe.' },
   { v: 36, obr: () => ik('lupa'), n: 'Nová Misia dňa', p: 'Každý deň jedna krátka misia: záhada, rozhodovanie, dve pravdy a lož, príčiny a následky alebo výzva vonku. Nájdeš ju na Domove. Za splnenie sú body a odznaky.' },
   { v: 35, obr: () => stromSvg({ stupen: 4, plody: 6, kos: 0, novy: -1 }), n: 'Strom múdrosti rastie s vami', p: 'Strom má 6 stupňov, od semienka až po zlatý strom múdrosti. Ťuknite na kartu Tento týždeň a uvidíte, ako vyzerá. Oslava je teraz ešte veľkolepejšia.' },
   { v: 34, obr: () => owl('cheer'), n: 'Sprievodca pre nových rodičov', p: 'Nový účet rodiča dostane celú prehliadku: ako funguje účet a profil dieťaťa, téma dňa, body, kvízy, hry, priatelia aj nastavenia.' },
