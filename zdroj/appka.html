@@ -656,6 +656,15 @@ button.misia-cast:active { transform: translateY(3px); box-shadow: 0 0 0 var(--i
 .btn.hadaj-btn { font-size: 1.05rem; }
 .btn.hadaj-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
 .btn.hadaj-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+/* Koľko ich je? (hra pre malé deti) */
+.pocitaj { display: grid; gap: 14px; }
+.poc-pole { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; min-height: 190px; background: #FFF8D6; }
+.poc-obr { width: 74px; height: 74px; animation: pop .4s var(--spring) both; animation-delay: var(--d, 0s); }
+.poc-obr svg { width: 100%; height: 100%; }
+.poc-moz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.btn.poc-btn { min-height: 96px; font: 800 3rem/1 var(--f-display); }
+.btn.poc-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
+.btn.poc-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
 /* bubliny s počtami */
 .priklad { text-align: center; font: 700 2.4rem/1.1 var(--f-display); }
 .bub-pole { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, #8ED6FF); }
@@ -854,17 +863,22 @@ body.dm-rezim::before { display: none; }
 .dm-kto .soc-av { width: 44px; height: 44px; }
 .dm-kto b { display: block; font: 700 1.2rem var(--f-display); }
 .dm-kto small { color: var(--muted); font-weight: 800; }
-.dm-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding: 14px 12px; overscroll-behavior: contain; }
+.dm-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0; padding: 14px 12px; overscroll-behavior: contain; }
 .dm-prazdny { margin: auto; display: grid; justify-items: center; gap: 8px; text-align: center; }
 .dm-prazdny b { font: 700 1.4rem var(--f-display); }
 .dm-cas { align-self: center; margin: 10px 0 4px; color: var(--muted); font: 800 .78rem var(--f-body); }
 .dm .msg { align-self: flex-start; display: flex; align-items: flex-end; gap: 6px; max-width: 78%; padding: 0; border: 0; background: none; }
 .dm .msg.moja { align-self: flex-end; }
-.dm .msg.posl { margin-bottom: 6px; }
+.dm .msg { margin-bottom: 2px; }
+.dm .msg.posl { margin-bottom: 4px; }
 .msg-av { flex: none; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; }
 .msg-av .postavicka { width: 100%; height: auto; }
 .dm .msg-t { padding: 9px 14px; border-radius: 22px; background: #EAE4F7; font: 600 1.1rem/1.25 var(--f-display); }
 .dm .msg.moja .msg-t { background: linear-gradient(135deg, #8B6CFF, #4C7DFF); color: #fff; }
+.msg-x { font-family: var(--f-body) !important; font-weight: 700 !important; overflow-wrap: anywhere; white-space: pre-wrap; }
+.hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--ink); border-radius: 16px; background: #FFF0C9; font-weight: 700; line-height: 1.35; }
+.dm-text { display: flex; gap: 8px; }
+.dm-text .search { flex: 1; min-width: 0; }
 .dm .msg-nal { width: 96px; height: 96px; animation: pop .5s var(--spring) both; }
 .msg.odosiela { opacity: .6; }
 .dm-pisanie { display: grid; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 2.5px solid var(--ink); background: var(--paper); }
@@ -874,7 +888,7 @@ body.dm-rezim::before { display: none; }
 /* priatelia 2.2: téma v správe, srdiečko, Videné, upozornenie */
 .msg-obal { position: relative; display: block; }
 .msg-r { position: absolute; right: -6px; bottom: -8px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--paper); animation: pop .4s var(--spring) both; }
-.dm .msg.srdce { margin-bottom: 12px; }
+.dm .msg.srdce { margin-bottom: 9px; }
 .msg-tema { display: grid; gap: 4px; width: 200px; padding: 8px; border: 2.5px solid var(--ink); border-radius: 20px; background: var(--paper); box-shadow: 0 3px 0 var(--ink); }
 .msg-tema-obr { display: block; height: 100px; overflow: hidden; border-radius: 14px; border: 2px solid var(--ink); }
 .msg-tema-obr > svg { width: 100%; height: 100%; }
@@ -1712,7 +1726,7 @@ const ODZNAKY = [
   { g: 'Hry', id: 'hra1', e: '🎮', n: 'Hráč', p: 'Dohraj prvú hru', ok: x => x.hier >= 1 },
   { g: 'Hry', id: 'hry10', e: '🎲', n: 'Hravý', p: 'Dohraj 10 hier', ok: x => x.hier >= 10 },
   { g: 'Hry', id: 'hry50', e: '🕹️', n: 'Herný maratón', p: 'Dohraj 50 hier', ok: x => x.hier >= 50 },
-  { g: 'Hry', id: 'hryvsetky', e: '🎪', n: 'Majster hier', p: 'Zahraj si všetky hry', ok: x => x.hrane >= HRY.length },
+  { g: 'Hry', id: 'hryvsetky', e: '🎪', n: 'Majster hier', p: 'Zahraj si všetky hry', ok: x => x.hrane >= HRY_VID().length },
   { g: 'Hry', id: 'pexeso', e: '🃏', n: 'Pexesár', p: 'Nájdi v pexese všetky dvojice', ok: x => x.hra === 'pexeso' },
   { g: 'Hry', id: 'pexeso-genius', e: '🧠', n: 'Pamäťový génius', p: 'Pexeso len s pár chybami', ok: x => x.hra === 'pexeso' && x.hodnota <= x.pary + 4 },
   { g: 'Hry', id: 'hadaj6', e: '👀', n: 'Bystré oko', p: 'Hádaj tému aspoň 6 z 8', ok: x => x.hra === 'hadaj' && x.hodnota >= 6 },
@@ -1776,7 +1790,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   const teraz = new Date(), prebrate = st.done.filter(byId);
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
-    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY.filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
+    hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
   const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
@@ -1933,7 +1947,7 @@ function dokonciAuto(t) {
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
   zapisPrebrate(t.id);
   st.body += zisk; S.set('body', st.body);
-  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  if (!st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
   return { zisk, noveOdznaky: noveOdznaky('auto', { uci: true }), noveOdmeny: noveOdmeny(bodyPred, st.body), noveHry: noveHry(bodyPred, st.body) };
 }
 function dalsiaTemaAuto(tid) {
@@ -2286,20 +2300,24 @@ try { speechSynthesis.addEventListener('voiceschanged', () => { const el = docum
 /* Hry: odomykajú sa za body z tém (hraním sa body neminú) */
 const HRY = [
   { id: 'pexeso', n: 'Pexeso', p: 'Nájdi dvojice rovnakých obrázkov.', cena: 150, c: '#FFB3D1' },
+  { id: 'pocitaj', n: 'Koľko ich je?', p: 'Spočítaj obrázky a ťukni na správne číslo. Bez časovača.', cena: 200, c: '#FFE27A', len: 'mladsi' },
   { id: 'hadaj', n: 'Hádaj tému', p: 'Podľa obrázka uhádni, o ktorej téme je.', cena: 250, c: '#CDEBFF' },
   { id: 'sova', n: 'Lietajúca sova', p: 'Ťukaj a sovička letí. Prelet pomedzi ceruzky a zbieraj hviezdy!', cena: 300, c: '#BFE7FF' },
   { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 400, c: '#FFE27A' },
   { id: 'opakuj', n: 'Opakuj po mne', p: 'Zapamätaj si, ktoré farby zasvietili, a zopakuj ich.', cena: 550, c: '#FFD6A5' },
-  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF' },
+  { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF', len: 'starsi' },
   { id: 'skladacka', n: 'Skladačka', p: 'Poprehadzovaný obrázok poskladaj späť.', cena: 900, c: '#9FE8DF' },
 ];
-const noveHry = (pred, po) => HRY.filter(h => h.cena > pred && h.cena <= po);
+// hry podľa veku dieťaťa: ťažšie počtové hry nie sú pre malé deti, tie majú svoju ľahkú
+const HRY_VID = () => HRY.filter(h => !h.len || h.len === (st.vek === 'starsi' ? 'starsi' : 'mladsi'));
+const noveHry = (pred, po) => HRY_VID().filter(h => h.cena > pred && h.cena <= po);
 const HVIEZDA = 'M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z';
 const OBLAK = `<svg viewBox="0 0 48 42" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M12 28a8 8 0 0 1-1-15.9A11 11 0 0 1 32 9a8.5 8.5 0 0 1 5 16.3A6 6 0 0 1 35 28z" fill="#8C8FA8"/><path d="M24 26l-5 8h5l-3 7 9-11h-5l3-4z" fill="#FFD23F"/><circle cx="18" cy="19" r="1.6" fill="${INK}"/><circle cx="27" cy="19" r="1.6" fill="${INK}"/><path d="M19.5 24q3-2.5 6 0" fill="none"/></g></svg>`;
 const OBR_HRY = {
   sova: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><rect x="3" y="3" width="74" height="58" rx="12" fill="#BFE7FF"/>
     <path d="M51 4 V16 H63 V4Z" fill="#4C7DFF"/><path d="M51 16 L57 26 L63 16Z" fill="#FFE3BD"/><path d="M51 60 V48 H63 V60Z" fill="#FF5A5F"/><path d="M51 48 L57 38 L63 48Z" fill="#FFE3BD"/>
     <path d="${HVIEZDA}" fill="#FFD23F" transform="translate(50.5 25.5) scale(.55)" stroke-width="3.5"/></g>${owl('cheer').replace('<svg ', '<svg x="9" y="14" width="32" height="35" ')}</svg>`,
+  pocitaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#FFF3B0"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(8 8) scale(1.3)" stroke-width="2.5"/><path d="${HVIEZDA}" fill="#FF9F1C" transform="translate(40 10) scale(1.3)" stroke-width="2.5"/><path d="${HVIEZDA}" fill="#FF6FA8" transform="translate(24 32) scale(1.3)" stroke-width="2.5"/></g></svg>`,
   pexeso: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="8" y="10" width="30" height="42" rx="7" fill="#B36BFF" transform="rotate(-10 23 31)"/><path d="M18 26a5 5 0 1 1 7 4.6c-1.4.7-2 1.6-2 3.4" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" transform="rotate(-10 23 31)"/><circle cx="24" cy="40" r="2" fill="#fff" stroke="none" transform="rotate(-10 23 31)"/><rect x="42" y="12" width="30" height="42" rx="7" fill="#fff" transform="rotate(8 57 33)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(44 18) scale(1.1) rotate(8 12 12)"/></g></svg>`,
   hviezdy: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#2E3A87"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(10 10) scale(1.3)"/><path d="${HVIEZDA}" fill="#FF9F1C" transform="translate(44 28) scale(1.1)"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(50 6) scale(.8)"/><circle cx="16" cy="48" r="2" fill="#fff" stroke="none"/><circle cx="36" cy="16" r="1.5" fill="#fff" stroke="none"/></g></svg>`,
   hadaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="6" y="8" width="52" height="40" rx="6" fill="#fff"/><path d="M8 44 L22 30 L34 40 L42 34 L56 44Z" fill="#4CD07D"/><circle cx="44" cy="20" r="5" fill="#FFD23F"/><circle cx="55" cy="42" r="12" fill="#fff" fill-opacity=".55"/><path d="M64 51l9 9" stroke-width="6" stroke-linecap="round"/></g></svg>`,
@@ -2313,10 +2331,10 @@ const slovoHviezdy = n => n === 1 ? 'hviezda' : n >= 2 && n <= 4 ? 'hviezdy' : '
 const slovoPriklady = n => n === 1 ? 'príklad' : n >= 2 && n <= 4 ? 'príklady' : 'príkladov';
 const slovoTony = n => n === 1 ? 'farba' : n >= 2 && n <= 4 ? 'farby' : 'farieb';
 const slovoBody = n => n === 1 ? 'bod' : n >= 2 && n <= 4 ? 'body' : 'bodov';
-const rekordText = (id, r) => id === 'sova' ? `${r} ${slovoBody(r)}` : id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
+const rekordText = (id, r) => id === 'sova' ? `${r} ${slovoBody(r)}` : id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'pocitaj' ? `${r} z 5 hneď správne` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
 // obrázky do hier: najprv z prebratých tém, tie dieťa pozná
 const temyDoHry = n => { const v = TV(), d = mix(v.length).map(i => v[i]); return [...d.filter(t => st.done.includes(t.id)), ...d.filter(t => !st.done.includes(t.id))].slice(0, n); };
-const stavHry = h => h.id === 'sova' ? `Body: ${h.skore}` : h.id === 'opakuj' ? `Farieb: ${h.seq.length}` : h.id === 'hviezdy' ? `Hviezdy: ${h.skore} · ${h.zostava} s` : h.id === 'bubliny' ? `✓ ${h.skore} · ${h.zostava} s` : h.id === 'hadaj' ? `✓ ${h.spravne} z ${h.kola.length}` : `${h.tahy} ${slovoTahy(h.tahy)}`;
+const stavHry = h => h.id === 'sova' ? `Body: ${h.skore}` : h.id === 'opakuj' ? `Farieb: ${h.seq.length}` : h.id === 'hviezdy' ? `Hviezdy: ${h.skore} · ${h.zostava} s` : h.id === 'bubliny' ? `✓ ${h.skore} · ${h.zostava} s` : h.id === 'pocitaj' ? `✓ ${h.spravne} z 5` : h.id === 'hadaj' ? `✓ ${h.spravne} z ${h.kola.length}` : `${h.tahy} ${slovoTahy(h.tahy)}`;
 const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if (el && st.hra) el.textContent = stavHry(st.hra); };
 
 // Lietajúca sova: svet hry (obloha, ceruzky, hviezdy) a jeden krok fyziky; kreslenie je v Hra.sovaKresli
@@ -2398,7 +2416,7 @@ const Hra = {
   start(id) {
     const info = HRY.find(x => x.id === id);
     if (!info) return;
-    if (st.body < info.cena) { toast(`${info.n} sa odomkne pri ${info.cena} bodoch. Chýba ešte ${info.cena - st.body} bodov.`); Zvuk.play('boing'); return; }
+    if (bodyHry() < info.cena) { toast(st.body >= info.cena ? `${info.n} si chvíľu oddychuje, kým strom vädne. Preber tému a hneď sa odomkne!` : `${info.n} sa odomkne pri ${info.cena} bodoch. Chýba ešte ${info.cena - st.body} bodov.`); Zvuk.play('boing'); return; }
     this.zrus(); Hlas.stop();
     const mal = st.vek !== 'starsi';
     st.flow = null;
@@ -2407,6 +2425,9 @@ const Hra = {
       st.hra = { id, karty: mix(t.length * 2).map(i => t[i % t.length].id), otocene: [], najdene: [], tahy: 0 };
     } else if (id === 'hviezdy') {
       st.hra = { id, skore: 0, zostava: 30, beh: false, mal };
+    } else if (id === 'pocitaj') {
+      st.hra = { id, kola: mix(5).map(i => i + 1), druh: mix(4), i: 0, spravne: 0, chyba: false, zle: [], odp: null };
+      st.hra.moznosti = moznostiPocitaj(st.hra);
     } else if (id === 'hadaj') {
       st.hra = { id, kola: temyDoHry(8).map(t => t.id), i: 0, spravne: 0, n: mal ? 3 : 4, odp: null };
       st.hra.moznosti = moznostiHadaj(st.hra);
@@ -2629,6 +2650,21 @@ const Hra = {
     b.replaceWith(s); setTimeout(() => s.remove(), 700);
   },
   // Hádaj tému: obrázok a tri alebo štyri názvy tém
+  // Koľko ich je?: malé deti, 1 až 5 obrázkov, bez časovača; zlé číslo sa dá skúsiť znova
+  pocitaj(n) {
+    const h = st.hra;
+    if (!h || h.id !== 'pocitaj' || h.odp || h.hotovo) return;
+    n = +n;
+    if (n !== h.kola[h.i]) { h.chyba = true; h.zle.push(n); Zvuk.play('bad'); vibruj(60); obnovPocitaj(); return; }
+    if (!h.chyba) h.spravne++;
+    h.odp = n; Zvuk.play('ok'); obnovStavHry(); obnovPocitaj();
+    h.dalsia = setTimeout(() => {
+      if (st.hra !== h) return;
+      h.i++; h.odp = null; h.chyba = false; h.zle = [];
+      if (h.i >= h.kola.length) { this.koniec(false, h.spravne); return; }
+      h.moznosti = moznostiPocitaj(h); obnovPocitaj();
+    }, 900);
+  },
   hadaj(id) {
     const h = st.hra;
     if (!h || h.id !== 'hadaj' || h.odp || h.hotovo) return;
@@ -2747,6 +2783,15 @@ function priklad(mal) {
   const a = r(2, 9), b = r(2, 10); return [`${a} × ${b}`, a * b];
 }
 const moznostiHadaj = h => { const sp = h.kola[h.i], v = TV(), ine = mix(v.length).map(i => v[i].id).filter(id => id !== sp).slice(0, h.n - 1); return [sp, ...ine].sort(() => Math.random() - .5); };
+const POC_OBR = [() => STAR('#FFD23F'), () => IK.srdce, () => IK.ohen, () => IK.diamant];
+function moznostiPocitaj(h) { const v = h.kola[h.i], inak = mix(5).map(i => i + 1).filter(x => x !== v).slice(0, 2); return mix(3).map(i => [v, ...inak][i]); }
+function pocitajHtml(h) {
+  const n = h.kola[h.i], obr = POC_OBR[h.druh[h.i % 4]];
+  return `<div class="card poc-pole" aria-label="${n} obrázkov">${Array.from({ length: n }, (_, i) => `<span class="poc-obr" style="--d:${(i * .12).toFixed(2)}s">${obr()}</span>`).join('')}</div>
+    <p class="hadaj-otazka">Koľko ich je?</p>
+    <div class="poc-moz">${h.moznosti.map(m => `<button class="btn ghost poc-btn${h.odp ? (m === n ? ' ok' : '') : h.zle.includes(m) ? ' zle' : ''}" data-pocitaj="${m}"${h.zle.includes(m) ? ' disabled' : ''}>${m}</button>`).join('')}</div>`;
+}
+const obnovPocitaj = () => { const el = document.getElementById('pocitaj'); if (el && st.hra) el.innerHTML = pocitajHtml(st.hra); };
 function hadajHtml(h) {
   const t = byId(h.kola[h.i]);
   return `<div class="frame hadaj-obr">${svg(t)}</div>
@@ -2772,7 +2817,7 @@ function obnovSklad() {
 }
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null;
-  const nadpis = `${['hviezdy', 'bubliny', 'opakuj', 'sova'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
+  const nadpis = `${['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
   return `<div class="card hra-vysledok"><div class="win-owl">${owl('cheer')}</div>
     <h2 class="h2" style="--hc:#FFC233">${nadpis}</h2>
     ${t ? `<p class="muted">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}
@@ -2792,6 +2837,8 @@ function renderHra() {
   } else if (h.id === 'sova') {
     telo = `<div class="sova-hra"><canvas id="sova-cv" class="sova-cv" aria-label="Obloha: ťukni a sovička mávne krídlami"></canvas>${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
       <p class="muted hra-pomoc">Ťukaj na oblohu a sovička mávne krídlami. Prelet pomedzi ceruzky a zbieraj hviezdy. Máš ${h.mal ? 3 : 2} srdiečka.</p>`;
+  } else if (h.id === 'pocitaj') {
+    telo = `<div id="pocitaj" class="pocitaj">${pocitajHtml(h)}</div>`;
   } else if (h.id === 'hadaj') {
     telo = `<div id="hadaj" class="hadaj">${hadajHtml(h)}</div>`;
   } else if (h.id === 'bubliny') {
@@ -2827,6 +2874,12 @@ function zapisChybu(k, ok) {
   S.set('chyby', st.chyby);
 }
 function zapisPrebrate(id) { st.kedy = { ...st.kedy, [id]: key(new Date()) }; S.set('kedy', st.kedy); }
+function prehladHnitia() {
+  const zap = hnitieZapnute(), hn = hnStupen(), u = bodyUbudlo();
+  return `<b>Vädnutie stromu</b><p class="muted">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí na tomto zariadení.</p>
+    <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} hviezdičiek spí.` : 'Teraz je strom v poriadku.'}</p>
+    <button class="btn ghost" data-hnitie-prepni>${zap ? 'Vypnúť vädnutie stromu' : 'Zapnúť vädnutie stromu'}</button>`;
+}
 function prehladPriatelov() {
   const So = socC();
   if (!So || !So.nacitane) return '';
@@ -2835,7 +2888,9 @@ function prehladPriatelov() {
   const spravy = Object.keys(So.spravy).flatMap(f => (So.spravy[f] || []).map(m => ({ ...m, f }))).sort((a, b) => b.kedy - a.kedy).slice(0, 6);
   const kto = m => m.od === So.pid ? esc(st.meno) : esc((So.profily[m.f] || {}).meno || 'priateľ');
   return `<b>Priatelia (kód ${esc(So.profil.kod)})</b><p class="muted">${mena.length ? mena.map(esc).join(', ') : 'Zatiaľ žiadni.'}</p>
-    ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(st.meno)}<small>${m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
+    ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(st.meno)}<small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
+    <b>Voľné písanie</b><p class="muted">${So.profil.pisanie ? 'Zapnuté: dieťa môže priateľom písať ľubovoľný text (najviac 200 znakov). Text sa zobrazí len priateľom, ktorí to majú tiež zapnuté. Všetko vidíte v Posledných správach.' : 'Vypnuté: dieťa posiela len nálepky a hotové vety. Zapnúť ho môžete, ak chcete, aby si deti mohli písať aj vlastné slová.'}</p>
+    <button class="btn ghost" data-soc-pisanie="${So.profil.pisanie ? 0 : 1}">${So.profil.pisanie ? 'Vypnúť voľné písanie' : 'Zapnúť voľné písanie'}</button>
     <button class="btn ghost" data-soc-vypni>Vypnúť priateľov</button>`;
 }
 function prehladRodica() {
@@ -2849,6 +2904,7 @@ function prehladRodica() {
       ${tyzden.length ? `<ul>${tyzden.map(([id, d]) => `<li><span class="pr-ik">${ikKat(byId(id).k)}</span><span>${esc(byId(id).t)}</span><small>${den(d)}</small></li>`).join('')}</ul>` : '<p class="muted">Tento týždeň zatiaľ nič.</p>'}
       <b>Na čo sa ešte pozrieť</b>
       ${chyby.length ? `<ul>${chyby.map(c => `<li><span class="pr-ik">${ikKat(c.t.k)}</span><span>${esc(c.q.q)}<small>Správne: ${esc(c.q.a[0][1])}</small></span></li>`).join('')}</ul>` : '<p class="muted">Žiadne chyby v kvízoch. Výborne!</p>'}
+      ${prehladHnitia()}
       ${prehladPriatelov()}
     </div></section>`;
 }
@@ -2864,7 +2920,7 @@ const views = {
       <section class="card tyzden" data-strom role="button" tabindex="0" aria-label="Tento týždeň a strom múdrosti">
         <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak${s ? '' : ' zhasnuta'}">${ii(IK.ohen)} ${s ? `${s} ${dni(s)} po sebe` : 'Začnite sériu dnes'}</span></div>
         <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
-        <div class="tyzden-strom">${MINI_STROM}<span>Môj strom múdrosti: <b>${STROM_STUPNE[stromStupen()].n}</b></span><i>›</i></div>
+        <div class="tyzden-strom">${MINI_STROM}<span>Môj strom múdrosti: <b>${hnStupen() ? HN_TEXT[hnStupen()].n : STROM_STUPNE[stromStupen()].n}</b></span><i>›</i></div>
       </section>
       <section class="hero" style="--c:${k.c}">
         <div class="hero-art">${scene(t, 'sm')}<span class="sticker">${ii(STAR())} Misia dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
@@ -2902,11 +2958,13 @@ const views = {
   hry() {
     return `<h1 class="h1">Hry</h1>
       <p class="muted">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
-      <div class="hry">${HRY.map(h => {
-        const ok = st.body >= h.cena, rek = S.get(rekordKluc(h.id), null);
+      ${hnStupen() ? `<p class="hn-info">${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} ${ii(STAR())} spí. ${HN_TEXT[hnStupen()].p}</p>` : ''}
+      <div class="hry">${HRY_VID().map(h => {
+        const ok = bodyHry() >= h.cena, spi = !ok && st.body >= h.cena, rek = S.get(rekordKluc(h.id), null);
         return `<button class="hra-karta${ok ? '' : ' zamknuta'}" data-hra="${h.id}" style="--c:${h.c}"><span class="hra-obr">${OBR_HRY[h.id]}</span>
           <span class="hra-info"><b>${h.n}</b><small>${h.p}</small>${ok
             ? `<span class="chip" style="--c:${h.c}">${rek != null ? ii(IK.pohar) + ' Rekord: ' + rekordText(h.id, rek) : 'Hrať'}</span>`
+            : spi ? `<span class="zamok">${ii(IK.zamok)} Spí, kým strom vädne. Preber tému a odomkne sa!</span>`
             : `<span class="zamok">${ii(IK.zamok)} Pri ${h.cena} ${ii(STAR())} · chýba ${h.cena - st.body}</span><span class="bar" style="--c:#FFC233"><i style="width:${Math.max(4, Math.round(st.body / h.cena * 100))}%"></i></span>`}</span></button>`;
       }).join('')}</div>`;
   },
@@ -2979,7 +3037,7 @@ const stromMaly = n => `<svg class="strom-mini" viewBox="56 20 208 222" aria-hid
 const casSpravy = t => { const d = new Date(t), dnes = key(new Date()) === key(d); return (dnes ? '' : d.getDate() + '. ' + (d.getMonth() + 1) + '. ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 const SIPKA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? '#FFD23F' : '#E4E0EE')).join('')}</span>${moja ? '' : `<button class="btn blue" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
-  : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`;
+  : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : (x.x ? `<span class="msg-t msg-x">${esc(x.x)}</span>` : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`);
 function chatHtml(fid) {
   const So = socC(), m = (So && So.spravy[fid]) || [], p = So && So.profily[fid];
   if (!m.length) return `<div class="dm-prazdny"><span class="soc-av velky">${avatarMaly(p && p.avatar)}</span><b>${esc(p ? p.meno : '')}</b><small class="muted">Pošli prvú nálepku alebo vetu dole!</small></div>`;
@@ -2993,7 +3051,7 @@ function chatHtml(fid) {
 function nahladSpravy(f) {
   const So = socC(), m = (So.spravy[f] || []).slice(-1)[0];
   if (!m) return '<small class="muted">Napíš prvú správu</small>';
-  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ii(IK.kniha)} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
+  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ii(IK.kniha)} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : m.x ? esc(m.x.slice(0, 40)) : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
 }
 function rebricekHtml() {
   const So = socC(), ja = { pid: So.pid, meno: 'Ty', avatar: st.avatar, b: tyzBody(So.profil && { ...So.profil, body: st.body }), s: seria(), ja: true };
@@ -3008,7 +3066,7 @@ Object.assign(views, {
     if (!So || !So.nacitane) return `<h1 class="h1">Priatelia</h1><p class="muted">Načítava sa…</p>`;
     if (!So.zapnute) return `<h1 class="h1">Priatelia</h1>
       <section class="card soc-intro">${owl('hi')}<div><span class="lbl">${ii(IK.rodina)} Pre rodiča</span>
-        <p>Priatelia si posielajú len kreslené nálepky a hotové vety, nič iné sa napísať nedá. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
+        <p>Priatelia si posielajú kreslené nálepky a hotové vety. Voľné písanie vlastných slov môžete neskôr zapnúť v profile v časti Pre rodiča. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
         <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidíte v profile v časti Pre rodiča a dá sa to kedykoľvek vypnúť.</p>
         <p class="muted">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p><button class="btn wide cta" data-soc-zapni>Zapnúť priateľov</button></div></section>`;
     const tab = st.socTab || 'spravy', caka = S.get('soc-caka-' + So.pid, []);
@@ -3036,6 +3094,7 @@ Object.assign(views, {
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : ''}</div>
       <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="muted">Najprv preber nejakú tému.</small>'}</div>` : ''}
         <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
+        ${p && p.pisanie && So.profil && So.profil.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="chip" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
   priatelProfil() {
@@ -3261,17 +3320,31 @@ const STROM_STUPNE = [
   { od: 30, n: 'Zlatý strom múdrosti', m: 1.08, plody: 16, kvety: true, zlaty: true },
 ];
 const stromStupen = (pocet = st.dni.length) => STROM_STUPNE.reduce((a, x, i) => pocet >= x.od ? i : a, 0);
+/* Vädnutie stromu (jemné): prvý vynechaný deň sa nič nedeje; po dvoch vynechaných dňoch strom pomaly vädne, hviezdičky na odomykanie hier ubúdajú
+   (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Nič sa nestráca natrvalo: po prvej téme sa všetko hneď vráti. Rodič to môže vypnúť. */
+const hnitieZapnute = () => S.get('hnitie-' + (st.dietaId || 'x'), true) !== false;
+const dniOdPoslednej = () => { if (!st.dni.length) return 0; const [y, m, d] = [...st.dni].sort().pop().split('-').map(Number), n = new Date(); return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(y, m - 1, d)) / 864e5)); };
+const hnitieDni = () => hnitieZapnute() ? Math.max(0, dniOdPoslednej() - 2) : 0;
+const hnStupen = () => { const n = hnitieDni(); return n >= 6 ? 3 : n >= 3 ? 2 : n >= 1 ? 1 : 0; };
+const bodyUbudlo = () => { const n = hnitieDni(); return n ? Math.min(Math.floor(st.body * .4), n * Math.max(3, Math.ceil(st.body * .02))) : 0; };
+const bodyHry = () => st.body - bodyUbudlo();
+let hnPredDnes = 0; // v akom stave strom bol tesne pred dnešnou prvou témou (pre oslavu „Strom ožil“)
+const HN_TEXT = [null,
+  { n: 'Strom je trochu smädný', p: 'Listy žltnú. Preber tému a strom sa hneď zazelená!' },
+  { n: 'Strom vädne', p: 'Pár hviezdičiek sa uspalo a najdrahšie hry spia. Jedna téma ich zobudí.' },
+  { n: 'Strom je hnedý a unavený', p: 'Nič sa nestratilo! Jedna téma a strom ožije, hviezdičky sa vrátia a hry sa odomknú.' }];
+const HN_FARBY = [null, ['#B8D84A', '#A9CC3C', '#C5DE55', '#B1D145'], ['#CDA93C', '#C0922F', '#D3B24C', '#B98B2D'], ['#8E7C48', '#7F6A3D', '#978752', '#76643A']];
 const KORUNA = [[160, 112, 50, '#4CD07D'], [112, 128, 34, '#3DBB6A'], [208, 126, 36, '#3DBB6A'], [130, 84, 34, '#5FDB8A'], [190, 82, 34, '#5FDB8A'], [160, 62, 30, '#6BE39A']];
 const KORUNA_VIAC = [[98, 106, 28, '#3DBB6A'], [222, 104, 28, '#3DBB6A'], [160, 36, 24, '#7BE8A6']];
 const PLODY = [[150, 92], [186, 104], [124, 118], [168, 128], [204, 130], [140, 68], [194, 74], [112, 96], [158, 106], [218, 104], [132, 142], [182, 148], [100, 112], [222, 116], [160, 42], [146, 144]];
 const KVETY = [[132, 64], [184, 58], [108, 120], [214, 118], [160, 86], [198, 136], [122, 146], [160, 30], [94, 98], [228, 96]];
-const plod = i => `<circle r="10" fill="${['#FF5A5F', '#FFD23F', '#FF9F1C', '#FF6FA8', '#B36BFF'][i % 5]}" stroke-width="3"/><path d="M0 -10 C1 -14 4 -16 7 -16 C6 -12 3 -10 0 -10Z" fill="#2FBF71" stroke-width="2"/><path d="M-5.5 -2 A6 6 0 0 1 -2 -6" fill="none" stroke="#fff" stroke-width="2.4"/>`;
+const plod = (i, hn = 0) => `<circle r="10" fill="${hn >= 2 ? ['#8B5A2B', '#7A5530', '#6E4A28'][i % 3] : ['#FF5A5F', '#FFD23F', '#FF9F1C', '#FF6FA8', '#B36BFF'][i % 5]}" stroke-width="3"/><path d="M0 -10 C1 -14 4 -16 7 -16 C6 -12 3 -10 0 -10Z" fill="#2FBF71" stroke-width="2"/><path d="M-5.5 -2 A6 6 0 0 1 -2 -6" fill="none" stroke="#fff" stroke-width="2.4"/>`;
 const stromIskra = (x, y, d) => `<g transform="translate(${x} ${y})"><g class="os-iskra" style="--d:${d}s"><path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2Z" fill="#FFE27A" stroke-width="1.5"/></g></g>`;
 // o: stupen, plody (na strome), kos (plody navyše v košíku), novy (index nového plodu, 'kos', alebo -1), z (veľkosť pred vyrastením), sova, t (časy animácií)
 function stromSvg(o) {
-  const S0 = STROM_STUPNE[o.stupen], t = { kmen: .25, koruna: .6, krok: .08, plody: 1.2, novy: 2, sova: 2.4, rast: 3, ...(o.t || {}) };
+  const hn = o.hn || 0, S0 = STROM_STUPNE[o.stupen], t = { kmen: .25, koruna: .6, krok: .08, plody: 1.2, novy: 2, sova: 2.4, rast: 3, ...(o.t || {}) };
   const koruna = o.stupen === 1 ? [0, 3, 4].map(i => KORUNA[i]) : o.stupen >= 3 ? [...KORUNA, ...KORUNA_VIAC] : KORUNA;
-  const farba = (c, i) => S0.zlaty ? ['#C6E86B', '#A8DB55', '#D8F07E', '#B9E35F'][i % 4] : c;
+  const farba = (c, i) => hn ? HN_FARBY[hn][i % 4] : S0.zlaty ? ['#C6E86B', '#A8DB55', '#D8F07E', '#B9E35F'][i % 4] : c;
   // sovička sedí na vrchu koruny (pri semienku vedľa klíčka)
   const vrch = Math.min(...koruna.map(([, y, r]) => y - r)), m = S0.m, sovaX = o.stupen ? 148 : 192, sovaY = o.stupen ? 232 - (232 - vrch) * m - 60 : 166;
   const d = x => ` style="--d:${x.toFixed(2)}s"`, kEnd = t.koruna + koruna.length * t.krok;
@@ -3284,21 +3357,24 @@ function stromSvg(o) {
          ${koruna.map(([x, y, r], i) => `<circle class="os-k"${d(t.koruna + i * t.krok)} cx="${x}" cy="${y}" r="${r + 4}" fill="${INK}" stroke="none"/>`).join('')}
          ${koruna.map(([x, y, r, c], i) => `<circle class="os-k"${d(t.koruna + i * t.krok)} cx="${x}" cy="${y}" r="${r}" fill="${farba(c, i)}" stroke="none"/>`).join('')}
          ${koruna.map(([x, y, r], i) => `<path class="os-k"${d(t.koruna + i * t.krok)} d="M${x - r * .55} ${y - r * .25} a${r * .6} ${r * .6} 0 0 1 ${r * .5} ${-r * .45}" fill="none" stroke="#fff" stroke-width="3.5" opacity=".45"/>`).join('')}
-         ${S0.kvety ? KVETY.map(([x, y], i) => `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(kEnd + i * .06)}>${[0, 72, 144, 216, 288].map(u => `<circle cy="-4.5" r="3.6" fill="${S0.zlaty ? '#FFF3B0' : '#FFB3D1'}" stroke-width="1.6" transform="rotate(${u})"/>`).join('')}<circle r="2.6" fill="${S0.zlaty ? '#FF9F1C' : '#FFD23F'}" stroke-width="1.4"/></g></g>`).join('') : ''}
+         ${S0.kvety && !hn ? KVETY.map(([x, y], i) => `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(kEnd + i * .06)}>${[0, 72, 144, 216, 288].map(u => `<circle cy="-4.5" r="3.6" fill="${S0.zlaty ? '#FFF3B0' : '#FFB3D1'}" stroke-width="1.6" transform="rotate(${u})"/>`).join('')}<circle r="2.6" fill="${S0.zlaty ? '#FF9F1C' : '#FFD23F'}" stroke-width="1.4"/></g></g>`).join('') : ''}
          ${PLODY.slice(0, o.plody).map(([x, y], i) => i === o.novy
-           ? `<g transform="translate(${x} ${y})"><circle class="os-kruh"${d(t.novy)} r="10" fill="none" stroke="#FFD23F" stroke-width="5"/><g class="os-novy"${d(t.novy)}><g class="os-hoj"${d(t.novy + 1)}>${plod(i)}</g></g></g>`
-           : `<g transform="translate(${x} ${y})"><g class="os-plod"${d(t.plody + i * .07)}><g class="os-hoj"${d(t.plody + i * .07 + .6)}>${plod(i)}</g></g></g>`).join('')}
+           ? `<g transform="translate(${x} ${y})"><circle class="os-kruh"${d(t.novy)} r="10" fill="none" stroke="#FFD23F" stroke-width="5"/><g class="os-novy"${d(t.novy)}><g class="os-hoj"${d(t.novy + 1)}>${plod(i, hn)}</g></g></g>`
+           : `<g transform="translate(${x} ${y})"><g class="os-plod"${d(t.plody + i * .07)}><g class="os-hoj"${d(t.plody + i * .07 + .6)}>${plod(i, hn)}</g></g></g>`).join('')}
+         ${hn >= 2 ? koruna.slice(0, hn === 2 ? 3 : 6).map(([x, y, r], i) => `<circle cx="${(x + r * (i % 2 ? .35 : -.3)).toFixed(1)}" cy="${(y + r * .25).toFixed(1)}" r="${(r * .2).toFixed(1)}" fill="#5E4A22" stroke="none" opacity=".7"/>`).join('') : ''}
        </g>`;
-  return `<svg class="os-strom" viewBox="0 -40 320 290" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-    ${S0.zlaty ? `<circle class="os-ziara" cx="160" cy="${232 - (232 - 100) * m}" r="${150 * m}" fill="#FFE27A" stroke="none"/>` : ''}
+  return `<svg class="os-strom${hn ? ' hn' + hn : ''}" viewBox="0 -40 320 290" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    ${S0.zlaty && !hn ? `<circle class="os-ziara" cx="160" cy="${232 - (232 - 100) * m}" r="${150 * m}" fill="#FFE27A" stroke="none"/>` : ''}
     <path class="os-zem" d="M-200 250 V230 C40 202 280 202 520 230 V250Z" fill="#7ED957"/>
-    ${o.stupen >= 2 ? [[70, 226, '#FF9EC7'], [96, 234, '#FFD23F'], [236, 232, '#fff'], [262, 224, '#B36BFF']].map(([x, y, c], i) => `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(t.kmen + .3 + i * .1)}>${[0, 72, 144, 216, 288].map(u => `<circle cy="-3.6" r="3" fill="${c}" stroke-width="1.5" transform="rotate(${u})"/>`).join('')}<circle r="2.2" fill="#FFD23F" stroke-width="1.2"/></g></g>`).join('') : ''}
+    ${o.stupen >= 2 && hn < 2 ? [[70, 226, '#FF9EC7'], [96, 234, '#FFD23F'], [236, 232, '#fff'], [262, 224, '#B36BFF']].map(([x, y, c], i) => `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(t.kmen + .3 + i * .1)}>${[0, 72, 144, 216, 288].map(u => `<circle cy="-3.6" r="3" fill="${c}" stroke-width="1.5" transform="rotate(${u})"/>`).join('')}<circle r="2.2" fill="#FFD23F" stroke-width="1.2"/></g></g>`).join('') : ''}
     <g transform="translate(160 232) scale(${m}) translate(-160 -232)"><g class="os-rast${o.z ? ' vyrast' : ''}"${o.z ? ` style="--z:${o.z.toFixed(3)};--d:${t.rast}s"` : ''}>${strom}</g></g>
-    ${S0.zlaty ? [[72, 70, .2], [250, 60, .9], [52, 150, 1.4], [270, 150, .5], [160, -20, 1.1]].map(p => stromIskra(...p)).join('') : ''}
+    ${S0.zlaty && !hn ? [[72, 70, .2], [250, 60, .9], [52, 150, 1.4], [270, 150, .5], [160, -20, 1.1]].map(p => stromIskra(...p)).join('') : ''}
+    ${hn ? [[96, 238, -20], [122, 245, 15], [150, 249, -8], [196, 243, 25], [222, 238, -15], [246, 246, 10], [70, 244, 30]].slice(0, hn * 2 + 1).map(([x, y, a], i) => `<ellipse cx="${x}" cy="${y}" rx="8" ry="3.8" transform="rotate(${a} ${x} ${y})" fill="${HN_FARBY[hn][i % 4]}" stroke-width="2.5"/>`).join('') : ''}
+    ${hn >= 3 ? [[118, 236, 1], [204, 238, .8]].map(([x, y, k]) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-3 0 V-8 H3 V0Z" fill="#F4E9D2" stroke-width="2.5"/><path d="M-10 -8 A10 8 0 0 1 10 -8Z" fill="#E4524F" stroke-width="2.5"/><circle cx="-4" cy="-12" r="1.8" fill="#fff" stroke="none"/><circle cx="3" cy="-14" r="1.6" fill="#fff" stroke="none"/></g>`).join('') : ''}
     ${o.kos ? `<g transform="translate(250 212)"><g class="os-kos${o.novy === 'kos' ? ' novy' : ''}"${d(o.novy === 'kos' ? t.novy : t.plody)}><path d="M-14 -4 Q0 -26 14 -4" fill="none" stroke-width="3.5"/>
       ${[[-8, -6, 0], [0, -9, 1], [8, -6, 2]].map(([x, y, i]) => `<g transform="translate(${x} ${y}) scale(.7)">${plod(i)}</g>`).join('')}<path d="M-20 -4 H20 L15 16 H-15Z" fill="#C98A4B"/><path d="M-17 4 H17 M-15 10 H15" fill="none" stroke-width="2" opacity=".5"/>
       <text y="12" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" stroke="${INK}" stroke-width="3" paint-order="stroke" font-family="Baloo 2, sans-serif">+${o.kos}</text></g></g>` : ''}
-    ${o.sova ? `<g class="os-sova"${d(t.sova)}>${owl('cheer').replace('<svg ', `<svg x="${sovaX}" y="${sovaY.toFixed(1)}" width="64" height="70" `)}</g>` : ''}</g></svg>`;
+    ${o.sova ? `<g class="os-sova"${d(t.sova)}>${owl(hn >= 2 ? 'oops' : 'cheer').replace('<svg ', `<svg x="${sovaX}" y="${sovaY.toFixed(1)}" width="64" height="70" `)}</g>` : ''}</g></svg>`;
 }
 // padajúce listy (pri kvitnúcom strome lupene, pri zlatom zlaté)
 const stromListy = (n, stupen, jednorazove) => Array.from({ length: n }, (_, i) => `<i class="os-list${jednorazove ? ' raz' : ''}" style="--x:${Math.round(Math.random() * 92 + 2)}%;--t:${(6 + Math.random() * 5).toFixed(1)}s;--d:${(jednorazove ? Math.random() * .3 : Math.random() * 7).toFixed(1)}s;--c:${(STROM_STUPNE[stupen].zlaty ? ['#FFD23F', '#FFE27A'] : STROM_STUPNE[stupen].kvety ? ['#FFB3D1', '#FF9EC7', '#5FDB8A'] : ['#5FDB8A', '#4CD07D', '#FFB347'])[i % 3]}"></i>`).join('');
@@ -3332,17 +3408,18 @@ const Oslava = {
     const dnes = key(new Date()); S.set(this.kluc(), dnes);
     const s = Math.max(1, seria()), pocet = Math.max(1, st.dni.length), i = stromStupen(pocet), iPred = stromStupen(pocet - 1), S0 = STROM_STUPNE[i];
     const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), novy = kos ? 'kos' : naStrome - 1, vyrastol = i > iPred, casy = [];
+    const ozil = hnPredDnes; hnPredDnes = 0;
     const pocetK = i === 1 ? 3 : i >= 3 ? 9 : 6, tPlody = .6 + pocetK * .08 + (S0.kvety ? .5 : .1), tNovy = tPlody + Math.max(0, naStrome - 1) * .07 + .35;
     const tRast = tNovy + 1.1, tSova = (vyrastol ? tRast + .9 : tNovy + 1) , tHviezda = tSova + .5, tTlacidlo = tHviezda + .5;
     const el = document.createElement('div');
     el.className = 'oslava'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', vyrastol ? 'Strom múdrosti vyrástol' : 'Séria rastie');
-    const nadpis = vyrastol ? 'Strom vyrástol!' : s === 1 ? 'Skvelý začiatok!' : 'Séria rastie!';
+    const nadpis = ozil ? 'Strom ožil!' : vyrastol ? 'Strom vyrástol!' : s === 1 ? 'Skvelý začiatok!' : 'Séria rastie!';
     el.innerHTML = `<div class="os-lucy"></div><div class="os-listy">${stromListy(9, i)}</div><div class="os-obsah">
       ${stromSvg({ stupen: i, plody: naStrome, kos, novy, z: vyrastol ? STROM_STUPNE[iPred].m / S0.m : 0, sova: true, t: { plody: tPlody, novy: tNovy, sova: tSova, rast: tRast } })}
       <h2 class="os-nadpis">${[...nadpis].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
       ${vyrastol ? `<div class="os-novy-stupen" style="--d:${(tRast + .3).toFixed(2)}s">${ii(STAR())} Teraz je to: <b>${S0.n}</b></div>` : ''}
       <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b id="os-cislo">${s - 1}</b><span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
-      <p class="os-veta">${s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
+      <p class="os-veta">${ozil ? 'Strom je zasa zelený, hviezdičky sú späť a hry sú odomknuté. Vitaj späť! ' : ''}${s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
       <div class="os-tyzden">${tyzdenStromu(dnes).map(x => `<div class="os-den${x.h ? ' h' : ''}${x.dnes ? ' dnes' : ''}" style="--c:${x.c}"><i>${x.dnes ? `<span class="os-padne" style="--d:${tHviezda}s">${STAR()}</span>` : x.h ? STAR() : ''}</i>${x.d}</div>`).join('')}</div>
       <button class="btn wide cta os-dalej" style="--d:${tTlacidlo}s" data-oslava-dalej>Pokračovať →</button></div>`;
     document.body.appendChild(el);
@@ -3373,14 +3450,14 @@ const Strom = {
   ukaz() {
     if (document.querySelector('.oslava')) return;
     const dnes = key(new Date()), pocet = st.dni.length, i = stromStupen(pocet), S0 = STROM_STUPNE[i], s = seria(), hotovo = st.dni.includes(dnes);
-    const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody);
-    const veta = !s ? 'Zatiaľ bez plodov. Preber tému dňa a vyrastie prvý!'
+    const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), hn = hnStupen();
+    const veta = hn ? HN_TEXT[hn].n + '. ' + HN_TEXT[hn].p : !s ? 'Zatiaľ bez plodov. Preber tému dňa a vyrastie prvý!'
       : `Na strome ${naStrome === 1 ? 'visí' : 'visia'} ${s} ${slovoPlody(s)}, jeden za každý deň série. ${hotovo ? 'Dnes už plod pribudol, príď zajtra!' : 'Dnes ešte plod chýba. Preber tému dňa a pribudne ďalší!'}`;
     const el = document.createElement('div');
     el.className = 'oslava strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Strom múdrosti');
     el.innerHTML = `<div class="os-lucy"></div><div class="os-listy">${stromListy(7, i)}</div><div class="os-obsah">
       <button class="ib os-x" data-strom-zavri aria-label="Zavrieť">${IKO.zavriet}</button>
-      ${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, sova: true, t: { kmen: .1, koruna: .25, krok: .05, plody: .7, sova: 1.1 } })}
+      ${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, t: { kmen: .1, koruna: .25, krok: .05, plody: .7, sova: 1.1 } })}
       <h2 class="os-nadpis">${[...'Strom múdrosti'].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
       ${stromStavHtml(pocet, i)}
       <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b>${s}</b><span>${s ? dni(s) + ' po sebe' : 'Séria začne dnes'}</span></div>
@@ -3657,6 +3734,10 @@ const Ang = {
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
   { v: 36, obr: () => IK_KAT.anglictina, n: 'Angličtina na každý deň', p: 'Angličtina má nové miesto na Domove. Každý deň nový krátky kvízik so slovíčkami a vetami, s vysvetlením odpovedí. Pôvodné anglické lekcie nájdeš tam tiež.' },
+  { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami majú len väčšie deti.' },
+  { v: 36, obr: () => svg(byId('raketa')), siroky: true, n: '24 nových tém a ďalšie misie', p: 'Ku každej kategórii pribudla nová téma s obrázkom a kvízom. V Misii dňa je 75 misií, takže sa dlho neopakujú.' },
+  { v: 36, obr: () => stromSvg({ stupen: 3, plody: 0, kos: 0, novy: -1, hn: 2 }), n: 'Strom vädne, keď sa nehrá', p: 'Keď dieťa vynechá niekoľko dní, strom pomaly vädne a najdrahšie hry si oddychujú. Po prvej téme strom ožije a nič sa nestratí. Rodič to môže vypnúť v prehľade.' },
+  { v: 36, obr: () => IK.bublina, n: 'Voľné písanie v správach', p: 'Rodič môže priateľom zapnúť písanie vlastných slov. Bubliny v rozhovoroch sú teraz tesnejšie pri sebe.' },
   { v: 36, obr: () => ik('lupa'), n: 'Nová Misia dňa', p: 'Každý deň jedna krátka misia: záhada, rozhodovanie, dve pravdy a lož, príčiny a následky alebo výzva vonku. Nájdeš ju na Domove. Za splnenie sú body a odznaky.' },
   { v: 35, obr: () => stromSvg({ stupen: 4, plody: 6, kos: 0, novy: -1 }), n: 'Strom múdrosti rastie s vami', p: 'Strom má 6 stupňov, od semienka až po zlatý strom múdrosti. Ťuknite na kartu Tento týždeň a uvidíte, ako vyzerá. Oslava je teraz ešte veľkolepejšia.' },
   { v: 34, obr: () => owl('cheer'), n: 'Sprievodca pre nových rodičov', p: 'Nový účet rodiča dostane celú prehliadku: ako funguje účet a profil dieťaťa, téma dňa, body, kvízy, hry, priatelia aj nastavenia.' },
@@ -3868,6 +3949,16 @@ const Sprievodca = {
     if (!hotovo) toast(this.o.zavriet || (this.kroky === SPR_KROKY ? 'Sprievodcu spustíš znova v karte Ja.' : 'Sprievodcu pre dieťa nájdete v karte Ja.'));
   },
 };
+document.addEventListener('submit', e => {
+  const f = e.target.closest && e.target.closest('[data-soc-text-form]'); if (!f) return;
+  e.preventDefault();
+  const inp = f.querySelector('input'), txt = inp.value.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200), C = window.Cloud;
+  if (!txt || !C || !C.soc || Date.now() - socPosledna < 350) return;
+  socPosledna = Date.now(); inp.value = ''; Zvuk.play('tap'); vibruj(15);
+  const ch = document.getElementById('chat');
+  if (ch) { const pr = ch.querySelector('.dm-prazdny'); if (pr) pr.remove(); ch.insertAdjacentHTML('beforeend', `<div class="msg moja posl odosiela">${spravaObsah({ x: txt })}</div>`); ch.scrollTop = ch.scrollHeight; }
+  socAkcia(C.soc.posli(st.priatel, { x: txt }), null, () => socZmena());
+});
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && Sprievodca.el) Sprievodca.zavri(); });
 // karta Tento týždeň sa dá otvoriť aj klávesnicou
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('[data-strom]')) { e.preventDefault(); Strom.ukaz(); } });
@@ -4049,7 +4140,7 @@ function dokonci(f) {
   }
   st.body += f.zisk; S.set('body', st.body);
   // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
-  if (c && !st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
   f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
   f.noveOdmeny = noveOdmeny(bodyPred, st.body);
   f.noveHry = noveHry(bodyPred, st.body);
@@ -4149,6 +4240,7 @@ document.addEventListener('click', e => {
   if (d.hv) { Hra.chyt(b); return; }
   if (d.hvStart !== undefined) { if (st.hra && st.hra.id === 'sova') Hra.sovaStart(); else if (st.hra && st.hra.id === 'bubliny') Hra.bublinyStart(); else if (st.hra && st.hra.id === 'opakuj') Hra.simonStart(); else Hra.hviezdyStart(); return; }
   if (d.hadaj) { Hra.hadaj(d.hadaj); return; }
+  if (d.pocitaj) { Hra.pocitaj(d.pocitaj); return; }
   if (d.bub !== undefined) { Hra.bub(b); return; }
   if (d.pad !== undefined) { Hra.pad(+d.pad); return; }
   if (d.diel) { Hra.diel(+d.diel); return; }
@@ -4197,6 +4289,8 @@ document.addEventListener('click', e => {
   else if (d.go) { Zvuk.play('whoosh'); go(d.go); }
   else if (d.sprievodca !== undefined) Sprievodca.start();
   else if (d.socZapni !== undefined) { const C = window.Cloud; if (C && C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); FX.burst(innerWidth / 2, innerHeight / 3, 24, ['star', 'dot']); toast('Priatelia sú zapnutí!'); }); }
+  else if (d.hnitiePrepni !== undefined) { S.set('hnitie-' + (st.dietaId || 'x'), !hnitieZapnute()); Zvuk.play('tap'); toast(hnitieZapnute() ? 'Vädnutie stromu je zapnuté.' : 'Vädnutie stromu je vypnuté.'); render(); }
+  else if (d.socPisanie !== undefined) { const C = window.Cloud, zap = d.socPisanie === '1'; if (C && C.soc && (!zap || confirm('Zapnúť voľné písanie pre ' + st.meno + '? Dieťa bude môcť priateľom písať ľubovoľný text. Uvidia ho len priatelia, ktorým to rodič tiež zapol, a vy ho uvidíte v Posledných správach.'))) socAkcia(C.soc.pisanie(zap), () => { toast(zap ? 'Voľné písanie je zapnuté.' : 'Voľné písanie je vypnuté.'); render(); }); }
   else if (d.socVypni !== undefined) { const C = window.Cloud; if (C && C.soc && confirm('Vypnúť priateľov pre ' + st.meno + '? Kód prestane platiť a priatelia nebudú môcť posielať správy.')) socAkcia(C.soc.vypni(), () => { toast('Priatelia sú vypnutí.'); render(); }); }
   else if (d.socZdielaj !== undefined) {
     const So = socC(), text = 'Pridaj si ma v appke Svet za 3 minúty (svet-za-3-minuty.web.app). Môj kód priateľa: ' + So.profil.kod;
@@ -4494,7 +4588,7 @@ function socSleduj(pid, f) {
   let prvy = true;
   const b = onSnapshot(query(collection(db, 'rozhovory', rozhovor(pid, f), 'spravy'), orderBy('kedy', 'desc'), limit(40)), sn => {
     const cas = m => m.kedy && m.kedy.toMillis ? m.kedy.toMillis() : Date.now();
-    Soc.spravy[f] = sn.docs.map(x => { const m = x.data({ serverTimestamps: 'estimate' }); return { id: x.id, od: m.od, k: m.k, n: m.n, t: m.t, h: m.h, r: m.r, kedy: cas(m) }; }).reverse();
+    Soc.spravy[f] = sn.docs.map(x => { const m = x.data({ serverTimestamps: 'estimate' }); return { id: x.id, od: m.od, k: m.k, x: m.x, n: m.n, t: m.t, h: m.h, r: m.r, kedy: cas(m) }; }).reverse();
     // nová správa od priateľa, kým appka beží: upozornenie
     if (!prvy) sn.docChanges().filter(c => c.type === 'added' && c.doc.data().od === f).forEach(c => { if (typeof socNovaSprava === 'function') socNovaSprava(f); });
     prvy = false;
@@ -4510,7 +4604,7 @@ function socData(kod, zapnute = true) {
     meno: (st.meno || 'Dieťa').slice(0, 20), avatar: { ...st.avatar }, body, seria: Math.min(5000, seria()), temy: Math.min(1000, st.done.filter(byId).length),
     odznaky: Math.min(500, st.odznaky.length), posledne: st.odznaky.slice(-5), tyzKey: tk,
     tyzStart: p && p.tyzKey === tk ? Math.min(p.tyzStart, body) : p ? Math.min(p.body, body) : body,
-    kod, rodina: Cloud.pouzivatel.uid, zapnute,
+    kod, rodina: Cloud.pouzivatel.uid, zapnute, pisanie: !!(p && p.pisanie),
   };
 }
 function socUlozProfil() {
@@ -4518,7 +4612,7 @@ function socUlozProfil() {
   const p = Soc.profil, d = socData(p.kod), o = JSON.stringify(d);
   if (o === socOtlacok) return;
   socOtlacok = o;
-  const rovnake = ['meno', 'body', 'seria', 'temy', 'odznaky', 'tyzKey', 'tyzStart'].every(k => p[k] === d[k]) && JSON.stringify(p.posledne) === JSON.stringify(d.posledne) && zoradene(p.avatar) === zoradene(d.avatar);
+  const rovnake = ['meno', 'body', 'seria', 'temy', 'odznaky', 'tyzKey', 'tyzStart', 'pisanie'].every(k => p[k] === d[k]) && JSON.stringify(p.posledne) === JSON.stringify(d.posledne) && zoradene(p.avatar) === zoradene(d.avatar);
   if (rovnake) return; // bez zmeny nič nezapisujeme
   setDoc(doc(db, 'profily', Soc.pid), { ...d, upravene: serverTimestamp() }).catch(() => { socOtlacok = ''; });
 }
@@ -4543,6 +4637,12 @@ Object.assign(Soc, {
       try { await b.commit(); return true; } catch (e) { if ((e && e.code !== 'permission-denied') || pokus === 5) throw e; }
     }
     throw 'Kód sa nepodarilo vytvoriť, skúste znova.';
+  },
+  // rodič zapne alebo vypne voľné písanie (v správach naň musia mať povolenie obe deti)
+  async pisanie(v) {
+    const p = Soc.profil;
+    if (!p) return;
+    await setDoc(doc(db, 'profily', Soc.pid), { ...socData(p.kod), pisanie: !!v, upravene: serverTimestamp() });
   },
   async vypni() {
     const p = Soc.profil;
