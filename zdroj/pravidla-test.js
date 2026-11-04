@@ -1,10 +1,9 @@
 // Pravidlá prístupu pre priateľov (verzia 2.0) na emulátore Firestore (port 8180, projekt demo-svet-za-3-minuty).
-// Spustenie: emulátor beží, potom node zdroj/pravidla-test.js. Knižnice berie z ../Metlina/node_modules (nič sa neinštaluje).
+// Spustenie: zdroj\spusti.cmd test:rules (sám spustí emulátor).
 // Pozor: na začiatku vymaže dáta v emulátore (nie ostré dáta).
 const fs = require('fs'), path = require('path');
-const kniznica = m => require(require.resolve(m, { paths: [path.join(__dirname, '..', '..', 'Metlina')] }));
-const { initializeTestEnvironment, assertSucceeds, assertFails } = kniznica('@firebase/rules-unit-testing');
-const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc, deleteField, serverTimestamp, query, orderBy, limit } = kniznica('firebase/firestore');
+const { initializeTestEnvironment, assertSucceeds, assertFails } = require('@firebase/rules-unit-testing');
+const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc, deleteField, serverTimestamp, query, orderBy, limit } = require('firebase/firestore');
 
 (async () => {
   const env = await initializeTestEnvironment({ projectId: 'demo-svet-za-3-minuty', firestore: { rules: fs.readFileSync(path.join(__dirname, '..', 'firestore.rules'), 'utf8'), host: '127.0.0.1', port: 8180 } });

@@ -1,0 +1,16 @@
+{
+  "name": "svet-za-3-minuty",
+  "private": true,
+  "scripts": {
+    "test": "node zdroj/test.js",
+    "build": "node zdroj/zostav.js",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-svet-za-3-minuty \"node zdroj/pravidla-test.js\"",
+    "emulator": "firebase emulators:start --only auth,firestore,hosting --project demo-svet-za-3-minuty",
+    "deploy": "firebase deploy --only hosting,firestore:rules,auth"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "6.0.0",
+    "firebase": "13.0.0",
+    "firebase-tools": "15.34.0"
+  }
+}

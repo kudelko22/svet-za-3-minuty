@@ -17,13 +17,19 @@ Beží na https://svet-za-3-minuty.web.app (Firebase projekt `svet-za-3-minuty`,
 ## Postup pri zmene
 
 1. Upravovať `zdroj/appka.html`, `temy.js`, `obrazky.js`. `index.html` neupravovať ručne.
-2. `node zdroj/test.js`, potom `node zdroj/zostav.js` (vytvorí `index.html`).
-3. Pri zmene `firestore.rules`: `node zdroj/pravidla-test.js` (beží emulátor, knižnice berie z `..\Metlina\node_modules`,
-   maže dáta emulátora).
+2. `zdroj\spusti.cmd test`, potom `zdroj\spusti.cmd build` (vytvorí `index.html`).
+3. Pri zmene `firestore.rules`: `zdroj\spusti.cmd test:rules` (sám spustí emulátor, maže len jeho dáta).
 4. Zvýšiť `VERZIA_APPKY` a `VERZIA_NAZOV`, doplniť `NOVINKY`.
-5. Skúšať na emulátore (`demo-svet-za-3-minuty`, porty 9199, 8180, 5050; otvárať `127.0.0.1:5050`), nie ostrými účtami.
-6. Commit a push. Nasadenie: `firebase deploy --only hosting,firestore:rules,auth` (CLI z `..\Metlina\node_modules\.bin`).
-   V `firebase.json` musí byť `.git/**` v ignore. Po práci záloha zip na plochu (`tar.exe -a`).
+5. Skúšať na emulátore: `zdroj\spusti.cmd emulator` (`demo-svet-za-3-minuty`, porty 9199, 8180, 5050; otvárať
+   `127.0.0.1:5050`), nie ostrými účtami.
+6. Commit a push. Nasadenie: `zdroj\spusti.cmd deploy`. Na web ide celý priečinok, preto nový súbor, ktorý tam nepatrí,
+   treba dopísať do `ignore` v `firebase.json`. Po práci záloha zip na plochu (`tar.exe -a`).
+
+## Nástroje
+
+Všetko je vo vlastnom `node_modules` tohto priečinka (`package.json`, vytvorí `npm install`), nič sa neberie z Metliny.
+Node a Java nie sú v PATH, `zdroj\spusti.cmd` si ich nastaví sám. PowerShell skripty sú zablokované, používajú sa `.cmd`.
+Windows má zapnutý Smart App Control: blokuje nepodpísané natívne súbory, nastavenie nemeniť.
 
 ## Sessions
 

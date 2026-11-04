@@ -1,3 +1,4 @@
 *.log
 .firebase/
 zdroj/vety.json
+node_modules/
