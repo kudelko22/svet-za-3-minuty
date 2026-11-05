@@ -170,3 +170,8 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - Duplicity: `p8` premenované „Tajomstvá tela“ (a prvé tvrdenie o kostiach nahradené mrkaním), `k12` „Susedovo okno“, `k11` prepracované na „Kamarát chce odpísať“ (pôvodné bolo to isté ako `k4`).
 - Angličtina: +191 slov (spolu 344), nové skupiny `pocity` (Pocity) a `sport` (Šport a hry) v `ANG_SKUPINY`, +61 viet (spolu 121). Každé slovo vo vete je v `ANG_SLOVA` v tej istej skupine (skontrolované skriptom).
 - Overené: `test`, `build`. Neoverené: vzhľad nových skupín v appke na emulátore (kód sa nemenil, test prešiel).
+
+## 3.6 – úloha Angličtina (karta a rozklikávacie kvízy)
+- Domov: karta „Angličtina na každý deň“ je väčšia, farebná, hojdá sa, má tlačidlo a stav „Dnes hotovo / Dnes ešte nie“.
+- Pohľad Angličtina: mriežka kariet s postupným nábehom (denný kvízik, 12 skupín slov z `ANG_SKUPINY`, pôvodné lekcie). Skupinový kvíz = `Ang.otazky(den, extra, skupina)`, vždy bez bodov, hotovosť sa ukladá do `ang-<dieťa>.skup`. Test pokrýva všetky skupiny a oba vekové stupne.
+- Súbor `anglictina.js` nezmenený. Verzia nezvýšená, nenasadené. Nevyskúšané očami na emulátore (len `test` a `build`).

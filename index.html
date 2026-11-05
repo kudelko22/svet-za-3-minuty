@@ -527,7 +527,20 @@ body.auto-rezim .blobs { opacity: .3; }
 .btn.auto-mini { background: #2E3A87; }
 
 /* Angličtina: bonus na každý deň */
-.ang-karta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; text-align: left; border: 3px solid var(--ink); border-radius: 22px; background: #FFE0EC; box-shadow: 0 4px 0 var(--ink); }
+.ang-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 14px; text-align: left; border: 3px solid var(--ink); border-radius: 26px; background: linear-gradient(135deg, #FFD3E6, #FFE9B8); box-shadow: 0 6px 0 var(--ink); animation: angHoj 3.2s ease-in-out infinite; }
+.ang-karta .ang-ik { width: 68px; height: 68px; animation: tileBob 2.6s ease-in-out infinite; }
+.ang-karta b { font-size: 1.35rem !important; }
+.ang-tl { justify-self: start; margin-top: 6px; padding: 6px 14px; border: 3px solid var(--ink); border-radius: 999px; background: var(--sun, #FFD23F); color: var(--ink); font: 700 1rem var(--f-display); box-shadow: 0 3px 0 var(--ink); }
+.ang-karta.hotova .ang-tl { background: #fff; }
+@keyframes angHoj { 0%, 100% { rotate: 0deg; scale: 1; } 25% { rotate: -.6deg; } 50% { scale: 1.02; } 75% { rotate: .6deg; } }
+.ang-kvizy { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.ang-kv { display: grid; justify-items: start; gap: 8px; padding: 12px; text-align: left; border: 3px solid var(--ink); border-radius: 22px; background: var(--c, #FFE0EC); box-shadow: 0 4px 0 var(--ink); animation: angNab .45s cubic-bezier(.3, 1.4, .5, 1) both; animation-delay: calc(var(--i) * 60ms); }
+.ang-kv:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.ang-kv.hotova { background: #E7F9EC; }
+.ang-kv-t { display: grid; gap: 2px; }
+.ang-kv-t b { font: 700 1.05rem/1.15 var(--f-display); }
+.ang-kv-t small { font-weight: 700; color: var(--muted); }
+@keyframes angNab { from { opacity: 0; transform: translateY(14px) scale(.85); } to { opacity: 1; transform: none; } }
 .ang-karta:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .ang-ik { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: #fff; }
 .ang-ik svg { width: 70%; height: 70%; }
@@ -3722,15 +3735,21 @@ function kartaMisiePoTeme(t) {
    Bez tlaku: vynechaný deň nič nestojí, body sú raz za deň. */
 const Ang = {
   kluc: () => 'ang-' + st.dietaId,
-  data() { const d = S.get(this.kluc(), null); return d && d.dni ? d : { dni: {}, bodyDen: '', bezChyby: 0 }; },
+  data() { const d = S.get(this.kluc(), null); return d && d.dni ? d : { dni: {}, bodyDen: '', bezChyby: 0, skup: {} }; },
   sucet() { const d = this.data(); return { n: Object.keys(d.dni).length, bezChyby: d.bezChyby || 0 }; },
   splnenaDnes() { return !!this.data().dni[key(new Date())]; },
   rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; },
   mix(a, r) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; },
   /* 6 otázok na daný deň; extra = ďalšie kolo navyše (bez bodov) */
-  otazky(den, extra = 0) {
+  otazky(den, extra = 0, skup = '') {
     const mlad = st.vek !== 'starsi', W = ANG_SLOVA.filter(w => !mlad || w.u === 1), V = ANG_VETY.filter(v => !mlad || v.u === 1);
-    const ws = this.mix(W, this.rng(11)), vs = this.mix(V, this.rng(23)), r = this.rng(den * 31 + extra * 977 + 5);
+    let WG = W, VG = V;
+    if (skup) {
+      WG = W.filter(w => w.g === skup); if (WG.length < 4) WG = ANG_SLOVA.filter(w => w.g === skup); if (WG.length < 4) WG = W;
+      VG = V.filter(v => v.g === skup); if (VG.length < 2) VG = ANG_VETY.filter(v => v.g === skup);
+    }
+    const sz = [...skup].reduce((a, c) => a * 7 + c.charCodeAt(0), 3) % 1000;
+    const ws = this.mix(WG, this.rng(11 + sz)), vs = this.mix(VG, this.rng(23 + sz)), r = this.rng(den * 31 + extra * 977 + 5 + sz);
     const w = i => ws[(den * 4 + extra * 4 + i) % ws.length], v = i => vs[(den * 2 + extra * 2 + i) % vs.length];
     const vyber = (spravne, pool, f) => {
       const ine = this.mix(pool.filter(x => f(x) !== f(spravne)), r), dobre = [...ine.filter(x => x.g === spravne.g), ...ine.filter(x => x.g !== spravne.g)];
@@ -3751,13 +3770,15 @@ const Ang = {
       const o = this.mix([x, ...this.mix(V.filter(y => y.sk !== x.sk), r).slice(0, 2)], r).map(y => y.sk);
       return { t: 'Čo znamená veta', slovo: x.en, o, s: o.indexOf(x.sk), vys: `${x.en} znamená: ${x.sk}` };
     };
-    return [slovo(w(0), true), slovo(w(1), false), veta(v(0), den % 2 === 0), slovo(w(2), (den + 1) % 2 === 0), veta(v(1), den % 2 === 1), slovo(w(3), false)];
+    const vt = (i, m) => vs.length >= 2 ? veta(v(i), m) : slovo(w(4 + i), i === 0);
+    return [slovo(w(0), true), slovo(w(1), false), vt(0, den % 2 === 0), slovo(w(2), (den + 1) % 2 === 0), vt(1, den % 2 === 1), slovo(w(3), false)];
   },
-  nova(nahliad, extra = 0) { return { qs: this.otazky(denCislo(), extra), i: 0, zle: [], chyby: 0, spravne: false, koniec: null, nahliad: !!nahliad }; },
+  nova(nahliad, extra = 0, skup = '') { return { skup, qs: this.otazky(denCislo(), extra, skup), i: 0, zle: [], chyby: 0, spravne: false, koniec: null, nahliad: !!nahliad }; },
   body: ch => ch > 2 ? 5 : 8,
   dokonci() {
     const q = st.ang, dnes = key(new Date()), d = this.data(), pred = st.body;
     let zisk = 0;
+    if (q.skup) { d.skup = d.skup || {}; const z = d.skup[q.skup] || { n: 0 }; d.skup[q.skup] = { n: z.n + 1, ch: q.chyby }; S.set(this.kluc(), d); }
     if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(q.chyby); d.bodyDen = dnes; st.body += zisk; S.set('body', st.body); }
     if (!q.nahliad) { d.dni[dnes] = { ch: q.chyby }; if (!q.chyby) d.bezChyby = (d.bezChyby || 0) + 1; S.set(this.kluc(), d); }
     const odznaky = noveOdznaky('anglictina');
@@ -3765,33 +3786,41 @@ const Ang = {
     Zvuk.play('win'); vibruj([40, 30, 40]); FX.burst(innerWidth / 2, innerHeight / 3, 30, ['star', 'dot']);
     paintHead(); render(); scrollTo(0, 0);
   },
+  ikSkup: g => ({ zvierata: IK.labka, jedlo: IK_KAT.zivot, domov: IK_KAT.domacnost, skola: IK.kniha, telo: IK_KAT.telo, farby: IK.duha, cisla: IK_KAT.tvary, slovesa: IK.gamepad, priroda: IK_KAT.priroda, ludia: IK.rodina, mesto: IK_KAT.doprava, cas: IK_KAT.cas })[g] || IK_KAT.anglictina,
+  farbaSkup: ['#FFE0EC', '#FFF1C9', '#D9F2FF', '#E7F9EC', '#EADCFF', '#FFE3BD'],
   karta() {
     const ok = this.splnenaDnes();
     return `<button class="ang-karta${ok ? ' hotova' : ''}" data-go="anglictina"><span class="ang-ik">${IK_KAT.anglictina}</span>
-      <div><b>Angličtina na každý deň</b><small>${ok ? 'Dnešný kvízik je hotový. Môžeš si dať ešte jeden.' : 'Krátky kvízik so slovíčkami, 2 až 3 minúty'}</small></div><span class="misia-sip">${ok ? ii(IK.fajka) : IKO.play}</span></button>`;
+      <div><small class="lbl-mala">${ok ? 'Dnes hotovo' : 'Dnes ešte nie'}</small><b>Angličtina na každý deň</b><small>${ok ? 'Dnešný kvízik je hotový. Môžeš si dať ešte jeden.' : 'Dnešný kvízik: 6 otázok so slovíčkami a vetami, 2 až 3 minúty.'}</small>
+        <span class="ang-tl">${ok ? ii(IK.fajka) + ' Zahrať si ešte raz' : 'Začať kvízik'}</span></div><span class="misia-sip">${ok ? ii(IK.fajka) : IKO.play}</span></button>`;
+  },
+  kvizKarta(ik, nazov, pocet, hotovo, atr, i, farba) {
+    return `<button class="ang-kv${hotovo ? ' hotova' : ''}" ${atr} style="--i:${i};--c:${farba}"><span class="ang-ik">${ik}</span>
+      <span class="ang-kv-t"><b>${esc(nazov)}</b><small>${pocet} otázok</small></span>${hotovo ? `<span class="badge ok" aria-label="Hotovo">✓</span>` : '<span class="badge new">Nové</span>'}</button>`;
   },
   hub() {
-    const ok = this.splnenaDnes(), s = this.sucet(), lek = ANGT();
+    const ok = this.splnenaDnes(), s = this.sucet(), lek = ANGT(), d = this.data(), sk = d.skup || {};
+    const sk1 = Object.keys(ANG_SKUPINY).filter(g => ANG_SLOVA.some(w => w.g === g));
+    let n = 1;
     return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Angličtina</h1></div>
-      <p class="muted">Bonus na každý deň: nový krátky kvízik so slovíčkami a vetami. Keď ho nestihneš, nič sa nestane, zajtra príde nový.</p>
-      <section class="card misia-dnes" style="--c:#D6336C"><div class="ang-ik">${IK_KAT.anglictina}</div>
-        <div><small class="lbl-mala">${ok ? 'Dnes hotovo' : 'Kvízik dňa'}</small><b class="misia-typ">Slovíčka a vety</b><span class="muted">6 otázok, vysvetlenie pri každej odpovedi.</span></div>
-        <div class="chips misia-chipy"><span class="chip tmavy" style="--c:#FFD23F">2 až 3 minúty</span><span class="chip tmavy" style="--c:#B6F0C8">6 otázok</span></div>
-        ${ok ? `<p class="misia-hotovo">${ii(IK.fajka)} Dnešný kvízik máš splnený. Zajtra príde nový.</p>` : ''}
-        <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-ang-start>${ok ? 'Ešte jeden kvízik (bez bodov)' : 'Začať kvízik'}</button></section>
+      <p class="muted">Vyber si kvíz. Keď ho nestihneš, nič sa nestane, zajtra príde nový denný kvízik.</p>
+      <section class="sec"><h2 class="h2" style="--hc:#D6336C">Kvízy</h2><div class="ang-kvizy">
+        ${this.kvizKarta(IK_KAT.anglictina, 'Kvízik dňa', 6, ok, 'data-ang-start', n++, '#FFE0EC')}
+        ${sk1.map((g, j) => this.kvizKarta(this.ikSkup(g), ANG_SKUPINY[g], 6, !!sk[g], `data-ang-skup="${g}"`, n++, this.farbaSkup[j % this.farbaSkup.length])).join('')}
+      </div></section>
       <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Môj postup</h2>
         <div class="ang-stats"><div class="card mini" style="--c:#FFE0EC"><b>${s.n}</b><small>${s.n === 1 ? 'kvízik' : s.n > 1 && s.n < 5 ? 'kvíziky' : 'kvízikov'}</small></div>
         <div class="card mini" style="--c:#E7F9EC"><b>${s.bezChyby}</b><small>bez chyby</small></div></div></section>
-      <section class="sec"><h2 class="h2" style="--hc:#D6336C">Anglické lekcie</h2><p class="muted">Pôvodné anglické témy, môžeš sa k nim kedykoľvek vrátiť.</p>
-        <div class="list">${lek.map(row).join('')}</div></section>`;
+      <section class="sec"><h2 class="h2" style="--hc:#D6336C">Anglické lekcie</h2><p class="muted">Pôvodné anglické témy s kvízom, otvor si ktorúkoľvek.</p>
+        <div class="ang-kvizy">${lek.map(t => this.kvizKarta(IK_KAT.anglictina, t.t, (t.z || []).length, st.done.includes(t.id), `data-start="${t.id}"`, n++, '#FFE0EC')).join('')}</div></section>`;
   },
   render() {
     const q = st.ang;
     if (!q) return this.hub();
     const o = q.qs[q.i], k = q.koniec;
     const pokrok = `<div class="ang-pokrok" aria-label="Otázka ${q.i + 1} z ${q.qs.length}">${q.qs.map((_, i) => `<i class="${i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''}"></i>`).join('')}</div>`;
-    const top = `<div class="hra-top"><button class="ib" data-ang-spat aria-label="Späť na angličtinu">${IKO.zavriet}</button><b class="hra-nazov">Kvízik z angličtiny</b></div>`;
-    if (k) return `${top}${pokrok}<section class="card misia-pribeh" style="text-align:center"><b class="misia-typ">Hotovo!</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} Zajtra príde nový kvízik.</p></section>
+    const top = `<div class="hra-top"><button class="ib" data-ang-spat aria-label="Späť na angličtinu">${IKO.zavriet}</button><b class="hra-nazov">${q.skup ? esc(ANG_SKUPINY[q.skup]) : 'Kvízik z angličtiny'}</b></div>`;
+    if (k) return `${top}${pokrok}<section class="card misia-pribeh" style="text-align:center"><b class="misia-typ">Hotovo!</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} ${q.skup ? 'Môžeš si ho zahrať znova, otázky sa menia.' : 'Zajtra príde nový kvízik.'}</p></section>
       ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ii(STAR())}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
       ${odmenyHtml(k)}<button class="btn wide cta" data-go="anglictina">Hotovo</button>`;
     return `${top}${pokrok}${q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
@@ -3803,6 +3832,7 @@ const Ang = {
   klik(b, d) {
     const q = st.ang;
     if (d.angStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'anglictina'; const hot = this.splnenaDnes(); st.ang = this.nova(hot, hot ? (Math.floor(Date.now() / 6e4) % 50) + 1 : 0); render(); scrollTo(0, 0); return true; }
+    if (d.angSkup !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'anglictina'; const z = (this.data().skup || {})[d.angSkup]; st.ang = this.nova(true, z ? z.n : 0, d.angSkup); render(); scrollTo(0, 0); return true; }
     if (d.angSpat !== undefined) { Zvuk.play('whoosh'); st.ang = null; render(); scrollTo(0, 0); return true; }
     if (!q || q.koniec) return false;
     if (d.angVol !== undefined) {
