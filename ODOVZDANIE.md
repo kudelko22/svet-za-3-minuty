@@ -157,3 +157,9 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - Neoverené: Google obnova PIN-u (popup v tomto prehliadači nejde), vzhľad na telefóne, existujúci reálny účet s dátami.
 - Nasadenie (po súhlase): `firebase deploy --only firestore:rules`, potom hosting (`zdroj\spusti.cmd deploy`), záloha zip na plochu, overenie na webe.
 - NASADENÉ: najprv `firestore:rules`, potom hosting; web ukazuje verziu 3.5 a cache `svet3-v3`; záloha `Desktop\svet-za-3-minuty-3.5.zip` (tar.exe treba volať z `C:\Windows\System32`, z Git Bash sa použije GNU tar a zlyhá na `C:`). Neoverené naživo: prihlásenie na reálnom účte, Google obnova PIN-u.
+
+## Update 3.5.1: pozvánka na účet rodiča (NENASADENÉ, čaká na súhlas vlastníka priamo v session)
+
+- `RodicVyzva` v `zdroj/appka.html`: pri účte bez rodiča (`Cloud.rodic.nacitane`, bez profilu) sa na Domove raz za spustenie ukáže okno „Vytvor si účet rodiča“ (po Novinkách, nikdy počas hry, kvízu, sprievodcu). „Vytvoriť účet rodiča“ -> `rodicTvorba`, „Neskôr“ -> `S` kľúč `rodic-neskor` na 3 dni.
+- `VERZIA_APPKY` 40, `VERZIA_NAZOV` 3.5.1, `NOVINKY`, cache `svet3-v4`, malé testy v bloku RODIČ.
+- Overené: `test`, `build`, emulátor (okno sa ukáže, obe tlačidlá fungujú, odloženie drží).

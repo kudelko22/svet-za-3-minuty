@@ -383,6 +383,7 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   Rodic.zamkni(); C.rodic.profil = null;
   if (!brany.tvorba().includes("data-zmazat")) chyby.push("rodic: bez rodica chyba Odstranit profil");
   if (!SPR_RODIC.some(k => k.id === "rodicucet" && k.ak() === true)) chyby.push("rodic: sprievodca nema ponuku uctu rodica");
+  if (typeof RodicVyzva.ukaz !== "function") chyby.push("rodic: chyba okno vyzvy"); { const f = st.flow; st.flow = {}; if (RodicVyzva.volno()) chyby.push("rodic: vyzva by sa ukazala pocas hry"); st.flow = f; }
   C.deti = staraD; C.rodic = staraR; st.upravuje = staraU; st.view = staraV; }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
