@@ -202,3 +202,10 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Nič sa nezmazalo: oblasti a kategórie sú aj v Témach, kvízy ostali, hry a odznaky nezmenené. Kroky sprievodcu majú cieľ `.hero`, `.tyzden`, `.auto-karta`, `.acts` (stále existujú), len ich poradie na obrazovke je iné než poradie krokov.
 - Overené: `test`, `build`, emulátor na šírke 390 px (poradie, výšky, bez vodorovného posunu). Neoverené: tablet, šírka 360, ťažký kvíz a výzva vizuálne (starší vek), tmavý stav „Dnes hotovo“; snímky obrazovky v paneli boli nespoľahlivé. V konzole len 404 na nejaký zdroj (emulátor), nie z tejto zmeny.
 - **3.6.1 NASADENÉ** (pravidlá + hosting), záloha `Desktop\svet-za-3-minuty-3.6.1.zip`.
+
+## Oprava: plynulé vyhodnotenie v kvíze angličtiny (NENASADENÉ, verzia nezmenená)
+
+- Príčina: po kliknutí na odpoveď sa volal `render()`, ktorý celý `main` prekreslil a `.anim > *` znova spustil vstupnú animáciu všetkých kariet, preto to blikalo.
+- Oprava v `Ang` (`zdroj/appka.html`): `Ang.uprav()` len prepne triedy `ok`/`bad` a `disabled` na tlačidlách, pokrok a vymení pätičku (`Ang.pata()`: reakcia, vysvetlenie, Ďalej). Farby sa menia cez CSS `transition` na `.ans`. `Ang.dalsia()` pred ďalšou otázkou krátko (160 ms) vyblednie `main.ang-mizne`, potom `render()`. Pri `prefers-reduced-motion` ide hneď.
+- Body, hviezdičky a postup nezmenené. V `test.js` je `matchMedia` pre reduced-motion `true`, aby test (synchrónny) nečakal na časovač.
+- Overené: `test`, `build`, v prehliadači: po zlej aj správnej odpovedi ostal ten istý uzol otázky (bez prekreslenia), objavila sa reakcia/vysvetlenie/Ďalej, Ďalej prešiel na 2. otázku. Neoverené: pohľad očami na živej animácii, telefón.

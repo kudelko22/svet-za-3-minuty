@@ -14,7 +14,7 @@ const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', da
 const els = {};
 global.document = { getElementById: id => (els[id] ||= el()), addEventListener() {}, querySelectorAll: () => [], querySelector: () => el(), createElement: el, body: el() };
 global.window = { scrollTo() {} }; global.location = { hostname: 'kudelko22.github.io' };
-global.matchMedia = () => ({ matches: false });
+global.matchMedia = (q) => ({ matches: /reduced-motion/.test(String(q)) }); // bez pohybu: prechody bez časovača
 global.addEventListener = () => {};
 global.innerWidth = 390; global.innerHeight = 844;
 global.requestAnimationFrame = () => {}; global.scrollTo = () => {};
