@@ -126,3 +126,13 @@ Rozhranie (záväzné):
 - `hnitieZapnute()` nezmenené (to robí C).
 
 Overené: `test`, `test:rules`, `build` OK. Neskúšané naživo: samotné PBKDF2/Firestore volania Cloud API v prehliadači a znovuprihlásenie (nie je na to obrazovka, skúsi D/B).
+
+## Update 3.5, úloha B: obrazovky pred panelom (nenasadené, verzia ostáva 38)
+
+Hotové v **`rodic-brana.js`** (v koreni, nie v `zdroj/`, tak ako to nechala A); `appka.html` sa nemenilo, žiadny nový háčik netreba. Štýly sa vkladajú z JS (`/* rodic-brana */`), ikony `IK.rodic1..6` (slnko, mesiac, strom, srdce, kľúč, domček) a `IK.pinZrus` sa dopĺňajú do `IK` pri prvom vykreslení. Ikona v `Cloud.rodic.profil.ikona` je `r1..r6`.
+- `rodicTvorba`: meno (nepovinné, predvolene „Rodič“), 6 ikon, PIN 2x (kreslená klávesnica), potom `Cloud.rodicVytvor` -> `Rodic.odomkni(); Rodic.chod('rodic')`.
+- `rodicPin`: klávesnica, trasenie pri chybe, po 5 zlých PIN-och pauza 30 s (len v pamäti, odpočet), „Zabudol som PIN“ -> heslo účtu (Google: okno Googlu) -> nový PIN 2x -> odomknutie.
+- `vyber`: karta rodiča s jeho ikonou (`data-rodic-vstup`) alebo karta „Vytvoriť účet rodiča“ s prerušovaným okrajom (`data-rodic-novy`); keď rodič existuje, tlačidlo „Odhlásiť sa“ z výberu zmizne (odhlásenie patrí do nastavení rodiča, úloha C).
+- Ostatné klik handlery: `data-rodic-ikona`, `data-rodic-dalej`, `data-rodic-spat`, `data-rodic-over`, `data-pin-cislo`, `data-pin-zrus`, `data-rodic-zabudol`.
+Overené na emulátore: vytvorenie rodiča, zlé PIN-y, pauza, zabudnutý PIN so zlým aj správnym heslom, nový PIN, vstup. `test` a `build` OK. Neskúšané: Google variant obnovy PIN-u (popup), telefón/úzka obrazovka okrem krátkeho pohľadu.
+Poznámka pre D: ak chce `tvorba`/`ja` posielať na vytvorenie rodiča, stačí `Rodic.chod('rodicTvorba')`.
