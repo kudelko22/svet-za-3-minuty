@@ -193,3 +193,11 @@ Zmeny len v `views.ja` v `zdroj/appka.html` (+ krok sprievodcu, README):
 - Overené: `test`, `test:rules` 75/75, `build`; 126 misií, žiadne duplicitné `id` ani názvy; emulátor: karta Angličtina na Domove, obrazovka s 14 kartami, skupinový kvíz až do konca (zaškrtnutie), profil Ja bez rodiča (ostáva „Vytvoriť účet rodiča“) aj s rodičom (len „Zmeniť dieťa“, bez hlasu a prehľadu), konzola bez chýb.
 - Neoverené: vzhľad na telefóne, samotné hranie jednotlivých nových misií, animácia kariet (videné len staticky), hlas na čítanie je teraz len v paneli rodiča.
 - **3.6 NASADENÉ** (pravidlá, potom hosting; obsahuje aj 3.5.1). Web ukazuje 3.6, cache `svet3-v5`, záloha `Desktop\svet-za-3-minuty-3.6.zip`.
+
+## 3.6.1 – prehľadnejší Domov (NENASADENÉ, čaká na súhlas vlastníka priamo v session)
+
+Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka.html`. `VERZIA_APPKY` 42, `VERZIA_NAZOV` 3.6.1, `NOVINKY` doplnené.
+- Nové poradie: 1. Misia dňa (téma + misia), 2. Angličtina, (karta „Appka na ploche“, ak sa ukazuje), 3. Kvízy ako menšie tlačidlá (2x2 pre staršie deti, popis len keď je prestávka), 4. Tento týždeň a strom, 5. Režim do auta (kratší text), 6. Ďalšia odmena, 7. Oblasti tém v jednom posúvacom riadku, 8. Objavujte ďalej.
+- Zmizla len bublina so sovičkou dole na Domove (text duplikoval Režim do auta; sovička ostáva v témach a v oknách).
+- Nič sa nezmazalo: oblasti a kategórie sú aj v Témach, kvízy ostali, hry a odznaky nezmenené. Kroky sprievodcu majú cieľ `.hero`, `.tyzden`, `.auto-karta`, `.acts` (stále existujú), len ich poradie na obrazovke je iné než poradie krokov.
+- Overené: `test`, `build`, emulátor na šírke 390 px (poradie, výšky, bez vodorovného posunu). Neoverené: tablet, šírka 360, ťažký kvíz a výzva vizuálne (starší vek), tmavý stav „Dnes hotovo“; snímky obrazovky v paneli boli nespoľahlivé. V konzole len 404 na nejaký zdroj (emulátor), nie z tejto zmeny.

@@ -975,6 +975,20 @@ body.dm-rezim::before { display: none; }
 .mini-ik { display: flex; flex-wrap: wrap; gap: 3px; }
 .mini-ik i { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); }
 .mini-ik .ik { width: 16px; height: 16px; }
+/* Domov: oblasti v jednom posúvacom riadku, kvízy a režim do auta menšie */
+.skupiny.rad { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 2px 4px 12px; margin: -2px -4px 0; scrollbar-width: none; }
+.skupiny.rad::-webkit-scrollbar { display: none; }
+.skupiny.rad .tile.skupina { flex: none; width: 124px; min-height: 0; gap: 4px; padding: 10px 8px; scroll-snap-align: start; }
+.skupiny.rad .tile.skupina b { font-size: .95rem; }
+.skupiny.rad .mini-ik { display: none; }
+.acts.kompakt { gap: 10px; }
+.acts.kompakt .act { grid-template-columns: auto 1fr; align-items: center; column-gap: 8px; padding: 10px 12px; border-radius: 20px; }
+.acts.kompakt .act-e { grid-row: 1 / span 2; width: 40px; height: 40px; margin: 0; }
+.acts.kompakt .act-e .ik { width: 28px; height: 28px; }
+.acts.kompakt .act b { font-size: 1.05rem; }
+.acts.kompakt .act:not(.cas) small { display: none; }
+.acts.kompakt .act.cas small { grid-column: 2; font-size: .75rem; line-height: 1.15; }
+.auto-karta { padding: 10px 14px; }
 .skupiny.vybrana .skupina[aria-pressed="false"] { opacity: .5; transform: scale(.96); }
 .skupina[aria-pressed="true"] { outline: 3px dashed var(--ink); outline-offset: 3px; }
 #filtre { display: grid; gap: 12px; }
@@ -1224,14 +1238,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=41"></script>
-<script src="obrazky.js?v=41"></script>
-<script src="misie.js?v=41"></script>
-<script src="anglictina.js?v=41"></script>
-<script src="rodic-brana.js?v=41"></script>
-<script src="rodic-panel.js?v=41"></script>
+<script src="temy.js?v=42"></script>
+<script src="obrazky.js?v=42"></script>
+<script src="misie.js?v=42"></script>
+<script src="anglictina.js?v=42"></script>
+<script src="rodic-brana.js?v=42"></script>
+<script src="rodic-panel.js?v=42"></script>
 <script>
-const VERZIA_APPKY = 41; const VERZIA_NAZOV = '3.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 42; const VERZIA_NAZOV = '3.6.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3008,12 +3022,6 @@ const views = {
     const v = TV(), dalsie = [...Array(v.length).keys()].map(i => v[(denCislo() + 1 + i) % v.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
     return `${location.hostname.endsWith('github.io') ? `
       <a class="presun" href="https://svet-za-3-minuty.web.app/">Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
-      ${Plocha.karta()}
-      <section class="card tyzden" data-strom role="button" tabindex="0" aria-label="Tento týždeň a strom múdrosti">
-        <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak${s ? '' : ' zhasnuta'}">${ii(IK.ohen)} ${s ? `${s} ${dni(s)} po sebe` : 'Začnite sériu dnes'}</span></div>
-        <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
-        <div class="tyzden-strom">${MINI_STROM}<span>Môj strom múdrosti: <b>${hnStupen() ? HN_TEXT[hnStupen()].n : STROM_STUPNE[stromStupen()].n}</b></span><i>›</i></div>
-      </section>
       <section class="hero" style="--c:${k.c}">
         <div class="hero-art">${scene(t, 'sm')}<span class="sticker">${ii(STAR())} Misia dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
         <div class="hero-in">
@@ -3024,22 +3032,27 @@ const views = {
           ${kartaMisie(hot)}
         </div>
       </section>
-      <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
-        <div><b>Režim do auta</b><small>Jedno ťuknutie a appka prečíta tému dňa aj otázky nahlas. Ruky ostanú na volante.</small></div><span class="auto-play">${IKO.play}</span></button>
       ${Ang.karta()}
-      ${kartaDalsiaOdmena()}
-      <div class="acts">
+      ${Plocha.karta()}
+      <div class="acts kompakt">
         <button class="act${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
         <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">${IK.kocka}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 bodov</small></button>
-        ${st.vek === 'starsi' ? `<button class="act siroky${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
-        <button class="act siroky${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
+        ${st.vek === 'starsi' ? `<button class="act${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
+        <button class="act${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
       </div>
-      ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
-        <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}
-      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Oblasti tém</h2>
-        <div class="skupiny">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
+      <section class="card tyzden" data-strom role="button" tabindex="0" aria-label="Tento týždeň a strom múdrosti">
+        <div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Tento týždeň</h2><span class="streak${s ? '' : ' zhasnuta'}">${ii(IK.ohen)} ${s ? `${s} ${dni(s)} po sebe` : 'Začnite sériu dnes'}</span></div>
+        <div class="week">${tyzden.map((x, i) => { const h = st.dni.includes(x.k); return `<div class="day${h ? ' done' : ''}${x.k === dnes ? ' today' : ''}" style="--d:${PASTEL[i]}">${x.n}<i>${h ? STAR() : x.d.getDate()}</i></div>`; }).join('')}</div>
+        <div class="tyzden-strom">${MINI_STROM}<span>Môj strom múdrosti: <b>${hnStupen() ? HN_TEXT[hnStupen()].n : STROM_STUPNE[stromStupen()].n}</b></span><i>›</i></div>
       </section>
-      <div class="tip"><button class="tip-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><p class="bubble">Témy sú krátke, zvládnete ich aj cestou autom. A ak šoférujete, ťuknite na „Prečítať nahlas“!</p></div>`;
+      <button class="auto-karta" data-auto-start="${t.id}"><span class="auto-ikona">${IKO.auto}</span>
+        <div><b>Režim do auta</b><small>Appka prečíta tému aj otázky nahlas.</small></div><span class="auto-play">${IKO.play}</span></button>
+      ${kartaDalsiaOdmena()}
+      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Oblasti tém</h2>
+        <div class="skupiny rad">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
+      </section>
+      ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
+        <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}`;
   },
   temy() {
     return `<h1 class="h1">Témy</h1>
@@ -3846,6 +3859,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 42, obr: () => IK.kniha, n: 'Prehľadnejší Domov', p: 'Hore je misia dňa a pod ňou angličtina. Kvízy sú menšie, oblasti tém sú v jednom riadku, ktorý sa dá posúvať.' },
   { v: 41, obr: () => IK_KAT.anglictina, n: 'Viac angličtiny a misií', p: 'Pribudlo 51 misií, 191 slovíčok a 61 viet. Angličtina má výraznejšiu kartu a kvízy sa rozklikávajú po skupinách.' },
   { v: 41, obr: () => IK.rodina, n: 'Čistejší profil', p: 'Karta Ja je prehľadnejšia. Hlas a rodičovské veci sú preč, kde ich má rodič v paneli za PIN-om.' },
   { v: 40, obr: () => IK.rodina, n: 'Pozvánka na účet rodiča', p: 'Ak ešte nemáte účet rodiča, appka vám ho raz ponúkne. Dá sa to odložiť na neskôr.' },
