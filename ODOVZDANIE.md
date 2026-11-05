@@ -163,3 +163,10 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - `RodicVyzva` v `zdroj/appka.html`: pri účte bez rodiča (`Cloud.rodic.nacitane`, bez profilu) sa na Domove raz za spustenie ukáže okno „Vytvor si účet rodiča“ (po Novinkách, nikdy počas hry, kvízu, sprievodcu). „Vytvoriť účet rodiča“ -> `rodicTvorba`, „Neskôr“ -> `S` kľúč `rodic-neskor` na 3 dni.
 - `VERZIA_APPKY` 40, `VERZIA_NAZOV` 3.5.1, `NOVINKY`, cache `svet3-v4`, malé testy v bloku RODIČ.
 - Overené: `test`, `build`, emulátor (okno sa ukáže, obe tlačidlá fungujú, odloženie drží).
+
+## 3.6 úloha: obsah misií a angličtiny (len `misie.js`, `anglictina.js`; bez zmeny verzie, nenasadené)
+
+- Misie: +51 nových (d16 až d25, p16 až p26, k16 až k25, c16 až c25, v16 až v25), spolu 126; na každý typ a náročnosť 3 až 4 nové. Pridané na koniec zoznamu.
+- Duplicity: `p8` premenované „Tajomstvá tela“ (a prvé tvrdenie o kostiach nahradené mrkaním), `k12` „Susedovo okno“, `k11` prepracované na „Kamarát chce odpísať“ (pôvodné bolo to isté ako `k4`).
+- Angličtina: +191 slov (spolu 344), nové skupiny `pocity` (Pocity) a `sport` (Šport a hry) v `ANG_SKUPINY`, +61 viet (spolu 121). Každé slovo vo vete je v `ANG_SLOVA` v tej istej skupine (skontrolované skriptom).
+- Overené: `test`, `build`. Neoverené: vzhľad nových skupín v appke na emulátore (kód sa nemenil, test prešiel).
