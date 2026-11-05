@@ -147,7 +147,7 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - Overené: `test`, `build` OK a dočasný test (zmazaný) s kartami, detailom, nastaveniami, prepínačom vädnutia a zamknutím. **Neskúšané vizuálne**: vstavaný prehliadač odmietol adresu 127.0.0.1, emulátor 5050 už bežal v inej session. Chýba kontrola vzhľadu (štýly `rp-*` sú v `rodic-panel.js`), PBKDF2 zmeny PIN-u naživo a pridanie/odstránenie dieťaťa naživo.
 - Nie je: samostatné „vypnúť priateľov“ v nastaveniach (je v prehľade dieťaťa), blok RODIČ v `test.js` (D).
 
-## Update 3.5, úloha D: zlúčenie a vydanie (NENASADENÉ, čaká na súhlas vlastníka)
+## Update 3.5, úloha D: zlúčenie a vydanie (3.5 NASADENÉ 2026-11-05)
 
 - `main` obsahuje A + B + C (zlúčené, vetvy ostali). Konflikt bol len v `ODOVZDANIE.md`.
 - Detský pohľad (`ja`): keď `Cloud.rodic.profil` existuje (`maRodica()`), zmizne `prehladRodica()` a karta Rodina je len „Zmeniť dieťa“ (+ plocha); bez rodiča karta „Vytvoriť účet rodiča“ (`data-rodic-novy` -> `Rodic.chod('rodicTvorba')`). V tvorbe postavičky sa „Odstrániť tento profil“ skryje, ak rodič existuje a nie je odomknutý.
@@ -156,3 +156,4 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - Overené: `test`, `test:rules` (75/75), `build`; emulátor: nový účet -> sprievodca -> tvorba rodiča, PIN, panel s dieťaťom, detail, nastavenia, zlý PIN, obnova PIN-u heslom, nový PIN, detský pohľad s rodičom aj bez, zmazanie rodiča. Konzola bez chýb.
 - Neoverené: Google obnova PIN-u (popup v tomto prehliadači nejde), vzhľad na telefóne, existujúci reálny účet s dátami.
 - Nasadenie (po súhlase): `firebase deploy --only firestore:rules`, potom hosting (`zdroj\spusti.cmd deploy`), záloha zip na plochu, overenie na webe.
+- NASADENÉ: najprv `firestore:rules`, potom hosting; web ukazuje verziu 3.5 a cache `svet3-v3`; záloha `Desktop\svet-za-3-minuty-3.5.zip` (tar.exe treba volať z `C:\Windows\System32`, z Git Bash sa použije GNU tar a zlyhá na `C:`). Neoverené naživo: prihlásenie na reálnom účte, Google obnova PIN-u.
