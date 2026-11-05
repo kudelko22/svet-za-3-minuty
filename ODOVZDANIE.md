@@ -185,3 +185,10 @@ Zmeny len v `views.ja` v `zdroj/appka.html` (+ krok sprievodcu, README):
 - Bez rodiča: ostáva účet, stav uloženia, Zmeniť dieťa, Odhlásiť sa, Vytvoriť účet rodiča, Pridať na plochu, verzia, prehľad „Pre rodiča“.
 - Vymazaný krok sprievodcu „Čítanie nahlas“; krok o rodine bez zmienky o odhlásení a ploche.
 - Otvorené: bez rodiča sa už nedá zmeniť hlas (zmena len v paneli rodiča); skúška zvuku mimo iOS zmizla; vizuálne na emulátore neskúšané (`test` a `build` OK).
+
+## Update 3.6: zlúčenie troch vetiev (NENASADENÉ, čaká na súhlas vlastníka priamo v session)
+
+- Zlúčené do `main`: misie a angličtina (`goofy-elbakyan`), karta Angličtiny a skupinové kvízy (`nifty-bhaskara`), čistejší profil Ja (`friendly-payne`). Konflikty len v `ODOVZDANIE.md`.
+- `VERZIA_APPKY` 41, `VERZIA_NAZOV` 3.6, `NOVINKY` (viac angličtiny a misií, čistejší profil), cache `svet3-v5`. Okno pre rodiča z 3.5.1 je v tomto vydaní tiež (3.5.1 nebolo nasadené samostatne).
+- Overené: `test`, `test:rules` 75/75, `build`; 126 misií, žiadne duplicitné `id` ani názvy; emulátor: karta Angličtina na Domove, obrazovka s 14 kartami, skupinový kvíz až do konca (zaškrtnutie), profil Ja bez rodiča (ostáva „Vytvoriť účet rodiča“) aj s rodičom (len „Zmeniť dieťa“, bez hlasu a prehľadu), konzola bez chýb.
+- Neoverené: vzhľad na telefóne, samotné hranie jednotlivých nových misií, animácia kariet (videné len staticky), hlas na čítanie je teraz len v paneli rodiča.

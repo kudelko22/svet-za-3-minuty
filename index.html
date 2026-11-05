@@ -1224,14 +1224,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=40"></script>
-<script src="obrazky.js?v=40"></script>
-<script src="misie.js?v=40"></script>
-<script src="anglictina.js?v=40"></script>
-<script src="rodic-brana.js?v=40"></script>
-<script src="rodic-panel.js?v=40"></script>
+<script src="temy.js?v=41"></script>
+<script src="obrazky.js?v=41"></script>
+<script src="misie.js?v=41"></script>
+<script src="anglictina.js?v=41"></script>
+<script src="rodic-brana.js?v=41"></script>
+<script src="rodic-panel.js?v=41"></script>
 <script>
-const VERZIA_APPKY = 40; const VERZIA_NAZOV = '3.5.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 41; const VERZIA_NAZOV = '3.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3846,6 +3846,8 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 41, obr: () => IK_KAT.anglictina, n: 'Viac angličtiny a misií', p: 'Pribudlo 51 misií, 191 slovíčok a 61 viet. Angličtina má výraznejšiu kartu a kvízy sa rozklikávajú po skupinách.' },
+  { v: 41, obr: () => IK.rodina, n: 'Čistejší profil', p: 'Karta Ja je prehľadnejšia. Hlas a rodičovské veci sú preč, kde ich má rodič v paneli za PIN-om.' },
   { v: 40, obr: () => IK.rodina, n: 'Pozvánka na účet rodiča', p: 'Ak ešte nemáte účet rodiča, appka vám ho raz ponúkne. Dá sa to odložiť na neskôr.' },
   { v: 39, obr: () => IK.rodina, n: 'Update 3.5: účet rodiča', p: 'Rodič má vlastný účet s PIN-om. Za PIN je panel s kartami detí, prehľadmi a nastaveniami. Deti majú v profile len to, čo potrebujú.' },
   { v: 38, obr: () => IK.bublina, n: 'Správy bez prekrývania', p: 'Dlhšie správy sa v bublinách správne zalomia a bubliny sa už neprekrývajú.' },
