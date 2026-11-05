@@ -192,3 +192,4 @@ Zmeny len v `views.ja` v `zdroj/appka.html` (+ krok sprievodcu, README):
 - `VERZIA_APPKY` 41, `VERZIA_NAZOV` 3.6, `NOVINKY` (viac angličtiny a misií, čistejší profil), cache `svet3-v5`. Okno pre rodiča z 3.5.1 je v tomto vydaní tiež (3.5.1 nebolo nasadené samostatne).
 - Overené: `test`, `test:rules` 75/75, `build`; 126 misií, žiadne duplicitné `id` ani názvy; emulátor: karta Angličtina na Domove, obrazovka s 14 kartami, skupinový kvíz až do konca (zaškrtnutie), profil Ja bez rodiča (ostáva „Vytvoriť účet rodiča“) aj s rodičom (len „Zmeniť dieťa“, bez hlasu a prehľadu), konzola bez chýb.
 - Neoverené: vzhľad na telefóne, samotné hranie jednotlivých nových misií, animácia kariet (videné len staticky), hlas na čítanie je teraz len v paneli rodiča.
+- **3.6 NASADENÉ** (pravidlá, potom hosting; obsahuje aj 3.5.1). Web ukazuje 3.6, cache `svet3-v5`, záloha `Desktop\svet-za-3-minuty-3.6.zip`.
