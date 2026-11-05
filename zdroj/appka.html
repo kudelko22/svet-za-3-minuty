@@ -1177,7 +1177,7 @@ body.dm-rezim::before { display: none; }
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 38; const VERZIA_NAZOV = '3.0.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 39; const VERZIA_NAZOV = '3.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1639,7 +1639,7 @@ const brany = {
       <div class="chips av-tabs" id="av-tabs">${avTaby()}</div>
       <div class="av-moznosti" id="av-moznosti">${avMoznosti()}</div>
       <button class="btn wide cta" data-ulozit-dieta>Uložiť ✓</button>
-      ${u.novy ? '' : u.potvrd
+      ${u.novy || (maRodica() && !Rodic.jeOdomknute()) ? '' : u.potvrd
         ? `<div class="card prof potvrd"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="muted">Body a prebraté témy tohto dieťaťa sa stratia.</p>
             <div class="tests"><button class="btn red" data-zmazat-ano>Áno, odstrániť</button><button class="btn ghost" data-zmazat-nie>Nie</button></div></div>`
         : '<button class="link center" data-zmazat>Odstrániť tento profil</button>'}
@@ -2930,6 +2930,7 @@ function prehladPriatelov(d = st) {
     <b>Voľné písanie</b><p class="muted">Dieťa môže svojim priateľom písať aj vlastný text (najviac 200 znakov). Všetko vidíte v Posledných správach. Ak nechcete, aby si písali, vypnite priateľov.</p>
     <button class="btn ghost" ${cloud ? 'data-rp-socvypni' : 'data-soc-vypni'}>Vypnúť priateľov</button>`;
 }
+const maRodica = () => !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
 function prehladRodica(d = st) {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
   const od = key(pon), dnes = key(new Date());
@@ -3024,7 +3025,7 @@ const views = {
       </section>
       ${kartaOdznakov()}
       <button class="card spr-karta" data-sprievodca>${owl('hi')}<span><b>Sprievodca appkou</b><small>Sovička ti znova ukáže, čo kde je.</small></span><span class="auto-play">${IKO.play}</span></button>
-      ${prehladRodica()}
+      ${maRodica() ? '' : prehladRodica()}
       <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
         <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${ikKat(k.id)}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
       </section>
@@ -3042,8 +3043,9 @@ const views = {
       </section>
       <section class="card prof"><span class="lbl">${ii(IK.bublina)} Hlas na čítanie</span><div id="hlasy">${hlasyHtml()}</div></section>
       <section class="card prof"><span class="lbl">${ii(IK.rodina)} Rodina</span>
-        <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
+        ${maRodica() ? `<div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button></div>` : `<p class="muted">Účet: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
         <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
+        <button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button>`}
         ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}
       </section>
       <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
@@ -3776,6 +3778,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 39, obr: () => IK.rodina, n: 'Update 3.5: účet rodiča', p: 'Rodič má vlastný účet s PIN-om. Za PIN je panel s kartami detí, prehľadmi a nastaveniami. Deti majú v profile len to, čo potrebujú.' },
   { v: 38, obr: () => IK.bublina, n: 'Správy bez prekrývania', p: 'Dlhšie správy sa v bublinách správne zalomia a bubliny sa už neprekrývajú.' },
   { v: 37, obr: () => IK.bublina, n: 'Písanie priateľom pre všetkých', p: 'Keď máš priateľa, môžeš mu písať aj vlastné slová, nič sa nezapína. Bubliny v správach sa už neprekrývajú.' },
   { v: 36, obr: () => IK_KAT.anglictina, n: 'Angličtina na každý deň', p: 'Angličtina má nové miesto na Domove. Každý deň nový krátky kvízik so slovíčkami a vetami, s vysvetlením odpovedí. Pôvodné anglické lekcie nájdeš tam tiež.' },
@@ -3880,10 +3883,11 @@ const SPR_RODIC = [
   { tap: 'ja', cil: '#nav-ja', n: 'Ťuknite na Ja', nalada: 'happy', p: 'Posledná časť je profil. Ťuknite na Ja.' },
   { v: 'ja', cil: '.prof-top', n: 'Profil dieťaťa', nalada: 'happy', p: 'Postavička, meno a vek. Ťuknutím na postavičku ju dieťa prezlečie.' },
   { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky a odmeny', p: 'Za úspechy prichádzajú odznaky a za body nové veci pre postavičku.' },
-  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('section') : null)([...document.querySelectorAll('main .h2')].find(x => x.textContent.trim() === 'Pre rodiča')), n: 'Pre rodiča', p: 'Tu vidíte, čo dieťa tento týždeň prebralo a v ktorých otázkach sa pomýlilo, aby ste sa o nich mohli porozprávať.' },
+  { v: 'ja', ak: () => !maRodica(), cil: () => (x => x && x.closest ? x.closest('section') : null)([...document.querySelectorAll('main .h2')].find(x => x.textContent.trim() === 'Pre rodiča')), n: 'Pre rodiča', p: 'Tu vidíte, čo dieťa tento týždeň prebralo a v ktorých otázkach sa pomýlilo, aby ste sa o nich mohli porozprávať.' },
   { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('#hlasy')), n: 'Čítanie nahlas', p: 'Tu vyberiete hlas, ktorým appka číta témy a otázky. Hneď nad tým je skúška zvuku.' },
   { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('main [data-deti]')), n: 'Rodina a ďalšie deti', p: 'Cez Zmeniť dieťa pridáte ďalšie dieťa alebo prepnete medzi deťmi, prepnúť sa dá aj ťuknutím na postavičku hore. Je tu aj odhlásenie a pridanie appky na plochu.' },
   { v: 'ja', cil: '.spr-karta', n: 'Sprievodca pre dieťa', p: 'Keď bude chcieť, Sovička ukáže appku aj dieťaťu, jeho slovami. Spustíte ho tu.' },
+  { id: 'rodicucet', ak: () => !maRodica(), n: 'Účet rodiča', nalada: 'happy', tl: [['rodicucet', 'Vytvoriť účet rodiča →', 1], ['dalej', 'Neskôr']], p: 'Nastavenia, prehľady a mazanie profilov nemajú byť deťom na dosah. Vytvorte si účet rodiča s vlastným PIN-om (4 číslice), zaberie to chvíľku.' },
   { id: 'koniec', n: 'Všetko pripravené!', nalada: 'cheer', oslava: true, tl: [['dieta', 'Ukázať sprievodcu dieťaťu', 1], ['tema', 'Poďme na tému dňa →']], p: 'Teraz už viete všetko. Ukážte appku aj dieťaťu, alebo rovno začnite tému dňa.' },
 ];
 const Sprievodca = {
@@ -3962,6 +3966,7 @@ const Sprievodca = {
       } else if (a === 'tema') { this.zavri(true); startTema(temaDna().id); }
       else if (a === 'hotovo') { Zvuk.play('tap'); this.zavri(true); }
       else if (a === 'dieta') { this.zavri(true); setTimeout(() => this.start(SPR_KROKY), 400); }
+      else if (a === 'rodicucet') { this.zavri(true); Zvuk.play('whoosh'); Rodic.chod('rodicTvorba'); }
       else if (a === 'domov') { this.zavri(true); Zvuk.play('whoosh'); go('domov'); }
       return;
     }

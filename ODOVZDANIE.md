@@ -146,3 +146,13 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - Dotyky mimo môjho rozsahu (malé): `Cloud.rodicDietaOtvor(id)` / `Cloud.rodicDietaZavri()` za `Cloud.soc = Soc` (`socStart`/`nastavAktivne` sú v module, z `rodic-panel.js` nedostupné; otvor nastaví dieťa ako aktívne `st`, lebo `socData`/`socUlozProfil` píšu verejný profil podľa `st`), a riadok v `socZmena()` (v detaile dieťaťa prekreslí pohľad).
 - Overené: `test`, `build` OK a dočasný test (zmazaný) s kartami, detailom, nastaveniami, prepínačom vädnutia a zamknutím. **Neskúšané vizuálne**: vstavaný prehliadač odmietol adresu 127.0.0.1, emulátor 5050 už bežal v inej session. Chýba kontrola vzhľadu (štýly `rp-*` sú v `rodic-panel.js`), PBKDF2 zmeny PIN-u naživo a pridanie/odstránenie dieťaťa naživo.
 - Nie je: samostatné „vypnúť priateľov“ v nastaveniach (je v prehľade dieťaťa), blok RODIČ v `test.js` (D).
+
+## Update 3.5, úloha D: zlúčenie a vydanie (NENASADENÉ, čaká na súhlas vlastníka)
+
+- `main` obsahuje A + B + C (zlúčené, vetvy ostali). Konflikt bol len v `ODOVZDANIE.md`.
+- Detský pohľad (`ja`): keď `Cloud.rodic.profil` existuje (`maRodica()`), zmizne `prehladRodica()` a karta Rodina je len „Zmeniť dieťa“ (+ plocha); bez rodiča karta „Vytvoriť účet rodiča“ (`data-rodic-novy` -> `Rodic.chod('rodicTvorba')`). V tvorbe postavičky sa „Odstrániť tento profil“ skryje, ak rodič existuje a nie je odomknutý.
+- Sprievodca `SPR_RODIC`: nový krok `rodicucet` (len keď rodič neexistuje) s tlačidlom na tvorbu účtu rodiča; krok „Pre rodiča“ sa preskočí, ak rodič existuje.
+- `VERZIA_APPKY` 39 (v repozitári už bola 38, nie 36/37), `VERZIA_NAZOV` 3.5, `NOVINKY`, cache `svet3-v3` v `sw.js`, blok RODIČ v `test.js`.
+- Overené: `test`, `test:rules` (75/75), `build`; emulátor: nový účet -> sprievodca -> tvorba rodiča, PIN, panel s dieťaťom, detail, nastavenia, zlý PIN, obnova PIN-u heslom, nový PIN, detský pohľad s rodičom aj bez, zmazanie rodiča. Konzola bez chýb.
+- Neoverené: Google obnova PIN-u (popup v tomto prehliadači nejde), vzhľad na telefóne, existujúci reálny účet s dátami.
+- Nasadenie (po súhlase): `firebase deploy --only firestore:rules`, potom hosting (`zdroj\spusti.cmd deploy`), záloha zip na plochu, overenie na webe.

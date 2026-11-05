@@ -366,6 +366,24 @@ for (let i = 0; i < 40 && st.auto && st.auto.stav !== "koniec"; i++) Auto.ovlada
 if (!st.done.includes("hory")) chyby.push("auto neoznacilo temu");
 if (st.body !== (temaDna().id === "hory" ? byId("hory").z.length * 10 + 10 : 10)) chyby.push("auto body " + st.body);
 Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
+// RODIČ (3.5): detský pohľad sa mení podľa toho, či existuje profil rodiča
+{ window.Cloud = window.Cloud || {}; const C = window.Cloud, staraD = C.deti, staraR = C.rodic, staraU = st.upravuje, staraV = st.view;
+  C.deti = C.deti || []; C.rodic = { nacitane: true, profil: null, prepotvrdene: 0 }; st.view = "ja";
+  let h = views.ja();
+  if (!h.includes("Vytvoriť účet rodiča") || !h.includes("data-rodic-novy")) chyby.push("rodic: bez rodica chyba karta Vytvoriť účet rodiča");
+  if (!h.includes(prehladRodica().slice(0, 60))) chyby.push("rodic: bez rodica chyba prehlad");
+  C.rodic.profil = { meno: "Mama", ikona: "r1", pin: "x", nastavenia: {} };
+  h = views.ja();
+  if (h.includes("Vytvoriť účet rodiča")) chyby.push("rodic: s rodicom stale ponuka vytvorenia");
+  if (!h.includes("data-deti") || h.includes('data-ucet="odhlas"')) chyby.push("rodic: karta Rodina nie je zmensena");
+  if (h.includes("Pre rodiča</h2>")) chyby.push("rodic: prehlad ostal v detskom pohlade");
+  Rodic.zamkni(); st.upravuje = { id: "x", meno: "A", vek: "mladsi", avatar: nahodnyAvatar(0), body: 0, kat: "vlasy", novy: false, potvrd: false };
+  if (brany.tvorba().includes("data-zmazat")) chyby.push("rodic: zamknuty rodic, ale je Odstranit profil");
+  Rodic.odomkni(); if (!brany.tvorba().includes("data-zmazat")) chyby.push("rodic: odomknuty rodic nevidi Odstranit profil");
+  Rodic.zamkni(); C.rodic.profil = null;
+  if (!brany.tvorba().includes("data-zmazat")) chyby.push("rodic: bez rodica chyba Odstranit profil");
+  if (!SPR_RODIC.some(k => k.id === "rodicucet" && k.ak() === true)) chyby.push("rodic: sprievodca nema ponuku uctu rodica");
+  C.deti = staraD; C.rodic = staraR; st.upravuje = staraU; st.view = staraV; }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);
