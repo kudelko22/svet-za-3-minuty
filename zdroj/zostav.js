@@ -7,7 +7,7 @@ s = s.replace(/^<title>.*<\/title>\n/, '').replace(/^<meta name="claude:viewport
 // temy.js a obrazky.js s číslom verzie: telefón tak nikdy nespojí novú appku so starým súborom z pamäte
 const verzia = (s.match(/const VERZIA_APPKY = (\d+);/) || [])[1];
 if (!verzia) throw new Error('VERZIA_APPKY sa nenašla');
-s = s.replace(/src="(temy|obrazky|misie|anglictina)\.js"/g, (m, n) => `src="${n}.js?v=${verzia}"`);
+s = s.replace(/src="(temy|obrazky|misie|anglictina|rodic-brana|rodic-panel)\.js"/g, (m, n) => `src="${n}.js?v=${verzia}"`);
 // úvodné obrázky pre iPhone a iPad (ikony/start, kreslí ich zdroj/uvod-obrazky.js): šírka a výška v bodoch, hustota pixelov
 const STARTY = [[440, 956, 3], [420, 912, 3], [402, 874, 3], [430, 932, 3], [393, 852, 3], [428, 926, 3], [390, 844, 3], [375, 812, 3], [414, 896, 3], [414, 896, 2], [414, 736, 3], [375, 667, 2], [320, 568, 2],
   [1032, 1376, 2], [1024, 1366, 2], [834, 1210, 2], [834, 1194, 2], [820, 1180, 2], [834, 1112, 2], [810, 1080, 2], [768, 1024, 2], [744, 1133, 2]];

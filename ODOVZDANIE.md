@@ -109,3 +109,20 @@ Voľné písanie je automatické pre všetkých spárovaných priateľov (pravid
 ## Vývoj: 3.0.2 (4. 11. 2026, NASADENÉ po súhlase vlastníka)
 
 Skutočná príčina prekrývania bubliniek: text správy `.msg-t` bol inline `span` s paddingom, takže pri viacriadkovom texte sa pozadia riadkov prekrývali. Opravené `display: block`. Overené na rozlome dlhých správ. Nasadené, záloha svet-za-3-minuty-3.0.2.zip na ploche.
+
+## Update 3.5, úloha A: dátový model, pravidlá, Cloud API, háčiky (nenasadené, verzia ostáva 38 / 3.0.2)
+
+Plán: `side-session-notes\...\plan-3-5.md`. Hotové a zaradené, žiadna obrazovka ani vizuál (to B a C).
+**Pozor, odchýlka od plánu:** kostry sú v koreni, nie v `zdroj/`: **`rodic-brana.js`** (B) a **`rodic-panel.js`** (C), tak ako `misie.js`, lebo `zdroj/**` je v `ignore` a na web by sa nedostali. Sú v `sw.js`, `zostav.js` (číslo verzie v URL), `test.js` a v `appka.html` ako `<script src>` pred hlavným skriptom.
+
+Pravidlá: `rodiny/{uid}/rodic/profil`, `platnyRodic()`; `nastavenia` smie mať len kľúč `hnitie` (mapa ≤ 8), `pin.hash` 16 až 128, `ikona` r1..r6. `test:rules` 75 z 75 (19 nových). Pred hostingom najprv nasadiť pravidlá (`firestore:rules`).
+
+Rozhranie (záväzné):
+- Dáta: `Cloud.rodic = { nacitane, profil: null | {meno, ikona, pin:{sol,hash,iter}, nastavenia:{hnitie:{<idDieťaťa>:bool}}, verzia}, prepotvrdene }` (onSnapshot; resetuje sa pri zmene prihlásenia). `Cloud.dieta(id)`.
+- Async API (pri chybe vyhodia `{code}`, text cez `chybaText`, ale ten je v module; v UI stačí `e.code`/vlastný text, alebo `try/catch` + toast): `Cloud.rodicVytvor({meno, ikona, pin})`, `Cloud.rodicOverPin(pin) -> bool`, `Cloud.rodicZmenPin(stary, novy)`, `Cloud.rodicPrepotvrdHeslom(heslo)` (Google účet: okno Googlu, heslo netreba), `Cloud.rodicObnovPin(novy)` (len do 5 min po potvrdení), `Cloud.rodicUloz({meno?, ikona?, nastavenia?})` (hnitie sa spája s existujúcim), `Cloud.rodicZmaz()`. PIN musí byť `^\d{4}$`. Obmedzenie pokusov (5 chýb = 30 s) nie je v API, robí ho B.
+- `Rodic` (classic skript): `odomkni()`, `zamkni()`, `jeOdomknute()` (5 min nečinnosti; každé volanie predĺži), `chod(faza, id?)` (nastaví `st.faza`, `st.rodicDieta`, `render()`), `prevezmiLokalne()` (jednorazovo `hnitie-<id>` z localStorage do cloudu). Samo sa zamkne pri `Cloud.vyber`, odhlásení, zmene prihlásenia.
+- Háčiky: `brany` dostane `RodicBrana.brany` aj `RodicPanel.views` (rodic*: fázy sa kreslia cez `renderBrana`, preto aj do `brany`; do `views` ide `RodicPanel.views` tiež). `brany.vyber` volá `RodicBrana.vyber(povodny)` (`povodny()` = pôvodný výber, premenovaný na `brany.vyberPovodny`; kostra vracia `povodny()`). Po `renderBrana` beží `RodicBrana.po()`. Klik: `if (RodicBrana.klik(b, d) || RodicPanel.klik(b, d)) return;` (len `button`, tesne pred `Misie.klik`).
+- Fázy `st.faza`: `rodicTvorba`, `rodicPin`, `rodic`, `rodicDieta`, `rodicNastavenia`. Keď profil zmizne na inom telefóne, appka zo `rodic*` prejde na `vyber`.
+- `hnitieZapnute()` nezmenené (to robí C).
+
+Overené: `test`, `test:rules`, `build` OK. Neskúšané naživo: samotné PBKDF2/Firestore volania Cloud API v prehliadači a znovuprihlásenie (nie je na to obrazovka, skúsi D/B).

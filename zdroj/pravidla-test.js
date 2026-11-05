@@ -3,7 +3,7 @@
 // Pozor: na začiatku vymaže dáta v emulátore (nie ostré dáta).
 const fs = require('fs'), path = require('path');
 const { initializeTestEnvironment, assertSucceeds, assertFails } = require('@firebase/rules-unit-testing');
-const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc, deleteField, serverTimestamp, query, orderBy, limit } = require('firebase/firestore');
+const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, deleteDoc, updateDoc, deleteField, serverTimestamp, query, orderBy, limit } = require('firebase/firestore');
 
 (async () => {
   const env = await initializeTestEnvironment({ projectId: 'demo-svet-za-3-minuty', firestore: { rules: fs.readFileSync(path.join(__dirname, '..', 'firestore.rules'), 'utf8'), host: '127.0.0.1', port: +(process.env.FIRESTORE_EMULATOR_HOST || ':8180').split(':').pop() } });
@@ -77,6 +77,29 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, updateDoc,
   await t('vypnutému sa nepíše', addDoc(rozh(fa), { od: A, n: 'sova', kedy }), false);
   { const b = writeBatch(fa); b.delete(doc(fa, 'profily', A, 'priatelia', B)); b.delete(doc(fa, 'profily', B, 'priatelia', A)); await t('A odstráni priateľa B', b.commit(), true); }
   await t('stará rodina sa nezmenila (deti nečíta cudzí)', getDocs(collection(fc, 'rodiny', 'ua', 'deti')), false);
+
+  // ---- profil rodiča (3.5) ----
+  const rp = (o = {}) => ({ meno: 'Mama', ikona: 'r2', pin: { sol: 'c29sc29sc29sc29s', hash: 'aGFzaGhhc2hoYXNoaGFzaGhhc2g=', iter: 100000 }, nastavenia: { hnitie: { aaaa11: false } }, verzia: 1, upravene: serverTimestamp(), ...o });
+  const rd = (f, u, id = 'profil') => doc(f, 'rodiny', u, 'rodic', id);
+  await t('rodič A vytvorí svoj profil', setDoc(rd(fa, 'ua'), rp()), true);
+  await t('rodič A prečíta svoj profil', getDoc(rd(fa, 'ua')), true);
+  await t('rodič A zmení profil', setDoc(rd(fa, 'ua'), rp({ meno: 'Otec', nastavenia: {} })), true);
+  await t('cudzí C nečíta profil rodiča A', getDoc(rd(fc, 'ua')), false);
+  await t('cudzí C nezapíše profil rodiča A', setDoc(rd(fc, 'ua'), rp()), false);
+  await t('cudzí C nezmaže profil rodiča A', deleteDoc(rd(fc, 'ua')), false);
+  await t('neprihlásený nečíta profil rodiča', getDoc(rd(nik, 'ua')), false);
+  await t('neprihlásený nezapíše profil rodiča', setDoc(rd(nik, 'ua'), rp()), false);
+  await t('iný dokument než profil neprejde', setDoc(rd(fa, 'ua', 'iny'), rp()), false);
+  await t('profil rodiča s e-mailom neprejde', setDoc(rd(fb, 'ub'), rp({ email: 'x@y.sk' })), false);
+  await t('zlá ikona neprejde', setDoc(rd(fb, 'ub'), rp({ ikona: 'r9' })), false);
+  await t('prázdne meno neprejde', setDoc(rd(fb, 'ub'), rp({ meno: '' })), false);
+  await t('meno nad 20 znakov neprejde', setDoc(rd(fb, 'ub'), rp({ meno: 'a'.repeat(21) })), false);
+  await t('čistý PIN namiesto hashu neprejde', setDoc(rd(fb, 'ub'), rp({ pin: { sol: 'c29sc29sc29sc29s', hash: '1234', iter: 100000 } })), false);
+  await t('PIN s cudzím poľom neprejde', setDoc(rd(fb, 'ub'), rp({ pin: { sol: 'c29sc29sc29sc29s', hash: 'aGFzaGhhc2hoYXNoaGFzaGhhc2g=', iter: 100000, pin: '1234' } })), false);
+  await t('viac než 8 prepínačov neprejde', setDoc(rd(fb, 'ub'), rp({ nastavenia: { hnitie: Object.fromEntries(Array.from({ length: 9 }, (_, i) => ['d' + i, true])) } })), false);
+  await t('nastavenia s cudzím poľom neprejdú', setDoc(rd(fb, 'ub'), rp({ nastavenia: { iny: 1 } })), false);
+  await t('profil bez času servera neprejde', setDoc(rd(fb, 'ub'), rp({ upravene: new Date() })), false);
+  await t('rodič A zmaže svoj profil', deleteDoc(rd(fa, 'ua')), true);
 
   await env.clearFirestore(); await env.cleanup();
   console.log('Pravidlá: prešlo', ok.length, 'z', ok.length + zle.length);

@@ -1174,6 +1174,8 @@ body.dm-rezim::before { display: none; }
 <script src="obrazky.js"></script>
 <script src="misie.js"></script>
 <script src="anglictina.js"></script>
+<script src="rodic-brana.js"></script>
+<script src="rodic-panel.js"></script>
 <script>
 const VERZIA_APPKY = 38; const VERZIA_NAZOV = '3.0.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
@@ -1563,6 +1565,34 @@ function noveUpravovanie(prve) {
   const body = prve ? STARY.body || 0 : 0;
   return { id: null, meno: prve ? STARY.meno : '', vek: prve ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(body), body, kat: 'vlasy', novy: true, prve, potvrd: false };
 }
+// Účet rodiča (3.5): odomknutie PIN-om je len v pamäti, samo sa zamkne po 5 minútach nečinnosti, pri zmene dieťaťa a pri odhlásení
+const Rodic = {
+  odomknute: false, do: 0, MINUT: 5,
+  odomkni() { this.odomknute = true; this.do = Date.now() + this.MINUT * 60000; },
+  zamkni() { this.odomknute = false; this.do = 0; },
+  // každé volanie počas odomknutia je „aktivita“ a predĺži čas
+  jeOdomknute() {
+    if (!this.odomknute) return false;
+    if (Date.now() > this.do) { this.zamkni(); return false; }
+    this.do = Date.now() + this.MINUT * 60000; return true;
+  },
+  // prechod na obrazovku rodiča: fázy rodicTvorba, rodicPin, rodic, rodicDieta (id dieťaťa), rodicNastavenia; aj 'vyber'
+  chod(faza, id) {
+    Hlas.stop();
+    if (id !== undefined) st.rodicDieta = id;
+    st.flow = null; st.faza = faza; render(); scrollTo(0, 0);
+  },
+  // jednorazový prenos lokálnych prepínačov vädnutia (hnitie-<dieťa>) do cloudu, ak tam ešte nie sú; lokálna kópia ostáva
+  async prevezmiLokalne() {
+    const C = window.Cloud, p = C && C.rodic.profil;
+    if (!p) return false;
+    const cloud = (p.nastavenia && p.nastavenia.hnitie) || {}, nove = {};
+    for (const d of C.deti) { const v = S.get('hnitie-' + d.id, null); if (v !== null && !(d.id in cloud)) nove[d.id] = v !== false; }
+    if (!Object.keys(nove).length) return false;
+    await C.rodicUloz({ nastavenia: { hnitie: nove } });
+    return true;
+  },
+};
 const brany = {
   nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
   bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
@@ -1585,7 +1615,8 @@ const brany = {
         ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}
       </div>${Plocha.tip()}</div>`;
   },
-  vyber: () => {
+  vyber: () => RodicBrana.vyber(brany.vyberPovodny),
+  vyberPovodny: () => {
     const C = window.Cloud, deti = C ? C.deti : [];
     return `<div class="brana"><h1 class="h1">Kto sa dnes učí?</h1>
       <div class="deti">${deti.map(d => `<button class="dieta" data-dieta="${d.id}"><span class="kruh-av" style="--bg:${d.avatar.pozadie}">${postavicka(d.avatar)}</span>
@@ -1625,6 +1656,7 @@ function avMoznosti() {
     // pri účese bez čiapky, inak by pod ňou všetky účesy vyzerali rovnako
     : `<button class="av-opt kruh-av${zamok(k, v)}" data-cena="${cenaDielu(k, v)}" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--bg:${u.avatar.pozadie}" aria-label="${v}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</button>`).join('');
 }
+Object.assign(brany, RodicBrana.brany, RodicPanel.views); // obrazky rodiča z rodic-brana.js a rodic-panel.js
 function renderBrana() {
   document.body.classList.remove('tinted');
   main.classList.add('anim');
@@ -1644,6 +1676,7 @@ function renderBrana() {
     inp.value = st.upravuje.meno;
     inp.addEventListener('input', () => { st.upravuje.meno = inp.value; });
   }
+  RodicBrana.po();
 }
 // po zmene dielu prekreslíme len náhľad a možnosti, stránka neskáče
 function obnovTvorbu() {
@@ -4204,6 +4237,7 @@ function render() {
   paintHead();
 }
 
+Object.assign(views, RodicPanel.views); // pohľady panela rodiča (vykresľujú sa cez brany, fázy rodic*)
 function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.ang = null; st.view = v; render(); window.scrollTo(0, 0); }
 
 // Lietajúca sova: ťuknutie kdekoľvek na oblohu (aj medzerník na počítači)
@@ -4234,6 +4268,7 @@ document.addEventListener('click', e => {
   if (b.id === 'snd') { Zvuk.toggle(); Hlas.stop(); paintHead(); return; }
   if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
   if (d.auto) { Auto.ovladaj(d.auto); return; }
+  if (RodicBrana.klik(b, d) || RodicPanel.klik(b, d)) return;
   if (Misie.klik(b, d) || Ang.klik(b, d)) return;
   if (d.vyber) { vyberOdznak(d.vyber, b); return; }
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra); return; }
@@ -4406,6 +4441,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
   getAuth, connectAuthEmulator, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,
+  EmailAuthProvider, reauthenticateWithCredential, reauthenticateWithPopup,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache,
@@ -4448,6 +4484,12 @@ const CHYBY = {
   'auth/cancelled-popup-request': 'Prihlásenie sa prerušilo, skúste znova.',
   'auth/unauthorized-domain': 'Na tejto adrese prihlásenie cez Google nejde. Otvorte svet-za-3-minuty.web.app.',
   'auth/operation-not-allowed': 'Tento spôsob prihlásenia ešte nie je zapnutý.',
+  'rodic/nepotvrdene': 'Najprv potvrďte heslo účtu.',
+  'rodic/zly-pin': 'PIN má mať 4 číslice.',
+  'rodic/zly-udaj': 'Údaje rodiča nie sú správne.',
+  'rodic/nie-je': 'Účet rodiča ešte nie je vytvorený.',
+  'rodic/stary-pin': 'Starý PIN nesedí.',
+  'auth/requires-recent-login': 'Najprv potvrďte heslo účtu.',
   'permission-denied': 'Cloud uloženie odmietol.',
   'unavailable': 'Cloud je teraz nedostupný, uloží sa neskôr.',
 };
@@ -4455,12 +4497,80 @@ const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.co
 const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
 const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || [], zoradene(d.kedy), d.chyby || [], d.vybrate || []]);
-let odber = null, casovac = null;
+let odber = null, odberRodic = null, casovac = null;
 // prihlásenie cez Google v appke na ploche odchádza na stránku Googlu a vracia sa späť (do 3 minút)
 let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
 
+// PIN rodiča: PBKDF2-SHA256 cez WebCrypto, v cloude je len soľ a hash (nikdy čistý PIN)
+const b64 = u8 => btoa(String.fromCharCode(...u8)), z64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+async function hashPin(pin, sol, iter = 100000) {
+  const s = sol ? z64(sol) : crypto.getRandomValues(new Uint8Array(16));
+  const kluc = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
+  const bity = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: s, iterations: iter }, kluc, 256);
+  return { sol: b64(s), hash: b64(new Uint8Array(bity)), iter };
+}
+// zápis celého profilu rodiča: zmeny sa spoja s existujúcim (meno, ikona, pin, nastavenia.hnitie)
+async function zapisRodica(zmeny) {
+  const C = Cloud, stare = C.rodic.profil;
+  if (!C.pouzivatel) throw { code: 'auth/user-not-found' };
+  if (!stare && !(zmeny.pin && zmeny.ikona)) throw { code: 'rodic/nie-je' };
+  const sn = (stare && stare.nastavenia) || {}, zn = zmeny.nastavenia || {}, n = { ...sn, ...zn };
+  if (sn.hnitie || zn.hnitie) {
+    const h = { ...(sn.hnitie || {}), ...(zn.hnitie || {}) }, ids = C.deti.map(x => x.id); // zmazané deti sa z prepínačov vyradia (najviac 8 kľúčov)
+    n.hnitie = Object.fromEntries(Object.entries(h).filter(([k]) => !ids.length || ids.includes(k)));
+  }
+  const p = { meno: zmeny.meno !== undefined ? String(zmeny.meno).trim().slice(0, 20) || 'Rodič' : stare.meno, ikona: zmeny.ikona || stare.ikona, pin: zmeny.pin || stare.pin, nastavenia: n, verzia: 1 };
+  await setDoc(doc(db, 'rodiny', C.pouzivatel.uid, 'rodic', 'profil'), { ...p, upravene: serverTimestamp() });
+  C.rodic.profil = p; C.rodic.nacitane = true;
+  return true;
+}
+
 const Cloud = {
   pouzivatel: null, deti: [], nacitane: false, chyba: '', stavUlozenia: '', ticho: false, pracuje: '',
+  // profil rodiča (rodiny/<uid>/rodic/profil), null kým ho rodič nevytvorí; prepotvrdene = čas posledného potvrdenia heslom účtu
+  rodic: { nacitane: false, profil: null, prepotvrdene: 0 },
+  dieta(id) { return this.deti.find(x => x.id === id) || null; },
+  async rodicVytvor({ meno, ikona, pin }) {
+    if (!/^\d{4}$/.test(String(pin))) throw { code: 'rodic/zly-pin' };
+    const m = String(meno || '').trim().slice(0, 20) || 'Rodič';
+    if (!/^r[1-6]$/.test(ikona)) throw { code: 'rodic/zly-udaj' };
+    return zapisRodica({ meno: m, ikona, pin: await hashPin(String(pin)), nastavenia: {} });
+  },
+  async rodicOverPin(pin) {
+    const p = this.rodic.profil;
+    if (!p || !p.pin || !/^\d{4}$/.test(String(pin))) return false;
+    return (await hashPin(String(pin), p.pin.sol, p.pin.iter)).hash === p.pin.hash;
+  },
+  async rodicZmenPin(stary, novy) {
+    if (!/^\d{4}$/.test(String(novy))) throw { code: 'rodic/zly-pin' };
+    if (!await this.rodicOverPin(stary)) throw { code: 'rodic/stary-pin' };
+    return zapisRodica({ pin: await hashPin(String(novy)) });
+  },
+  // potvrdenie heslom účtu (e-mailový účet: heslo; Google účet: okno Googlu, heslo netreba); platí 5 minút pre rodicObnovPin
+  async rodicPrepotvrdHeslom(heslo) {
+    const u = auth.currentUser;
+    if (!u) throw { code: 'auth/user-not-found' };
+    if (u.providerData.some(x => x.providerId === 'google.com')) { const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' }); await reauthenticateWithPopup(u, p); }
+    else await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, String(heslo || '')));
+    this.rodic.prepotvrdene = Date.now();
+    return true;
+  },
+  // zabudnutý PIN: nový PIN bez starého, ale len krátko po rodicPrepotvrdHeslom
+  async rodicObnovPin(novy) {
+    if (!/^\d{4}$/.test(String(novy))) throw { code: 'rodic/zly-pin' };
+    if (Date.now() - this.rodic.prepotvrdene > 300000) throw { code: 'rodic/nepotvrdene' };
+    const r = await zapisRodica({ pin: await hashPin(String(novy)) });
+    this.rodic.prepotvrdene = 0;
+    return r;
+  },
+  // zmena mena, ikony alebo nastavení (nastavenia.hnitie sa spája s existujúcimi: { nastavenia: { hnitie: { <idDieťaťa>: false } } })
+  async rodicUloz(zmeny) { return zapisRodica(zmeny || {}); },
+  async rodicZmaz() {
+    if (!this.pouzivatel) return false;
+    await deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'rodic', 'profil'));
+    this.rodic.profil = null; Rodic.zamkni();
+    return true;
+  },
   // zmena pokroku aktívneho dieťaťa: uložíme o chvíľu (viac zmien naraz = jeden zápis)
   naplanuj() {
     if (!this.pouzivatel || !st.dietaId) return;
@@ -4496,6 +4606,7 @@ const Cloud = {
         return;
       } else if (co === 'odhlas') {
         this.ulozHned();
+        Rodic.zamkni();
         await signOut(auth);
         toast('Odhlásené.');
         return;
@@ -4511,6 +4622,7 @@ const Cloud = {
     this.ulozHned();
     const d = this.deti.find(x => x.id === id);
     if (!d) return;
+    Rodic.zamkni();
     nastavAktivne(d); noveOdznaky(); S.set('aktivne', id); socStart(id);
     Object.assign(st, { flow: null, faza: 'appka', view: pohlad });
     render(); scrollTo(0, 0);
@@ -4774,6 +4886,8 @@ async function prevodStareho(u) {
 onAuthStateChanged(auth, u => {
   Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = ''; socZastav();
   if (odber) { odber(); odber = null; }
+  if (odberRodic) { odberRodic(); odberRodic = null; }
+  Cloud.rodic = { nacitane: false, profil: null, prepotvrdene: 0 }; Rodic.zamkni();
   clearTimeout(casovac); casovac = null;
   if (!u) {
     // po návrate z Googlu sa prihlásenie ešte dokončuje: neukazujeme prihlasovaciu obrazovku, aby sa neťukalo znova
@@ -4781,6 +4895,12 @@ onAuthStateChanged(auth, u => {
     render(); return;
   }
   Object.assign(st, { faza: 'nacitava', sprava: 'Prihlásené, načítavajú sa deti…' }); render();
+  odberRodic = onSnapshot(doc(db, 'rodiny', u.uid, 'rodic', 'profil'), snap => {
+    const bolo = !!Cloud.rodic.profil;
+    Cloud.rodic.profil = snap.exists() ? snap.data() : null; Cloud.rodic.nacitane = true;
+    if (bolo && !Cloud.rodic.profil) { Rodic.zamkni(); if (st.faza.startsWith('rodic')) st.faza = 'vyber'; } // zmazaný na inom telefóne
+    if (st.faza === 'vyber' || st.faza.startsWith('rodic')) render();
+  }, () => { Cloud.rodic.nacitane = true; }); // chyba (napr. pravidlá ešte nenasadené): berieme, že rodič nie je
   odber = onSnapshot(collection(db, 'rodiny', u.uid, 'deti'), { includeMetadataChanges: true }, snap => {
     const deti = snap.docs.map(x => ({ id: x.id, ...x.data() })).sort((a, b) => (a.poradie || 0) - (b.poradie || 0));
     if (!Cloud.nacitane) {

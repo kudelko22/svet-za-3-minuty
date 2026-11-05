@@ -6,7 +6,7 @@ const skript = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m)[1];
 const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
-const src = ['temy.js', 'obrazky.js', 'misie.js', 'anglictina.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
+const src = ['temy.js', 'obrazky.js', 'misie.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},

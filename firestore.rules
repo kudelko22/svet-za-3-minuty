@@ -31,6 +31,25 @@ service cloud.firestore {
       allow create, update: if jeMoj(uid) && dieta.matches('^[a-z0-9]{6,32}$') && platneDieta(request.resource.data);
     }
 
+    // ---- Profil rodiča (verzia 3.5): jeden na rodinu, PIN len ako PBKDF2 hash; nikdy sa nezverejňuje (nie je v profily, kody ani správach) ----
+    function platnyRodic(d) {
+      return d.keys().hasOnly(['meno', 'ikona', 'pin', 'nastavenia', 'verzia', 'upravene'])
+        && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
+        && d.ikona in ['r1', 'r2', 'r3', 'r4', 'r5', 'r6']
+        && d.pin is map && d.pin.keys().hasOnly(['sol', 'hash', 'iter'])
+        && d.pin.sol is string && d.pin.sol.size() >= 8 && d.pin.sol.size() <= 32
+        && d.pin.hash is string && d.pin.hash.size() >= 16 && d.pin.hash.size() <= 128
+        && d.pin.iter is int && d.pin.iter >= 1000 && d.pin.iter <= 1000000
+        && d.nastavenia is map && d.nastavenia.keys().hasOnly(['hnitie'])
+        && (!('hnitie' in d.nastavenia) || (d.nastavenia.hnitie is map && d.nastavenia.hnitie.size() <= 8))
+        && d.verzia is int
+        && d.upravene == request.time;
+    }
+    match /rodiny/{uid}/rodic/{profil} {
+      allow read, delete: if jeMoj(uid);
+      allow create, update: if jeMoj(uid) && profil == 'profil' && platnyRodic(request.resource.data);
+    }
+
     // Pokrok z verzie 5 (jedno dieťa na účet): appka ho pri prvom prihlásení prevedie na profil dieťaťa
     function platnyPokrok(d) {
       return d.keys().hasOnly(['meno', 'vek', 'body', 'done', 'fav', 'dni', 'upravene', 'verzia'])
