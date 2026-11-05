@@ -2908,37 +2908,41 @@ function zapisChybu(k, ok) {
   S.set('chyby', st.chyby);
 }
 function zapisPrebrate(id) { st.kedy = { ...st.kedy, [id]: key(new Date()) }; S.set('kedy', st.kedy); }
-function prehladHnitia() {
-  const zap = hnitieZapnute(), hn = hnStupen(), u = bodyUbudlo();
-  return `<b>Vädnutie stromu</b><p class="muted">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí na tomto zariadení.</p>
+function prehladHnitia(d = st) {
+  const id = d.id || d.dietaId, zap = hnitieZapnute(id), cloud = !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
+  // koľko dní dieťa vynechalo (po dvoch sa strom začne vädnúť), rovnako ako hnitieDni a bodyUbudlo pre aktívne dieťa
+  const body = d.body || 0, posl = [...(d.dni || [])].sort().pop();
+  const vyn = !posl ? 0 : (() => { const [y, m, dd] = posl.split('-').map(Number), n = new Date(); return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(y, m - 1, dd)) / 864e5)); })();
+  const nn = zap ? Math.max(0, vyn - 2) : 0, hn = nn >= 6 ? 3 : nn >= 3 ? 2 : nn >= 1 ? 1 : 0, u = nn ? Math.min(Math.floor(body * .4), nn * Math.max(3, Math.ceil(body * .02))) : 0;
+  return `<b>Vädnutie stromu</b><p class="muted">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí ${cloud ? 'na všetkých zariadeniach' : 'na tomto zariadení'}.</p>
     <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} hviezdičiek spí.` : 'Teraz je strom v poriadku.'}</p>
-    <button class="btn ghost" data-hnitie-prepni>${zap ? 'Vypnúť vädnutie stromu' : 'Zapnúť vädnutie stromu'}</button>`;
+    <button class="btn ghost" ${cloud ? `data-rp-hnitie="${esc(id)}"` : 'data-hnitie-prepni'}>${zap ? 'Vypnúť vädnutie stromu' : 'Zapnúť vädnutie stromu'}</button>`;
 }
-function prehladPriatelov() {
-  const So = socC();
-  if (!So || !So.nacitane) return '';
-  if (!So.zapnute) return '<b>Priatelia</b><p class="muted">Vypnutí. Zapnúť ich môžete v karte Priatelia.</p>';
+function prehladPriatelov(d = st) {
+  const So = socC(), id = d.id || d.dietaId, meno = d.meno || '', cloud = !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
+  if (!So || !So.nacitane || (id && So.pid !== id)) return '';
+  if (!So.zapnute) return '<b>Priatelia</b><p class="muted">Vypnutí. Zapnúť ich dieťa môže v karte Priatelia.</p>';
   const mena = Object.keys(So.priatelia).map(f => So.profily[f] && So.profily[f].meno).filter(Boolean);
   const spravy = Object.keys(So.spravy).flatMap(f => (So.spravy[f] || []).map(m => ({ ...m, f }))).sort((a, b) => b.kedy - a.kedy).slice(0, 6);
-  const kto = m => m.od === So.pid ? esc(st.meno) : esc((So.profily[m.f] || {}).meno || 'priateľ');
+  const kto = m => m.od === So.pid ? esc(meno) : esc((So.profily[m.f] || {}).meno || 'priateľ');
   return `<b>Priatelia (kód ${esc(So.profil.kod)})</b><p class="muted">${mena.length ? mena.map(esc).join(', ') : 'Zatiaľ žiadni.'}</p>
-    ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(st.meno)}<small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
+    ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(meno)}<small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
     <b>Voľné písanie</b><p class="muted">Dieťa môže svojim priateľom písať aj vlastný text (najviac 200 znakov). Všetko vidíte v Posledných správach. Ak nechcete, aby si písali, vypnite priateľov.</p>
-    <button class="btn ghost" data-soc-vypni>Vypnúť priateľov</button>`;
+    <button class="btn ghost" ${cloud ? 'data-rp-socvypni' : 'data-soc-vypni'}>Vypnúť priateľov</button>`;
 }
-function prehladRodica() {
+function prehladRodica(d = st) {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
   const od = key(pon), dnes = key(new Date());
-  const den = d => d === dnes ? 'dnes' : DNI[(new Date(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8)).getDay() + 6) % 7];
-  const tyzden = Object.entries(st.kedy).filter(([id, d]) => d >= od && byId(id)).sort((a, b) => a[1] < b[1] ? -1 : 1);
-  const chyby = st.chyby.map(x => { const [id, i] = x.split(':'), t = byId(id), q = t && t.z[+i]; return q && { t, q }; }).filter(Boolean).slice(-6).reverse();
+  const den = k => k === dnes ? 'dnes' : DNI[(new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8)).getDay() + 6) % 7];
+  const tyzden = Object.entries(d.kedy || {}).filter(([id, k]) => k >= od && byId(id)).sort((a, b) => a[1] < b[1] ? -1 : 1);
+  const chyby = (d.chyby || []).map(x => { const [id, i] = x.split(':'), t = byId(id), q = t && t.z[+i]; return q && { t, q }; }).filter(Boolean).slice(-6).reverse();
   return `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Pre rodiča</h2>
     <div class="card prehlad"><b>Tento týždeň prebraté</b>
-      ${tyzden.length ? `<ul>${tyzden.map(([id, d]) => `<li><span class="pr-ik">${ikKat(byId(id).k)}</span><span>${esc(byId(id).t)}</span><small>${den(d)}</small></li>`).join('')}</ul>` : '<p class="muted">Tento týždeň zatiaľ nič.</p>'}
+      ${tyzden.length ? `<ul>${tyzden.map(([id, k]) => `<li><span class="pr-ik">${ikKat(byId(id).k)}</span><span>${esc(byId(id).t)}</span><small>${den(k)}</small></li>`).join('')}</ul>` : '<p class="muted">Tento týždeň zatiaľ nič.</p>'}
       <b>Na čo sa ešte pozrieť</b>
       ${chyby.length ? `<ul>${chyby.map(c => `<li><span class="pr-ik">${ikKat(c.t.k)}</span><span>${esc(c.q.q)}<small>Správne: ${esc(c.q.a[0][1])}</small></span></li>`).join('')}</ul>` : '<p class="muted">Žiadne chyby v kvízoch. Výborne!</p>'}
-      ${prehladHnitia()}
-      ${prehladPriatelov()}
+      ${prehladHnitia(d)}
+      ${prehladPriatelov(d)}
     </div></section>`;
 }
 const views = {
@@ -3147,6 +3151,7 @@ Object.assign(views, {
 // zmena z cloudu (nová správa, žiadosť, pokrok priateľa): prekresliť bez straty rozpísaného kódu
 function socZmena() {
   socZnacka();
+  if (st.faza === 'rodicDieta') { const y = scrollY; render(); main.classList.remove('anim'); scrollTo(0, y); return; } // detail dieťaťa v paneli rodiča
   if (st.faza !== 'appka' || st.flow || st.hra || st.auto) return;
   if (st.view === 'priatel') {
     const ch = document.getElementById('chat'), So = socC();
@@ -3355,7 +3360,12 @@ const STROM_STUPNE = [
 const stromStupen = (pocet = st.dni.length) => STROM_STUPNE.reduce((a, x, i) => pocet >= x.od ? i : a, 0);
 /* Vädnutie stromu (jemné): prvý vynechaný deň sa nič nedeje; po dvoch vynechaných dňoch strom pomaly vädne, hviezdičky na odomykanie hier ubúdajú
    (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Nič sa nestráca natrvalo: po prvej téme sa všetko hneď vráti. Rodič to môže vypnúť. */
-const hnitieZapnute = () => S.get('hnitie-' + (st.dietaId || 'x'), true) !== false;
+// ak je profil rodiča, prepínač je v cloude (platí na všetkých zariadeniach); kým tam nie je, berie sa lokálny
+const hnitieZapnute = (id = st.dietaId) => {
+  const p = window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil, h = p && p.nastavenia && p.nastavenia.hnitie;
+  if (h && id in h) return h[id] !== false;
+  return S.get('hnitie-' + (id || 'x'), true) !== false;
+};
 const dniOdPoslednej = () => { if (!st.dni.length) return 0; const [y, m, d] = [...st.dni].sort().pop().split('-').map(Number), n = new Date(); return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(y, m - 1, d)) / 864e5)); };
 const hnitieDni = () => hnitieZapnute() ? Math.max(0, dniOdPoslednej() - 2) : 0;
 const hnStupen = () => { const n = hnitieDni(); return n >= 6 ? 3 : n >= 3 ? 2 : n >= 1 ? 1 : 0; };
@@ -4820,6 +4830,9 @@ Object.assign(Soc, {
   },
 });
 Cloud.soc = Soc;
+// pre panel rodiča: dieťa sa stane aktívnym (kvôli verejnému profilu) a spustia sa jeho priatelia a správy; zavri ich zastaví
+Cloud.rodicDietaOtvor = id => { const d = Cloud.dieta(id); if (!d) return false; if (st.dietaId !== id) { Cloud.ulozHned(); nastavAktivne(d); } socStart(id); return true; };
+Cloud.rodicDietaZavri = () => socZastav();
 
 function nastavAktivne(d) {
   Object.assign(st, {
