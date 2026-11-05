@@ -136,3 +136,13 @@ Hotové v **`rodic-brana.js`** (v koreni, nie v `zdroj/`, tak ako to nechala A);
 - Ostatné klik handlery: `data-rodic-ikona`, `data-rodic-dalej`, `data-rodic-spat`, `data-rodic-over`, `data-pin-cislo`, `data-pin-zrus`, `data-rodic-zabudol`.
 Overené na emulátore: vytvorenie rodiča, zlé PIN-y, pauza, zabudnutý PIN so zlým aj správnym heslom, nový PIN, vstup. `test` a `build` OK. Neskúšané: Google variant obnovy PIN-u (popup), telefón/úzka obrazovka okrem krátkeho pohľadu.
 Poznámka pre D: ak chce `tvorba`/`ja` posielať na vytvorenie rodiča, stačí `Rodic.chod('rodicTvorba')`.
+
+## Update 3.5, úloha C: panel rodiča (nenasadené, verzia ostáva)
+
+Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
+- `RodicPanel.views.rodic` (karty detí: avatar, body, témy tento týždeň, séria, chyby; klik -> detail), `.rodicDieta` (`prehladRodica(d)`), `.rodicNastavenia` (zmena PIN-u, e-mail, odhlásiť, pridať/odstrániť dieťa, vädnutie stromu pre každé dieťa, odkaz na priateľov dieťaťa, hlas, plocha, zmazať profil rodiča, verzia). Tlačidlá Zamknúť (zamkne a ide na `rodicPin`) a Späť na výber (zamkne a ide na `vyber`). Zamknuté alebo bez profilu = presmerovanie (view aj klik). Klik handlery `data-rp-*`.
+- `prehladHnitia(d)`, `prehladPriatelov(d)`, `prehladRodica(d)` berú dieťa (predvolene `st`). Ak je profil rodiča, tlačidlá v nich majú `data-rp-hnitie` / `data-rp-socvypni`, inak staré `data-hnitie-prepni` / `data-soc-vypni`.
+- `hnitieZapnute(id = st.dietaId)` čítá `Cloud.rodic.profil.nastavenia.hnitie[id]` (ak kľúč existuje), inak localStorage. `Rodic.prevezmiLokalne()` sa volá raz pri prvom otvorení panela.
+- Dotyky mimo môjho rozsahu (malé): `Cloud.rodicDietaOtvor(id)` / `Cloud.rodicDietaZavri()` za `Cloud.soc = Soc` (`socStart`/`nastavAktivne` sú v module, z `rodic-panel.js` nedostupné; otvor nastaví dieťa ako aktívne `st`, lebo `socData`/`socUlozProfil` píšu verejný profil podľa `st`), a riadok v `socZmena()` (v detaile dieťaťa prekreslí pohľad).
+- Overené: `test`, `build` OK a dočasný test (zmazaný) s kartami, detailom, nastaveniami, prepínačom vädnutia a zamknutím. **Neskúšané vizuálne**: vstavaný prehliadač odmietol adresu 127.0.0.1, emulátor 5050 už bežal v inej session. Chýba kontrola vzhľadu (štýly `rp-*` sú v `rodic-panel.js`), PBKDF2 zmeny PIN-u naživo a pridanie/odstránenie dieťaťa naživo.
+- Nie je: samostatné „vypnúť priateľov“ v nastaveniach (je v prehľade dieťaťa), blok RODIČ v `test.js` (D).
