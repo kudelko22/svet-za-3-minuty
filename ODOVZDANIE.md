@@ -201,3 +201,9 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Zmizla len bublina so sovičkou dole na Domove (text duplikoval Režim do auta; sovička ostáva v témach a v oknách).
 - Nič sa nezmazalo: oblasti a kategórie sú aj v Témach, kvízy ostali, hry a odznaky nezmenené. Kroky sprievodcu majú cieľ `.hero`, `.tyzden`, `.auto-karta`, `.acts` (stále existujú), len ich poradie na obrazovke je iné než poradie krokov.
 - Overené: `test`, `build`, emulátor na šírke 390 px (poradie, výšky, bez vodorovného posunu). Neoverené: tablet, šírka 360, ťažký kvíz a výzva vizuálne (starší vek), tmavý stav „Dnes hotovo“; snímky obrazovky v paneli boli nespoľahlivé. V konzole len 404 na nejaký zdroj (emulátor), nie z tejto zmeny.
+
+## Priateľov zapína a vypína len rodič (NENASADENÉ, bez zvýšenia verzie)
+
+- `zdroj/appka.html`: v karte Priatelia už nie je tlačidlo „Zapnúť priateľov“, len vysvetlenie „Priateľov zapína rodič“ (bez rodiča s ponukou „Vytvoriť účet rodiča“). Zmazané obslužné vetvy `socZapni` a `socVypni`. `prehladPriatelov`: s rodičom tlačidlá len v paneli rodiča (nové `data-rp-soczapni` v `rodic-panel.js`), bez rodiča len text a „Vytvoriť účet rodiča“. Existujúci zapnutí priatelia ostali, nič sa nemazalo.
+- Test v `zdroj/test.js` (blok „priatelia: …“). Overené `test`, `build`; emulátor neskúšaný.
+- Obchádzka: `firestore.rules` nerozlíšia dieťa od rodiča (obaja sú prihlásení účtom rodiny), preto je to len v rozhraní. Dieťa technicky vie zmeniť `profily/{id}.zapnute` cez konzolu prehliadača alebo ak rodič zámok panelu nechá odomknutý. Pravidlá sa nemenili.

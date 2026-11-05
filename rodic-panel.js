@@ -85,7 +85,7 @@ const RodicPanel = (() => {
           <p class="muted">Ak dieťa dlho nehrá, jeho strom múdrosti pomaly vädne. Platí na všetkých zariadeniach.</p>
           ${C.deti.map(d => { const z = hnitieZapnute(d.id); return `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ${z ? 'blue' : 'ghost'}" data-rp-hnitie="${esc(d.id)}" aria-pressed="${z}">${z ? 'Zapnuté' : 'Vypnuté'}</button></div>`; }).join('')}</section>
         <section class="card prof"><span class="lbl">Priatelia</span>
-          <p class="muted">Priateľov a správy každého dieťaťa vidíte v jeho prehľade. Tam ich môžete aj vypnúť.</p>
+          <p class="muted">Priateľov a správy každého dieťaťa vidíte v jeho prehľade. Tam ich môžete aj zapnúť alebo vypnúť.</p>
           ${C.deti.map(d => `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ghost" data-rp-dieta="${esc(d.id)}">Prehľad</button></div>`).join('')}</section>
         <section class="card prof"><span class="lbl">${ii(IK.bublina)} Hlas na čítanie</span><div id="hlasy">${hlasyHtml()}</div></section>
         ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}
@@ -123,6 +123,9 @@ const RodicPanel = (() => {
     else if (d.rpHnitie) {
       const id = d.rpHnitie, ted = hnitieZapnute(id);
       C.rodicUloz({ nastavenia: { hnitie: { [id]: !ted } } }).then(() => { Zvuk.play('tap'); toast(ted ? 'Vädnutie stromu je vypnuté.' : 'Vädnutie stromu je zapnuté.'); if (st.faza.startsWith('rodic')) render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
+    }
+    else if (d.rpSoczapni !== undefined) {
+      if (C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); toast('Priatelia sú zapnutí.'); render(); });
     }
     else if (d.rpSocvypni !== undefined) {
       if (C.soc && confirm('Vypnúť priateľov pre ' + (C.dieta(st.rodicDieta) || {}).meno + '? Kód prestane platiť a priatelia nebudú môcť posielať správy.')) socAkcia(C.soc.vypni(), () => { toast('Priatelia sú vypnutí.'); render(); });
