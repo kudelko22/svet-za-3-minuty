@@ -209,3 +209,9 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Oprava v `Ang` (`zdroj/appka.html`): `Ang.uprav()` len prepne triedy `ok`/`bad` a `disabled` na tlačidlách, pokrok a vymení pätičku (`Ang.pata()`: reakcia, vysvetlenie, Ďalej). Farby sa menia cez CSS `transition` na `.ans`. `Ang.dalsia()` pred ďalšou otázkou krátko (160 ms) vyblednie `main.ang-mizne`, potom `render()`. Pri `prefers-reduced-motion` ide hneď.
 - Body, hviezdičky a postup nezmenené. V `test.js` je `matchMedia` pre reduced-motion `true`, aby test (synchrónny) nečakal na časovač.
 - Overené: `test`, `build`, v prehliadači: po zlej aj správnej odpovedi ostal ten istý uzol otázky (bez prekreslenia), objavila sa reakcia/vysvetlenie/Ďalej, Ďalej prešiel na 2. otázku. Neoverené: pohľad očami na živej animácii, telefón.
+
+## Priateľov zapína a vypína len rodič (NENASADENÉ, bez zvýšenia verzie)
+
+- `zdroj/appka.html`: v karte Priatelia už nie je tlačidlo „Zapnúť priateľov“, len vysvetlenie „Priateľov zapína rodič“ (bez rodiča s ponukou „Vytvoriť účet rodiča“). Zmazané obslužné vetvy `socZapni` a `socVypni`. `prehladPriatelov`: s rodičom tlačidlá len v paneli rodiča (nové `data-rp-soczapni` v `rodic-panel.js`), bez rodiča len text a „Vytvoriť účet rodiča“. Existujúci zapnutí priatelia ostali, nič sa nemazalo.
+- Test v `zdroj/test.js` (blok „priatelia: …“). Overené `test`, `build`; emulátor neskúšaný.
+- Obchádzka: `firestore.rules` nerozlíšia dieťa od rodiča (obaja sú prihlásení účtom rodiny), preto je to len v rozhraní. Dieťa technicky vie zmeniť `profily/{id}.zapnute` cez konzolu prehliadača alebo ak rodič zámok panelu nechá odomknutý. Pravidlá sa nemenili.

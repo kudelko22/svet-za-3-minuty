@@ -269,7 +269,20 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   st.priatel = "f1"; st.view = "priatel"; render(); socZmena(); if (!chatHtml("f1").includes("msg moja") || !chatHtml("f1").includes("Ahoj!")) chyby.push("chat");
   for (const tab of ["spravy", "rebricek", "pridat"]) { st.socTab = tab; st.view = "priatelia"; render(); } st.view = "priatelProfil"; render();
   if (!nahladSpravy("f1").includes("Ty: Ahoj!") && !nahladSpravy("f1").includes("nálepka")) chyby.push("nahlad spravy " + nahladSpravy("f1"));
-  if (!prehladPriatelov().includes("SOVA-K7M2")) chyby.push("prehlad priatelov"); st.view = "ja"; render();
+  if (!prehladPriatelov().includes("SOVA-K7M2")) chyby.push("prehlad priatelov");
+  { const pH = prehladPriatelov(), rodicPred = window.Cloud.rodic;
+    if (pH.includes("data-soc-vypni") || pH.includes("data-rp-socvypni") || !pH.includes("data-rodic-novy")) chyby.push("priatelia: bez rodica sa da vypnut");
+    window.Cloud.rodic = { profil: { pin: 1 } };
+    if (!prehladPriatelov().includes("data-rp-socvypni")) chyby.push("priatelia: rodic nema vypnutie");
+    So.zapnute = false; st.view = "priatelia"; render();
+    const vH = views.priatelia();
+    if (vH.includes("data-soc-zapni") || vH.includes("data-rp-soczapni") || vH.includes("data-rodic-novy") || !vH.includes("zapína rodič")) chyby.push("priatelia: dieta s rodicom vidi zapnutie");
+    if (!prehladPriatelov().includes("data-rp-soczapni")) chyby.push("priatelia: rodic nema zapnutie");
+    window.Cloud.rodic = rodicPred || { profil: null };
+    const bH = views.priatelia();
+    if (bH.includes("data-soc-zapni") || !bH.includes("data-rodic-novy")) chyby.push("priatelia: bez rodica chyba ponuka ucta rodica");
+    So.zapnute = true; }
+  st.view = "ja"; render();
   Object.assign(st, zal); window.Cloud = undefined; }
 /* V30_TEST */
 { Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "ja" }); render();

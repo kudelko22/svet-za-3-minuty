@@ -2992,14 +2992,16 @@ function prehladHnitia(d = st) {
 function prehladPriatelov(d = st) {
   const So = socC(), id = d.id || d.dietaId, meno = d.meno || '', cloud = !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
   if (!So || !So.nacitane || (id && So.pid !== id)) return '';
-  if (!So.zapnute) return '<b>Priatelia</b><p class="muted">Vypnutí. Zapnúť ich dieťa môže v karte Priatelia.</p>';
+  if (!So.zapnute) return cloud
+    ? '<b>Priatelia</b><p class="muted">Vypnutí. Zapnúť ich môžete tu.</p><button class="btn blue" data-rp-soczapni>Zapnúť priateľov</button>'
+    : '<b>Priatelia</b><p class="muted">Vypnutí. Priateľov zapína rodič, najprv si vytvorte účet rodiča.</p><button class="btn blue" data-rodic-novy>Vytvoriť účet rodiča</button>';
   const mena = Object.keys(So.priatelia).map(f => So.profily[f] && So.profily[f].meno).filter(Boolean);
   const spravy = Object.keys(So.spravy).flatMap(f => (So.spravy[f] || []).map(m => ({ ...m, f }))).sort((a, b) => b.kedy - a.kedy).slice(0, 6);
   const kto = m => m.od === So.pid ? esc(meno) : esc((So.profily[m.f] || {}).meno || 'priateľ');
   return `<b>Priatelia (kód ${esc(So.profil.kod)})</b><p class="muted">${mena.length ? mena.map(esc).join(', ') : 'Zatiaľ žiadni.'}</p>
     ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(meno)}<small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
     <b>Voľné písanie</b><p class="muted">Dieťa môže svojim priateľom písať aj vlastný text (najviac 200 znakov). Všetko vidíte v Posledných správach. Ak nechcete, aby si písali, vypnite priateľov.</p>
-    <button class="btn ghost" ${cloud ? 'data-rp-socvypni' : 'data-soc-vypni'}>Vypnúť priateľov</button>`;
+    ${cloud ? '<button class="btn ghost" data-rp-socvypni>Vypnúť priateľov</button>' : '<p class="muted">Zapnúť alebo vypnúť priateľov môže len rodič s účtom rodiča.</p><button class="btn blue" data-rodic-novy>Vytvoriť účet rodiča</button>'}`;
 }
 const maRodica = () => !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
 function prehladRodica(d = st) {
@@ -3173,8 +3175,9 @@ Object.assign(views, {
     if (!So.zapnute) return `<h1 class="h1">Priatelia</h1>
       <section class="card soc-intro">${owl('hi')}<div><span class="lbl">${ii(IK.rodina)} Pre rodiča</span>
         <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
-        <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidíte v profile v časti Pre rodiča a dá sa to kedykoľvek vypnúť.</p>
-        <p class="muted">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p><button class="btn wide cta" data-soc-zapni>Zapnúť priateľov</button></div></section>`;
+        <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidí rodič v paneli rodiča a dá sa to kedykoľvek vypnúť.</p>
+        <p><b>Priateľov zapína rodič.</b> ${maRodica() ? 'Poproste rodiča, nech ich zapne vo svojom paneli.' : 'Rodič si najprv vytvorí účet rodiča a v ňom ich zapne.'}</p>
+        <p class="muted">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p>${maRodica() ? '' : '<button class="btn wide cta" data-rodic-novy>Vytvoriť účet rodiča</button>'}</div></section>`;
     const tab = st.socTab || 'spravy', caka = S.get('soc-caka-' + So.pid, []);
     const posl = f => ((So.spravy[f] || []).slice(-1)[0] || {}).kedy || 0;
     const priatelia = Object.keys(So.priatelia).filter(f => So.profily[f]).sort((a, b) => posl(b) - posl(a) || So.profily[a].meno.localeCompare(So.profily[b].meno));
@@ -4486,10 +4489,8 @@ document.addEventListener('click', e => {
   if (d.start) startTema(d.start);
   else if (d.go) { Zvuk.play('whoosh'); go(d.go); }
   else if (d.sprievodca !== undefined) Sprievodca.start();
-  else if (d.socZapni !== undefined) { const C = window.Cloud; if (C && C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); FX.burst(innerWidth / 2, innerHeight / 3, 24, ['star', 'dot']); toast('Priatelia sú zapnutí!'); }); }
   else if (d.hnitiePrepni !== undefined) { S.set('hnitie-' + (st.dietaId || 'x'), !hnitieZapnute()); Zvuk.play('tap'); toast(hnitieZapnute() ? 'Vädnutie stromu je zapnuté.' : 'Vädnutie stromu je vypnuté.'); render(); }
   else if (d.socPisanie !== undefined) { const C = window.Cloud, zap = d.socPisanie === '1'; if (C && C.soc && (!zap || confirm('Zapnúť voľné písanie pre ' + st.meno + '? Dieťa bude môcť priateľom písať ľubovoľný text. Uvidia ho len priatelia, ktorým to rodič tiež zapol, a vy ho uvidíte v Posledných správach.'))) socAkcia(C.soc.pisanie(zap), () => { toast(zap ? 'Voľné písanie je zapnuté.' : 'Voľné písanie je vypnuté.'); render(); }); }
-  else if (d.socVypni !== undefined) { const C = window.Cloud; if (C && C.soc && confirm('Vypnúť priateľov pre ' + st.meno + '? Kód prestane platiť a priatelia nebudú môcť posielať správy.')) socAkcia(C.soc.vypni(), () => { toast('Priatelia sú vypnutí.'); render(); }); }
   else if (d.socZdielaj !== undefined) {
     const So = socC(), text = 'Pridaj si ma v appke Svet za 3 minúty (svet-za-3-minuty.web.app). Môj kód priateľa: ' + So.profil.kod;
     if (navigator.share) navigator.share({ text }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => toast('Kód je skopírovaný.'), () => toast(So.profil.kod));
