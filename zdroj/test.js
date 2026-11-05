@@ -98,6 +98,14 @@ for (const v of ['domov','temy','hry','odznaky','ja','misia','anglictina']) { st
   if (!st.ang.koniec || st.body <= pred || !Ang.splnenaDnes() || !st.odznaky.includes("ang1")) throw new Error("ang: koniec/body/odznak");
   const po = st.body; A({ angStart: "" }); for (let i = 0; i < 6; i++) { A({ angVol: String(st.ang.qs[st.ang.i].s) }); A({ angDalej: "" }); }
   if (st.body !== po) throw new Error("ang: body dvakrat");
+  for (const vek of ["mladsi", "starsi"]) { st.vek = vek; for (const g of Object.keys(ANG_SKUPINY)) for (const ex of [0, 1, 2]) {
+    const qs = Ang.otazky(20100, ex, g); if (qs.length !== 6) throw new Error("ang skupina: pocet " + g);
+    for (const q of qs) if (q.s < 0 || q.o.length !== 3 || new Set(q.o).size !== 3) throw new Error("ang skupina: otazka " + g);
+  } }
+  st.vek = "mladsi";
+  { const pred2 = st.body; st.view = "anglictina"; A({ angSkup: "zvierata" }); if (!st.ang || st.ang.skup !== "zvierata" || !st.ang.nahliad) throw new Error("ang skupina: start");
+    for (let i = 0; i < 6; i++) { A({ angVol: String(st.ang.qs[st.ang.i].s) }); A({ angDalej: "" }); }
+    if (st.body !== pred2 || !Ang.data().skup.zvierata) throw new Error("ang skupina: koniec"); st.ang = null; render(); }
   A({ angSpat: "" }); render(); go("domov"); go("anglictina"); go("domov");
 }
 const chyby = [];

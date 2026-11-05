@@ -163,3 +163,8 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - `RodicVyzva` v `zdroj/appka.html`: pri účte bez rodiča (`Cloud.rodic.nacitane`, bez profilu) sa na Domove raz za spustenie ukáže okno „Vytvor si účet rodiča“ (po Novinkách, nikdy počas hry, kvízu, sprievodcu). „Vytvoriť účet rodiča“ -> `rodicTvorba`, „Neskôr“ -> `S` kľúč `rodic-neskor` na 3 dni.
 - `VERZIA_APPKY` 40, `VERZIA_NAZOV` 3.5.1, `NOVINKY`, cache `svet3-v4`, malé testy v bloku RODIČ.
 - Overené: `test`, `build`, emulátor (okno sa ukáže, obe tlačidlá fungujú, odloženie drží).
+
+## 3.6 – úloha Angličtina (karta a rozklikávacie kvízy)
+- Domov: karta „Angličtina na každý deň“ je väčšia, farebná, hojdá sa, má tlačidlo a stav „Dnes hotovo / Dnes ešte nie“.
+- Pohľad Angličtina: mriežka kariet s postupným nábehom (denný kvízik, 12 skupín slov z `ANG_SKUPINY`, pôvodné lekcie). Skupinový kvíz = `Ang.otazky(den, extra, skupina)`, vždy bez bodov, hotovosť sa ukladá do `ang-<dieťa>.skup`. Test pokrýva všetky skupiny a oba vekové stupne.
+- Súbor `anglictina.js` nezmenený. Verzia nezvýšená, nenasadené. Nevyskúšané očami na emulátore (len `test` a `build`).
