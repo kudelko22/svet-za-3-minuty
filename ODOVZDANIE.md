@@ -163,3 +163,13 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - `RodicVyzva` v `zdroj/appka.html`: pri účte bez rodiča (`Cloud.rodic.nacitane`, bez profilu) sa na Domove raz za spustenie ukáže okno „Vytvor si účet rodiča“ (po Novinkách, nikdy počas hry, kvízu, sprievodcu). „Vytvoriť účet rodiča“ -> `rodicTvorba`, „Neskôr“ -> `S` kľúč `rodic-neskor` na 3 dni.
 - `VERZIA_APPKY` 40, `VERZIA_NAZOV` 3.5.1, `NOVINKY`, cache `svet3-v4`, malé testy v bloku RODIČ.
 - Overené: `test`, `build`, emulátor (okno sa ukáže, obe tlačidlá fungujú, odloženie drží).
+
+## Update 3.6, čistenie profilu `ja` (NENASADENÉ, verzia ostáva 3.5.1)
+
+Zmeny len v `views.ja` v `zdroj/appka.html` (+ krok sprievodcu, README):
+- Odstránená karta „Hlas na čítanie“ z profilu (hlas ostáva v paneli rodiča, funkcie `hlasyHtml`, `data-hlas` a `Hlas` ostali, používa ich panel a čítanie tém).
+- Karta „Zvuky“ sa ukazuje len na iPhone/iPad (tam je potrebná voľba Test 1/Test 2); inde zmizla (bola to len technická skúška a diagnostika).
+- S rodičom: karta Rodina je len „Zmeniť dieťa“, zmizlo „Pridať appku na plochu“ a riadok s verziou a cloudom (to má panel rodiča). Licencia OpenMoji ostala.
+- Bez rodiča: ostáva účet, stav uloženia, Zmeniť dieťa, Odhlásiť sa, Vytvoriť účet rodiča, Pridať na plochu, verzia, prehľad „Pre rodiča“.
+- Vymazaný krok sprievodcu „Čítanie nahlas“; krok o rodine bez zmienky o odhlásení a ploche.
+- Otvorené: bez rodiča sa už nedá zmeniť hlas (zmena len v paneli rodiča); skúška zvuku mimo iOS zmizla; vizuálne na emulátore neskúšané (`test` a `build` OK).

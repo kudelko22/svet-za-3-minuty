@@ -3073,23 +3073,20 @@ const views = {
       <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
         ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ${ii(IK.srdcePrazdne)} a nájdeš ju tu.</span></div>`}
       </section>
-      <section class="card prof">
+      ${Zvuk.ios ? `<section class="card prof">
         <span class="lbl">Zvuky</span>
-        ${Zvuk.ios ? `<div class="tests"><button class="btn blue" data-test-zvuk="web">${ii(IK.repro)} Test 1</button><button class="btn" data-test-zvuk="subor">${ii(IK.repro)} Test 2</button></div>
+        <div class="tests"><button class="btn blue" data-test-zvuk="web">${ii(IK.repro)} Test 1</button><button class="btn" data-test-zvuk="subor">${ii(IK.repro)} Test 2</button></div>
         <p class="muted">Ťuknite na oba testy a vyberte ten, ktorý počujete:</p>
-        <div class="seg2"><button data-sposob="web" aria-pressed="${Zvuk.sposob === 'web'}">Počujem Test 1</button><button data-sposob="subor" aria-pressed="${Zvuk.sposob === 'subor'}">Počujem Test 2</button></div>`
-        : `<button class="btn blue" data-test-zvuk="web">${ii(IK.repro)} Vyskúšať zvuk</button>`}
-        <p class="muted">Keď nič nepočuť, zvýšte hlasitosť a skontrolujte, či zvuky nie sú vypnuté reproduktorom hore.</p>
+        <div class="seg2"><button data-sposob="web" aria-pressed="${Zvuk.sposob === 'web'}">Počujem Test 1</button><button data-sposob="subor" aria-pressed="${Zvuk.sposob === 'subor'}">Počujem Test 2</button></div>
         <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
-      </section>
-      <section class="card prof"><span class="lbl">${ii(IK.bublina)} Hlas na čítanie</span><div id="hlasy">${hlasyHtml()}</div></section>
+      </section>` : ''}
       <section class="card prof"><span class="lbl">${ii(IK.rodina)} Rodina</span>
         ${maRodica() ? `<div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button></div>` : `<p class="muted">Účet: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
         <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
-        <button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button>`}
-        ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}
+        <button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button>
+        ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}`}
       </section>
-      <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
+      <p class="muted" style="font-size:.85rem">${maRodica() ? '' : `Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>`}Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
   },
 };
 
@@ -3960,8 +3957,7 @@ const SPR_RODIC = [
   { v: 'ja', cil: '.prof-top', n: 'Profil dieťaťa', nalada: 'happy', p: 'Postavička, meno a vek. Ťuknutím na postavičku ju dieťa prezlečie.' },
   { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky a odmeny', p: 'Za úspechy prichádzajú odznaky a za body nové veci pre postavičku.' },
   { v: 'ja', ak: () => !maRodica(), cil: () => (x => x && x.closest ? x.closest('section') : null)([...document.querySelectorAll('main .h2')].find(x => x.textContent.trim() === 'Pre rodiča')), n: 'Pre rodiča', p: 'Tu vidíte, čo dieťa tento týždeň prebralo a v ktorých otázkach sa pomýlilo, aby ste sa o nich mohli porozprávať.' },
-  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('#hlasy')), n: 'Čítanie nahlas', p: 'Tu vyberiete hlas, ktorým appka číta témy a otázky. Hneď nad tým je skúška zvuku.' },
-  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('main [data-deti]')), n: 'Rodina a ďalšie deti', p: 'Cez Zmeniť dieťa pridáte ďalšie dieťa alebo prepnete medzi deťmi, prepnúť sa dá aj ťuknutím na postavičku hore. Je tu aj odhlásenie a pridanie appky na plochu.' },
+  { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('main [data-deti]')), n: 'Rodina a ďalšie deti', p: 'Cez Zmeniť dieťa pridáte ďalšie dieťa alebo prepnete medzi deťmi, prepnúť sa dá aj ťuknutím na postavičku hore.' },
   { v: 'ja', cil: '.spr-karta', n: 'Sprievodca pre dieťa', p: 'Keď bude chcieť, Sovička ukáže appku aj dieťaťu, jeho slovami. Spustíte ho tu.' },
   { id: 'rodicucet', ak: () => !maRodica(), n: 'Účet rodiča', nalada: 'happy', tl: [['rodicucet', 'Vytvoriť účet rodiča →', 1], ['dalej', 'Neskôr']], p: 'Nastavenia, prehľady a mazanie profilov nemajú byť deťom na dosah. Vytvorte si účet rodiča s vlastným PIN-om (4 číslice), zaberie to chvíľku.' },
   { id: 'koniec', n: 'Všetko pripravené!', nalada: 'cheer', oslava: true, tl: [['dieta', 'Ukázať sprievodcu dieťaťu', 1], ['tema', 'Poďme na tému dňa →']], p: 'Teraz už viete všetko. Ukážte appku aj dieťaťu, alebo rovno začnite tému dňa.' },
