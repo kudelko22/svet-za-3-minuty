@@ -376,6 +376,9 @@ body.hra-rezim .blobs { display: none; } /* počas hry pozadie stojí, hra bež�
 .ans:disabled { cursor: default; }
 .ans .em.pismeno { font: 700 1.8rem/1 var(--f-display); }
 .ans:disabled:not(.ok):not(.bad) > * { opacity: .45; }
+.ans { transition: background-color .25s ease, opacity .25s ease, transform .1s; }
+.ans > * { transition: opacity .25s ease; }
+main.ang-mizne { opacity: 0; transform: translateY(-6px); transition: opacity .16s ease, transform .16s ease; }
 .ans.ok { background: var(--ok-bg); animation: okPop .5s var(--spring); }
 .ans.bad { background: var(--bad-bg); }
 .ans.ok::after, .ans.bad::after { position: absolute; right: -10px; top: -12px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; border: 3px solid var(--ink); color: #fff; text-shadow: 0 1.5px 0 var(--ink); font: 700 1.15rem/1 var(--f-display); animation: pop .45s var(--spring) both; }
@@ -3836,8 +3839,35 @@ const Ang = {
     return `${top}${pokrok}${q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
       <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
       <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:#FFE0EC"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
-      ${q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''}
+      ${this.pata(q, o)}`;
+  },
+  pata(q, o) {
+    return `${q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''}
       ${q.spravne ? `<div class="card ang-vys nova"><small class="lbl-mala">Vysvetlenie</small><p>${esc(o.vys)}</p></div><button class="btn wide cta" data-ang-dalej>${q.i === q.qs.length - 1 ? 'Dokončiť' : 'Ďalej'}</button>` : ''}`;
+  },
+  /* Vyhodnotenie bez prekreslenia obrazovky: zmenia sa len odpovede, pokrok a pätička (reakcia, vysvetlenie, tlačidlo) */
+  uprav() {
+    const q = st.ang, o = q.qs[q.i], ans = main.querySelector('.ang-ans');
+    if (!ans) { render(); return; }
+    ans.querySelectorAll('[data-ang-vol]').forEach(b => {
+      const i = +b.dataset.angVol, ok = q.spravne && i === o.s, bad = !ok && q.zle.includes(i);
+      b.classList.toggle('ok', ok); b.classList.toggle('bad', bad);
+      b.disabled = q.spravne || q.zle.includes(i);
+    });
+    main.querySelectorAll('.ang-pokrok i').forEach((el, i) => { el.className = i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''; });
+    main.querySelectorAll('.misia-reakcia, .ang-vys, [data-ang-dalej]').forEach(el => el.remove());
+    ans.insertAdjacentHTML('afterend', this.pata(q, o));
+  },
+  /* Ďalšia otázka: krátke vyblednutie, potom nový obsah (pri obmedzenom pohybe hneď) */
+  dalsia() {
+    const q = st.ang, fn = () => {
+      if (st.ang !== q) return;
+      if (q.i >= q.qs.length - 1) { this.dokonci(); return; }
+      q.i++; q.zle = []; q.spravne = false; Zvuk.play('pop'); main.classList.remove('ang-mizne'); render(); scrollTo(0, 0);
+    };
+    if (tiche) { fn(); return; }
+    if (q.cakaj) return;
+    q.cakaj = true; main.classList.add('ang-mizne'); setTimeout(() => { q.cakaj = false; fn(); }, 160);
   },
   klik(b, d) {
     const q = st.ang;
@@ -3848,12 +3878,9 @@ const Ang = {
     if (d.angVol !== undefined) {
       const i = +d.angVol, o = q.qs[q.i];
       if (i === o.s) { q.spravne = true; Zvuk.play('star'); } else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); }
-      render(); return true;
+      this.uprav(); return true;
     }
-    if (d.angDalej !== undefined) {
-      if (q.i >= q.qs.length - 1) { this.dokonci(); return true; }
-      q.i++; q.zle = []; q.spravne = false; Zvuk.play('pop'); render(); scrollTo(0, 0); return true;
-    }
+    if (d.angDalej !== undefined) { this.dalsia(); return true; }
     return false;
   },
 };
