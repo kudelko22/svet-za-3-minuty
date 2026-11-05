@@ -40,7 +40,7 @@ Appka sa potom otvára cez celú obrazovku ako bežná aplikácia a po prvom pri
 - Na konci appka pripíše body, oznámi nové odznaky a o 10 sekúnd sama spustí ďalšiu neprebratú tému
   (dá sa vypnúť prepínačom).
 - Obrazovka počas čítania nezhasne. Keď sa appka schová (iná aplikácia, zamknutý telefón), čítanie sa pozastaví.
-- Hlas: appka vyberie najkrajší slovenský hlas v telefóne. V profile (Ja → Hlas na čítanie) sa dá vybrať iný
+- Hlas: appka vyberie najkrajší slovenský hlas v telefóne. V paneli rodiča (Nastavenia → Hlas na čítanie) sa dá vybrať iný
   a appka poradí, ako si stiahnuť krajší hlas zadarmo (iPhone: Laura vylepšený).
 
 ## Hry

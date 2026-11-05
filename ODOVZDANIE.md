@@ -175,3 +175,13 @@ Súbor `rodic-panel.js` (v koreni) + malý refaktor v `zdroj/appka.html`.
 - Domov: karta „Angličtina na každý deň“ je väčšia, farebná, hojdá sa, má tlačidlo a stav „Dnes hotovo / Dnes ešte nie“.
 - Pohľad Angličtina: mriežka kariet s postupným nábehom (denný kvízik, 12 skupín slov z `ANG_SKUPINY`, pôvodné lekcie). Skupinový kvíz = `Ang.otazky(den, extra, skupina)`, vždy bez bodov, hotovosť sa ukladá do `ang-<dieťa>.skup`. Test pokrýva všetky skupiny a oba vekové stupne.
 - Súbor `anglictina.js` nezmenený. Verzia nezvýšená, nenasadené. Nevyskúšané očami na emulátore (len `test` a `build`).
+
+## Update 3.6, čistenie profilu `ja` (NENASADENÉ, verzia ostáva 3.5.1)
+
+Zmeny len v `views.ja` v `zdroj/appka.html` (+ krok sprievodcu, README):
+- Odstránená karta „Hlas na čítanie“ z profilu (hlas ostáva v paneli rodiča, funkcie `hlasyHtml`, `data-hlas` a `Hlas` ostali, používa ich panel a čítanie tém).
+- Karta „Zvuky“ sa ukazuje len na iPhone/iPad (tam je potrebná voľba Test 1/Test 2); inde zmizla (bola to len technická skúška a diagnostika).
+- S rodičom: karta Rodina je len „Zmeniť dieťa“, zmizlo „Pridať appku na plochu“ a riadok s verziou a cloudom (to má panel rodiča). Licencia OpenMoji ostala.
+- Bez rodiča: ostáva účet, stav uloženia, Zmeniť dieťa, Odhlásiť sa, Vytvoriť účet rodiča, Pridať na plochu, verzia, prehľad „Pre rodiča“.
+- Vymazaný krok sprievodcu „Čítanie nahlas“; krok o rodine bez zmienky o odhlásení a ploche.
+- Otvorené: bez rodiča sa už nedá zmeniť hlas (zmena len v paneli rodiča); skúška zvuku mimo iOS zmizla; vizuálne na emulátore neskúšané (`test` a `build` OK).
