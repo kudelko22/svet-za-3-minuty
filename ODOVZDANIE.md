@@ -256,3 +256,4 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - `Novinky.skontroluj`: verzia `videl-verziu` sa zapíše až keď sa okno naozaj ukáže (nie hneď), okno čaká na zmiznutie `#uvod` (po 4,5 s ho zavrie samo, po 6 s ukáže tak či tak), chyba pri zobrazení sa zaloguje. `RodicVyzva` počká na Novinky (`Novinky.caka`). `test.js` riadok 233 prispôsobený (kontroluje `Novinky.caka`).
 - Príčinu, prečo okno u vlastníka „vôbec nevyskočilo“, som nenašiel istotou: v emulátore sa ukázalo (po 0,8 s s 10 položkami). Možné príčiny sú čakanie na úvodnú obrazovku alebo skoré zapísanie verzie. Ak sa ani teraz neukáže, treba zistiť, aký stav (účet, dieťa, rodič) appka má pri otvorení.
 - Verzia 50 / 3.7.5, cache `svet3-v13`. Overené: `test`, `build`, emulátor (angličtina, misia, Čo je nové). Neoverené: telefón, PWA po aktualizácii.
+- **3.7.5 NASADENÉ**, push, záloha `Desktop\svet-za-3-minuty-3.7.5.zip`.
