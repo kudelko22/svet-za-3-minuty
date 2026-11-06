@@ -742,6 +742,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes plus-velke { 0% { transform: scale(.3); opacity: 0; } 25% { transform: scale(1.35) translateY(-12px); opacity: 1; } 100% { transform: scale(1) translateY(-80px); opacity: 0; } }
 .leti svg { display: block; width: 100%; height: 100%; }
 .chip.tmavy { color: var(--ink); text-shadow: none; }
+.chips .chip[aria-pressed="true"].tmavy { color: var(--ink); text-shadow: none; }
 .ok-info .chip { justify-self: start; }
 
 /* novinka: nevyzdvihnuté hviezdičky za odznaky (bliká Ja v menu a karta odznakov) */
@@ -777,6 +778,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes plamen { 0%, 100% { transform: scale(1, 1) rotate(0); } 30% { transform: scale(.95, 1.06) rotate(-3deg); } 65% { transform: scale(1.04, .96) rotate(2deg); } }
 .av-opt.zamknute::after { left: 50%; right: auto; translate: -50% 0; padding-left: 19px; background: var(--ik-zamok) no-repeat left center / 16px 16px; }
 .search { padding-left: 46px; background: var(--paper) var(--ik-lupa) no-repeat 14px center / 24px 24px; }
+.search.bez-lupy { padding-left: 16px; background-image: none; }
 /* veľká oslava po téme dňa */
 .oslava { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; overflow: hidden; padding: 16px; background: radial-gradient(circle at 50% 38%, #FFF7D1, #BFE7FF 70%); animation: osIn .35s ease-out both; }
 .oslava.pryc { animation: osOut .3s ease-in both; }
@@ -827,7 +829,8 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .soc-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
 .soc-av.velky { width: 120px; height: 120px; border-width: 3px; }
 .soc-ziadost { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-.soc-ziadost b { flex: 1; font: 700 1.1rem var(--f-display); }
+.soc-ziadost b { flex: 1; min-width: 0; overflow-wrap: anywhere; font: 700 1.1rem var(--f-display); }
+.soc-ziadost .btn, .soc-ziadost .soc-av { flex: none; }
 .soc-zoznam { display: grid; gap: 10px; }
 .soc-priatel { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; }
 .soc-priatel > span:nth-child(2) { flex: 1; display: grid; }
@@ -837,7 +840,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .rebricek { display: grid; gap: 8px; }
 .reb { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 16px; }
 .reb.ja { background: #FFF6CC; }
-.reb b { flex: 1; font: 700 1.05rem var(--f-display); }
+.reb b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 1.05rem var(--f-display); }
 .reb-m { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--ink); font: 700 1rem var(--f-display); background: #E4E0EE; }
 .reb-m.m1 { background: #FFD23F; } .reb-m.m2 { background: #D9DCE6; } .reb-m.m3 { background: #E8A86A; }
 .reb .soc-av { width: 40px; height: 40px; }
@@ -912,6 +915,11 @@ body.dm-rezim::before { display: none; }
 .msg.odosiela { opacity: .6; }
 .dm-pisanie { display: grid; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 2.5px solid var(--ink); background: var(--paper); }
 .dm-nalepky, .dm-vety { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+@media (min-width: 600px) { .dm-nalepky, .dm-vety { flex-wrap: wrap; overflow: visible; } }
+/* pri písaní (klávesnica) alebo nízkom okne sa rady nálepiek a viet schovajú, aby ostalo miesto na rozhovor */
+.dm-pisanie:has(#soc-text:focus) .dm-nalepky, .dm-pisanie:has(#soc-text:focus) .dm-vety { display: none; }
+@media (max-height: 460px) { .dm-nalepky, .dm-vety { display: none; } }
+.dm-vety .chip, .chips button.chip { min-height: 44px; }
 .dm-nalepky .nal { flex: none; width: 60px; height: 60px; padding: 6px; border-radius: 16px; }
 .dm-vety .chip { flex: none; padding: 7px 13px; color: var(--ink); text-shadow: none; background: #F2EEFB; font-size: .95rem; }
 /* priatelia 2.2: téma v správe, srdiečko, Videné, upozornenie */
@@ -3172,6 +3180,8 @@ const tyzKluc = () => { const d = new Date(); d.setDate(d.getDate() - (d.getDay(
 const tyzBody = p => p && p.tyzKey === tyzKluc() ? Math.max(0, (p.body || 0) - (p.tyzStart || 0)) : 0;
 const avatarMaly = a => postavicka({ ...AV_ZAKLAD, ...(a || {}) });
 const videlKluc = fid => 'soc-videl-' + st.dietaId + '-' + fid;
+// „videné“ = čas poslednej správy od kamaráta (čas servera), nie hodiny zariadenia, ktoré môžu ísť zle
+const oznacVidene = fid => { const So = socC(), m = So ? (So.spravy[fid] || []).filter(x => x.od === fid).map(x => x.kedy || 0) : []; const v = Math.max(S.get(videlKluc(fid), 0), ...m); S.set(videlKluc(fid), v); };
 const neprecitane = fid => { const So = socC(), v = S.get(videlKluc(fid), 0); return So ? (So.spravy[fid] || []).filter(m => m.od === fid && m.kedy > v).length : 0; };
 function socNove() { const So = socC(); if (!So || !So.zapnute) return 0; return So.ziadosti.length + Object.keys(So.priatelia).reduce((a, f) => a + neprecitane(f), 0); }
 function socZnacka() { const b = document.getElementById('nav-priatelia'); if (b) b.classList.toggle('novinka', socNove() > 0); }
@@ -3230,7 +3240,7 @@ Object.assign(views, {
     else if (tab === 'rebricek') telo = `<section class="sec"><h2 class="h2" style="--hc:#FFC233">Tento týždeň</h2>${rebricekHtml()}</section>`;
     else telo = `<section class="card soc-kod"><span class="lbl">Môj kód priateľa</span><b class="kod">${esc(So.profil.kod)}</b><small class="muted">Povedz ho kamarátovi alebo mu ho pošli. S kódom ti pošle žiadosť.</small>
         <button class="btn ghost" data-soc-zdielaj>Poslať môj kód</button></section>
-      <section class="card soc-pridaj"><span class="lbl">Pridať priateľa</span><div class="soc-riadok"><input id="soc-kod" class="search kod-vstup" placeholder="SOVA-K7M2" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Kód priateľa"><button class="btn blue" data-soc-pridaj>Pridať</button></div>
+      <section class="card soc-pridaj"><span class="lbl">Pridať priateľa</span><div class="soc-riadok"><input id="soc-kod" class="search bez-lupy kod-vstup" placeholder="SOVA-K7M2" maxlength="24" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Kód priateľa"><button class="btn blue" data-soc-pridaj>Pridať</button></div>
         ${caka.length ? `<small class="muted">Čaká sa, kým prijme: ${caka.map(x => esc(x.meno)).join(', ')}</small>` : ''}</section>`;
     return `<h1 class="h1">Priatelia</h1><div class="soc-taby">${taby.map(([id, n, poc]) => `<button data-soc-tab="${id}" aria-pressed="${tab === id}">${n}${poc ? ` <i>${poc}</i>` : ''}</button>`).join('')}</div>${telo}`;
   },
@@ -3241,7 +3251,7 @@ Object.assign(views, {
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : ''}</div>
       <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="muted">Najprv preber nejakú tému.</small>'}</div>` : ''}
         <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
-        ${p ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
+        ${p ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search bez-lupy" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="chip" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
   priatelProfil() {
@@ -3268,7 +3278,7 @@ function socZmena() {
     if (ch && So && So.profily[st.priatel] && document.querySelector('.dm-kto')) {
       const dole = ch.scrollHeight - ch.scrollTop - ch.clientHeight < 80;
       ch.innerHTML = chatHtml(st.priatel); if (dole) ch.scrollTop = ch.scrollHeight;
-      S.set(videlKluc(st.priatel), Date.now()); socZnacka(); if (So.precitaj) So.precitaj(st.priatel);
+      oznacVidene(st.priatel); socZnacka(); if (So.precitaj) So.precitaj(st.priatel);
     } else { render(); main.classList.remove('anim'); }
   } else if (st.view === 'priatelia' || st.view === 'priatelProfil') {
     const v = document.getElementById('soc-kod'), hodnota = v ? v.value : '', fokus = v && document.activeElement === v, y = scrollY;
@@ -4457,6 +4467,15 @@ function morph(a, b, koren) {
   x.slice(y.length).forEach(n => n.remove());
   return true;
 }
+// štítky so svetlou farbou kategórie dostanú tmavý text (kontrast)
+function chipKontrast(root = document) {
+  root.querySelectorAll('.chip[style*="--c"]:not(.tmavy)').forEach(el => {
+    const h = (el.style.getPropertyValue('--c') || '').trim(), m = /^#([0-9a-f]{6})$/i.exec(h); if (!m) return;
+    const c = [0, 2, 4].map(i => { const v = parseInt(m[1].substr(i, 2), 16) / 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+    if (1.05 / (.2126 * c[0] + .7152 * c[1] + .0722 * c[2] + .05) < 3.6) el.classList.add('tmavy');
+  });
+}
+try { if (typeof MutationObserver === 'function' && document.body && document.body.nodeType) { let pl = 0; new MutationObserver(() => { if (pl) return; pl = requestAnimationFrame(() => { pl = 0; chipKontrast(); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] }); } } catch (e) { /* bez kontrastu štítkov */ }
 function render(tichy) {
   Uvod.skontroluj();
   Pozadie.pouzi();
@@ -4595,7 +4614,7 @@ document.addEventListener('click', e => {
   }
   else if (d.socPrijmi) { const C = window.Cloud; socAkcia(C.soc.prijmi(d.socPrijmi), () => { Zvuk.play('win'); FX.hearts(innerWidth / 2, innerHeight / 2); toast('Ste priatelia!'); }); }
   else if (d.socOdmietni) { const C = window.Cloud; socAkcia(C.soc.odmietni(d.socOdmietni), () => Zvuk.play('tap')); }
-  else if (d.socOtvor) { document.querySelectorAll('.soc-ozn').forEach(x => x.remove()); Zvuk.play('whoosh'); st.priatel = d.socOtvor; S.set(videlKluc(d.socOtvor), Date.now()); go('priatel'); }
+  else if (d.socOtvor) { document.querySelectorAll('.soc-ozn').forEach(x => x.remove()); Zvuk.play('whoosh'); st.priatel = d.socOtvor; oznacVidene(d.socOtvor); go('priatel'); }
   else if (d.socTab) { Zvuk.play('tap'); st.socTab = d.socTab; if (st.view !== 'priatelia') go('priatelia'); else { render(); main.classList.remove('anim'); } }
   else if (d.socTemy !== undefined) { Zvuk.play('tap'); st.socTemy = !st.socTemy; render(); main.classList.remove('anim'); }
   else if (d.socTema) {

@@ -139,7 +139,7 @@ const ART = {
 
   odpad: () => `${bg('#DDF5E8')}${plus(22, 26, '#2FBF71')}${plus(296, 30, '#4C7DFF', .7)}
     <rect y="150" width="320" height="30" fill="#A8E6A0" ${N}/><path d="M0 150 H320"/>
-    <text x="160" y="44" font-size="30" text-anchor="middle" stroke="none" class="spin">♻️</text>
+    <g transform="translate(160 44)"><g class="spin"><circle r="15" fill="#fff" stroke-width="2.5"/><path d="M-8 -3 A9 9 0 0 1 6 -7 M8 3 A9 9 0 0 1 -6 7" fill="none" stroke="#2FBF71" stroke-width="3.5" stroke-linecap="round"/><path d="M4 -12 l5 4 l-7 3z M-4 12 l-5 -4 l7 -3z" fill="#2FBF71" stroke-width="1.5"/></g></g>
     ${padá(52, 40, 0, '<rect x="-6" y="-14" width="12" height="24" rx="4" fill="#8FD3FF"/><rect x="-3.5" y="-20" width="7" height="6" fill="#2F62E0"/>')}
     ${padá(124, 40, .8, '<circle r="10" fill="#fff"/><path d="M-6 -2 l4 3 l3 -5 l4 4" fill="none" stroke-width="2"/>')}
     ${padá(196, 40, 1.6, '<path d="M-8 -12 h16 v4 q4 2 4 6 v14 q0 4 -4 4 h-16 q-4 0 -4 -4 v-14 q0 -4 4 -6z" fill="#A8F0C6"/>')}
@@ -249,8 +249,10 @@ const ART = {
     ${[[24, 24], [70, 160], [300, 22], [290, 150], [120, 16], [210, 166]].map(([x, y], i) => hviezdicka(x, y, .7, '#FFE27A', i * .35)).join('')}
     <ellipse cx="160" cy="92" rx="118" ry="58" fill="none" stroke="#fff" stroke-dasharray="4 7" opacity=".6"/>
     ${sun(160, 92, 24)}
-    <text x="160" y="28" font-size="22" text-anchor="middle" stroke="none">❄️</text><text x="160" y="172" font-size="22" text-anchor="middle" stroke="none">☀️</text>
-    <text x="24" y="100" font-size="22" text-anchor="middle" stroke="none">🌸</text><text x="296" y="100" font-size="22" text-anchor="middle" stroke="none">🍂</text>
+    <g transform="translate(160 28)" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M0 -11V11M-9.5 -5.5L9.5 5.5M-9.5 5.5L9.5 -5.5"/></g>
+    <g transform="translate(160 166)"><g stroke="#FFD23F" stroke-width="2.5" stroke-linecap="round"><path d="M0 -13V-9M0 9V13M-13 0H-9M9 0H13M-9 -9L-6.5 -6.5M9 -9L6.5 -6.5M-9 9L-6.5 6.5M9 9L6.5 6.5"/></g><circle r="6.5" fill="#FFD23F" stroke-width="2"/></g>
+    <g transform="translate(24 100)" stroke-width="1.5"><circle cx="0" cy="-7" r="5" fill="#FF8FB8" transform="rotate(0)"/><circle cx="0" cy="-7" r="5" fill="#FF8FB8" transform="rotate(72)"/><circle cx="0" cy="-7" r="5" fill="#FF8FB8" transform="rotate(144)"/><circle cx="0" cy="-7" r="5" fill="#FF8FB8" transform="rotate(216)"/><circle cx="0" cy="-7" r="5" fill="#FF8FB8" transform="rotate(288)"/><circle r="4" fill="#FFD23F"/></g>
+    <g transform="translate(296 100) rotate(35)"><path d="M0 -12 C10 -6 10 8 0 12 C-10 8 -10 -6 0 -12z" fill="#F08A24" stroke-width="2"/><path d="M0 -8 V14" fill="none" stroke-width="2"/></g>
     <g><animateMotion dur="10s" repeatCount="indefinite" path="M278 92 A118 58 0 1 1 42 92 A118 58 0 1 1 278 92"/>
       <g transform="rotate(23)"><path d="M0 -24 V24" stroke="#fff" stroke-width="2.5"/><circle r="14" fill="#4FC3F7"/><path d="M-7 -8 q8 -5 11 3 q-6 5 -11 -3z M2 4 q8 -2 8 6 q-6 3 -8 -6z" fill="#4CD07D" stroke-width="2"/></g></g>`,
 
