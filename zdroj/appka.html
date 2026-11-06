@@ -742,6 +742,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes plus-velke { 0% { transform: scale(.3); opacity: 0; } 25% { transform: scale(1.35) translateY(-12px); opacity: 1; } 100% { transform: scale(1) translateY(-80px); opacity: 0; } }
 .leti svg { display: block; width: 100%; height: 100%; }
 .chip.tmavy { color: var(--ink); text-shadow: none; }
+.chips .chip[aria-pressed="true"].tmavy { color: var(--ink); text-shadow: none; }
 .ok-info .chip { justify-self: start; }
 
 /* novinka: nevyzdvihnuté hviezdičky za odznaky (bliká Ja v menu a karta odznakov) */
@@ -777,6 +778,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes plamen { 0%, 100% { transform: scale(1, 1) rotate(0); } 30% { transform: scale(.95, 1.06) rotate(-3deg); } 65% { transform: scale(1.04, .96) rotate(2deg); } }
 .av-opt.zamknute::after { left: 50%; right: auto; translate: -50% 0; padding-left: 19px; background: var(--ik-zamok) no-repeat left center / 16px 16px; }
 .search { padding-left: 46px; background: var(--paper) var(--ik-lupa) no-repeat 14px center / 24px 24px; }
+.search.bez-lupy { padding-left: 16px; background-image: none; }
 /* veľká oslava po téme dňa */
 .oslava { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; overflow: hidden; padding: 16px; background: radial-gradient(circle at 50% 38%, #FFF7D1, #BFE7FF 70%); animation: osIn .35s ease-out both; }
 .oslava.pryc { animation: osOut .3s ease-in both; }
@@ -827,7 +829,8 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .soc-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
 .soc-av.velky { width: 120px; height: 120px; border-width: 3px; }
 .soc-ziadost { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-.soc-ziadost b { flex: 1; font: 700 1.1rem var(--f-display); }
+.soc-ziadost b { flex: 1; min-width: 0; overflow-wrap: anywhere; font: 700 1.1rem var(--f-display); }
+.soc-ziadost .btn, .soc-ziadost .soc-av { flex: none; }
 .soc-zoznam { display: grid; gap: 10px; }
 .soc-priatel { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; }
 .soc-priatel > span:nth-child(2) { flex: 1; display: grid; }
@@ -837,7 +840,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .rebricek { display: grid; gap: 8px; }
 .reb { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 16px; }
 .reb.ja { background: #FFF6CC; }
-.reb b { flex: 1; font: 700 1.05rem var(--f-display); }
+.reb b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 1.05rem var(--f-display); }
 .reb-m { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--ink); font: 700 1rem var(--f-display); background: #E4E0EE; }
 .reb-m.m1 { background: #FFD23F; } .reb-m.m2 { background: #D9DCE6; } .reb-m.m3 { background: #E8A86A; }
 .reb .soc-av { width: 40px; height: 40px; }
@@ -912,6 +915,11 @@ body.dm-rezim::before { display: none; }
 .msg.odosiela { opacity: .6; }
 .dm-pisanie { display: grid; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 2.5px solid var(--ink); background: var(--paper); }
 .dm-nalepky, .dm-vety { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+@media (min-width: 600px) { .dm-nalepky, .dm-vety { flex-wrap: wrap; overflow: visible; } }
+/* pri písaní (klávesnica) alebo nízkom okne sa rady nálepiek a viet schovajú, aby ostalo miesto na rozhovor */
+.dm-pisanie:has(#soc-text:focus) .dm-nalepky, .dm-pisanie:has(#soc-text:focus) .dm-vety { display: none; }
+@media (max-height: 460px) { .dm-nalepky, .dm-vety { display: none; } }
+.dm-vety .chip, .chips button.chip { min-height: 44px; }
 .dm-nalepky .nal { flex: none; width: 60px; height: 60px; padding: 6px; border-radius: 16px; }
 .dm-vety .chip { flex: none; padding: 7px 13px; color: var(--ink); text-shadow: none; background: #F2EEFB; font-size: .95rem; }
 /* priatelia 2.2: téma v správe, srdiečko, Videné, upozornenie */
@@ -1238,7 +1246,7 @@ html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 51; const VERZIA_NAZOV = '3.7.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 52; const VERZIA_NAZOV = '3.8'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1938,7 +1946,7 @@ function najdlhsiaSeria(dniList) {
 // odznaky, ktoré dieťa práve získalo; hneď sa mu zapíšu (a cez Cloud uložia)
 function noveOdznaky(udalost = '', navyse = {}) {
   if (!st.dietaId) return [];
-  const teraz = new Date(), prebrate = st.done.filter(byId);
+  const teraz = new Date(), prebrate = st.done.filter(id => { const t = byId(id); return t && t.k !== 'anglictina' && preVek(t); });
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
     hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
@@ -2098,7 +2106,7 @@ function dokonciAuto(t) {
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
   zapisPrebrate(t.id);
   st.body += zisk; S.set('body', st.body);
-  if (!st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
   return { zisk, noveOdznaky: noveOdznaky('auto', { uci: true }), noveOdmeny: noveOdmeny(bodyPred, st.body), noveHry: noveHry(bodyPred, st.body) };
 }
 function dalsiaTemaAuto(tid) {
@@ -3039,7 +3047,7 @@ function prehladHnitia(d = st) {
   const vyn = !posl ? 0 : (() => { const [y, m, dd] = posl.split('-').map(Number), n = new Date(); return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(y, m - 1, dd)) / 864e5)); })();
   const nn = zap ? Math.max(0, vyn - 2) : 0, hn = nn >= 6 ? 3 : nn >= 3 ? 2 : nn >= 1 ? 1 : 0, u = nn ? Math.min(Math.floor(body * .4), nn * Math.max(3, Math.ceil(body * .02))) : 0;
   return `<b>Vädnutie stromu</b><p class="muted">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí ${cloud ? 'na všetkých zariadeniach' : 'na tomto zariadení'}.</p>
-    <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} hviezdičiek spí.` : 'Teraz je strom v poriadku.'}</p>
+    <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} ${u === 1 ? 'hviezdička spí' : u >= 2 && u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}.` : 'Teraz je strom v poriadku.'}</p>
     <button class="btn ghost" ${cloud ? `data-rp-hnitie="${esc(id)}"` : 'data-hnitie-prepni'}>${zap ? 'Vypnúť vädnutie stromu' : 'Zapnúť vädnutie stromu'}</button>`;
 }
 function prehladPriatelov(d = st) {
@@ -3075,7 +3083,7 @@ function prehladRodica(d = st) {
 }
 const views = {
   domov() {
-    const t = temaDna(), k = KAT[t.k], hot = st.done.includes(t.id), s = seria(), dnes = key(new Date());
+    const t = temaDna(), k = KAT[t.k], dnes = key(new Date()), hot = st.kedy[t.id] === dnes, s = seria();
     const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
     const tyzden = DNI.map((n, i) => { const d = new Date(pon); d.setDate(pon.getDate() + i); return { n, d, k: key(d) }; });
     const v = TV(), dalsie = [...Array(v.length).keys()].map(i => v[(denCislo() + 1 + i) % v.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
@@ -3189,6 +3197,8 @@ const tyzKluc = () => { const d = new Date(); d.setDate(d.getDate() - (d.getDay(
 const tyzBody = p => p && p.tyzKey === tyzKluc() ? Math.max(0, (p.body || 0) - (p.tyzStart || 0)) : 0;
 const avatarMaly = a => postavicka({ ...AV_ZAKLAD, ...(a || {}) });
 const videlKluc = fid => 'soc-videl-' + st.dietaId + '-' + fid;
+// „videné“ = čas poslednej správy od kamaráta (čas servera), nie hodiny zariadenia, ktoré môžu ísť zle
+const oznacVidene = fid => { const So = socC(), m = So ? (So.spravy[fid] || []).filter(x => x.od === fid).map(x => x.kedy || 0) : []; const v = Math.max(S.get(videlKluc(fid), 0), ...m); S.set(videlKluc(fid), v); };
 const neprecitane = fid => { const So = socC(), v = S.get(videlKluc(fid), 0); return So ? (So.spravy[fid] || []).filter(m => m.od === fid && m.kedy > v).length : 0; };
 function socNove() { const So = socC(); if (!So || !So.zapnute) return 0; return So.ziadosti.length + Object.keys(So.priatelia).reduce((a, f) => a + neprecitane(f), 0); }
 function socZnacka() { const b = document.getElementById('nav-priatelia'); if (b) b.classList.toggle('novinka', socNove() > 0); }
@@ -3262,7 +3272,7 @@ Object.assign(views, {
     else if (tab === 'rebricek') telo = `<section class="sec"><h2 class="h2" style="--hc:#FFC233">Tento týždeň</h2>${rebricekHtml()}</section>`;
     else telo = `<section class="card soc-kod"><span class="lbl">Môj kód priateľa</span><b class="kod">${esc(So.profil.kod)}</b><small class="muted">Povedz ho kamarátovi alebo mu ho pošli. S kódom ti pošle žiadosť.</small>
         <button class="btn ghost" data-soc-zdielaj>Poslať môj kód</button></section>
-      <section class="card soc-pridaj"><span class="lbl">Pridať priateľa</span><div class="soc-riadok"><input id="soc-kod" class="search kod-vstup" placeholder="SOVA-K7M2" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Kód priateľa"><button class="btn blue" data-soc-pridaj>Pridať</button></div>
+      <section class="card soc-pridaj"><span class="lbl">Pridať priateľa</span><div class="soc-riadok"><input id="soc-kod" class="search bez-lupy kod-vstup" placeholder="SOVA-K7M2" maxlength="24" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Kód priateľa"><button class="btn blue" data-soc-pridaj>Pridať</button></div>
         ${caka.length ? `<small class="muted">Čaká sa, kým prijme: ${caka.map(x => esc(x.meno)).join(', ')}</small>` : ''}</section>`;
     return `<h1 class="h1">Priatelia</h1><div class="soc-taby">${taby.map(([id, n, poc]) => `<button data-soc-tab="${id}" aria-pressed="${tab === id}">${n}${poc ? ` <i>${poc}</i>` : ''}</button>`).join('')}</div>${telo}`;
   },
@@ -3273,7 +3283,7 @@ Object.assign(views, {
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : ''}</div>
       <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="muted">Najprv preber nejakú tému.</small>'}</div>` : ''}
         <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
-        ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
+        ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search bez-lupy" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="chip" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
   priatelProfil() {
@@ -3300,7 +3310,7 @@ function socZmena() {
     if (ch && So && So.profily[st.priatel] && document.querySelector('.dm-kto')) {
       const dole = ch.scrollHeight - ch.scrollTop - ch.clientHeight < 80;
       ch.innerHTML = chatHtml(st.priatel); if (dole) ch.scrollTop = ch.scrollHeight;
-      S.set(videlKluc(st.priatel), Date.now()); socZnacka(); if (So.precitaj) So.precitaj(st.priatel);
+      oznacVidene(st.priatel); socZnacka(); if (So.precitaj) So.precitaj(st.priatel);
     } else { render(); main.classList.remove('anim'); }
   } else if (st.view === 'priatelia' || st.view === 'priatelProfil') {
     const v = document.getElementById('soc-kod'), hodnota = v ? v.value : '', fokus = v && document.activeElement === v, y = scrollY;
@@ -3468,12 +3478,13 @@ function renderFlow(anim = true) {
   if (!anim && main.firstElementChild && typeof document.createElement === 'function') { const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true); }
   else main.innerHTML = html;
   ocisluj();
-  if (k.t === 'koniec' && anim) oslava(f);
+  if (k.t === 'koniec' && anim && !f.prehra && !f.zle) oslava(f);
 }
 
 function oslava(f) {
+  const box = main.querySelector('.stars3'); if (!box) return;
   Zvuk.play('win'); vibruj([60, 40, 60]);
-  const box = main.querySelector('.stars3'), n = +box.dataset.n;
+  const n = +box.dataset.n;
   box.querySelectorAll('svg').forEach((s, i) => setTimeout(() => {
     if (i >= n || !s.isConnected) return;
     Zvuk.play('star'); const [x, y] = stred(s); FX.burst(x, y, 18, ['star', 'dot'], 7);
@@ -3692,14 +3703,14 @@ const Misie = {
     const h = Object.entries(this.data().hotove);
     return { n: h.length, typy: new Set(h.map(([, v]) => v.t)).size, vyzvy: h.filter(([, v]) => v.t === 'vyzva').length };
   },
-  tyzden() { const od = key(new Date(Date.now() - 6 * 864e5)); return Object.values(this.data().hotove).filter(v => v.kedy >= od).length; },
+  tyzden() { const od = key((() => { const x = new Date(); x.setDate(x.getDate() - 6); return x; })()); return Object.values(this.data().hotove).filter(v => v.kedy >= od).length; },
   body: (m, chyby) => { const z = m.t === 'vyzva' ? 20 + 5 * (m.u - 1) : 8 + 2 * m.u; return chyby ? Math.max(5, Math.round(z * .6)) : z; },
   nova(m, nahliad) { return { m, ind: 1, chyby: 0, zle: [], videl: [], vysl: null, koniec: null, nahliad: !!nahliad, anim: '' }; },
   dokonci() {
     const q = st.misia, m = q.m, dnes = key(new Date()), d = this.data(), pred = st.body;
     let zisk = 0;
-    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; st.body += zisk; S.set('body', st.body); }
-    d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d);
+    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; d.dnesMisia = m.id; st.body += zisk; S.set('body', st.body); }
+    if (!q.nahliad) { d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d); }
     const odznaky = noveOdznaky('misia');
     q.koniec = { zisk, noveOdznaky: odznaky, noveOdmeny: noveOdmeny(pred, st.body), noveHry: noveHry(pred, st.body) };
     Zvuk.play('win'); vibruj([40, 30, 40]); FX.burst(innerWidth / 2, innerHeight / 3, 30, ['star', 'dot']);
@@ -3792,7 +3803,7 @@ const Misie = {
   },
   klik(b, d) {
     const q = st.misia;
-    if (d.miStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'misia'; st.misia = this.nova(this.dnesna(), this.splnenaDnes()); render(); scrollTo(0, 0); return true; }
+    if (d.miStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'misia'; const hotDnes = this.splnenaDnes(); st.misia = this.nova((hotDnes && MISIE.find(x => x.id === this.data().dnesMisia)) || this.dnesna(), hotDnes); render(); scrollTo(0, 0); return true; }
     if (d.miHist) { const m = MISIE.find(x => x.id === d.miHist); if (m) { Zvuk.play('pop'); st.misia = this.nova(m, true); render(); scrollTo(0, 0); } return true; }
     if (d.miU) { S.set('misie-uroven-' + st.dietaId, +d.miU); Zvuk.play('tap'); render(true); return true; }
     if (d.miSpat !== undefined) { Zvuk.play('whoosh'); st.misia = null; render(); scrollTo(0, 0); return true; }
@@ -3976,6 +3987,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 52, obr: () => IK.ziarovka, n: 'Opravy a bezpečnejšia appka', p: 'Rodičovský panel sa po odchode sám zamkne, voľné písanie je len keď ho zapne rodič a nevhodné slová sa zachytia. Účty a ukladanie sú spoľahlivejšie, hry a angličtina plynulejšie. Opravené sú aj drobnosti vo vzhľade.' },
   { v: 51, obr: () => IK.duha, n: 'Jednofarebné pozadie', p: 'V profile Ja v karte Pozadie si vyber Animované, Jednofarebné s ôsmimi jemnými farbami alebo Jemný vzor bez pohybu. Jednofarebné a vzor šetria telefón.' },
   { v: 50, obr: () => IK.ziarovka, n: 'Nápoveda hore', p: 'Keď odpovieš zle, hláška Skús inú možnosť sa ukáže hneď nad odpoveďami, netreba rolovať.' },
   { v: 49, obr: () => IK_KAT.anglictina, n: 'Ďalej bez rolovania', p: 'V angličtine ostane tlačidlo Ďalej po odpovedi stále na obrazovke, netreba rolovať dolu.' },
@@ -3994,7 +4006,7 @@ const NOVINKY = [
   { v: 38, obr: () => IK.bublina, n: 'Správy bez prekrývania', p: 'Dlhšie správy sa v bublinách správne zalomia a bubliny sa už neprekrývajú.' },
   { v: 37, obr: () => IK.bublina, n: 'Písanie priateľom pre všetkých', p: 'Keď máš priateľa, môžeš mu písať aj vlastné slová, nič sa nezapína. Bubliny v správach sa už neprekrývajú.' },
   { v: 36, obr: () => IK_KAT.anglictina, n: 'Angličtina na každý deň', p: 'Angličtina má nové miesto na Domove. Každý deň nový krátky kvízik so slovíčkami a vetami, s vysvetlením odpovedí. Pôvodné anglické lekcie nájdeš tam tiež.' },
-  { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami majú len väčšie deti.' },
+  { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami sú v ťažšej úrovni.' },
   { v: 36, obr: () => svg(byId('raketa')), siroky: true, n: '24 nových tém a ďalšie misie', p: 'Ku každej kategórii pribudla nová téma s obrázkom a kvízom. V Misii dňa je 75 misií, takže sa dlho neopakujú.' },
   { v: 36, obr: () => stromSvg({ stupen: 3, plody: 0, kos: 0, novy: -1, hn: 2 }), n: 'Strom vädne, keď sa nehrá', p: 'Keď dieťa vynechá niekoľko dní, strom pomaly vädne a najdrahšie hry si oddychujú. Po prvej téme strom ožije a nič sa nestratí. Rodič to môže vypnúť v prehľade.' },
   { v: 36, obr: () => IK.bublina, n: 'Voľné písanie v správach', p: 'Rodič môže priateľom zapnúť písanie vlastných slov. Bubliny v rozhovoroch sú teraz tesnejšie pri sebe.' },
@@ -4457,7 +4469,7 @@ function dokonci(f) {
   }
   st.body += f.zisk; S.set('body', st.body);
   // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
-  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
   f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
   f.noveOdmeny = noveOdmeny(bodyPred, st.body);
   f.noveHry = noveHry(bodyPred, st.body);
@@ -4501,6 +4513,15 @@ function morph(a, b, koren) {
   x.slice(y.length).forEach(n => n.remove());
   return true;
 }
+// štítky so svetlou farbou kategórie dostanú tmavý text (kontrast)
+function chipKontrast(root = document) {
+  root.querySelectorAll('.chip[style*="--c"]:not(.tmavy)').forEach(el => {
+    const h = (el.style.getPropertyValue('--c') || '').trim(), m = /^#([0-9a-f]{6})$/i.exec(h); if (!m) return;
+    const c = [0, 2, 4].map(i => { const v = parseInt(m[1].substr(i, 2), 16) / 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+    if (1.05 / (.2126 * c[0] + .7152 * c[1] + .0722 * c[2] + .05) < 3.6) el.classList.add('tmavy');
+  });
+}
+try { if (typeof MutationObserver === 'function' && document.body && document.body.nodeType) { let pl = 0; new MutationObserver(() => { if (pl) return; pl = requestAnimationFrame(() => { pl = 0; chipKontrast(); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] }); } } catch (e) { /* bez kontrastu štítkov */ }
 function render(tichy) {
   Uvod.skontroluj();
   Pozadie.pouzi();
@@ -4640,7 +4661,7 @@ document.addEventListener('click', e => {
   }
   else if (d.socPrijmi) { const C = window.Cloud; socAkcia(C.soc.prijmi(d.socPrijmi), () => { Zvuk.play('win'); FX.hearts(innerWidth / 2, innerHeight / 2); toast('Ste priatelia!'); }); }
   else if (d.socOdmietni) { const C = window.Cloud; socAkcia(C.soc.odmietni(d.socOdmietni), () => Zvuk.play('tap')); }
-  else if (d.socOtvor) { document.querySelectorAll('.soc-ozn').forEach(x => x.remove()); Zvuk.play('whoosh'); st.priatel = d.socOtvor; S.set(videlKluc(d.socOtvor), Date.now()); go('priatel'); }
+  else if (d.socOtvor) { document.querySelectorAll('.soc-ozn').forEach(x => x.remove()); Zvuk.play('whoosh'); st.priatel = d.socOtvor; oznacVidene(d.socOtvor); go('priatel'); }
   else if (d.socTab) { Zvuk.play('tap'); st.socTab = d.socTab; if (st.view !== 'priatelia') go('priatelia'); else { render(); main.classList.remove('anim'); } }
   else if (d.socTemy !== undefined) { Zvuk.play('tap'); st.socTemy = !st.socTemy; render(); main.classList.remove('anim'); }
   else if (d.socTema) {
@@ -4714,11 +4735,11 @@ document.addEventListener('click', e => {
     renderFlow(false);
     if (ok) {
       Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); vibruj(40);
-      FX.burst(x, y, 30); letiText(x, y - 20, '+10'); zablesk('rgb(47 191 113 / .35)');
+      FX.burst(x, y, 30); letiText(x, y - 20, 'Správne!'); zablesk('rgb(47 191 113 / .35)');
     } else {
       Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');
       const s = main.querySelector('.step'); if (s) s.classList.add('shake');
-      if (f.prehra) setTimeout(() => { Zvuk.play('bum'); vibruj([60, 40, 60]); }, 450);
+      if (f.prehra) { kvizZamkni(druhKvizu(f)); setTimeout(() => { Zvuk.play('bum'); vibruj([60, 40, 60]); }, 450); }
     }
   } else if (d.znova !== undefined && f) {
     // téma bez správnej odpovede: otázky (alebo celá téma) odznova, odpovede v inom poradí
@@ -4727,7 +4748,7 @@ document.addEventListener('click', e => {
     Zvuk.play('start'); renderFlow(); window.scrollTo(0, 0);
   } else if (d.dalej !== undefined && f) {
     Hlas.stop(); f.prave = false;
-    if (f.prehra) { kvizZamkni(druhKvizu(f)); f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
+    if (f.prehra) { f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec' && vsetkoZle(f)) { f.zle = true; f.i++; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec') {
       const oslava = Oslava.treba(f); dokonci(f);
@@ -4961,7 +4982,7 @@ const Cloud = {
     S.set('pokrok-hotovo-' + this.pouzivatel.uid, true);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
-      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
+      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-400), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
@@ -5181,7 +5202,7 @@ function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
   if (!d || !Cloud.pouzivatel) return;
-  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
   zapis(d.id, d);
   socUlozProfil();
 }
@@ -5220,7 +5241,7 @@ async function prevodStareho(u) {
     if (s.exists() && !Cloud.deti.length) {
       const c = s.data(), id = noveId();
       const d = { meno: (c.meno || 'Dieťa').slice(0, 20), vek: c.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: nahodnyAvatar(),
-        body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-60), odznaky: [], poradie: Date.now() };
+        body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-400), odznaky: [], poradie: Date.now() };
       Cloud.deti = [{ id, ...d }]; zapis(id, d); S.set('aktivne', id); S.set('pokrok-hotovo-' + u.uid, true);
     }
     }
