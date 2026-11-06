@@ -1929,7 +1929,7 @@ function najdlhsiaSeria(dniList) {
 // odznaky, ktoré dieťa práve získalo; hneď sa mu zapíšu (a cez Cloud uložia)
 function noveOdznaky(udalost = '', navyse = {}) {
   if (!st.dietaId) return [];
-  const teraz = new Date(), prebrate = st.done.filter(byId);
+  const teraz = new Date(), prebrate = st.done.filter(id => { const t = byId(id); return t && t.k !== 'anglictina' && preVek(t); });
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
     hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
@@ -2089,7 +2089,7 @@ function dokonciAuto(t) {
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
   zapisPrebrate(t.id);
   st.body += zisk; S.set('body', st.body);
-  if (!st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
   return { zisk, noveOdznaky: noveOdznaky('auto', { uci: true }), noveOdmeny: noveOdmeny(bodyPred, st.body), noveHry: noveHry(bodyPred, st.body) };
 }
 function dalsiaTemaAuto(tid) {
@@ -3023,7 +3023,7 @@ function prehladHnitia(d = st) {
   const vyn = !posl ? 0 : (() => { const [y, m, dd] = posl.split('-').map(Number), n = new Date(); return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(y, m - 1, dd)) / 864e5)); })();
   const nn = zap ? Math.max(0, vyn - 2) : 0, hn = nn >= 6 ? 3 : nn >= 3 ? 2 : nn >= 1 ? 1 : 0, u = nn ? Math.min(Math.floor(body * .4), nn * Math.max(3, Math.ceil(body * .02))) : 0;
   return `<b>Vädnutie stromu</b><p class="muted">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí ${cloud ? 'na všetkých zariadeniach' : 'na tomto zariadení'}.</p>
-    <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} hviezdičiek spí.` : 'Teraz je strom v poriadku.'}</p>
+    <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} ${u === 1 ? 'hviezdička spí' : u >= 2 && u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}.` : 'Teraz je strom v poriadku.'}</p>
     <button class="btn ghost" ${cloud ? `data-rp-hnitie="${esc(id)}"` : 'data-hnitie-prepni'}>${zap ? 'Vypnúť vädnutie stromu' : 'Zapnúť vädnutie stromu'}</button>`;
 }
 function prehladPriatelov(d = st) {
@@ -3058,7 +3058,7 @@ function prehladRodica(d = st) {
 }
 const views = {
   domov() {
-    const t = temaDna(), k = KAT[t.k], hot = st.done.includes(t.id), s = seria(), dnes = key(new Date());
+    const t = temaDna(), k = KAT[t.k], dnes = key(new Date()), hot = st.kedy[t.id] === dnes, s = seria();
     const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
     const tyzden = DNI.map((n, i) => { const d = new Date(pon); d.setDate(pon.getDate() + i); return { n, d, k: key(d) }; });
     const v = TV(), dalsie = [...Array(v.length).keys()].map(i => v[(denCislo() + 1 + i) % v.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
@@ -3436,12 +3436,13 @@ function renderFlow(anim = true) {
   if (!anim && main.firstElementChild && typeof document.createElement === 'function') { const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true); }
   else main.innerHTML = html;
   ocisluj();
-  if (k.t === 'koniec' && anim) oslava(f);
+  if (k.t === 'koniec' && anim && !f.prehra && !f.zle) oslava(f);
 }
 
 function oslava(f) {
+  const box = main.querySelector('.stars3'); if (!box) return;
   Zvuk.play('win'); vibruj([60, 40, 60]);
-  const box = main.querySelector('.stars3'), n = +box.dataset.n;
+  const n = +box.dataset.n;
   box.querySelectorAll('svg').forEach((s, i) => setTimeout(() => {
     if (i >= n || !s.isConnected) return;
     Zvuk.play('star'); const [x, y] = stred(s); FX.burst(x, y, 18, ['star', 'dot'], 7);
@@ -3660,14 +3661,14 @@ const Misie = {
     const h = Object.entries(this.data().hotove);
     return { n: h.length, typy: new Set(h.map(([, v]) => v.t)).size, vyzvy: h.filter(([, v]) => v.t === 'vyzva').length };
   },
-  tyzden() { const od = key(new Date(Date.now() - 6 * 864e5)); return Object.values(this.data().hotove).filter(v => v.kedy >= od).length; },
+  tyzden() { const od = key((() => { const x = new Date(); x.setDate(x.getDate() - 6); return x; })()); return Object.values(this.data().hotove).filter(v => v.kedy >= od).length; },
   body: (m, chyby) => { const z = m.t === 'vyzva' ? 20 + 5 * (m.u - 1) : 8 + 2 * m.u; return chyby ? Math.max(5, Math.round(z * .6)) : z; },
   nova(m, nahliad) { return { m, ind: 1, chyby: 0, zle: [], videl: [], vysl: null, koniec: null, nahliad: !!nahliad, anim: '' }; },
   dokonci() {
     const q = st.misia, m = q.m, dnes = key(new Date()), d = this.data(), pred = st.body;
     let zisk = 0;
-    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; st.body += zisk; S.set('body', st.body); }
-    d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d);
+    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; d.dnesMisia = m.id; st.body += zisk; S.set('body', st.body); }
+    if (!q.nahliad) { d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d); }
     const odznaky = noveOdznaky('misia');
     q.koniec = { zisk, noveOdznaky: odznaky, noveOdmeny: noveOdmeny(pred, st.body), noveHry: noveHry(pred, st.body) };
     Zvuk.play('win'); vibruj([40, 30, 40]); FX.burst(innerWidth / 2, innerHeight / 3, 30, ['star', 'dot']);
@@ -3760,7 +3761,7 @@ const Misie = {
   },
   klik(b, d) {
     const q = st.misia;
-    if (d.miStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'misia'; st.misia = this.nova(this.dnesna(), this.splnenaDnes()); render(); scrollTo(0, 0); return true; }
+    if (d.miStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'misia'; const hotDnes = this.splnenaDnes(); st.misia = this.nova((hotDnes && MISIE.find(x => x.id === this.data().dnesMisia)) || this.dnesna(), hotDnes); render(); scrollTo(0, 0); return true; }
     if (d.miHist) { const m = MISIE.find(x => x.id === d.miHist); if (m) { Zvuk.play('pop'); st.misia = this.nova(m, true); render(); scrollTo(0, 0); } return true; }
     if (d.miU) { S.set('misie-uroven-' + st.dietaId, +d.miU); Zvuk.play('tap'); render(true); return true; }
     if (d.miSpat !== undefined) { Zvuk.play('whoosh'); st.misia = null; render(); scrollTo(0, 0); return true; }
@@ -3959,7 +3960,7 @@ const NOVINKY = [
   { v: 38, obr: () => IK.bublina, n: 'Správy bez prekrývania', p: 'Dlhšie správy sa v bublinách správne zalomia a bubliny sa už neprekrývajú.' },
   { v: 37, obr: () => IK.bublina, n: 'Písanie priateľom pre všetkých', p: 'Keď máš priateľa, môžeš mu písať aj vlastné slová, nič sa nezapína. Bubliny v správach sa už neprekrývajú.' },
   { v: 36, obr: () => IK_KAT.anglictina, n: 'Angličtina na každý deň', p: 'Angličtina má nové miesto na Domove. Každý deň nový krátky kvízik so slovíčkami a vetami, s vysvetlením odpovedí. Pôvodné anglické lekcie nájdeš tam tiež.' },
-  { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami majú len väčšie deti.' },
+  { v: 36, obr: () => OBR_HRY.pocitaj, n: 'Nová hra Koľko ich je?', p: 'Ľahká hra pre malých: spočítaj 1 až 5 obrázkov a ťukni na číslo. Bez časovača. Bubliny s počtami sú v ťažšej úrovni.' },
   { v: 36, obr: () => svg(byId('raketa')), siroky: true, n: '24 nových tém a ďalšie misie', p: 'Ku každej kategórii pribudla nová téma s obrázkom a kvízom. V Misii dňa je 75 misií, takže sa dlho neopakujú.' },
   { v: 36, obr: () => stromSvg({ stupen: 3, plody: 0, kos: 0, novy: -1, hn: 2 }), n: 'Strom vädne, keď sa nehrá', p: 'Keď dieťa vynechá niekoľko dní, strom pomaly vädne a najdrahšie hry si oddychujú. Po prvej téme strom ožije a nič sa nestratí. Rodič to môže vypnúť v prehľade.' },
   { v: 36, obr: () => IK.bublina, n: 'Voľné písanie v správach', p: 'Rodič môže priateľom zapnúť písanie vlastných slov. Bubliny v rozhovoroch sú teraz tesnejšie pri sebe.' },
@@ -4412,7 +4413,7 @@ function dokonci(f) {
   }
   st.body += f.zisk; S.set('body', st.body);
   // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
-  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-60)); }
+  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
   f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
   f.noveOdmeny = noveOdmeny(bodyPred, st.body);
   f.noveHry = noveHry(bodyPred, st.body);
@@ -4668,11 +4669,11 @@ document.addEventListener('click', e => {
     renderFlow(false);
     if (ok) {
       Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); vibruj(40);
-      FX.burst(x, y, 30); letiText(x, y - 20, '+10'); zablesk('rgb(47 191 113 / .35)');
+      FX.burst(x, y, 30); letiText(x, y - 20, 'Správne!'); zablesk('rgb(47 191 113 / .35)');
     } else {
       Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');
       const s = main.querySelector('.step'); if (s) s.classList.add('shake');
-      if (f.prehra) setTimeout(() => { Zvuk.play('bum'); vibruj([60, 40, 60]); }, 450);
+      if (f.prehra) { kvizZamkni(druhKvizu(f)); setTimeout(() => { Zvuk.play('bum'); vibruj([60, 40, 60]); }, 450); }
     }
   } else if (d.znova !== undefined && f) {
     // téma bez správnej odpovede: otázky (alebo celá téma) odznova, odpovede v inom poradí
@@ -4681,7 +4682,7 @@ document.addEventListener('click', e => {
     Zvuk.play('start'); renderFlow(); window.scrollTo(0, 0);
   } else if (d.dalej !== undefined && f) {
     Hlas.stop(); f.prave = false;
-    if (f.prehra) { kvizZamkni(druhKvizu(f)); f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
+    if (f.prehra) { f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec' && vsetkoZle(f)) { f.zle = true; f.i++; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec') {
       const oslava = Oslava.treba(f); dokonci(f);
@@ -4901,7 +4902,7 @@ const Cloud = {
     const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
-      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
+      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-400), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
@@ -5111,7 +5112,7 @@ function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
   if (!d || !Cloud.pouzivatel) return;
-  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-60), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
   zapis(d.id, d);
   socUlozProfil();
 }
@@ -5146,7 +5147,7 @@ async function prevodStareho(u) {
     if (s.exists() && !Cloud.deti.length) {
       const c = s.data(), id = noveId();
       const d = { meno: (c.meno || 'Dieťa').slice(0, 20), vek: c.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: nahodnyAvatar(),
-        body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-60), odznaky: [], poradie: Date.now() };
+        body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-400), odznaky: [], poradie: Date.now() };
       Cloud.deti = [{ id, ...d }]; zapis(id, d); S.set('aktivne', id);
     }
   } catch (e) { /* bez starého pokroku pokračujeme ďalej */ }
