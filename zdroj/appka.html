@@ -2588,7 +2588,7 @@ const Hra = {
   },
   zrus() { const h = st.hra; if (h) { h.beh = false; clearInterval(h.casovac); if (h.id !== 'sova') clearTimeout(h.dalsia); } st.hra = null; },
   koniec(menejJeLepsie, hodnota) {
-    const h = st.hra, kl = rekordKluc(h.id), stary = S.get(kl, null);
+    const h = st.hra; h.beh = false; const kl = rekordKluc(h.id), stary = S.get(kl, null);
     const lepsi = stary == null || (menejJeLepsie ? hodnota < stary : hodnota > stary);
     if (lepsi && hodnota > 0) S.set(kl, hodnota);
     S.set('hry-pocet-' + st.dietaId, S.get('hry-pocet-' + st.dietaId, 0) + 1);
@@ -2604,7 +2604,7 @@ const Hra = {
   // Lietajúca sova: ťuknutie = mávnutie krídlami
   sovaStart() {
     const h = st.hra;
-    if (!h || h.id !== 'sova' || h.beh || h.hotovo) return;
+    if (!h || h.id !== 'sova' || h.beh || h.hotovo || h.zivoty <= 0) return;
     const cv = document.getElementById('sova-cv'); if (!cv) return;
     const b = main.querySelector('.sova-hra .hv-start'); if (b) b.remove();
     Object.assign(h, sovaSvet(cv.clientWidth || 360, cv.clientHeight || 480, h.mal), { beh: true });
@@ -2613,6 +2613,11 @@ const Hra = {
     const krok = t => {
       if (st.hra !== h || !h.beh) return;
       const dt = Math.min(.05, Math.max(0, (t - pred) / 1000)); pred = t;
+      const cw = cv.clientWidth, ch = cv.clientHeight;
+      if (cw && ch && (Math.abs(cw - h.W) > 2 || Math.abs(ch - h.H) > 2)) { // otočený displej: prepočítať ihrisko
+        const k = ch / h.H; h.y *= k; h.prekazky.forEach(p => { p.stred *= k; }); h.hviezdy.forEach(s => { s.y *= k; });
+        h.W = cw; h.H = ch; h.x = Math.round(cw * .28); h.medzera = ch * (h.mal ? .37 : .31);
+      }
       sovaKrok(h, dt).forEach(u => this.sovaUdalost(h, u));
       this.sovaKresli(h);
       if (h.beh) requestAnimationFrame(krok);
@@ -2621,7 +2626,7 @@ const Hra = {
   },
   mav() {
     const h = st.hra;
-    if (!h || h.id !== 'sova' || h.hotovo) return;
+    if (!h || h.id !== 'sova' || h.hotovo || h.zivoty <= 0) return;
     if (!h.beh) { this.sovaStart(); return; }
     h.vy = h.skok; h.mava = .2; Zvuk.play('krid');
   },
@@ -2750,6 +2755,7 @@ const Hra = {
     const nebo = document.getElementById('nebo'); if (nebo) nebo.innerHTML = '';
     h.casovac = setInterval(() => {
       if (st.hra !== h) { clearInterval(h.casovac); return; }
+      if (document.hidden) return; // skrytá karta: čas stojí
       h.zostava--; obnovStavHry();
       if (h.zostava > 0 && h.zostava <= 3) Zvuk.play('tick');
       if (h.zostava <= 0) {
@@ -2828,6 +2834,7 @@ const Hra = {
     h.beh = true; Zvuk.play('start'); this.novyPriklad(h);
     h.casovac = setInterval(() => {
       if (st.hra !== h) { clearInterval(h.casovac); return; }
+      if (document.hidden) return; // skrytá karta: čas stojí
       h.zostava--; obnovStavHry();
       if (h.zostava > 0 && h.zostava <= 3) Zvuk.play('tick');
       if (h.zostava <= 0) {
@@ -3829,8 +3836,10 @@ const Ang = {
     };
     const veta = (x, medzera) => {
       const re = new RegExp('\\b' + x.v + '\\b', 'i');
-      if (medzera && re.test(x.en)) {
-        const sl = ANG_SLOVA.find(y => y.en === x.v && y.g === x.g) || { g: x.g, en: x.v }, o = vyber(sl, ANG_SLOVA, y => y.en).map(y => y.en);
+      // farby, čísla, pocity a časové slová dávajú viac správnych odpovedí (I have a blue hat), tam sa medzera nepýta
+      const viacOdpovedi = ['farby', 'cisla', 'pocity'].includes(x.g) || (x.g === 'cas' && !['week', 'wind', 'birthday'].includes(x.v));
+      if (medzera && !viacOdpovedi && re.test(x.en)) {
+        const sl = ANG_SLOVA.find(y => y.en === x.v && y.g === x.g) || { g: x.g, en: x.v }, zdroj = W.filter(y => y.g === x.g).length >= 3 ? W : ANG_SLOVA, o = vyber(sl, zdroj, y => y.en).map(y => y.en);
         return { t: 'Doplň chýbajúce slovo', slovo: x.en.replace(re, '_____'), o, s: o.indexOf(x.v), vys: `${x.en} znamená: ${x.sk}` };
       }
       const o = this.mix([x, ...this.mix(V.filter(y => y.sk !== x.sk), r).slice(0, 2)], r).map(y => y.sk);
@@ -3916,6 +3925,7 @@ const Ang = {
   /* Ďalšia otázka: krátke vyblednutie, potom nový obsah (pri obmedzenom pohybe hneď) */
   dalsia() {
     const q = st.ang, fn = () => {
+      main.classList.remove('ang-mizne');
       if (st.ang !== q) return;
       if (q.i >= q.qs.length - 1) { this.dokonci(); return; }
       q.i++; q.zle = []; q.spravne = false; Zvuk.play('pop'); main.classList.remove('ang-mizne'); render(); scrollTo(0, 0);
@@ -4495,7 +4505,7 @@ function render(tichy) {
 }
 
 Object.assign(views, RodicPanel.views); // pohľady panela rodiča (vykresľujú sa cez brany, fázy rodic*)
-function go(v) { Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.ang = null; st.view = v; render(); window.scrollTo(0, 0); }
+function go(v) { main.classList.remove('ang-mizne'); Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.ang = null; st.view = v; render(); window.scrollTo(0, 0); }
 
 // Lietajúca sova: ťuknutie kdekoľvek na oblohu (aj medzerník na počítači)
 document.addEventListener('pointerdown', e => { if (e.target && e.target.id === 'sova-cv' && st.hra && st.hra.id === 'sova') { e.preventDefault(); Hra.mav(); } });

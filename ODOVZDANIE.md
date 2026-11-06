@@ -264,3 +264,15 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - CSS cez `html[data-fon-styl]`: farba = `.blobs` skryté (žiadna animácia ani škvrny), vzor = škvrny skryté a čmáranice stoja. Hry: `body.hra-rezim .blobs` ostáva ako predtým.
 - Pravý tmavý režim nie je: appka je zámerne svetlá (tmavý text na kartách). „Tmavý variant“ je preto Večer, hlbšia levanduľová (#DCD9F6).
 - Verzia 51 / 3.7.6, cache `svet3-v14`. Overené: `test`, `build`, emulátor 390 px (výber štýlu a farby, ukladanie, kontrast textu mimo kariet na Domov/Témy/Hry/Priatelia/Ja pri Večer ≥ 4,4). Neoverené: kvízy, misia, strom, správy pri každej farbe očami, telefón, PWA po aktualizácii.
+
+## 3.8 oprava C – hry a angličtina (NENASADENÉ, verzia nezvýšená)
+- Nálezy z `bugy-hry.md`: opravené č. 1, 2, 3, 5, 6, 7, 8, 9, 10. Č. 4 neopravené.
+- Č. 1 Sova: `mav`/`sovaStart` nereštartujú pri `zivoty <= 0`, `Hra.koniec` nastaví `beh = false`.
+- Č. 2: `ang-mizne` sa zloží vždy na začiatku časovača v `Ang.dalsia` a aj v `go()`.
+- Č. 3 a 5: v `Ang.otazka/veta` sa medzera nepýta pri skupinách farby, čísla, pocity a pri časových slovách okrem week, wind, birthday. Zdroj zlých možností je `W` (podľa veku), `ANG_SLOVA` len keď `W` v skupine nemá aspoň 3. Do čísel pribudli 2 ľahké vety.
+- Č. 6 `manth`. Č. 7: veta o rukách má slovo `wash`, veta o prstoch `ten`.
+- Č. 8: `zostav.js` robí reload po novej verzii až keď nebeží hra, kvíz ani flow (kontrola každých 5 s). Č. 9: `sw.js` v zálohe použije aj `pamat` (inú verziu súboru).
+- Č. 10: Chytaj hviezdičky a Bubliny nepočítajú čas pri skrytej karte; Sova pri zmene rozmerov plátna prepočíta ihrisko.
+- Č. 4 (body za angličtinu raz za deň na viacerých zariadeniach): `ang-<id>` nie je v `SYNC`; oprava chce zmenu synchronizácie (a pravdepodobne `firestore.rules`), preto nechané.
+- Overené: `test`, `build`. Neoverené: emulátor, telefón, otočenie displeja, skrytá karta.
+- Cache `sw.js` ostáva `svet3-v14` (verziu zvýši zlúčenie).

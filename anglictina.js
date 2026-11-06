@@ -298,7 +298,7 @@ mesto|boat|čln|bout|1
 mesto|taxi|taxík|taksi|1
 cas|time|čas|tajm|1
 cas|week|týždeň|wík|1
-cas|month|mesiac|mansth|2
+cas|month|mesiac|manth|2
 cas|year|rok|jír|1
 cas|weekend|víkend|wíkend|1
 cas|evening|večer|ívnin|2
@@ -367,6 +367,8 @@ Open the door, please.|Otvor dvere, prosím.|door|domov|1
 I go to school.|Idem do školy.|school|skola|1
 My friend has a blue bag.|Môj kamarát má modrú tašku.|blue|farby|1
 I have five fingers.|Mám päť prstov.|five|cisla|1
+I have one nose.|Mám jeden nos.|one|cisla|1
+I see three birds.|Vidím tri vtáky.|three|cisla|1
 The fish can swim.|Ryba vie plávať.|fish|zvierata|1
 It is cold today.|Dnes je zima.|cold|cas|1
 I read a book.|Čítam knihu.|book|skola|1
@@ -375,7 +377,7 @@ I like ice cream.|Mám rád zmrzlinu.|ice cream|jedlo|1
 My sister can sing.|Moja sestra vie spievať.|sing|slovesa|2
 The car is black.|Auto je čierne.|black|farby|1
 The moon is in the sky.|Mesiac je na oblohe.|moon|priroda|1
-I wash my hands.|Umývam si ruky.|hand|telo|2
+I wash my hands.|Umývam si ruky.|wash|slovesa|2
 Good morning, teacher!|Dobré ráno, pani učiteľka!|morning|cas|1
 I draw a flower.|Kreslím kvetinu.|flower|priroda|2
 We play in the park.|Hráme sa v parku.|park|mesto|2
@@ -431,7 +433,7 @@ The map is in my bag.|Mapa je v mojej taške.|map|skola|2
 Cut the paper with scissors.|Papier strihaj nožnicami.|scissors|skola|2
 Our classroom is big.|Naša trieda je veľká.|classroom|skola|1
 Raise your arm.|Zdvihni ruku.|arm|telo|1
-I have ten fingers.|Mám desať prstov.|finger|telo|1
+I have ten fingers.|Mám desať prstov.|ten|cisla|1
 My heart is beating fast.|Srdce mi rýchlo bije.|heart|telo|2
 She has a happy face.|Má veselú tvár.|face|telo|1
 It is cold, wear a scarf.|Je zima, nasaď si šál.|scarf|telo|2

@@ -28,7 +28,7 @@ self.addEventListener('fetch', e => {
       const pamat = await c.match(r, { ignoreSearch: true });
       const ulozene = pamat && url.searchParams.has('v') && new URL(pamat.url).search !== url.search ? null : pamat;
       const zo_siete = fetch(r).then(res => { if (res.ok) c.put(r, res.clone()); return res; });
-      const zaloha = () => ulozene || (r.mode === 'navigate' ? c.match('index.html') : Response.error());
+      const zaloha = () => ulozene || pamat || (r.mode === 'navigate' ? c.match('index.html') : Response.error());
       if (!ulozene) return zo_siete.catch(zaloha);
       const pomaly = new Promise(res => setTimeout(() => res(ulozene), 3000));
       return Promise.race([zo_siete.catch(zaloha), pomaly]);
