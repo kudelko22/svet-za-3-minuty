@@ -40,7 +40,7 @@ service cloud.firestore {
         && d.done is list && d.done.size() <= 500
         && d.fav is list && d.fav.size() <= 500
         && d.dni is list && d.dni.size() <= 400
-        && d.poradie is int && d.poradie >= 0 && d.poradie <= 100 && d.verzia is int && d.verzia >= 0 && d.verzia <= 1000
+        && d.poradie is int && d.poradie >= 0 && d.poradie <= 10000000000000 && d.verzia is int && d.verzia >= 0 && d.verzia <= 1000
         && d.upravene == request.time;
     }
 

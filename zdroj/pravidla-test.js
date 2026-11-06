@@ -89,6 +89,9 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, deleteDoc,
   await t('vypnutému sa nepíše', addDoc(rozh(fa), { od: A, n: 'sova', kedy }), false);
   { const b = writeBatch(fa); b.delete(doc(fa, 'profily', A, 'priatelia', B)); b.delete(doc(fa, 'profily', B, 'priatelia', A)); await t('A odstráni priateľa B', b.commit(), true); }
   await t('stará rodina sa nezmenila (deti nečíta cudzí)', getDocs(collection(fc, 'rodiny', 'ua', 'deti')), false);
+  { const av = { vlasy: 'kucery', farbaVlasov: '#B5713C', koza: '#FFE0C7', oci: 'mrk', usta: 'jazyk', okuliare: 'ziadne', tricko: '#FFD23F', vzor: 'pruhy', doplnok: 'ziadny', zvieratko: 'ziadne', kuzlo: 'ziadne', pozadie: '#FFE1E8' };
+    const dt = { meno: 'Ema', vek: 'mladsi', avatar: av, body: 0, done: [], fav: [], dni: [], odznaky: [], kedy: {}, chyby: [], vybrate: [], poradie: Date.now(), verzia: 5, upravene: serverTimestamp() };
+    await t('rodič uloží dieťa tak, ako ho posiela appka (poradie = Date.now)', setDoc(doc(fa, 'rodiny', 'ua', 'deti', 'dabc123xyz'), dt), true); }
 
   // ---- profil rodiča (3.5) ----
   const rp = (o = {}) => ({ meno: 'Mama', ikona: 'r2', pin: { sol: 'c29sc29sc29sc29s', hash: 'aGFzaGhhc2hoYXNoaGFzaGhhc2g=', iter: 100000 }, nastavenia: { hnitie: { aaaa11: false } }, verzia: 1, upravene: serverTimestamp(), ...o });
