@@ -239,3 +239,4 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Nová funkcia `morph(a, b, koren)` a `render(true)`: tiché prekreslenie porovná nový HTML s obrazovkou a zmení len rozdiely (nezmenené prvky ostanú, neprehrajú sa animácie). Používa ho Misia (zlá odpoveď, Keby, indície, výber výsledku, náročnosť) a `renderFlow(false)` (vyhodnotenie odpovede v kvíze témy). Ostatné `render()` sa nemenili.
 - Okno „Čo je nové“ čaká, kým úplne zmizne `#uvod` (úvodná obrazovka so sovičkou), potom +350 ms.
 - Overené: `test`, `build`, emulátor: zlá odpoveď v misii zachová banner aj tlačidlá (rovnaké prvky), pribudne `bad` a reakcia; v kvíze témy sa po odpovedi zachoval horný pás aj odpovede; Čo je nové sa objavilo bez úvodnej obrazovky. Neoverené: samotné splynutie úvodnej obrazovky a okna naživo (zachytené len stavy), iné typy misií (indície, pravda/lož), telefón.
+- **3.7.1 a 3.7.2 NASADENÉ naraz**, push, záloha `Desktop\svet-za-3-minuty-3.7.2.zip`.
