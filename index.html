@@ -1255,14 +1255,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=46"></script>
-<script src="obrazky.js?v=46"></script>
-<script src="misie.js?v=46"></script>
-<script src="anglictina.js?v=46"></script>
-<script src="rodic-brana.js?v=46"></script>
-<script src="rodic-panel.js?v=46"></script>
+<script src="temy.js?v=47"></script>
+<script src="obrazky.js?v=47"></script>
+<script src="misie.js?v=47"></script>
+<script src="anglictina.js?v=47"></script>
+<script src="rodic-brana.js?v=47"></script>
+<script src="rodic-panel.js?v=47"></script>
 <script>
-const VERZIA_APPKY = 46; const VERZIA_NAZOV = '3.7.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 47; const VERZIA_NAZOV = '3.7.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3428,11 +3428,14 @@ function renderFlow(anim = true) {
     dalej = `<div class="flow-pad"></div><div class="fnext"><div class="gut"><button class="btn ${k.t === 'q' ? '' : 'blue'} wide${caka ? '' : ' cta'}" data-dalej${caka ? ' disabled' : ''}>${caka ? 'Vyberte odpoveď' : 'Pokračovať →'}</button></div></div>`;
   }
   main.classList.toggle('anim', anim);
-  main.innerHTML = `<div class="ftop"><button class="ib" data-zavriet aria-label="Zavrieť">${IKO.zavriet}</button>
+  const html = `<div class="ftop"><button class="ib" data-zavriet aria-label="Zavrieť">${IKO.zavriet}</button>
       <div class="fbar"><i style="width:${Math.max(6, Math.round(f.i / n * 100))}%"></i></div>
       <span class="fnum">${Math.min(f.i + 1, n)}/${n}</span>
       ${t ? `<button class="ib heart" data-fav aria-pressed="${fav}" aria-label="Uložiť tému">${fav ? IK.srdce : IK.srdcePrazdne}</button>` : ''}</div>
     ${krok(f, k)}${dalej}`;
+  // vyhodnotenie odpovede (anim = false): zmení sa len to, čo sa líši, aby obrázok ani otázka neblikli
+  if (!anim && main.firstElementChild && typeof document.createElement === 'function') { const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true); }
+  else main.innerHTML = html;
   ocisluj();
   if (k.t === 'koniec' && anim) oslava(f);
 }
@@ -3757,17 +3760,17 @@ const Misie = {
     const q = st.misia;
     if (d.miStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'misia'; st.misia = this.nova(this.dnesna(), this.splnenaDnes()); render(); scrollTo(0, 0); return true; }
     if (d.miHist) { const m = MISIE.find(x => x.id === d.miHist); if (m) { Zvuk.play('pop'); st.misia = this.nova(m, true); render(); scrollTo(0, 0); } return true; }
-    if (d.miU) { S.set('misie-uroven-' + st.dietaId, +d.miU); Zvuk.play('tap'); render(); return true; }
+    if (d.miU) { S.set('misie-uroven-' + st.dietaId, +d.miU); Zvuk.play('tap'); render(true); return true; }
     if (d.miSpat !== undefined) { Zvuk.play('whoosh'); st.misia = null; render(); scrollTo(0, 0); return true; }
     if (!q || q.koniec) return false;
-    if (d.miInd !== undefined) { q.ind++; q.anim = 'ind'; Zvuk.play('pop'); render(); return true; }
-    if (d.miVysl !== undefined) { q.vysl = q.vysl === +d.miVysl ? null : +d.miVysl; Zvuk.play('tap'); render(); return true; }
+    if (d.miInd !== undefined) { q.ind++; q.anim = 'ind'; Zvuk.play('pop'); render(true); return true; }
+    if (d.miVysl !== undefined) { q.vysl = q.vysl === +d.miVysl ? null : +d.miVysl; Zvuk.play('tap'); render(true); return true; }
     if (d.miHotovo !== undefined) { this.dokonci(); return true; }
     if (d.miVol !== undefined) {
       const i = +d.miVol, m = q.m;
-      if (m.t === 'keby') { if (!q.videl.includes(i)) q.videl.push(i); Zvuk.play('pop'); render(); return true; }
+      if (m.t === 'keby') { if (!q.videl.includes(i)) q.videl.push(i); Zvuk.play('pop'); render(true); return true; }
       const spravne = m.t === 'pravdy' ? m.v.findIndex(x => !x.ok) : m.s;
-      if (i === spravne) this.dokonci(); else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); render(); }
+      if (i === spravne) this.dokonci(); else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); render(true); }
       return true;
     }
     return false;
@@ -3928,6 +3931,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 47, obr: () => IK.mozog, n: 'Bez blikania', p: 'Misie a kvízy sa po odpovedi už neprekresľujú. Okno Čo je nové sa ukáže až po úvodnej obrazovke so sovičkou.' },
   { v: 46, obr: () => IK.duha, n: 'Plynulé pozadie', p: 'Pozadie sa pri výbere mení plynulo a obrazovka už neblikne.' },
   { v: 45, obr: () => IK.duha, n: 'Vlastné pozadie', p: 'V profile Ja si môžeš vybrať farbu pozadia appky: Nebo, Ružová, Lúka, Slnko, Fialová alebo More.' },
   { v: 44, obr: () => IK.ohen, n: 'Tvoj týždeň hore', p: 'Karta Tento týždeň so stromom múdrosti je teraz na Domove úplne hore.' },
@@ -3974,7 +3978,9 @@ const Novinky = {
     const odkedy = videl || (st.done.length || st.body ? 21 : VERZIA_APPKY);
     S.set('videl-verziu', VERZIA_APPKY);
     const z = NOVINKY.filter(n => n.v > odkedy);
-    if (z.length) setTimeout(() => this.ukaz(z), 700);
+    // okno sa ukáže až keď úplne zmizne úvodná obrazovka so sovičkou, aby sa nevideli naraz
+    const caka = () => { const u = document.getElementById('uvod'); if (u && u.isConnected) setTimeout(caka, 120); else setTimeout(() => this.ukaz(z), 350); };
+    if (z.length) setTimeout(caka, 300);
   },
   ukaz(z) {
     const el = document.createElement('div');
@@ -4411,7 +4417,22 @@ function ocisluj() {
   main.querySelectorAll('.step').forEach(s => [...s.children].forEach((el, j) => el.style.setProperty('--j', j)));
 }
 
-function render() {
+/* Tiché prekreslenie: porovná nový obsah s tým, čo je na obrazovke, a zmení len to, čo sa líši.
+   Nezmenené prvky ostanú, takže sa nič nevymení, neprehrajú sa animácie a nič nebliká. */
+function morph(a, b, koren) {
+  if (!koren && (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName)) return false;
+  if (a.nodeType !== 1) { if (a.nodeValue !== b.nodeValue) a.nodeValue = b.nodeValue; return true; }
+  if (!koren) [...a.attributes].forEach(t => { if (!b.hasAttribute(t.name)) a.removeAttribute(t.name); });
+  if (!koren) [...b.attributes].forEach(t => { if (a.getAttribute(t.name) !== t.value) a.setAttribute(t.name, t.value); });
+  const x = [...a.childNodes], y = [...b.childNodes];
+  y.forEach((n, i) => {
+    if (!x[i]) a.appendChild(n.cloneNode(true));
+    else if (!morph(x[i], n)) a.replaceChild(n.cloneNode(true), x[i]);
+  });
+  x.slice(y.length).forEach(n => n.remove());
+  return true;
+}
+function render(tichy) {
   Uvod.skontroluj();
   Pozadie.pouzi();
   const brana = st.faza !== 'appka', auto = !brana && !!st.auto, hra = !brana && !auto && !!st.hra, flow = !brana && !auto && !hra && !!st.flow;
@@ -4426,8 +4447,10 @@ function render() {
   if (hra) { renderHra(); return; }
   if (flow) { renderFlow(); return; }
   document.body.classList.remove('tinted');
-  main.classList.add('anim');
-  main.innerHTML = views[st.view]();
+  const html = views[st.view]();
+  if (tichy === true && main.firstElementChild && typeof document.createElement === 'function') {
+    const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true);
+  } else { main.classList.add('anim'); main.innerHTML = html; }
   ocisluj();
   if (st.view === 'domov' && !document.querySelector('.oslava')) Novinky.skontroluj();
   if (st.view === 'domov' && !document.querySelector('.oslava')) RodicVyzva.skontroluj();

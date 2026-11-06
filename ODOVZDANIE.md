@@ -234,3 +234,8 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 ## 3.7.1 – plynulé pozadie (NENASADENÉ)
 - Výber pozadia už neprekresľuje obrazovku (mení len premenné a `aria-pressed`). Farby `--fon`, `--b1..b4` sú registrované cez `@property` a `:root` má prechod 0,7 s, takže sa zmena plynulo prelína. Verzia 46 / 3.7.1, cache `svet3-v9`.
 - Overené: `test`, `build`, emulátor: karta sa pri výbere nevymení (ten istý prvok), farba sa zmení. Neoverené: samotná plynulosť okom (pane je skrytý, medzihodnota sa nezachytila), telefón.
+
+## 3.7.2 – bez blikania v misiách a kvízoch, Čo je nové po sovičke (NASADENÉ spolu s 3.7.1)
+- Nová funkcia `morph(a, b, koren)` a `render(true)`: tiché prekreslenie porovná nový HTML s obrazovkou a zmení len rozdiely (nezmenené prvky ostanú, neprehrajú sa animácie). Používa ho Misia (zlá odpoveď, Keby, indície, výber výsledku, náročnosť) a `renderFlow(false)` (vyhodnotenie odpovede v kvíze témy). Ostatné `render()` sa nemenili.
+- Okno „Čo je nové“ čaká, kým úplne zmizne `#uvod` (úvodná obrazovka so sovičkou), potom +350 ms.
+- Overené: `test`, `build`, emulátor: zlá odpoveď v misii zachová banner aj tlačidlá (rovnaké prvky), pribudne `bad` a reakcia; v kvíze témy sa po odpovedi zachoval horný pás aj odpovede; Čo je nové sa objavilo bez úvodnej obrazovky. Neoverené: samotné splynutie úvodnej obrazovky a okna naživo (zachytené len stavy), iné typy misií (indície, pravda/lož), telefón.
