@@ -305,3 +305,12 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Overené: `test`, `build`, `test:rules` (86/86), emulátor 390 px: nový účet, vytvorenie dieťaťa, Domov, Témy, Hry, Priatelia, Ja, vytvorenie rodiča a PIN, zámok panela po odchode.
 - NEOVERENÉ: existujúci účet bez rodiča, voľné písanie s filtrom, správy a priatelia (treba dva účty), angličtina bez priesvitnosti, hra Sova, pozadia, snímky, Google okno. Text na Priateľoch stále hovorí „môžu písať aj vlastné slová“, hoci písanie zapína až rodič.
 - Neopravené z auditu: `bugy-ucty` 6 a 10, `bugy-hry` 4 (podľa zadania), čistenie IndexedDB po odhlásení, rodič a dieťa sú v pravidlách ten istý účet.
+
+## Bez blikania 1 – jadro (render, spúšťače, animácie; nenasadené, verzia nezvýšená)
+- Príčina: `render()` pri každom volaní zahodilo celý `main.innerHTML` (160 uzlov na domove), znova sa spustili vstupné animácie `.anim`, zmizol fokus a rozpísaný text a scroll sa orezal. Volalo ho ~58 miest (Firestore `onSnapshot` cez `prevezmi`/`socZmena`, vek, zvuky, nastavenia).
+- Oprava: `render()` si značí obrazovku (`main.firstElementChild._rk` = pohľad + priateľ). Tá istá obrazovka sa prekreslí potichu cez `morph` (bez animácií, scroll, fokus aj výber ostanú). Nová obrazovka alebo `go()` (nastaví `Render.nova`) sa vykreslí celá s animáciou. Iné renderery (`renderBrana/Auto/Hra/Flow`) prepíšu `main`, takže značka zmizne sama a nič v nich sa nemenilo.
+- Témy: vyhľadávací input má jeden poslucháč (`_hl`), `fillTemy` neprepisuje nezmenený zoznam, `morph` zoznam nevyprázdňuje. Chat priateľa sa pri tichom prekreslení nescrolluje nadol, ak je dieťa hore.
+- Pozadie: štýl (animované/jednofarebné/vzor) sa prepína stmavením (`opacity`), nie `display:none`. Zmena farby už mala prechod (`@property`).
+- `zostav.js`: nová verzia z `sw.js` obnoví stránku až keď dieťa odíde z karty (alebo 30 s nič nerobí) a nie je v hre/kvíze/písaní/bráne; predtým obnova nastala priamo pred očami.
+- Počítadlo prekreslení: `Render.pocet` v konzole. Meranie (emulátor, domov, 10x `render()`): pred 160 odstránených a 160 pridaných uzlov, po 0 a 0; Témy s fokusom a scrollom: 50 -> 0 odstránených, fokus aj výber ostali.
+- Neoverené: plynulosť prechodov očami (karta prehliadača bola skrytá, prechody sa nehýbali), telefón, priatelia/chat s reálnymi dátami z Firestore, reálne obnovenie po novom `sw.js`. Brány, hry, kvízy a rodič sa nemenili.
