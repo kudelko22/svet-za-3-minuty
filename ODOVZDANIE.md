@@ -276,3 +276,8 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - `firebase.json`: `AGENTS.md` v `ignore`.
 - Nezmenené, len obmedzenie: pravidlá nerozlišujú rodiča a dieťa (rovnaký účet), kód priateľa je uhádnuteľný (≈23 bitov). Netýka sa tejto opravy.
 - Neoverené v prehliadači: celý tok v emulátore (port 5050 používal niekto iný), Google okno `prompt: login`, telefón.
+
+## 3.8 oprava B – údaje a účty (NENASADENÉ, bez zvýšenia verzie)
+- Opravené (`bugy-ucty` č. 7, 8, 9, 12, 13, 14, 16, 17, 18; `bugy-jadro` č. 4): zmazané dieťa sa nevráti zo starého `pokrok/<uid>` (príznak `pokrok-hotovo-<uid>` v localStorage, nič sa nemaže z cloudu); starý lokálny pokrok (`STARY`) dostane len prvý účet na zariadení (`stary-hotovo`); chybová obrazovka `chybaNacitania` po 12 s alebo pri chybe čítania, s „Skúsiť znova“ a „Odhlásiť sa“; „Pochváliť sa“ cez `allSettled`; `socZmaz` najprv zmaže priateľstvá na oboch stranách; zápis profilu rodiča má limit 8 s a `S2.pracuje` sa nuluje; vädnutie sa zrkadlí do localStorage (aj pri `rodicZmaz`); „videné“ podľa dieťaťa; po odhlásení sa vynuluje `st`, `rodic-neskor` je podľa uid; `prevodStareho` kontroluje, že používateľ sa nezmenil; `visibilitychange`/`pagehide` volajú `Cloud.ulozHned()`.
+- Nerobené: čistenie IndexedDB po odhlásení (`terminate`/`clearIndexedDbPersistence`) – hrozí strata neodoslaných zápisov a appka by potrebovala reload. Medzizariadeniový príznak prenosu `pokrok` (pravidlá nemeniť): príznak je len lokálny.
+- Neoverené v emulátore ani offline. Overené: `test`, `build`, syntax skriptov.
