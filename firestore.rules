@@ -7,13 +7,31 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    // Postavička: len známe kľúče a krátke hodnoty z písmen, číslic a #. Hodnoty sa pri priateľoch vykresľujú do SVG, preto nesmú obsahovať iné znaky.
+    function platnyAvatar(a) {
+      return a is map
+        && a.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'kuzlo', 'pozadie'])
+        && a.size() <= 12
+        && a.get('vlasy', 'x') is string && a.get('vlasy', 'x').size() <= 14 && a.get('vlasy', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('farbaVlasov', '#000000') is string && a.get('farbaVlasov', '#000000').matches('^#[0-9A-Fa-f]{6}$')
+        && a.get('koza', '#000000') is string && a.get('koza', '#000000').matches('^#[0-9A-Fa-f]{6}$')
+        && a.get('tricko', '#000000') is string && a.get('tricko', '#000000').matches('^#[0-9A-Fa-f]{6}$')
+        && a.get('pozadie', '#000000') is string && a.get('pozadie', '#000000').matches('^#[0-9A-Fa-f]{6}$')
+        && a.get('oci', 'x') is string && a.get('oci', 'x').size() <= 14 && a.get('oci', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('usta', 'x') is string && a.get('usta', 'x').size() <= 14 && a.get('usta', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('okuliare', 'x') is string && a.get('okuliare', 'x').size() <= 14 && a.get('okuliare', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('vzor', 'x') is string && a.get('vzor', 'x').size() <= 14 && a.get('vzor', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('doplnok', 'x') is string && a.get('doplnok', 'x').size() <= 14 && a.get('doplnok', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('zvieratko', 'x') is string && a.get('zvieratko', 'x').size() <= 14 && a.get('zvieratko', 'x').matches('^[#A-Za-z0-9]+$')
+        && a.get('kuzlo', 'x') is string && a.get('kuzlo', 'x').size() <= 14 && a.get('kuzlo', 'x').matches('^[#A-Za-z0-9]+$');
+    }
+
     // Profil dieťaťa: meno, vek, postavička, pokrok a odznaky (od verzie 6; odznaky a zvieratko od verzie 8, kedy a chyby od verzie 11, vybrate od verzie 19)
     function platneDieta(d) {
       return d.keys().hasOnly(['meno', 'vek', 'avatar', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby', 'vybrate', 'poradie', 'verzia', 'upravene'])
         && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
         && d.vek in ['mladsi', 'starsi']
-        && d.avatar is map
-        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'kuzlo', 'pozadie'])
+        && platnyAvatar(d.avatar)
         && (!('odznaky' in d) || (d.odznaky is list && d.odznaky.size() <= 100))
         && (!('kedy' in d) || (d.kedy is map && d.kedy.size() <= 500))
         && (!('chyby' in d) || (d.chyby is list && d.chyby.size() <= 60))
@@ -22,7 +40,7 @@ service cloud.firestore {
         && d.done is list && d.done.size() <= 500
         && d.fav is list && d.fav.size() <= 500
         && d.dni is list && d.dni.size() <= 400
-        && d.poradie is int && d.verzia is int
+        && d.poradie is int && d.poradie >= 0 && d.poradie <= 100 && d.verzia is int && d.verzia >= 0 && d.verzia <= 1000
         && d.upravene == request.time;
     }
 
@@ -42,7 +60,7 @@ service cloud.firestore {
         && d.pin.iter is int && d.pin.iter >= 1000 && d.pin.iter <= 1000000
         && d.nastavenia is map && d.nastavenia.keys().hasOnly(['hnitie'])
         && (!('hnitie' in d.nastavenia) || (d.nastavenia.hnitie is map && d.nastavenia.hnitie.size() <= 8))
-        && d.verzia is int
+        && d.verzia is int && d.verzia >= 0 && d.verzia <= 1000
         && d.upravene == request.time;
     }
     match /rodiny/{uid}/rodic/{profil} {
@@ -80,8 +98,7 @@ service cloud.firestore {
     function platnyProfil(d) {
       return d.keys().hasOnly(['meno', 'avatar', 'body', 'seria', 'temy', 'odznaky', 'posledne', 'tyzKey', 'tyzStart', 'kod', 'rodina', 'zapnute', 'upravene', 'pisanie'])
         && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
-        && d.avatar is map
-        && d.avatar.keys().hasOnly(['vlasy', 'farbaVlasov', 'koza', 'oci', 'usta', 'okuliare', 'tricko', 'vzor', 'doplnok', 'zvieratko', 'kuzlo', 'pozadie'])
+        && platnyAvatar(d.avatar)
         && d.body is int && d.body >= 0 && d.body <= 1000000
         && d.seria is int && d.seria >= 0 && d.seria <= 5000
         && d.temy is int && d.temy >= 0 && d.temy <= 1000
@@ -89,7 +106,7 @@ service cloud.firestore {
         && d.posledne is list && d.posledne.size() <= 5
         && d.tyzKey is string && d.tyzKey.size() <= 10
         && d.tyzStart is int && d.tyzStart >= 0 && d.tyzStart <= 1000000
-        && d.kod is string && d.kod.size() <= 12
+        && d.kod is string && d.kod.size() <= 12 && d.kod.matches('^[A-Za-z0-9-]*$')
         && d.rodina == request.auth.uid && d.zapnute is bool && (!('pisanie' in d) || d.pisanie is bool)
         && d.upravene == request.time;
     }
@@ -106,7 +123,7 @@ service cloud.firestore {
         allow create: if od != pid && majitel(od) && zapnuty(pid) && zapnuty(od)
           && request.resource.data.keys().hasOnly(['meno', 'avatar', 'rodina', 'kedy'])
           && request.resource.data.meno is string && request.resource.data.meno.size() >= 1 && request.resource.data.meno.size() <= 20
-          && request.resource.data.avatar is map && request.resource.data.rodina == request.auth.uid
+          && platnyAvatar(request.resource.data.avatar) && request.resource.data.rodina == request.auth.uid
           && request.resource.data.kedy == request.time
           && !exists(/databases/$(database)/documents/profily/$(pid)/priatelia/$(od));
         allow delete: if majitel(pid) || (prihlaseny() && resource.data.rodina == request.auth.uid);
@@ -147,8 +164,8 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[0])/priatelia/$(rid.split('_')[1]))
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[1])/priatelia/$(rid.split('_')[0]))
         && platnaSprava(request.resource.data)
-        // vlastný text smú posielať všetci spárovaní priatelia (obe strany už rodič zapol)
-        ;
+        // vlastný text (x) len keď rodič zapol voľné písanie oboma deťom; hotové vety a nálepky bez toho
+        && (!('x' in request.resource.data) || (pisanie(rid.split('_')[0]) && pisanie(rid.split('_')[1])));
       // srdiečko: dá ho len ten, komu správa prišla, a zmení len pole r
       allow update: if prihlaseny() && rid.split('_').size() == 2
         && majitel(resource.data.od == rid.split('_')[0] ? rid.split('_')[1] : rid.split('_')[0])

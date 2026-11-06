@@ -62,10 +62,19 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, deleteDoc,
   await t('C nečíta rozhovor A a B', getDocs(rozh(fc)), false);
   await t('C nepíše do rozhovoru A a B', addDoc(rozh(fc), { od: C, n: 'sova', kedy }), false);
   await t('C nepíše A, keď nie sú priatelia', addDoc(collection(fc, 'rozhovory', [A, C].sort().join('_'), 'spravy'), { od: C, n: 'sova', kedy }), false);
+  // postavička z cudzieho dokumentu sa vykresľuje do SVG: žiadne znaky mimo písmen, číslic a #
+  const zlyAv = { vlasy: 'kratke', koza: '"/><img src=x onerror=alert(1)>' };
+  await t('profil so škodlivou farbou postavičky neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), avatar: zlyAv }), false);
+  await t('profil s textom namiesto farby neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), avatar: { koza: 'red' } }), false);
+  await t('profil s číslom v postavičke neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), avatar: { vlasy: 5 } }), false);
+  await t('profil s dlhou hodnotou postavičky neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), avatar: { vlasy: 'a'.repeat(40) } }), false);
+  await t('profil s platnou postavičkou prejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), avatar: { vlasy: 'kratke', farbaVlasov: '#2B2240', koza: '#FFE0C7', pozadie: '#D6E6FF' } }), true);
+  await t('žiadosť so škodlivou postavičkou neprejde', setDoc(doc(fb, 'profily', A, 'ziadosti', B), { meno: 'Tomáš', avatar: zlyAv, rodina: 'ub', kedy: serverTimestamp() }), false);
   await t('A zmení svoj profil', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), body: 50 }), true);
   await t('profil s e-mailom neprejde', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), email: 'x@y.sk' }), false);
-  await t('vlastný text medzi priateľmi prejde bez ďalšieho zapínania', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), true);
+  await t('vlastný text neprejde, kým ho rodič nezapol', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), false);
   await t('A zapne vlastný text', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), pisanie: true }), true);
+  await t('vlastný text neprejde, keď ho zapol len jeden', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát', kedy }), false);
   await t('profil s pisanie nie bool neprejde', setDoc(doc(fb, 'profily', B), { ...prof('ub', 'DUHA-BBBB'), pisanie: 'ano' }), false);
   await t('B zapne vlastný text', setDoc(doc(fb, 'profily', B), { ...prof('ub', 'DUHA-BBBB'), pisanie: true }), true);
   await t('vlastný text prejde, keď je zapnutý obom', addDoc(rozh(fa), { od: A, x: 'Ahoj kamarát, ako sa máš?', kedy }), true);
@@ -73,6 +82,9 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, deleteDoc,
   await t('text nad 200 znakov neprejde', addDoc(rozh(fa), { od: A, x: 'a'.repeat(201), kedy }), false);
   await t('text s vetou naraz neprejde', addDoc(rozh(fa), { od: A, x: 'hm', k: 'ahoj', kedy }), false);
   await t('text nie je reťazec neprejde', addDoc(rozh(fa), { od: A, x: 5, kedy }), false);
+  await t('A vypne vlastný text', setDoc(doc(fa, 'profily', A), { ...prof('ua', 'SOVA-AAAA'), pisanie: false }), true);
+  await t('vlastný text neprejde po vypnutí', addDoc(rozh(fa), { od: A, x: 'Ahoj', kedy }), false);
+  await t('hotová veta prejde aj bez písania', addDoc(rozh(fa), { od: A, k: 'ahoj', kedy }), true);
   await t('B vypne priateľov', setDoc(doc(fb, 'profily', B), prof('ub', '', false)), true);
   await t('vypnutému sa nepíše', addDoc(rozh(fa), { od: A, n: 'sova', kedy }), false);
   { const b = writeBatch(fa); b.delete(doc(fa, 'profily', A, 'priatelia', B)); b.delete(doc(fa, 'profily', B, 'priatelia', A)); await t('A odstráni priateľa B', b.commit(), true); }
