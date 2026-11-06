@@ -240,3 +240,8 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Okno „Čo je nové“ čaká, kým úplne zmizne `#uvod` (úvodná obrazovka so sovičkou), potom +350 ms.
 - Overené: `test`, `build`, emulátor: zlá odpoveď v misii zachová banner aj tlačidlá (rovnaké prvky), pribudne `bad` a reakcia; v kvíze témy sa po odpovedi zachoval horný pás aj odpovede; Čo je nové sa objavilo bez úvodnej obrazovky. Neoverené: samotné splynutie úvodnej obrazovky a okna naživo (zachytené len stavy), iné typy misií (indície, pravda/lož), telefón.
 - **3.7.1 a 3.7.2 NASADENÉ naraz**, push, záloha `Desktop\svet-za-3-minuty-3.7.2.zip`.
+
+## 3.7.3 – téma dňa 1, misia 2 (NENASADENÉ)
+- `kartaMisie` v `zdroj/appka.html`: číslo 1 = Téma dňa (tlačidlo, zvýraznená žltým a prerušovaným rámom, kým nie je prebratá; po téme zelená s ✓), číslo 2 = Misia (zamknutá a šedá „po téme dňa“, nedá sa ťuknúť, kým téma nie je hotová; potom zvýraznená a klikateľná). Čísla ostávajú vždy. Verzia 48 / 3.7.3, cache `svet3-v11`.
+- Dôsledok: kým dieťa neprebralo tému dňa, nedostane sa do misie z Domova. Misia je dostupná ešte z karty na konci témy.
+- Overené: `test`, `build`, emulátor (stavy pred a po téme, zamknutá karta nie je tlačidlo). Neoverené: vzhľad na snímke (panel bol skrytý), telefón.

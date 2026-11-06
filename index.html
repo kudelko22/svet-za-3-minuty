@@ -578,6 +578,10 @@ body.auto-rezim .blobs { opacity: .3; }
 .misia-cast.hotova i { background: var(--grass); color: #fff; }
 .misia-cast > span { display: grid; gap: 0; min-width: 0; font: 700 1rem/1.1 var(--f-display); }
 .misia-cast small { font: 700 .75rem/1.2 var(--f-body); color: var(--muted); }
+.misia-cast.aktivna { background: #FFF3B8; outline: 3px dashed var(--ink); outline-offset: 2px; }
+.misia-cast.druha.aktivna { background: color-mix(in srgb, var(--c) 30%, #fff); }
+.misia-cast.zamknuta { opacity: .55; box-shadow: none; background: var(--soft); }
+.misia-cast.zamknuta i { background: #fff; }
 button.misia-cast:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
 .misia-pas { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; text-align: left; border: 3px solid var(--ink); border-radius: 20px; background: var(--c); color: #fff; box-shadow: 0 4px 0 var(--ink); }
 .misia-pas:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
@@ -1255,14 +1259,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=47"></script>
-<script src="obrazky.js?v=47"></script>
-<script src="misie.js?v=47"></script>
-<script src="anglictina.js?v=47"></script>
-<script src="rodic-brana.js?v=47"></script>
-<script src="rodic-panel.js?v=47"></script>
+<script src="temy.js?v=48"></script>
+<script src="obrazky.js?v=48"></script>
+<script src="misie.js?v=48"></script>
+<script src="anglictina.js?v=48"></script>
+<script src="rodic-brana.js?v=48"></script>
+<script src="rodic-panel.js?v=48"></script>
 <script>
-const VERZIA_APPKY = 47; const VERZIA_NAZOV = '3.7.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 48; const VERZIA_NAZOV = '3.7.3'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3778,9 +3782,15 @@ const Misie = {
 };
 // dve časti jednej misie dňa v karte na Domove: 1 téma (objav), 2 hra (skús)
 function kartaMisie(temaHotova) {
-  const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
-  return `<div class="misia-casti"><span class="misia-cast${temaHotova ? ' hotova' : ''}"><i>${temaHotova ? '✓' : '1'}</i><span><b>Objav</b><small>téma dňa</small></span></span>
-    <button class="misia-cast druha${ok ? ' hotova' : ''}" data-go="misia" style="--c:${T.c}"><i>${ok ? '✓' : '2'}</i><span><b>Skús</b><small>${T.n}</small></span></button></div>`;
+  const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes(), id = temaDna().id;
+  // 1 téma dňa (zvýraznená, kým nie je prebratá), 2 misia (sa odomkne až po téme)
+  const prva = temaHotova
+    ? `<span class="misia-cast hotova"><i>1</i><span><b>Téma dňa ✓</b><small>prebratá</small></span></span>`
+    : `<button class="misia-cast aktivna" data-start="${id}"><i>1</i><span><b>Téma dňa</b><small>začni tu</small></span></button>`;
+  const druha = !temaHotova
+    ? `<span class="misia-cast druha zamknuta" aria-disabled="true"><i>2</i><span><b>Misia</b><small>po téme dňa</small></span></span>`
+    : `<button class="misia-cast druha${ok ? ' hotova' : ' aktivna'}" data-go="misia" style="--c:${T.c}"><i>2</i><span><b>Misia${ok ? ' ✓' : ''}</b><small>${T.n}</small></span></button>`;
+  return `<div class="misia-casti">${prva}${druha}</div>`;
 }
 // veľká karta na konci témy dňa: misia viazaná na tému s jej obrázkom
 function kartaMisiePoTeme(t) {
@@ -3931,6 +3941,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 48, obr: () => IK.ohen, n: 'Najprv téma, potom misia', p: 'Na Domove je téma dňa číslo 1 a zvýraznená. Misia dňa je číslo 2 a odomkne sa, keď prebereš tému.' },
   { v: 47, obr: () => IK.mozog, n: 'Bez blikania', p: 'Misie a kvízy sa po odpovedi už neprekresľujú. Okno Čo je nové sa ukáže až po úvodnej obrazovke so sovičkou.' },
   { v: 46, obr: () => IK.duha, n: 'Plynulé pozadie', p: 'Pozadie sa pri výbere mení plynulo a obrazovka už neblikne.' },
   { v: 45, obr: () => IK.duha, n: 'Vlastné pozadie', p: 'V profile Ja si môžeš vybrať farbu pozadia appky: Nebo, Ružová, Lúka, Slnko, Fialová alebo More.' },
