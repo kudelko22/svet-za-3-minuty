@@ -215,3 +215,8 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - `zdroj/appka.html`: v karte Priatelia už nie je tlačidlo „Zapnúť priateľov“, len vysvetlenie „Priateľov zapína rodič“ (bez rodiča s ponukou „Vytvoriť účet rodiča“). Zmazané obslužné vetvy `socZapni` a `socVypni`. `prehladPriatelov`: s rodičom tlačidlá len v paneli rodiča (nové `data-rp-soczapni` v `rodic-panel.js`), bez rodiča len text a „Vytvoriť účet rodiča“. Existujúci zapnutí priatelia ostali, nič sa nemazalo.
 - Test v `zdroj/test.js` (blok „priatelia: …“). Overené `test`, `build`; emulátor neskúšaný.
 - Obchádzka: `firestore.rules` nerozlíšia dieťa od rodiča (obaja sú prihlásení účtom rodiny), preto je to len v rozhraní. Dieťa technicky vie zmeniť `profily/{id}.zapnute` cez konzolu prehliadača alebo ak rodič zámok panelu nechá odomknutý. Pravidlá sa nemenili.
+
+## 3.6.2 – zlúčené opravy (NENASADENÉ, čaká na súhlas vlastníka priamo v session)
+- Zlúčené do `main`: angličtina bez prekresľovania po odpovedi (`1f32fb5`) a priateľov zapína len rodič (`b99cf49`). Konflikty len v `ODOVZDANIE.md`. `VERZIA_APPKY` 43, `3.6.2`, cache `svet3-v6`, `NOVINKY` doplnené, `index.html` zostavený.
+- Overené: `test`, `build`; emulátor 1280 px: v angličtine zlá aj správna odpoveď bez výmeny prvkov na stránke; profil dieťaťa bez rodiča nemá prepínač (text „najprv si vytvorte účet rodiča“); panel rodiča: prehľad dieťaťa má Zapnúť/Vypnúť priateľov a funguje.
+- Neoverené: profil dieťaťa s rodičom očami, tablet, 360 px, staršie dieťa, vizuálne „bez poskoku“ (len kontrola DOM), `test:rules` (výstup nejasný, pravidlá sa nemenili). Konzola: len chyby spojenia z emulátora.
