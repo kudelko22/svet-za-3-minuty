@@ -229,3 +229,4 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 ## 3.7 – pozadie appky v profile (NENASADENÉ)
 - `POZADIA` + `Pozadie` v `zdroj/appka.html`: 6 farebných pozadí (Nebo, Ružová, Lúka, Slnko, Fialová, More), karta „Pozadie appky“ v profile Ja pod odznakmi. Mení `--fon` a `--b1..b4` (škvrny). Ukladá sa v `localStorage` kľúčom `pozadie-<id dieťaťa>`, teda len na tomto zariadení a zvlášť pre každé dieťa (do cloudu sa nesynchronizuje). Verzia 45 / 3.7, cache `svet3-v8`.
 - Overené: `test`, `build`, emulátor: ťuknutie zmení premenné, škvrny a uloženie, kontrola šírky. Neoverené: farba samotného podkladu na snímke (prechod sa v skrytom paneli nedokončil), telefón/tablet, chod po výmene dieťaťa, vzhľad kariet pri jednotlivých pozadiach.
+- **3.7 NASADENÉ**, push, záloha `Desktop\svet-za-3-minuty-3.7.zip`.
