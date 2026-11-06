@@ -1667,6 +1667,8 @@ function row(t) {
     ${st.done.includes(t.id) ? '<span class="badge ok" aria-label="Hotovo">✓</span>' : '<span class="badge new">Nová</span>'}</button>`;
 }
 
+// odomknutý panel rodiča sa po vypršaní zámku sám zakryje (bez ťuknutia)
+setInterval(() => { if (Rodic.odomknute && Date.now() > Rodic.do && /^rodic(Dieta|Nastavenia)?$/.test(st.faza)) render(); }, 15000);
 /* Brána pred appkou: prihlásenie rodiča, výber dieťaťa a tvorba postavičky */
 const vekText = v => v === 'starsi' ? '9–12 rokov' : '5–8 rokov';
 function noveUpravovanie(prve) {
@@ -1687,6 +1689,7 @@ const Rodic = {
   // prechod na obrazovku rodiča: fázy rodicTvorba, rodicPin, rodic, rodicDieta (id dieťaťa), rodicNastavenia; aj 'vyber'
   chod(faza, id) {
     Hlas.stop();
+    if (!String(faza).startsWith('rodic')) this.zamkni(); // odchod z rodičovskej zóny = zamknúť
     if (id !== undefined) st.rodicDieta = id;
     st.flow = null; st.faza = faza; render(); scrollTo(0, 0);
   },
@@ -1807,7 +1810,9 @@ function tvorbaKlik(b, d) {
     u.avatar[u.kat] = d.avvol; Zvuk.play('pop'); obnovTvorbu(); return true;
   }
   if (d.nahodne !== undefined) { u.avatar = nahodnyAvatar(u.body); Zvuk.play('boing'); obnovTvorbu(); const [x, y] = stred(b); FX.burst(x, y, 16, ['star', 'dot'], 6); return true; }
-  if (d.uvek) { u.vek = d.uvek; Zvuk.play('pop'); document.querySelectorAll('[data-uvek]').forEach(x => x.setAttribute('aria-pressed', x.dataset.uvek === u.vek)); return true; }
+  if (d.uvek) {
+    if (window.Cloud && maRodica() && !u.novy && d.uvek !== u.vek && !Rodic.jeOdomknute()) { Zvuk.play('bad'); toast('Vek dieťaťa mení rodič v paneli rodiča.'); return true; }
+    u.vek = d.uvek; Zvuk.play('pop'); document.querySelectorAll('[data-uvek]').forEach(x => x.setAttribute('aria-pressed', x.dataset.uvek === u.vek)); return true; }
   if (d.ulozitDieta !== undefined) {
     u.meno = u.meno.trim();
     if (!u.meno) { Zvuk.play('bad'); toast('Napíšte meno dieťaťa.'); document.getElementById('meno-dietata').focus(); return true; }
@@ -1817,11 +1822,11 @@ function tvorbaKlik(b, d) {
     window.Cloud.ulozDieta(u);
     return true;
   }
-  if (d.zmazat !== undefined) { u.potvrd = true; render(); return true; }
+  if (d.zmazat !== undefined) { if (maRodica() && !Rodic.jeOdomknute()) return true; u.potvrd = true; render(); return true; }
   if (d.zmazatNie !== undefined) { u.potvrd = false; render(); return true; }
-  if (d.zmazatAno !== undefined) { Zvuk.play('bad'); window.Cloud.zmazDieta(u.id); return true; }
+  if (d.zmazatAno !== undefined) { if (maRodica() && !Rodic.jeOdomknute()) return true; Zvuk.play('bad'); window.Cloud.zmazDieta(u.id); return true; }
   if (d.spat !== undefined) {
-    Zvuk.play('whoosh');
+    Zvuk.play('whoosh'); Rodic.zamkni(); // tvorba otvorená z panela rodiča sa zatvorením zamkne
     if (!u.novy && st.dietaId) { st.faza = 'appka'; st.view = 'ja'; } else st.faza = 'vyber';
     render(); scrollTo(0, 0); return true;
   }
@@ -4551,6 +4556,7 @@ document.addEventListener('click', e => {
     Object.assign(st, { flow: null, faza: 'vyber' }); render(); scrollTo(0, 0); return;
   }
   if (d.dieta) { Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
+  if (d.noveDieta !== undefined && maRodica() && !Rodic.jeOdomknute()) { Zvuk.play('whoosh'); toast('Nové dieťa pridáva rodič. Zadajte PIN.'); Rodic.chod('rodicPin'); return; }
   if (d.noveDieta !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); return; }
   if (d.upravit !== undefined) {
     if (st.auto) Auto.stop(false);
@@ -4712,7 +4718,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache,
-  collection, doc, onSnapshot, getDoc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, writeBatch, addDoc, updateDoc, deleteField,
+  collection, doc, onSnapshot, getDoc, getDocFromServer, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, writeBatch, addDoc, updateDoc, deleteField,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname); // skúšanie na emulátore, nie ostré dáta
@@ -4770,7 +4776,7 @@ let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
 
 // PIN rodiča: PBKDF2-SHA256 cez WebCrypto, v cloude je len soľ a hash (nikdy čistý PIN)
 const b64 = u8 => btoa(String.fromCharCode(...u8)), z64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
-async function hashPin(pin, sol, iter = 100000) {
+async function hashPin(pin, sol, iter = 300000) {
   const s = sol ? z64(sol) : crypto.getRandomValues(new Uint8Array(16));
   const kluc = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
   const bity = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: s, iterations: iter }, kluc, 256);
@@ -4801,6 +4807,11 @@ const Cloud = {
     if (!/^\d{4}$/.test(String(pin))) throw { code: 'rodic/zly-pin' };
     const m = String(meno || '').trim().slice(0, 20) || 'Rodič';
     if (!/^r[1-6]$/.test(ikona)) throw { code: 'rodic/zly-udaj' };
+    // profil sa nikdy neprepíše podľa lokálnej kópie: overí sa na serveri (jeden PIN nesmie prepísať druhý)
+    if (!this.pouzivatel) throw { code: 'auth/user-not-found' };
+    let uz;
+    try { uz = (await getDocFromServer(doc(db, 'rodiny', this.pouzivatel.uid, 'rodic', 'profil'))).exists(); } catch (e) { throw { code: 'auth/network-request-failed' }; }
+    if (uz) throw { code: 'rodic/uz-je' };
     return zapisRodica({ meno: m, ikona, pin: await hashPin(String(pin)), nastavenia: {} });
   },
   async rodicOverPin(pin) {
@@ -4817,7 +4828,7 @@ const Cloud = {
   async rodicPrepotvrdHeslom(heslo) {
     const u = auth.currentUser;
     if (!u) throw { code: 'auth/user-not-found' };
-    if (u.providerData.some(x => x.providerId === 'google.com')) { const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' }); await reauthenticateWithPopup(u, p); }
+    if (u.providerData.some(x => x.providerId === 'google.com')) { const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: 'login' }); await reauthenticateWithPopup(u, p); }
     else await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, String(heslo || '')));
     this.rodic.prepotvrdene = Date.now();
     return true;
@@ -4897,6 +4908,7 @@ const Cloud = {
   // uloženie z tvorby postavičky (nové dieťa alebo úprava existujúceho)
   ulozDieta(u) {
     const id = u.id || noveId(), stare = this.deti.find(x => x.id === id);
+    if (stare && maRodica() && !Rodic.jeOdomknute()) u.vek = stare.vek; // vek mení len odomknutý rodič
     const prazdne = { body: 0, done: [], fav: [], dni: [] };
     const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
     const d = {
@@ -4911,6 +4923,7 @@ const Cloud = {
     if (!stare) { const rodic = this.novyUcet; this.novyUcet = false; setTimeout(() => Sprievodca.start(rodic ? SPR_RODIC : SPR_KROKY), 1500); }
   },
   zmazDieta(id) {
+    Rodic.zamkni();
     this.deti = this.deti.filter(x => x.id !== id);
     deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'deti', id)).catch(e => toast('Nepodarilo sa odstrániť: ' + chybaText(e)));
     socZmaz(id);
@@ -5165,12 +5178,13 @@ onAuthStateChanged(auth, u => {
     render(); return;
   }
   Object.assign(st, { faza: 'nacitava', sprava: 'Prihlásené, načítavajú sa deti…' }); render();
-  odberRodic = onSnapshot(doc(db, 'rodiny', u.uid, 'rodic', 'profil'), snap => {
+  odberRodic = onSnapshot(doc(db, 'rodiny', u.uid, 'rodic', 'profil'), { includeMetadataChanges: true }, snap => {
+    if (!snap.exists() && snap.metadata.fromCache) return; // prázdna kópia z pamäte nie je odpoveď servera: počkáme, aby sa existujúci PIN nedal prepísať
     const bolo = !!Cloud.rodic.profil;
     Cloud.rodic.profil = snap.exists() ? snap.data() : null; Cloud.rodic.nacitane = true;
     if (bolo && !Cloud.rodic.profil) { Rodic.zamkni(); if (st.faza.startsWith('rodic')) st.faza = 'vyber'; } // zmazaný na inom telefóne
     if (st.faza === 'vyber' || st.faza.startsWith('rodic')) render();
-  }, () => { Cloud.rodic.nacitane = true; }); // chyba (napr. pravidlá ešte nenasadené): berieme, že rodič nie je
+  }, e => { if (e && e.code === 'permission-denied') Cloud.rodic.nacitane = true; }); // pravidlá ešte nenasadené: berieme, že rodič nie je; pri inej chybe (bez siete) sa neponúka vytvorenie
   odber = onSnapshot(collection(db, 'rodiny', u.uid, 'deti'), { includeMetadataChanges: true }, snap => {
     const deti = snap.docs.map(x => ({ id: x.id, ...x.data() })).sort((a, b) => (a.poradie || 0) - (b.poradie || 0));
     if (!Cloud.nacitane) {

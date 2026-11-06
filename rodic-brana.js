@@ -21,7 +21,9 @@ const RodicBrana = (() => {
   const kruh = k => `<span class="kruh-av rodic-kruh" style="--bg:${IKON_FARBA[k] || IKON_FARBA.r1}">${ikona(k)}</span>`;
 
   // stav v pamäti (nič sa neukladá)
-  const S2 = { pin: '', chyb: 0, do: 0, zab: null, tv: null, pracuje: false, chyba: '', tik: 0 };
+  // počet omylov a pauza sa ukladajú do zariadenia, takže obnovenie stránky pauzu neskráti; každá ďalšia séria omylov ju zdvojnásobí (najviac hodina)
+  const kluc = () => 'rodic-pin-' + ((window.Cloud && window.Cloud.pouzivatel && window.Cloud.pouzivatel.uid) || 'x');
+  const S2 = { pin: '', chyb: 0, do: 0, kolo: 0, zab: null, tv: null, pracuje: false, chyba: '', tik: 0 };
   const tvorba = () => S2.tv || (S2.tv = { meno: '', ikona: 'r1', krok: 'profil', pin1: '' });
 
   const stylInit = () => {
@@ -70,9 +72,12 @@ const RodicBrana = (() => {
     if (c === 'auth/too-many-requests') return 'Príliš veľa pokusov. Počkajte chvíľu.';
     if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Potvrdenie sa zrušilo.';
     if (c === 'auth/network-request-failed') return 'Chýba internet.';
+    if (c === 'rodic/uz-je') return 'Účet rodiča už existuje. Zadajte jeho PIN.';
     if (c === 'rodic/nepotvrdene') return 'Potvrdenie vypršalo, začnite znova.';
     return 'Niečo sa nepodarilo' + (c ? ' (' + c + ')' : '') + '.';
   };
+  const nacitajPokusy = () => { const v = S.get(kluc(), null) || {}; S2.chyb = +v.chyb || 0; S2.do = +v.do || 0; S2.kolo = +v.kolo || 0; };
+  const ulozPokusy = () => S.set(kluc(), { chyb: S2.chyb, do: S2.do, kolo: S2.kolo });
   const zostava = () => Math.max(0, Math.ceil((S2.do - Date.now()) / 1000));
 
   // ---- obrazovky ----
@@ -109,7 +114,7 @@ const RodicBrana = (() => {
       if (z.krok === 'heslo') {
         return `<div class="brana">${sovicka('think')}<h1 class="h1">Zabudnutý PIN</h1>
           <p class="muted">${google ? 'Potvrďte cez Google, že ste to vy. Potom si vymyslíte nový PIN.' : 'Potvrďte heslom účtu <b>' + esc2(C.pouzivatel ? C.pouzivatel.email || '' : '') + '</b>. Potom si vymyslíte nový PIN.'}</p>
-          <div class="card prof">${google ? '' : '<input id="rodic-heslo" class="input" type="password" placeholder="Heslo účtu" autocomplete="current-password" enterkeyhint="go">'}
+          <div class="card prof">${google ? '' : '<input id="rodic-heslo" class="input" type="password" placeholder="Heslo účtu" autocomplete="new-password" enterkeyhint="go">'}
             ${chybaP()}
             <button class="btn blue" data-rodic-over${S2.pracuje ? ' disabled' : ''}>${S2.pracuje ? '<span class="koliesko"></span>Chvíľku…' : google ? 'Potvrdiť cez Google' : 'Potvrdiť heslom'}</button></div>
           <button class="btn ghost wide" data-rodic-spat>Späť</button></div>`;
@@ -120,6 +125,7 @@ const RodicBrana = (() => {
         ${bodky()}${chybaP()}${klavesnica(S2.pracuje)}
         <button class="btn ghost wide" data-rodic-spat>Zrušiť</button></div>`;
     }
+    nacitajPokusy();
     const rem = zostava(), zam = rem > 0;
     return `<div class="brana"><div class="rodic-brana-kruh">${kruh(p.ikona)}</div>
       <h1 class="h1">${esc2(p.meno || 'Rodič')}</h1>
@@ -195,7 +201,7 @@ const RodicBrana = (() => {
       S2.pracuje = true; dolu(true);
       try {
         await C.rodicObnovPin(pin);
-        S2.zab = null; S2.pin = ''; S2.chyba = ''; S2.chyb = 0; S2.do = 0; S2.pracuje = false;
+        S2.zab = null; S2.pin = ''; S2.chyba = ''; S2.chyb = 0; S2.do = 0; S2.kolo = 0; ulozPokusy(); S2.pracuje = false;
         Rodic.odomkni(); Rodic.chod('rodic');
       } catch (e) {
         S2.pracuje = false; S2.pin = ''; S2.chyba = chybaText(e);
@@ -209,10 +215,10 @@ const RodicBrana = (() => {
     let ok = false;
     try { ok = await C.rodicOverPin(pin); } catch (e) { ok = false; }
     S2.pracuje = false;
-    if (ok) { S2.chyb = 0; S2.do = 0; S2.pin = ''; S2.chyba = ''; Rodic.odomkni(); Rodic.chod('rodic'); return; }
-    S2.chyb++;
-    if (S2.chyb >= POKUSOV) { S2.chyb = 0; S2.do = Date.now() + PAUZA_MS; S2.pin = ''; S2.chyba = ''; Zvuk.play('bad'); render(); return; }
-    dolu(false); zle('Zlý PIN. Zostáva pokusov: ' + (POKUSOV - S2.chyb));
+    if (ok) { S2.chyb = 0; S2.do = 0; S2.kolo = 0; ulozPokusy(); S2.pin = ''; S2.chyba = ''; Rodic.odomkni(); Rodic.chod('rodic'); return; }
+    nacitajPokusy(); S2.chyb++;
+    if (S2.chyb >= POKUSOV) { S2.chyb = 0; S2.do = Date.now() + Math.min(PAUZA_MS * 2 ** S2.kolo, 3600000); S2.kolo = Math.min(S2.kolo + 1, 8); ulozPokusy(); S2.pin = ''; S2.chyba = ''; Zvuk.play('bad'); render(); return; }
+    ulozPokusy(); dolu(false); zle('Zlý PIN. Zostáva pokusov: ' + (POKUSOV - S2.chyb));
   }
 
   function klik(b, d) {

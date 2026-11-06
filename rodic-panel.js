@@ -73,9 +73,9 @@ const RodicPanel = (() => {
           <button class="btn blue" data-rp-zmen-pin>Zmeniť PIN</button></section>
         <section class="card prof"><span class="lbl">${ii(IK.rodina)} Účet</span>
           <p class="muted">E-mail účtu: <b>${esc(C.pouzivatel && C.pouzivatel.email || '')}</b></p>
-          <button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></section>
+          <button class="btn ghost" data-rp-odhlas>Odhlásiť sa</button></section>
         <section class="card prof"><span class="lbl">Deti</span>
-          ${C.deti.map(d => `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b>
+          ${C.deti.map(d => `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ghost" data-rp-uprav="${esc(d.id)}">Upraviť</button>
               ${rp.potvrd === d.id
                 ? `<span class="rp-ano"><button class="btn red" data-rp-odstran-ano="${esc(d.id)}">Áno, odstrániť</button><button class="btn ghost" data-rp-nie>Nie</button></span>`
                 : `<button class="btn ghost" data-rp-odstran="${esc(d.id)}">Odstrániť</button>`}</div>
@@ -134,6 +134,12 @@ const RodicPanel = (() => {
       const s = (document.getElementById('rp-pin-star') || {}).value || '', n = (document.getElementById('rp-pin-nov') || {}).value || '';
       if (!/^\d{4}$/.test(s) || !/^\d{4}$/.test(n)) { Zvuk.play('bad'); toast('PIN má mať 4 číslice.'); return true; }
       C.rodicZmenPin(s, n).then(() => { Zvuk.play('ok'); toast('PIN je zmenený.'); render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
+    }
+    else if (d.rpOdhlas !== undefined) { Zvuk.play('whoosh'); zavri(); C.akcia('odhlas', '', ''); }
+    else if (d.rpUprav) {
+      const x = C.dieta(d.rpUprav); if (!x) return true;
+      Zvuk.play('pop'); // vek, meno a postavičku mení len odomknutý rodič; po uložení alebo Späť sa panel zamkne
+      Object.assign(st, { upravuje: { id: x.id, meno: x.meno, vek: x.vek, avatar: { ...AV_ZAKLAD, ...x.avatar }, body: x.body || 0, kat: 'vlasy', novy: false, potvrd: false }, faza: 'tvorba' }); render(); scrollTo(0, 0);
     }
     else if (d.rpPridaj !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); }
     else if (d.rpOdstran) { Zvuk.play('tap'); rp.potvrd = d.rpOdstran; render(); }
