@@ -224,3 +224,4 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 
 ## 3.6.3 – Tento týždeň úplne hore (NENASADENÉ)
 - `views.domov`: karta „Tento týždeň“ so stromom je teraz prvá, nad Misiou dňa. Verzia 44 / 3.6.3, cache `svet3-v7`, `NOVINKY`. Overené: `test`, `build`, poradie v kóde; na emulátore nevidené.
+- **3.6.3 NASADENÉ**, push, záloha `Desktop\svet-za-3-minuty-3.6.3.zip`.
