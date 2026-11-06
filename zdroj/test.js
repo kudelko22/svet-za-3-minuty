@@ -406,6 +406,13 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   if (!SPR_RODIC.some(k => k.id === "rodicucet" && k.ak() === true)) chyby.push("rodic: sprievodca nema ponuku uctu rodica");
   if (typeof RodicVyzva.ukaz !== "function") chyby.push("rodic: chyba okno vyzvy"); { const f = st.flow; st.flow = {}; if (RodicVyzva.volno()) chyby.push("rodic: vyzva by sa ukazala pocas hry"); st.flow = f; }
   C.deti = staraD; C.rodic = staraR; st.upravuje = staraU; st.view = staraV; }
+/* BEZPECNOST 3.8 */
+{ const zly = postavicka({ vlasy: "kratke", farbaVlasov: '"/><img src=x onerror=alert(1)>', koza: 'red', tricko: '#12', pozadie: '"><b>' }, true);
+  if (/onerror|<img|<b>/.test(zly)) chyby.push("xss: postavicka pusti nebezpecnu farbu");
+  if (!postavicka({ farbaVlasov: "#2B2240" }).includes("#2B2240")) chyby.push("xss: platna farba sa stratila");
+  for (const t of ["si kokot", "s.p.r.o.s.t.e debiil", "kuuurva", "j3b"]) if (socKontrola(t) !== "slova") chyby.push("filter nezachytil: " + t);
+  for (const t of ["zavolaj 0911 222 333", "mail@a.sk", "www.x.sk"]) if (socKontrola(t) !== "udaje") chyby.push("filter nezachytil udaj: " + t);
+  for (const t of ["Ahoj, ako sa mas?", "hovädzie mäso", "ahoj naživo", "To je sranda"]) if (socKontrola(t)) chyby.push("filter blokuje bezny text: " + t); }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);

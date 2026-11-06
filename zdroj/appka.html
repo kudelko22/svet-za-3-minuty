@@ -3042,7 +3042,8 @@ function prehladPriatelov(d = st) {
   const kto = m => m.od === So.pid ? esc(meno) : esc((So.profily[m.f] || {}).meno || 'priateľ');
   return `<b>Priatelia (kód ${esc(So.profil.kod)})</b><p class="muted">${mena.length ? mena.map(esc).join(', ') : 'Zatiaľ žiadni.'}</p>
     ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(meno)}<small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
-    <b>Voľné písanie</b><p class="muted">Dieťa môže svojim priateľom písať aj vlastný text (najviac 200 znakov). Všetko vidíte v Posledných správach. Ak nechcete, aby si písali, vypnite priateľov.</p>
+    <b>Voľné písanie</b><p class="muted">Vlastný text (najviac 200 znakov) môže dieťa písať len vtedy, keď ho zapnete vy aj rodič priateľa. Nevhodné slová, telefónne čísla a odkazy appka nepustí. Ak nechcete, aby si písali, vypnite priateľov.</p>
+    ${(z => z.length ? `<b>Zablokované správy</b><ul>${z.slice().reverse().map(m => `<li><span class="pr-ik">${ik('bublina')}</span><span>${esc(m.t)}</span></li>`).join('')}</ul>` : '')(S.get('soc-zablok-' + So.pid, []))}
     ${cloud ? '<button class="btn ghost" data-rp-socvypni>Vypnúť priateľov</button>' : '<p class="muted">Zapnúť alebo vypnúť priateľov môže len rodič s účtom rodiča.</p><button class="btn blue" data-rodic-novy>Vytvoriť účet rodiča</button>'}`;
 }
 const maRodica = () => !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
@@ -3187,8 +3188,23 @@ const stromMaly = n => `<svg class="strom-mini" viewBox="56 20 208 222" aria-hid
   ${PLODY.slice(0, Math.min(n, PLODY.length)).map(([x, y], i) => `<g transform="translate(${x} ${y})">${plod(i)}</g>`).join('')}</g></svg>`;
 const casSpravy = t => { const d = new Date(t), dnes = key(new Date()) === key(d); return (dnes ? '' : d.getDate() + '. ' + (d.getMonth() + 1) + '. ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 const SIPKA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+/* Filter pre voľné písanie (slovenčina, čeština): jednoduchý zoznam zjavných nadávok, aj keď sú písané s bodkami, číslami alebo opakovanými písmenami,
+   a údaje, ktoré deti nemajú posielať (telefón, e-mail, odkaz). Nie je dokonalý: hlavná poistka je, že písanie zapína rodič a vidí všetky správy. */
+const NEVH_PREDPONY = ['kokot', 'kurv', 'jeb', 'pojeb', 'chuj', 'buzer', 'buzik', 'hovn', 'hovado', 'srack', 'debil', 'idiot', 'kreten', 'blbec', 'blbc', 'zmrd', 'dopic', 'zasran', 'cigan', 'hitl', 'zdochn', 'zomri', 'sprost', 'nigg'];
+const NEVH_PRESNE = ['pica', 'pici', 'picu', 'pice', 'picovina', 'picoviny', 'kys', 'negr', 'negri', 'nazi', 'nazisti', 'nazista', 'curak', 'curaci', 'mrdat', 'mrdam', 'sex', 'sexy', 'porno'];
+const NEVH_SLITE = ['kokot', 'kurva', 'jebat', 'jebem', 'pojeban', 'chuj', 'buzera', 'hovno', 'srack', 'debil', 'idiot', 'zmrd', 'dopic', 'zasran', 'nigger'];
+function socKontrola(txt) {
+  const t = String(txt || '').toLowerCase();
+  if (/@|https?:|www\.|\.(sk|cz|com|net|org)\b/.test(t) || /\d{6,}/.test(t.replace(/[\s.\-/()]/g, ''))) return 'udaje';
+  const n = t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5|\$/g, 's').replace(/7/g, 't').replace(/(.)\1+/g, '$1');
+  const slova = n.split(/[^a-z]+/).filter(Boolean);
+  if (slova.some(w => NEVH_PRESNE.includes(w) || NEVH_PREDPONY.some(p => w.startsWith(p)))) return 'slova';
+  const slite = n.replace(/[^a-z]/g, '');
+  return NEVH_SLITE.some(p => slite.includes(p)) ? 'slova' : '';
+}
+const socZablokovane = (pid, txt) => { const k = 'soc-zablok-' + pid, v = S.get(k, []); v.push({ k: Date.now(), t: String(txt).slice(0, 200) }); S.set(k, v.slice(-10)); };
 const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? '#FFD23F' : '#E4E0EE')).join('')}</span>${moja ? '' : `<button class="btn blue" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
-  : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : (x.x ? `<span class="msg-t msg-x">${esc(x.x)}</span>` : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`);
+  : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : (x.x ? (!moja && socKontrola(x.x) === 'slova' ? '<span class="msg-t msg-x"><i>Správa je skrytá, lebo obsahuje nevhodné slová.</i></span>' : `<span class="msg-t msg-x">${esc(x.x)}</span>`) : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`);
 function chatHtml(fid) {
   const So = socC(), m = (So && So.spravy[fid]) || [], p = So && So.profily[fid];
   if (!m.length) return `<div class="dm-prazdny"><span class="soc-av velky">${avatarMaly(p && p.avatar)}</span><b>${esc(p ? p.meno : '')}</b><small class="muted">Pošli prvú nálepku alebo vetu dole!</small></div>`;
@@ -3246,7 +3262,7 @@ Object.assign(views, {
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : ''}</div>
       <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="muted">Najprv preber nejakú tému.</small>'}</div>` : ''}
         <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
-        ${p ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
+        ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="chip" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
   priatelProfil() {
@@ -4231,6 +4247,16 @@ document.addEventListener('submit', e => {
   e.preventDefault();
   const inp = f.querySelector('input'), txt = inp.value.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200), C = window.Cloud;
   if (!txt || !C || !C.soc || Date.now() - socPosledna < 350) return;
+  // písanie musí mať zapnuté rodič oboch detí (pravidlá to kontrolujú aj na serveri)
+  const So = socC(), pf = So && So.profily[st.priatel];
+  if (!So || !So.profil || !So.profil.pisanie || !pf || !pf.pisanie) { toast('Voľné písanie zapína rodič.'); return; }
+  const kont = socKontrola(txt);
+  if (kont) {
+    Zvuk.play('bad'); vibruj(30); inp.value = '';
+    if (kont === 'slova') socZablokovane(So.pid, txt);
+    toast(kont === 'slova' ? 'Takú správu poslať nemôžeš. Rodič ju uvidí. Skús iné slová.' : 'Telefónne čísla, e-maily a odkazy posielať nemôžeš.');
+    return;
+  }
   socPosledna = Date.now(); inp.value = ''; Zvuk.play('tap'); vibruj(15);
   const ch = document.getElementById('chat');
   if (ch) { const pr = ch.querySelector('.dm-prazdny'); if (pr) pr.remove(); ch.insertAdjacentHTML('beforeend', `<div class="msg moja posl odosiela">${spravaObsah({ x: txt })}</div>`); ch.scrollTop = ch.scrollHeight; }

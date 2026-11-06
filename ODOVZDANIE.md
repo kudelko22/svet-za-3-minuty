@@ -264,3 +264,15 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - CSS cez `html[data-fon-styl]`: farba = `.blobs` skryté (žiadna animácia ani škvrny), vzor = škvrny skryté a čmáranice stoja. Hry: `body.hra-rezim .blobs` ostáva ako predtým.
 - Pravý tmavý režim nie je: appka je zámerne svetlá (tmavý text na kartách). „Tmavý variant“ je preto Večer, hlbšia levanduľová (#DCD9F6).
 - Verzia 51 / 3.7.6, cache `svet3-v14`. Overené: `test`, `build`, emulátor 390 px (výber štýlu a farby, ukladanie, kontrast textu mimo kariet na Domov/Témy/Hry/Priatelia/Ja pri Večer ≥ 4,4). Neoverené: kvízy, misia, strom, správy pri každej farbe očami, telefón, PWA po aktualizácii.
+
+## 3.8 – oprava A: bezpečnosť a rodič (NENASADENÉ, verziu zvýši zlúčenie)
+- Postavička priateľa (XSS, bugy-ucty 1): `postavicka()` v `obrazky.js` prepustí farby len ako `#RRGGBB`. `firestore.rules` má `platnyAvatar` (kľúče, typy, dĺžka, znaky) pre deti, profily aj žiadosti. Staré dokumenty s inými hodnotami by sa už nedali uložiť; ak niektoré dieťa uložilo nejakú inú hodnotu postavičky, treba to overiť na ostrej databáze.
+- Pravidlá: kontrola veľkosti `poradie`/`verzia`, formát `kod`; voľné písanie (`x`) sa pošle len keď majú `pisanie` oba profily (bugy-vzhlad 1). Mŕtvy kód `pisanie()` sa teraz používa. Test: `zdroj/pravidla-test.js` (85 prípadov, prešlo).
+- Formulár písania v rozhovore je len keď majú písanie zapnuté obe deti. Filter `socKontrola` (`appka.html`): nadávky aj s bodkami/číslami/opakovaním, telefón, e-mail, odkaz. Zablokovaný text sa neodošle a uloží sa na zariadení (`soc-zablok-<id>`), rodič ho vidí v prehľade dieťaťa („Zablokované správy“). Prijatá správa s nadávkou sa skryje. Filter je jednoduchý, nie dokonalý.
+- Rodič: zámok sa zruší pri každom odchode z `rodic*` fáz (`Rodic.chod`), pri Späť z tvorby, pri vymazaní dieťaťa; po 5 min sa odomknutý panel sám zakryje (interval 15 s); „Odhlásiť sa“ v Nastaveniach ide cez `data-rp-odhlas` (kontrola zámku).
+- PIN: počet omylov a pauza sú v `localStorage` (`rodic-pin-<uid>`), každá ďalšia séria zdvojnásobí pauzu (30 s až 1 h); nové PIN-y majú 300 000 kôl PBKDF2 (staré si nesú svoje `iter`). Vytvorenie účtu rodiča najprv overí na serveri (`getDocFromServer`), že profil neexistuje; prázdna snímka z pamäte sa ignoruje.
+- Zabudnutý PIN: Google okno s `prompt: 'login'` (musí sa prihlásiť znova), pole hesla bez automatického dopĺňania. OBMEDZENIE: ak je zariadenie prihlásené účtom rodiny a dieťa pozná heslo (alebo ho dopĺňa správca hesiel), PIN sa vyresetovať dá. Úplná ochrana by si vyžadovala samostatný účet rodiča; nerieši sa.
+- Nové dieťa z výberu a zmena veku existujúceho dieťaťa vyžadujú odomknutého rodiča; v Nastaveniach rodiča je pri každom dieťati „Upraviť“ (meno, vek, postavička). Mazanie dieťaťa v tvorbe tiež kontroluje zámok.
+- `firebase.json`: `AGENTS.md` v `ignore`.
+- Nezmenené, len obmedzenie: pravidlá nerozlišujú rodiča a dieťa (rovnaký účet), kód priateľa je uhádnuteľný (≈23 bitov). Netýka sa tejto opravy.
+- Neoverené v prehliadači: celý tok v emulátore (port 5050 používal niekto iný), Google okno `prompt: login`, telefón.
