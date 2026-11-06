@@ -1052,6 +1052,7 @@ body.dm-rezim::before { display: none; }
 .spr-karta small { display: block; color: var(--muted); font-weight: 700; }
 .spr-karta .auto-play { flex: none; }
 /* Ďalej v angličtine ostáva viditeľné nad dolným menu, netreba rolovať */
+.ang-rea:empty, .misia-rea:empty { display: none; }
 .ang-pad { height: 70px; }
 .anim > .ang-dalej-bar, .anim > .ang-pad { animation: none; }
 .ang-dalej-bar { position: fixed; left: 0; right: 0; bottom: var(--nav-v, 70px); z-index: 4; padding: 22px 0 10px; background: linear-gradient(to bottom, transparent, var(--fon) 45%); pointer-events: none; }
@@ -1230,7 +1231,7 @@ body.dm-rezim::before { display: none; }
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 49; const VERZIA_NAZOV = '3.7.4'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 50; const VERZIA_NAZOV = '3.7.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3673,6 +3674,9 @@ const Misie = {
     }).join('')}</div>`;
   },
   chyba(q) {
+    return `<div class="misia-rea">${this.chybaText(q)}</div>`;
+  },
+  chybaText(q) {
     return q.zle.length && !q.koniec ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} ${q.m.t === 'detektiv' && q.ind < q.m.ind.length ? 'Ešte nie. Odhaľ ďalšiu indíciu alebo skús inú možnosť.' : 'Ešte nie. Skús inú možnosť.'}</div>` : '';
   },
   telo(q) {
@@ -3680,9 +3684,9 @@ const Misie = {
     if (m.t === 'detektiv') return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
       <section class="sec"><h2 class="h2" style="--hc:#7C6CFF">Indície</h2>${m.ind.slice(0, q.ind).map((x, i) => `<div class="card misia-ind${a === 'ind' && i === q.ind - 1 ? ' nova' : ''}"><span class="misia-cislo">${i + 1}</span><span>${esc(x)}</span></div>`).join('')}
         ${!q.koniec && q.ind < m.ind.length ? `<button class="btn wide blue" data-mi-ind>${ii(IK.lupa)} Ďalšia indícia</button>` : ''}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#FF6FA8">${esc(m.q)}</h2>${this.moznosti(q, m.s)}${this.chyba(q)}</section>`;
+      <section class="sec"><h2 class="h2" style="--hc:#FF6FA8">${esc(m.q)}</h2>${this.chyba(q)}${this.moznosti(q, m.s)}</section>`;
     if (m.t === 'coak') return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#4C7DFF">${esc(m.q)}</h2>${this.moznosti(q, m.s)}${this.chyba(q)}</section>`;
+      <section class="sec"><h2 class="h2" style="--hc:#4C7DFF">${esc(m.q)}</h2>${this.chyba(q)}${this.moznosti(q, m.s)}</section>`;
     if (m.t === 'keby') {
       const r = q.videl.map(i => `<div class="card misia-reakcia">${esc(m.o[i].r)}</div>`).join('');
       return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
@@ -3691,10 +3695,10 @@ const Misie = {
     }
     if (m.t === 'pravdy') {
       const k = q.koniec;
-      return `<p class="muted">Dve tvrdenia sú pravdivé a jedno je vymyslené. Ťukni na to, ktoré je lož.</p><div class="misia-ans">${m.v.map((x, i) => {
+      return `<p class="muted">Dve tvrdenia sú pravdivé a jedno je vymyslené. Ťukni na to, ktoré je lož.</p>${this.chyba(q)}<div class="misia-ans">${m.v.map((x, i) => {
         const hotovo = k || q.zle.includes(i), cls = k ? (x.ok ? ' pravda' : ' ok') : q.zle.includes(i) ? ' bad' : '';
         return `<button class="ans${cls}" data-mi-vol="${i}" style="--e:#F3EFFF"${hotovo ? ' disabled' : ''}><span class="em pismeno">${i + 1}</span><span>${esc(x.t)}</span></button>${hotovo ? `<div class="card misia-reakcia nova"><b>${x.ok ? 'Pravda' : 'Lož'}.</b> ${esc(x.e)}</div>` : ''}`;
-      }).join('')}</div>${this.chyba(q)}`;
+      }).join('')}</div>`;
     }
     return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
       <section class="sec"><h2 class="h2" style="--hc:#E0533F">Tvoja úloha</h2>
@@ -3857,12 +3861,13 @@ const Ang = {
       ${odmenyHtml(k)}<button class="btn wide cta" data-go="anglictina">Hotovo</button>`;
     return `${top}${pokrok}${q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
       <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
+      <div class="ang-rea">${this.reakcia(q)}</div>
       <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:#FFE0EC"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
       ${this.pata(q, o)}`;
   },
+  reakcia(q) { return q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''; },
   pata(q, o) {
-    return `${q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''}
-      ${q.spravne ? `<div class="card ang-vys nova"><small class="lbl-mala">Vysvetlenie</small><p>${esc(o.vys)}</p></div><div class="ang-pad"></div><div class="ang-dalej-bar"><div class="gut"><button class="btn wide cta" data-ang-dalej>${q.i === q.qs.length - 1 ? 'Dokončiť' : 'Ďalej'}</button></div></div>` : ''}`;
+    return `${q.spravne ? `<div class="card ang-vys nova"><small class="lbl-mala">Vysvetlenie</small><p>${esc(o.vys)}</p></div><div class="ang-pad"></div><div class="ang-dalej-bar"><div class="gut"><button class="btn wide cta" data-ang-dalej>${q.i === q.qs.length - 1 ? 'Dokončiť' : 'Ďalej'}</button></div></div>` : ''}`;
   },
   /* Vyhodnotenie bez prekreslenia obrazovky: zmenia sa len odpovede, pokrok a pätička (reakcia, vysvetlenie, tlačidlo) */
   uprav() {
@@ -3874,7 +3879,8 @@ const Ang = {
       b.disabled = q.spravne || q.zle.includes(i);
     });
     main.querySelectorAll('.ang-pokrok i').forEach((el, i) => { el.className = i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''; });
-    main.querySelectorAll('.misia-reakcia, .ang-vys, .ang-pad, .ang-dalej-bar').forEach(el => el.remove());
+    main.querySelectorAll('.ang-vys, .ang-pad, .ang-dalej-bar').forEach(el => el.remove());
+    const rea = main.querySelector('.ang-rea'); if (rea) rea.innerHTML = this.reakcia(q);
     ans.insertAdjacentHTML('afterend', this.pata(q, o));
   },
   /* Ďalšia otázka: krátke vyblednutie, potom nový obsah (pri obmedzenom pohybe hneď) */
@@ -3905,6 +3911,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 50, obr: () => IK.ziarovka, n: 'Nápoveda hore', p: 'Keď odpovieš zle, hláška Skús inú možnosť sa ukáže hneď nad odpoveďami, netreba rolovať.' },
   { v: 49, obr: () => IK_KAT.anglictina, n: 'Ďalej bez rolovania', p: 'V angličtine ostane tlačidlo Ďalej po odpovedi stále na obrazovke, netreba rolovať dolu.' },
   { v: 48, obr: () => IK.ohen, n: 'Najprv téma, potom misia', p: 'Na Domove je téma dňa číslo 1 a zvýraznená. Misia dňa je číslo 2 a odomkne sa, keď prebereš tému.' },
   { v: 47, obr: () => IK.mozog, n: 'Bez blikania', p: 'Misie a kvízy sa po odpovedi už neprekresľujú. Okno Čo je nové sa ukáže až po úvodnej obrazovke so sovičkou.' },
@@ -3946,17 +3953,27 @@ const NOVINKY = [
   { v: 23, obr: () => IK.iskra, n: 'Kreslené obrázky namiesto emoji', p: 'Ikony, odznaky aj odpovede v kvízoch vyzerajú na každom telefóne rovnako.' },
 ];
 const Novinky = {
+  // verzia sa zapíše až keď sa okno naozaj ukáže, takže ho dieťa nestratí, ak appku zavrie skôr
   skontroluj() {
-    if (this.bolo || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto || Sprievodca.el) return;
-    this.bolo = true;
+    if (this.bolo || this.caka || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto || Sprievodca.el) return;
     const videl = S.get('videl-verziu', 0);
-    if (videl >= VERZIA_APPKY) return;
+    if (videl >= VERZIA_APPKY) { this.bolo = true; return; }
     const odkedy = videl || (st.done.length || st.body ? 21 : VERZIA_APPKY);
-    S.set('videl-verziu', VERZIA_APPKY);
     const z = NOVINKY.filter(n => n.v > odkedy);
-    // okno sa ukáže až keď úplne zmizne úvodná obrazovka so sovičkou, aby sa nevideli naraz
-    const caka = () => { const u = document.getElementById('uvod'); if (u && u.isConnected) setTimeout(caka, 120); else setTimeout(() => this.ukaz(z), 350); };
-    if (z.length) setTimeout(caka, 300);
+    if (!z.length) { S.set('videl-verziu', VERZIA_APPKY); this.bolo = true; return; }
+    this.caka = true;
+    // okno sa ukáže až keď úplne zmizne úvodná obrazovka so sovičkou (najneskôr po 6 s ju zavrie samo)
+    const t0 = Date.now();
+    const skus = () => {
+      const u = document.getElementById('uvod');
+      if (u && u.isConnected && Date.now() - t0 < 6000) { if (Date.now() - t0 > 4500) Uvod.skry(); setTimeout(skus, 120); return; }
+      setTimeout(() => {
+        this.caka = false;
+        if (this.bolo || document.querySelector('.novinky')) return;
+        try { this.ukaz(z); this.bolo = true; S.set('videl-verziu', VERZIA_APPKY); } catch (e) { console.error('Čo je nové:', e); }
+      }, 350);
+    };
+    setTimeout(skus, 300);
   },
   ukaz(z) {
     const el = document.createElement('div');
@@ -3973,7 +3990,7 @@ const Novinky = {
 // Okno „Vytvor si účet rodiča“ (3.5.1): pre účty bez rodiča, raz za spustenie appky, nikdy počas hry či kvízu; „Neskôr“ ho odloží na 3 dni
 const RodicVyzva = {
   bolo: false, caka: false,
-  volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !document.querySelector('.novinky, .oslava'); },
+  volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !Novinky.caka && !document.querySelector('.novinky, .oslava'); },
   skontroluj() {
     const C = window.Cloud;
     if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil || S.get('rodic-neskor', 0) > Date.now()) return;

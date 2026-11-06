@@ -250,3 +250,9 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - 3.7.4: po správnej odpovedi v angličtine je tlačidlo Ďalej v pevnom páse (`.ang-dalej-bar`, fixed) hneď nad dolným menu; odsadenie `.ang-pad`, výška menu sa berie z `--nav-v` (nastavuje `render()`). Pás nemá animáciu `rise` (inak by sa posunul). Verzia 49 / 3.7.4, cache `svet3-v12`.
 - Overené: `test`, `build`, emulátor 390x700: tlačidlo je viditeľné bez rolovania nad menu (566 až 621, menu od 631). Neoverené: tablet, veľmi nízke obrazovky, dlhé vysvetlenie.
 - **3.7.4 NASADENÉ**, push, záloha `Desktop\svet-za-3-minuty-3.7.4.zip`.
+
+## 3.7.5 – hláška „Skús inú možnosť“ hore, Čo je nové spoľahlivejšie (NASADENÉ)
+- Angličtina (`.ang-rea`) a misie (`.misia-rea`): hláška po zlej odpovedi je teraz nad odpoveďami, v stálom prázdnom mieste (prázdne sa skryje), takže nič neskáče a netreba rolovať. Odpovede ostávajú tie isté prvky (bez blikania).
+- `Novinky.skontroluj`: verzia `videl-verziu` sa zapíše až keď sa okno naozaj ukáže (nie hneď), okno čaká na zmiznutie `#uvod` (po 4,5 s ho zavrie samo, po 6 s ukáže tak či tak), chyba pri zobrazení sa zaloguje. `RodicVyzva` počká na Novinky (`Novinky.caka`). `test.js` riadok 233 prispôsobený (kontroluje `Novinky.caka`).
+- Príčinu, prečo okno u vlastníka „vôbec nevyskočilo“, som nenašiel istotou: v emulátore sa ukázalo (po 0,8 s s 10 položkami). Možné príčiny sú čakanie na úvodnú obrazovku alebo skoré zapísanie verzie. Ak sa ani teraz neukáže, treba zistiť, aký stav (účet, dieťa, rodič) appka má pri otvorení.
+- Verzia 50 / 3.7.5, cache `svet3-v13`. Overené: `test`, `build`, emulátor (angličtina, misia, Čo je nové). Neoverené: telefón, PWA po aktualizácii.

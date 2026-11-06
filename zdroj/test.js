@@ -230,7 +230,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
 /* V24_TEST */
 { const stare = T.filter(t => String(ART[t.id]).includes("ez(")); if (stare.length) chyby.push("temy len z emoji: " + stare.map(t => t.id).join(" "));
   Novinky.ukaz(NOVINKY); localStorage.removeItem("svet3:videl-verziu"); Novinky.bolo = false; st.faza = "appka"; st.flow = null; st.hra = null; Novinky.skontroluj();
-  if (S.get("videl-verziu", 0) !== VERZIA_APPKY) chyby.push("novinky verzia"); }
+  if (!Novinky.caka && S.get("videl-verziu", 0) !== VERZIA_APPKY) chyby.push("novinky verzia"); Novinky.caka = false; }
 /* V25_TEST */
 { const vety = new Set(), pridaj = c => (Array.isArray(c) ? c : [c]).forEach(x => { const n = normVeta(x); if (n) vety.add(n); });
   const zaloha = { vek: st.vek, flow: st.flow };
