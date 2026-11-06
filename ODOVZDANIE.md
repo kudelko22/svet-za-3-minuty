@@ -281,3 +281,15 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Opravené (`bugy-ucty` č. 7, 8, 9, 12, 13, 14, 16, 17, 18; `bugy-jadro` č. 4): zmazané dieťa sa nevráti zo starého `pokrok/<uid>` (príznak `pokrok-hotovo-<uid>` v localStorage, nič sa nemaže z cloudu); starý lokálny pokrok (`STARY`) dostane len prvý účet na zariadení (`stary-hotovo`); chybová obrazovka `chybaNacitania` po 12 s alebo pri chybe čítania, s „Skúsiť znova“ a „Odhlásiť sa“; „Pochváliť sa“ cez `allSettled`; `socZmaz` najprv zmaže priateľstvá na oboch stranách; zápis profilu rodiča má limit 8 s a `S2.pracuje` sa nuluje; vädnutie sa zrkadlí do localStorage (aj pri `rodicZmaz`); „videné“ podľa dieťaťa; po odhlásení sa vynuluje `st`, `rodic-neskor` je podľa uid; `prevodStareho` kontroluje, že používateľ sa nezmenil; `visibilitychange`/`pagehide` volajú `Cloud.ulozHned()`.
 - Nerobené: čistenie IndexedDB po odhlásení (`terminate`/`clearIndexedDbPersistence`) – hrozí strata neodoslaných zápisov a appka by potrebovala reload. Medzizariadeniový príznak prenosu `pokrok` (pravidlá nemeniť): príznak je len lokálny.
 - Neoverené v emulátore ani offline. Overené: `test`, `build`, syntax skriptov.
+
+## 3.8 oprava C – hry a angličtina (NENASADENÉ, verzia nezvýšená)
+- Nálezy z `bugy-hry.md`: opravené č. 1, 2, 3, 5, 6, 7, 8, 9, 10. Č. 4 neopravené.
+- Č. 1 Sova: `mav`/`sovaStart` nereštartujú pri `zivoty <= 0`, `Hra.koniec` nastaví `beh = false`.
+- Č. 2: `ang-mizne` sa zloží vždy na začiatku časovača v `Ang.dalsia` a aj v `go()`.
+- Č. 3 a 5: v `Ang.otazka/veta` sa medzera nepýta pri skupinách farby, čísla, pocity a pri časových slovách okrem week, wind, birthday. Zdroj zlých možností je `W` (podľa veku), `ANG_SLOVA` len keď `W` v skupine nemá aspoň 3. Do čísel pribudli 2 ľahké vety.
+- Č. 6 `manth`. Č. 7: veta o rukách má slovo `wash`, veta o prstoch `ten`.
+- Č. 8: `zostav.js` robí reload po novej verzii až keď nebeží hra, kvíz ani flow (kontrola každých 5 s). Č. 9: `sw.js` v zálohe použije aj `pamat` (inú verziu súboru).
+- Č. 10: Chytaj hviezdičky a Bubliny nepočítajú čas pri skrytej karte; Sova pri zmene rozmerov plátna prepočíta ihrisko.
+- Č. 4 (body za angličtinu raz za deň na viacerých zariadeniach): `ang-<id>` nie je v `SYNC`; oprava chce zmenu synchronizácie (a pravdepodobne `firestore.rules`), preto nechané.
+- Overené: `test`, `build`. Neoverené: emulátor, telefón, otočenie displeja, skrytá karta.
+- Cache `sw.js` ostáva `svet3-v14` (verziu zvýši zlúčenie).

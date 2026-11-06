@@ -26,7 +26,14 @@ const registracia = `<script>
 // Keď príde nová verzia, stránka sa raz sama obnoví, aby ju bolo hneď vidieť.
 if ('serviceWorker' in navigator) {
   const mal = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (mal) location.reload(); });
+  let caka = false;
+  const obnov = () => {
+    let zaneprazdneny = false;
+    try { zaneprazdneny = !!(st.hra || st.ang || st.flow); } catch (e) {}
+    if (zaneprazdneny) { if (!caka) { caka = true; setInterval(obnov, 5000); } return; } // hra alebo kvíz: obnova až po skončení
+    location.reload();
+  };
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (mal) obnov(); });
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
 </script>`;
