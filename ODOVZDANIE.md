@@ -329,3 +329,10 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Rozhovor: `socZmena` robí `morph` cez `#chat`, pribudne len nová bublina. Zoznam priateľov: `render(true)`. Zmena veku v profile: `render(true)`. Zmena pozadia: `morph` na rade tlačidiel.
 - `RodicBrana.po()` je idempotentné (WeakSet), lebo sa volá aj po tichom prekreslení.
 - Neoverené v prehliadači (na 5050 bežal cudzí emulátor). Nerobené: náhrada písma (Google Fonts `display=swap`), úvodná obrazovka, okná Novinky a Vytvor si účet rodiča (už sa plynulo objavujú cez `osIn`).
+
+## 3.9 – zlúčenie vetiev bez blikania (ZLÚČENÉ NA main, NENASADENÉ)
+- Zlúčené po poradí: 1 centrálne prekresľovanie (`c04d14a`), 2 kvízy/hry/angličtina (`b0c498d`), 3 brány/rodič/správy (`08e0a2c`). Konflikt v `appka.html` pri `render()` vyriešený: platí tiché prekreslenie vetvy 1, z vetvy 2 ostalo len `classList.remove('flow-dalej')`. Vetva 3 sa zlúčila bez konfliktu v kóde (`renderTicho` pre brány, `render(true)` v `socZmena`).
+- `VERZIA_APPKY` 53 / `3.9`, `NOVINKY` v:53, cache `sw.js` `svet3-v16`. Pravidlá sa nemenili (`test:rules` netreba). `index.html` zostavený cez `build`.
+- Overené: `test` OK; emulátor 1024 px (nový účet, dieťa): prechody Domov/Témy/Hry/Ja a prechod do účtu rodiča bez prázdnej obrazovky; opakované `render()` na tej istej obrazovke = 0 odstránených uzlov a scroll ostal; odpoveď v kvíze téme a v angličtine bez prekreslenia (po odpovedi 0 uzlov), zmena pozadia bez blikania. Konzola: len 404 `a/zoznam.json` (emulátor) a „unknown error fetching script“, nie nové.
+- NEOVERENÉ: reálne snímky očami, telefón, priatelia/chat s dvoma účtami, PIN a panel rodiča s existujúcim rodičom, voľné písanie a hry podľa veku, obnova po novom `sw.js`. Skripty `spusti.cmd test` sa v tejto session zasekli na stdin, test sa spustil priamo cez `node zdroj/test.js`.
+- Nasadenie až na pokyn vlastníka „nasaď 3.9“: pravidlá nie, hosting, push, záloha zip, kontrola webu.
