@@ -314,3 +314,11 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - `zostav.js`: nová verzia z `sw.js` obnoví stránku až keď dieťa odíde z karty (alebo 30 s nič nerobí) a nie je v hre/kvíze/písaní/bráne; predtým obnova nastala priamo pred očami.
 - Počítadlo prekreslení: `Render.pocet` v konzole. Meranie (emulátor, domov, 10x `render()`): pred 160 odstránených a 160 pridaných uzlov, po 0 a 0; Témy s fokusom a scrollom: 50 -> 0 odstránených, fokus aj výber ostali.
 - Neoverené: plynulosť prechodov očami (karta prehliadača bola skrytá, prechody sa nehýbali), telefón, priatelia/chat s reálnymi dátami z Firestore, reálne obnovenie po novom `sw.js`. Brány, hry, kvízy a rodič sa nemenili.
+
+## Bez blikania 2 – kvízy, hry, Misia, angličtina (bez zvýšenia verzie, nenasadené)
+- Kvíz/téma, angličtina a Misia dňa už mali plynulé vyhodnotenie (`morph`, `Ang.uprav`, `render(true)`); príčiny blikania ostali inde:
+  - Hry „Koľko ich je?“ a „Hádaj tému“: po každej odpovedi sa celý obsah kola vymenil cez `innerHTML` (obrázky znova vyskočili). Teraz `obnovKolo()` v tom istom kole zmení len farbu tlačidla (`morph`), nové kolo sa vymení s jemným vyblednutím (`.kolo-nove`).
+  - `render(true)` (Misia, tichá obnova) nechával na `main` triedu `anim`, takže vymenené prvky prehrali vstupnú animáciu; teraz sa trieda pred `morph` odoberie.
+  - Ďalšia otázka/krok toku: horná lišta sa už nevymieňa (pruh pokroku sa plynulo posunie), `.fnext`, `.flow-pad` sa nehýbu (trieda `flow-dalej`), mení sa len obsah pod lištou.
+- Overené: `test`, `build`, v prehliadači (statický server, bez prihlásenia): odpoveď v kvíze pridá len `.fbk`, `.step` ostane, lišta ostane; hra „Koľko ich je?“ nevymení pole pri zlej ani správnej odpovedi, nové kolo ho vymení.
+- Neoverené: snímky v rýchlom slede, Lietajúca sova a Bubliny s počtami (nemenil som, nové bubliny sa objavia bez animácie), telefón. Emulátor na 5050 obsluhoval niekto iný, preto skúšané na vlastnom statickom serveri.
