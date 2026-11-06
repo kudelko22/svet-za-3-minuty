@@ -1114,8 +1114,10 @@ body.dm-rezim::before { display: none; }
 .poz-styl { flex: 1; width: auto; min-width: 0; }
 .poz-styl i { background: var(--paper); overflow: hidden; }
 .poz-styl svg { display: block; width: 100%; height: 100%; }
-html[data-fon-styl="farba"] .blobs { display: none; }
-html[data-fon-styl="vzor"] .blobs i { display: none; }
+/* štýl pozadia sa prepína plynulým stmavením, nie naraz (display) */
+.blobs, .blobs::after { transition: opacity .5s; }
+html[data-fon-styl="farba"] .blobs { opacity: 0; visibility: hidden; transition: opacity .5s, visibility 0s .5s; }
+html[data-fon-styl="vzor"] .blobs i { opacity: 0; }
 html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 .poz-vol[aria-pressed="true"] { border-color: var(--ink); background: var(--soft); }
 
@@ -3380,15 +3382,17 @@ function fillTemy() {
   const f = document.getElementById('filtre'), z = document.getElementById('zoznam');
   const kk = kats(), q = bez(st.q.trim()), g = q || st.kat === 'fav' ? null : SKUPINY.find(x => x.id === st.skupina);
   const chip = k => `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${ii(k.ikona || ikKat(k.id))} ${k.nazov}</button>`;
-  f.innerHTML = `<div class="skupiny${g ? ' vybrana' : ''}">${SKUPINY.map((x, i) => skupinaKarta(x, kk, i)).join('')}</div>
+  const hf = `<div class="skupiny${g ? ' vybrana' : ''}">${SKUPINY.map((x, i) => skupinaKarta(x, kk, i)).join('')}</div>
     <div class="chips">${g ? [{ id: '', nazov: 'Celá oblasť', ikona: g.ikona(), c: g.c }, ...g.kat.map(id => kk.find(k => k.id === id)).filter(Boolean)].map(chip).join('') : ''}${chip({ id: 'fav', nazov: 'Uložené', ikona: IK.srdce, c: '#FF5A5F' })}</div>`;
+  if (f._h !== hf) { f.innerHTML = hf; f._h = hf; } // nezmenený zoznam sa neprekreslí (nebliká, ostane scroll)
   const poradie = SKUPINY.flatMap(x => x.kat);
   const list = TV().sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k))
     .filter(t => q ? bez(t.t + ' ' + t.m).includes(q) : st.kat === 'fav' ? st.fav.includes(t.id) : st.kat ? t.k === st.kat : !g || g.kat.includes(t.k));
   const html = q || !g ? (st.kat === 'fav' && !q ? list.map(row).join('')
     : SKUPINY.map(x => (tt => tt.length ? `<h2 class="h2 skup-h" style="--hc:${x.c}">${ii(x.ikona())} ${x.nazov}</h2>${tt.map(row).join('')}` : '')(list.filter(t => x.kat.includes(t.k)))).join(''))
     : list.map(row).join('');
-  z.innerHTML = html || `<div class="empty">${owl('oops')}<span>${st.kat === 'fav' ? 'Zatiaľ nič uložené.' : 'Takú tému zatiaľ nemáme.'}</span></div>`;
+  const hz = html || `<div class="empty">${owl('oops')}<span>${st.kat === 'fav' ? 'Zatiaľ nič uložené.' : 'Takú tému zatiaľ nemáme.'}</span></div>`;
+  if (z._h !== hz) { z.innerHTML = hz; z._h = hz; }
 }
 
 /* Téma a kvíz krok za krokom */
@@ -4563,6 +4567,7 @@ function chipKontrast(root = document) {
   });
 }
 try { if (typeof MutationObserver === 'function' && document.body && document.body.nodeType) { let pl = 0; new MutationObserver(() => { if (pl) return; pl = requestAnimationFrame(() => { pl = 0; chipKontrast(); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] }); } } catch (e) { /* bez kontrastu štítkov */ }
+const Render = { nova: false, pocet: 0 }; // pocet: počítadlo prekreslení (na meranie v konzole)
 function render(tichy) {
   Uvod.skontroluj();
   Pozadie.pouzi();
@@ -4579,18 +4584,28 @@ function render(tichy) {
   if (flow) { renderFlow(); return; }
   document.body.classList.remove('tinted');
   const html = views[st.view]();
-  if (tichy === true && main.firstElementChild && typeof document.createElement === 'function') {
-    const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true);
-  } else { main.classList.add('anim'); main.innerHTML = html; }
+  // Tá istá obrazovka (rovnaký pohľad, nič iné ju medzitým neprepísalo) sa prekreslí potichu: ostane scroll, fokus,
+  // rozpísaný text a neprehrajú sa vstupné animácie. Nová obrazovka (alebo go()) sa vykreslí celá s animáciou.
+  const kluc = st.view + '|' + (st.view === 'priatel' || st.view === 'priatelProfil' ? st.priatel : ''), prvy = main.firstElementChild;
+  const ticho = !!prvy && typeof document.createElement === 'function' && (tichy === true || (prvy._rk === kluc && !Render.nova));
+  const chat = st.view === 'priatel' && document.getElementById('chat'), chatDole = !chat || !ticho || chat.scrollHeight - chat.scrollTop - chat.clientHeight < 80;
+  Render.nova = false; Render.pocet++;
+  if (ticho) {
+    const t = document.createElement('div'); t.innerHTML = html;
+    ['filtre', 'zoznam'].forEach(id => { const a = document.getElementById(id), b = t.querySelector('#' + id); if (a && b && a._h) b.innerHTML = a.innerHTML; }); // zoznam tém dopĺňa fillTemy, morph ho nemá vyprázdniť
+    morph(main, t, true);
+  }
+  else { main.classList.add('anim'); main.innerHTML = html; }
+  if (main.firstElementChild) main.firstElementChild._rk = kluc;
   ocisluj();
   const navEl = document.getElementById('nav'); if (navEl && navEl.offsetHeight) document.documentElement.style.setProperty('--nav-v', navEl.offsetHeight + 'px');
   if (st.view === 'domov' && !document.querySelector('.oslava')) Novinky.skontroluj();
   if (st.view === 'domov' && !document.querySelector('.oslava')) RodicVyzva.skontroluj();
-  if (st.view === 'priatel') { const ch = document.getElementById('chat'); if (ch) ch.scrollTop = ch.scrollHeight; const So = socC(); if (So && So.precitaj) So.precitaj(st.priatel); }
+  if (st.view === 'priatel') { const ch = document.getElementById('chat'); if (ch && chatDole) ch.scrollTop = ch.scrollHeight; const So = socC(); if (So && So.precitaj) So.precitaj(st.priatel); }
   if (st.view === 'temy') {
     const inp = document.getElementById('hladaj');
-    inp.value = st.q;
-    inp.addEventListener('input', () => { st.q = inp.value; fillTemy(); });
+    if (!inp._hl) { inp._hl = true; inp.addEventListener('input', () => { st.q = inp.value; fillTemy(); }); }
+    if (document.activeElement !== inp) inp.value = st.q;
     fillTemy();
   }
   ['domov', 'temy', 'hry', 'priatelia', 'ja'].forEach(v => {
@@ -4602,7 +4617,7 @@ function render(tichy) {
 }
 
 Object.assign(views, RodicPanel.views); // pohľady panela rodiča (vykresľujú sa cez brany, fázy rodic*)
-function go(v) { main.classList.remove('ang-mizne'); Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.ang = null; st.view = v; render(); window.scrollTo(0, 0); }
+function go(v) { Render.nova = true; main.classList.remove('ang-mizne'); Hlas.stop(); Hra.zrus(); st.flow = null; st.misia = null; st.ang = null; st.view = v; render(); window.scrollTo(0, 0); }
 
 // Lietajúca sova: ťuknutie kdekoľvek na oblohu (aj medzerník na počítači)
 document.addEventListener('pointerdown', e => { if (e.target && e.target.id === 'sova-cv' && st.hra && st.hra.id === 'sova') { e.preventDefault(); Hra.mav(); } });
@@ -5348,11 +5363,14 @@ getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); }).finally(() =
 if ('serviceWorker' in navigator) {
   const mal = !!navigator.serviceWorker.controller;
   let caka = false;
+  let posledne = Date.now();
+  ['pointerdown', 'keydown', 'touchstart'].forEach(t => addEventListener(t, () => { posledne = Date.now(); }, { capture: true, passive: true }));
+  // Obnova sa nerobí pred očami: až keď dieťa appku opustí (karta sa skryje), alebo keď 30 s nič nerobí a nie je v hre ani v kvíze.
   const obnov = () => {
-    let zaneprazdneny = false;
-    try { zaneprazdneny = !!(st.hra || st.ang || st.flow); } catch (e) {}
-    if (zaneprazdneny) { if (!caka) { caka = true; setInterval(obnov, 5000); } return; } // hra alebo kvíz: obnova až po skončení
-    location.reload();
+    let zaneprazdneny = false, hra = false;
+    try { hra = !!(st.hra || st.ang || st.flow); zaneprazdneny = !!(st.hra || st.ang || st.flow || st.auto || st.faza !== 'appka' || (document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName))); } catch (e) {}
+    if (!hra && (document.hidden || (!zaneprazdneny && Date.now() - posledne > 30000))) { location.reload(); return; }
+    if (!caka) { caka = true; setInterval(obnov, 5000); document.addEventListener('visibilitychange', () => { if (document.hidden) obnov(); }); }
   };
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (mal) obnov(); });
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));

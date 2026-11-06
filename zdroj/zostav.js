@@ -27,11 +27,14 @@ const registracia = `<script>
 if ('serviceWorker' in navigator) {
   const mal = !!navigator.serviceWorker.controller;
   let caka = false;
+  let posledne = Date.now();
+  ['pointerdown', 'keydown', 'touchstart'].forEach(t => addEventListener(t, () => { posledne = Date.now(); }, { capture: true, passive: true }));
+  // Obnova sa nerobí pred očami: až keď dieťa appku opustí (karta sa skryje), alebo keď 30 s nič nerobí a nie je v hre ani v kvíze.
   const obnov = () => {
-    let zaneprazdneny = false;
-    try { zaneprazdneny = !!(st.hra || st.ang || st.flow); } catch (e) {}
-    if (zaneprazdneny) { if (!caka) { caka = true; setInterval(obnov, 5000); } return; } // hra alebo kvíz: obnova až po skončení
-    location.reload();
+    let zaneprazdneny = false, hra = false;
+    try { hra = !!(st.hra || st.ang || st.flow); zaneprazdneny = !!(st.hra || st.ang || st.flow || st.auto || st.faza !== 'appka' || (document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName))); } catch (e) {}
+    if (!hra && (document.hidden || (!zaneprazdneny && Date.now() - posledne > 30000))) { location.reload(); return; }
+    if (!caka) { caka = true; setInterval(obnov, 5000); document.addEventListener('visibilitychange', () => { if (document.hidden) obnov(); }); }
   };
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (mal) obnov(); });
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
