@@ -611,8 +611,11 @@ const nahodnyAvatar = (body = 0) => Object.fromEntries(Object.entries(AV).map(([
   return [k, moze[Math.floor(Math.random() * moze.length)]];
 }));
 
+// farba z cudzieho dokumentu (priateľ, žiadosť) sa nikdy nevloží do SVG bez kontroly: len #RRGGBB, inak bezpečná náhrada
+const farbaOk = (f, nahrada) => (typeof f === 'string' && /^#[0-9A-Fa-f]{6}$/.test(f) ? f : nahrada);
 function postavicka(a, kruh = false) {
-  const fv = a.farbaVlasov, k = a.koza, tr = a.tricko;
+  a = a || {};
+  const fv = farbaOk(a.farbaVlasov, '#6B4226'), k = farbaOk(a.koza, '#F6C9A0'), tr = farbaOk(a.tricko, '#4C7DFF'), poz = farbaOk(a.pozadie, '#D6E6FF');
   const kucery = (() => { const c = [0, 1, 2, 3, 4, 5, 6].map(i => { const u = Math.PI * (1.08 + i * .14); return `<circle cx="${(60 + Math.cos(u) * 30).toFixed(1)}" cy="${(58 + Math.sin(u) * 30).toFixed(1)}" r="12"/>`; }).join(''); return `<g fill="${fv}">${c}</g><g fill="${fv}" stroke="none">${c}</g>`; })();
   const vzadu = {
     dlhe: `<path d="M27 66 Q22 26 60 25 Q98 26 93 66 L96 110 Q85 106 84 94 L83 70 L37 70 L36 94 Q35 106 24 110Z" fill="${fv}"/>`,
@@ -737,7 +740,7 @@ function postavicka(a, kruh = false) {
     srdcia: [[16, 34, 0, '#FF5A5F'], [104, 26, .5, '#FF9EC7'], [14, 92, 1, '#FF9EC7'], [106, 84, .3, '#FF5A5F'], [60, 6, .8, '#FF6FA8']].map(([x, y, d, c]) => `<g transform="translate(${x} ${y})"><g class="twinkle" style="animation-delay:${d}s"><path d="M0 6 C-8 1 -8 -6 -3.5 -6 C-1.5 -6 0 -4.5 0 -3 C0 -4.5 1.5 -6 3.5 -6 C8 -6 8 1 0 6Z" fill="${c}" stroke-width="1.5"/></g></g>`).join(''),
   }[a.kuzlo] || '';
   return `<svg class="postavicka" viewBox="0 0 120 130" aria-hidden="true"><g stroke="${INK}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
-    ${kruh ? `<circle cx="60" cy="64" r="58" fill="${a.pozadie}" stroke="none"/>` : ''}
+    ${kruh ? `<circle cx="60" cy="64" r="58" fill="${poz}" stroke="none"/>` : ''}
     ${kuzloZ}${vzadu}
     <path d="M14 131 Q16 100 42 96 L78 96 Q104 100 106 131Z" fill="${tr}"/>${vzor}
     <path d="M50 86 V100 Q60 106 70 100 V86Z" fill="${k}"/><path d="M47 97 Q60 108 73 97" fill="none" stroke-width="3"/>
