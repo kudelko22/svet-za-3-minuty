@@ -727,6 +727,8 @@ button.misia-cast:active { transform: translateY(3px); box-shadow: 0 0 0 var(--i
 /* Koľko ich je? (hra pre malé deti) */
 .pocitaj { display: grid; gap: 14px; }
 .poc-pole { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; min-height: 190px; background: #FFF8D6; }
+.kolo-nove { animation: kolo-in .3s ease-out both; }
+@keyframes kolo-in { from { opacity: 0; transform: translateY(8px); } }
 .poc-obr { width: 74px; height: 74px; animation: pop .4s var(--spring) both; animation-delay: var(--d, 0s); }
 .poc-obr svg { width: 100%; height: 100%; }
 .poc-moz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -1103,6 +1105,7 @@ body.dm-rezim::before { display: none; }
 .ang-rea:empty, .misia-rea:empty { display: none; }
 .ang-pad { height: 70px; }
 .anim > .ang-dalej-bar, .anim > .ang-pad { animation: none; }
+.flow-dalej > .ftop, .flow-dalej > .fnext, .flow-dalej > .flow-pad { animation: none; } /* ďalší krok toku: lišty sa nehýbu, mení sa len obsah */
 .ang-dalej-bar { position: fixed; left: 0; right: 0; bottom: var(--nav-v, 70px); z-index: 4; padding: 22px 0 10px; background: linear-gradient(to bottom, transparent, var(--fon) 45%); pointer-events: none; }
 .ang-dalej-bar .btn { pointer-events: auto; }
 .poz-karta { display: grid; gap: 10px; }
@@ -1282,14 +1285,14 @@ html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=52"></script>
-<script src="obrazky.js?v=52"></script>
-<script src="misie.js?v=52"></script>
-<script src="anglictina.js?v=52"></script>
-<script src="rodic-brana.js?v=52"></script>
-<script src="rodic-panel.js?v=52"></script>
+<script src="temy.js?v=53"></script>
+<script src="obrazky.js?v=53"></script>
+<script src="misie.js?v=53"></script>
+<script src="anglictina.js?v=53"></script>
+<script src="rodic-brana.js?v=53"></script>
+<script src="rodic-panel.js?v=53"></script>
 <script>
-const VERZIA_APPKY = 52; const VERZIA_NAZOV = '3.8'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 53; const VERZIA_NAZOV = '3.9'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1827,6 +1830,7 @@ function renderBrana() {
   document.body.classList.remove('tinted');
   main.classList.add('anim');
   main.innerHTML = brany[st.faza]();
+  main.dataset.faza = st.faza;
   ocisluj();
   if (st.faza === 'prihlasenie') {
     // tlačidlo „Prihlásiť“ na klávesnici odošle formulár; z e-mailu sa skočí na heslo
@@ -1843,6 +1847,14 @@ function renderBrana() {
     inp.addEventListener('input', () => { st.upravuje.meno = inp.value; });
   }
   RodicBrana.po();
+}
+// Tiché prekreslenie brány v tej istej fáze (PIN, panel rodiča, výber detí): zmení len to, čo sa líši, bez animácie vstupu,
+// takže nič nebliká, nevynuluje sa scroll ani rozpísané polia. Pri inej fáze sa vykreslí obvyklým spôsobom.
+function renderTicho() {
+  const top = document.getElementById('top');
+  if (st.faza === 'appka' || !main.firstElementChild || main.dataset.faza !== st.faza || !top || !top.hidden || !brany[st.faza]) { render(); return; }
+  const t = document.createElement('div'); t.innerHTML = brany[st.faza]();
+  main.classList.remove('anim'); morph(main, t, true); ocisluj(); RodicBrana.po();
 }
 // po zmene dielu prekreslíme len náhľad a možnosti, stránka neskáče
 function obnovTvorbu() {
@@ -3000,14 +3012,22 @@ function pocitajHtml(h) {
     <p class="hadaj-otazka">Koľko ich je?</p>
     <div class="poc-moz">${h.moznosti.map(m => `<button class="btn ghost poc-btn${h.odp ? (m === n ? ' ok' : '') : h.zle.includes(m) ? ' zle' : ''}" data-pocitaj="${m}"${h.zle.includes(m) ? ' disabled' : ''}>${m}</button>`).join('')}</div>`;
 }
-const obnovPocitaj = () => { const el = document.getElementById('pocitaj'); if (el && st.hra) el.innerHTML = pocitajHtml(st.hra); };
+// obnova obsahu hry bez blikania: v tom istom kole sa zmení len to, čo sa líši (farba tlačidla); nové kolo sa vymení s jemným vyblednutím
+function obnovKolo(el, h, html) {
+  if (!el) return;
+  const kolo = String(h.i);
+  if (el.dataset.kolo === kolo && el.firstElementChild) { const t = document.createElement('div'); t.innerHTML = html; morph(el, t, true); return; }
+  el.dataset.kolo = kolo; el.innerHTML = html;
+  el.classList.remove('kolo-nove'); void el.offsetWidth; el.classList.add('kolo-nove');
+}
+const obnovPocitaj = () => { if (st.hra) obnovKolo(document.getElementById('pocitaj'), st.hra, pocitajHtml(st.hra)); };
 function hadajHtml(h) {
   const t = byId(h.kola[h.i]);
   return `<div class="frame hadaj-obr">${svg(t)}</div>
     <p class="hadaj-otazka">O ktorej téme je tento obrázok?</p>
     <div class="hadaj-moz">${h.moznosti.map(id => `<button class="btn ghost hadaj-btn${h.odp ? (id === t.id ? ' ok' : id === h.odp ? ' zle' : '') : ''}" data-hadaj="${id}">${esc(byId(id).t)}</button>`).join('')}</div>`;
 }
-const obnovHadaj = () => { const el = document.getElementById('hadaj'); if (el && st.hra) el.innerHTML = hadajHtml(st.hra); };
+const obnovHadaj = () => { if (st.hra) obnovKolo(document.getElementById('hadaj'), st.hra, hadajHtml(st.hra)); };
 const simonStav = text => { const el = document.getElementById('simon-stav'); if (el) el.textContent = text; };
 function zasviet(n, ms) {
   Zvuk.play('ton' + n);
@@ -3047,9 +3067,9 @@ function renderHra() {
     telo = `<div class="sova-hra"><canvas id="sova-cv" class="sova-cv" aria-label="Obloha: ťukni a sovička mávne krídlami"></canvas>${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
       <p class="muted hra-pomoc">Ťukaj na oblohu a sovička mávne krídlami. Prelet pomedzi ceruzky a zbieraj hviezdy. Máš ${h.mal ? 3 : 2} srdiečka.</p>`;
   } else if (h.id === 'pocitaj') {
-    telo = `<div id="pocitaj" class="pocitaj">${pocitajHtml(h)}</div>`;
+    telo = `<div id="pocitaj" class="pocitaj" data-kolo="${h.i}">${pocitajHtml(h)}</div>`;
   } else if (h.id === 'hadaj') {
-    telo = `<div id="hadaj" class="hadaj">${hadajHtml(h)}</div>`;
+    telo = `<div id="hadaj" class="hadaj" data-kolo="${h.i}">${hadajHtml(h)}</div>`;
   } else if (h.id === 'bubliny') {
     telo = `<div class="card priklad" id="priklad">${h.beh ? h.priklad + ' = ?' : h.hotovo ? 'Čas vypršal!' : 'Koľko je…?'}</div>
       <div class="bub-pole${h.mal ? '' : ' styri'}" id="bubliny">${h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${IKO.play}<span>Štart</span></button>`}</div>
@@ -3346,19 +3366,18 @@ Object.assign(views, {
 // zmena z cloudu (nová správa, žiadosť, pokrok priateľa): prekresliť bez straty rozpísaného kódu
 function socZmena() {
   socZnacka();
-  if (st.faza === 'rodicDieta') { const y = scrollY; render(); main.classList.remove('anim'); scrollTo(0, y); return; } // detail dieťaťa v paneli rodiča
+  if (st.faza === 'rodicDieta') { renderTicho(); return; } // detail dieťaťa v paneli rodiča
   if (st.faza !== 'appka' || st.flow || st.hra || st.auto) return;
   if (st.view === 'priatel') {
     const ch = document.getElementById('chat'), So = socC();
     if (ch && So && So.profily[st.priatel] && document.querySelector('.dm-kto')) {
       const dole = ch.scrollHeight - ch.scrollTop - ch.clientHeight < 80;
-      ch.innerHTML = chatHtml(st.priatel); if (dole) ch.scrollTop = ch.scrollHeight;
+      const t = document.createElement('div'); t.innerHTML = chatHtml(st.priatel); morph(ch, t, true); // pribudne len nová bublina, ostatné ostanú a neprehrajú animáciu
+      if (dole) ch.scrollTop = ch.scrollHeight;
       oznacVidene(st.priatel); socZnacka(); if (So.precitaj) So.precitaj(st.priatel);
     } else { render(); main.classList.remove('anim'); }
   } else if (st.view === 'priatelia' || st.view === 'priatelProfil') {
-    const v = document.getElementById('soc-kod'), hodnota = v ? v.value : '', fokus = v && document.activeElement === v, y = scrollY;
-    render(); main.classList.remove('anim'); scrollTo(0, y);
-    const n = document.getElementById('soc-kod'); if (n) { n.value = hodnota; if (fokus) n.focus(); }
+    render(true); // tiché prekreslenie: pole s kódom, scroll aj fokus ostanú, nezmenené karty sa nehýbu
   }
 }
 let socPosledna = 0, socTap = {}, socOznCas = 0;
@@ -3520,8 +3539,16 @@ function renderFlow(anim = true) {
       ${t ? `<button class="ib heart" data-fav aria-pressed="${fav}" aria-label="Uložiť tému">${fav ? IK.srdce : IK.srdcePrazdne}</button>` : ''}</div>
     ${krok(f, k)}${dalej}`;
   // vyhodnotenie odpovede (anim = false): zmení sa len to, čo sa líši, aby obrázok ani otázka neblikli
-  if (!anim && main.firstElementChild && typeof document.createElement === 'function') { const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true); }
-  else main.innerHTML = html;
+  const hore = main.firstElementChild;
+  if (!anim && hore && typeof document.createElement === 'function') { const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true); }
+  else if (anim && hore && hore.classList.contains('ftop') && typeof document.createElement === 'function') {
+    // ďalší krok v tom istom toku: horná lišta ostane (pruh pokroku sa plynulo posunie), mení sa len obsah pod ňou
+    const t = document.createElement('div'); t.innerHTML = html;
+    morph(hore, t.firstElementChild);
+    while (hore.nextSibling) hore.nextSibling.remove();
+    [...t.children].slice(1).forEach(n => main.appendChild(n));
+    main.classList.add('flow-dalej');
+  } else { main.classList.remove('flow-dalej'); main.innerHTML = html; }
   ocisluj();
   if (k.t === 'koniec' && anim && !f.prehra && !f.zle) oslava(f);
 }
@@ -4032,6 +4059,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 53, obr: () => IK.mozog, n: 'Bez blikania', p: 'Appka je plynulejšia: bez blikania pri odpovediach, prechodoch, správach a načítaní.' },
   { v: 52, obr: () => IK.ziarovka, n: 'Opravy a bezpečnejšia appka', p: 'Rodičovský panel sa po odchode sám zamkne, voľné písanie je len keď ho zapne rodič a nevhodné slová sa zachytia. Účty a ukladanie sú spoľahlivejšie, hry a angličtina plynulejšie. Opravené sú aj drobnosti vo vzhľade.' },
   { v: 51, obr: () => IK.duha, n: 'Jednofarebné pozadie', p: 'V profile Ja v karte Pozadie si vyber Animované, Jednofarebné s ôsmimi jemnými farbami alebo Jemný vzor bez pohybu. Jednofarebné a vzor šetria telefón.' },
   { v: 50, obr: () => IK.ziarovka, n: 'Nápoveda hore', p: 'Keď odpovieš zle, hláška Skús inú možnosť sa ukáže hneď nad odpoveďami, netreba rolovať.' },
@@ -4590,7 +4618,9 @@ function render(tichy) {
   const ticho = !!prvy && typeof document.createElement === 'function' && (tichy === true || (prvy._rk === kluc && !Render.nova));
   const chat = st.view === 'priatel' && document.getElementById('chat'), chatDole = !chat || !ticho || chat.scrollHeight - chat.scrollTop - chat.clientHeight < 80;
   Render.nova = false; Render.pocet++;
+  main.classList.remove('flow-dalej');
   if (ticho) {
+    main.classList.remove('anim'); // bez 'anim', aby vymenené prvky neprehrali vstupnú animáciu
     const t = document.createElement('div'); t.innerHTML = html;
     ['filtre', 'zoznam'].forEach(id => { const a = document.getElementById(id), b = t.querySelector('#' + id); if (a && b && a._h) b.innerHTML = a.innerHTML; }); // zoznam tém dopĺňa fillTemy, morph ho nemá vyprázdniť
     morph(main, t, true);
@@ -4762,7 +4792,7 @@ document.addEventListener('click', e => {
     if (d.pozstyl) Pozadie.zvolStyl(d.pozstyl); else Pozadie.zvolFarbu(d.pozfarba);
     const k = document.querySelector('.poz-karta');
     if (k) {
-      k.querySelector('.poz-rad').innerHTML = Pozadie.rad();
+      { const rad = k.querySelector('.poz-rad'), nov = document.createElement('div'); nov.innerHTML = Pozadie.rad(); morph(rad, nov, true); } // zmení len tlačidlá, ktoré sa líšia
       k.querySelectorAll('.poz-styl').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.pozstyl === Pozadie.styl())));
     }
   } else if (d.pozadie) {
@@ -4770,7 +4800,7 @@ document.addEventListener('click', e => {
     Zvuk.play('pop'); Pozadie.zvol(d.pozadie);
     document.querySelectorAll('.poz-vol').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.pozadie === d.pozadie)));
   } else if (d.vek) {
-    Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render();
+    Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render(true);
   } else if (d.citaj !== undefined && f) {
     Zvuk.play('tap'); Hlas.citaj(textKroku(f), b);
   } else if (d.zavriet !== undefined) {
@@ -5326,7 +5356,7 @@ onAuthStateChanged(auth, u => {
     const bolo = !!Cloud.rodic.profil;
     Cloud.rodic.profil = snap.exists() ? snap.data() : null; Cloud.rodic.nacitane = true;
     if (bolo && !Cloud.rodic.profil) { Rodic.zamkni(); if (st.faza.startsWith('rodic')) st.faza = 'vyber'; } // zmazaný na inom telefóne
-    if (st.faza === 'vyber' || st.faza.startsWith('rodic')) render();
+    if (st.faza === 'vyber' || st.faza.startsWith('rodic')) renderTicho();
   }, e => { if (e && e.code === 'permission-denied') Cloud.rodic.nacitane = true; }); // pravidlá ešte nenasadené: berieme, že rodič nie je; pri inej chybe (bez siete) sa neponúka vytvorenie
   odber = onSnapshot(collection(db, 'rodiny', u.uid, 'deti'), { includeMetadataChanges: true }, snap => {
     const deti = snap.docs.map(x => ({ id: x.id, ...x.data() })).sort((a, b) => (a.poradie || 0) - (b.poradie || 0));
@@ -5345,7 +5375,9 @@ onAuthStateChanged(auth, u => {
       render(); return;
     }
     if (a && st.faza === 'appka' && !snap.metadata.hasPendingWrites && !snap.metadata.fromCache) prevezmi(a);
-    if (st.faza === 'vyber') render();
+    const podpis = JSON.stringify(deti.map(x => [x.id, x.meno, x.vek, x.body, x.poradie, x.avatar]));
+    if (st.faza === 'vyber' && podpis !== Cloud.podpisVyberu) renderTicho(); // snímka bez zmeny (len metadáta) neprekresľuje
+    Cloud.podpisVyberu = podpis;
   }, e => {
     Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav();
     if (!Cloud.nacitane && st.faza === 'nacitava') { Cloud.chybaNacitania = chybaText(e); st.faza = 'chybaNacitania'; render(); }

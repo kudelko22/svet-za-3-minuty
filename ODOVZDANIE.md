@@ -322,3 +322,10 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
   - Ďalšia otázka/krok toku: horná lišta sa už nevymieňa (pruh pokroku sa plynulo posunie), `.fnext`, `.flow-pad` sa nehýbu (trieda `flow-dalej`), mení sa len obsah pod lištou.
 - Overené: `test`, `build`, v prehliadači (statický server, bez prihlásenia): odpoveď v kvíze pridá len `.fbk`, `.step` ostane, lišta ostane; hra „Koľko ich je?“ nevymení pole pri zlej ani správnej odpovedi, nové kolo ho vymení.
 - Neoverené: snímky v rýchlom slede, Lietajúca sova a Bubliny s počtami (nemenil som, nové bubliny sa objavia bez animácie), telefón. Emulátor na 5050 obsluhoval niekto iný, preto skúšané na vlastnom statickom serveri.
+
+## Bez blikania 3: brány, rodič, správy (vetva claude/gifted-hellman-02b678, nad 3.8)
+- Príčina: nová správa, snímka z cloudu aj klik v paneli rodiča vymieňali celý `innerHTML` (znovu sa prehrali animácie `rise` a `pop`, vynuloval sa scroll a polia).
+- Nová funkcia `renderTicho()` (appka.html pri `renderBrana`): v tej istej fáze brány urobí `morph` namiesto výmeny. Použitá v PIN kroch, v paneli rodiča (potvrdenie odstránenia, zapnutie priateľov, zmena PIN), pri snímkach `rodiny/.../deti` a `rodic/profil`. Výber detí sa neprekreslí, ak sa snímka líši len metadátami (`Cloud.podpisVyberu`).
+- Rozhovor: `socZmena` robí `morph` cez `#chat`, pribudne len nová bublina. Zoznam priateľov: `render(true)`. Zmena veku v profile: `render(true)`. Zmena pozadia: `morph` na rade tlačidiel.
+- `RodicBrana.po()` je idempotentné (WeakSet), lebo sa volá aj po tichom prekreslení.
+- Neoverené v prehliadači (na 5050 bežal cudzí emulátor). Nerobené: náhrada písma (Google Fonts `display=swap`), úvodná obrazovka, okná Novinky a Vytvor si účet rodiča (už sa plynulo objavujú cez `osIn`).

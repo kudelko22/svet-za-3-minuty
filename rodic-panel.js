@@ -122,10 +122,10 @@ const RodicPanel = (() => {
     else if (d.rpVyber !== undefined) { zavri(); Rodic.zamkni(); chod('vyber'); }
     else if (d.rpHnitie) {
       const id = d.rpHnitie, ted = hnitieZapnute(id);
-      C.rodicUloz({ nastavenia: { hnitie: { [id]: !ted } } }).then(() => { S.set('hnitie-' + id, !ted); Zvuk.play('tap'); toast(ted ? 'Vädnutie stromu je vypnuté.' : 'Vädnutie stromu je zapnuté.'); if (st.faza.startsWith('rodic')) render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
+      C.rodicUloz({ nastavenia: { hnitie: { [id]: !ted } } }).then(() => { S.set('hnitie-' + id, !ted); Zvuk.play('tap'); toast(ted ? 'Vädnutie stromu je vypnuté.' : 'Vädnutie stromu je zapnuté.'); if (st.faza.startsWith('rodic')) renderTicho(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
     }
     else if (d.rpSoczapni !== undefined) {
-      if (C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); toast('Priatelia sú zapnutí.'); render(); });
+      if (C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); toast('Priatelia sú zapnutí.'); renderTicho(); });
     }
     else if (d.rpSocvypni !== undefined) {
       if (C.soc && confirm('Vypnúť priateľov pre ' + (C.dieta(st.rodicDieta) || {}).meno + '? Kód prestane platiť a priatelia nebudú môcť posielať správy.')) socAkcia(C.soc.vypni(), () => { toast('Priatelia sú vypnutí.'); render(); });
@@ -142,10 +142,10 @@ const RodicPanel = (() => {
       Object.assign(st, { upravuje: { id: x.id, meno: x.meno, vek: x.vek, avatar: { ...AV_ZAKLAD, ...x.avatar }, body: x.body || 0, kat: 'vlasy', novy: false, potvrd: false }, faza: 'tvorba' }); render(); scrollTo(0, 0);
     }
     else if (d.rpPridaj !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); }
-    else if (d.rpOdstran) { Zvuk.play('tap'); rp.potvrd = d.rpOdstran; render(); }
+    else if (d.rpOdstran) { Zvuk.play('tap'); rp.potvrd = d.rpOdstran; renderTicho(); }
     else if (d.rpOdstranAno) { rp.potvrd = null; Zvuk.play('bad'); C.zmazDieta(d.rpOdstranAno); Rodic.chod('rodicNastavenia'); }
-    else if (d.rpNie !== undefined) { rp.potvrd = null; render(); }
-    else if (d.rpZmaz !== undefined) { Zvuk.play('tap'); rp.potvrd = 'zmaz'; render(); }
+    else if (d.rpNie !== undefined) { rp.potvrd = null; renderTicho(); }
+    else if (d.rpZmaz !== undefined) { Zvuk.play('tap'); rp.potvrd = 'zmaz'; renderTicho(); }
     else if (d.rpZmazAno !== undefined) {
       rp.potvrd = null; zavri();
       C.rodicZmaz().then(() => { toast('Profil rodiča je zmazaný.'); Rodic.chod('vyber'); }, e => { Zvuk.play('bad'); toast(chyba(e)); });

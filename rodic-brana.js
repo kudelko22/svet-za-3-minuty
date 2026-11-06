@@ -184,8 +184,8 @@ const RodicBrana = (() => {
     const C = window.Cloud, pin = S2.pin;
     if (st.faza === 'rodicTvorba') {
       const t = tvorba();
-      if (t.krok === 'pin1') { t.pin1 = pin; t.krok = 'pin2'; S2.pin = ''; S2.chyba = ''; render(); return; }
-      if (pin !== t.pin1) { t.krok = 'pin1'; t.pin1 = ''; S2.pin = ''; S2.chyba = 'PIN-y sa nezhodujú. Skúste od začiatku.'; render(); return; }
+      if (t.krok === 'pin1') { t.pin1 = pin; t.krok = 'pin2'; S2.pin = ''; S2.chyba = ''; renderTicho(); return; }
+      if (pin !== t.pin1) { t.krok = 'pin1'; t.pin1 = ''; S2.pin = ''; S2.chyba = 'PIN-y sa nezhodujú. Skúste od začiatku.'; renderTicho(); return; }
       S2.pracuje = true; dolu(true);
       try {
         await C.rodicVytvor({ meno: t.meno.trim() || 'Rodič', ikona: t.ikona, pin });
@@ -196,8 +196,8 @@ const RodicBrana = (() => {
     }
     if (S2.zab) {
       const z = S2.zab;
-      if (z.krok === 'novy1') { z.pin1 = pin; z.krok = 'novy2'; S2.pin = ''; S2.chyba = ''; render(); return; }
-      if (pin !== z.pin1) { z.krok = 'novy1'; z.pin1 = ''; S2.pin = ''; S2.chyba = 'PIN-y sa nezhodujú. Skúste znova.'; render(); return; }
+      if (z.krok === 'novy1') { z.pin1 = pin; z.krok = 'novy2'; S2.pin = ''; S2.chyba = ''; renderTicho(); return; }
+      if (pin !== z.pin1) { z.krok = 'novy1'; z.pin1 = ''; S2.pin = ''; S2.chyba = 'PIN-y sa nezhodujú. Skúste znova.'; renderTicho(); return; }
       S2.pracuje = true; dolu(true);
       try {
         await C.rodicObnovPin(pin);
@@ -217,7 +217,7 @@ const RodicBrana = (() => {
     S2.pracuje = false;
     if (ok) { S2.chyb = 0; S2.do = 0; S2.kolo = 0; ulozPokusy(); S2.pin = ''; S2.chyba = ''; Rodic.odomkni(); Rodic.chod('rodic'); return; }
     nacitajPokusy(); S2.chyb++;
-    if (S2.chyb >= POKUSOV) { S2.chyb = 0; S2.do = Date.now() + Math.min(PAUZA_MS * 2 ** S2.kolo, 3600000); S2.kolo = Math.min(S2.kolo + 1, 8); ulozPokusy(); S2.pin = ''; S2.chyba = ''; Zvuk.play('bad'); render(); return; }
+    if (S2.chyb >= POKUSOV) { S2.chyb = 0; S2.do = Date.now() + Math.min(PAUZA_MS * 2 ** S2.kolo, 3600000); S2.kolo = Math.min(S2.kolo + 1, 8); ulozPokusy(); S2.pin = ''; S2.chyba = ''; Zvuk.play('bad'); renderTicho(); return; }
     ulozPokusy(); dolu(false); zle('Zlý PIN. Zostáva pokusov: ' + (POKUSOV - S2.chyb));
   }
 
@@ -243,10 +243,10 @@ const RodicBrana = (() => {
     if (d.rodicOver !== undefined) {
       if (S2.pracuje) return true;
       const i = document.getElementById('rodic-heslo'), heslo = i ? i.value : '';
-      S2.pracuje = true; S2.chyba = ''; render();
+      S2.pracuje = true; S2.chyba = ''; renderTicho();
       C.rodicPrepotvrdHeslom(heslo)
-        .then(() => { S2.pracuje = false; S2.zab = { krok: 'novy1' }; S2.pin = ''; render(); })
-        .catch(e => { S2.pracuje = false; S2.chyba = chybaText(e); render(); });
+        .then(() => { S2.pracuje = false; S2.zab = { krok: 'novy1' }; S2.pin = ''; renderTicho(); })
+        .catch(e => { S2.pracuje = false; S2.chyba = chybaText(e); renderTicho(); });
       return true;
     }
     if (d.pinZrus !== undefined) { if (S2.pracuje) return true; S2.pin = S2.pin.slice(0, -1); Zvuk.play('tap'); obnovBodky(); return true; }
@@ -262,12 +262,13 @@ const RodicBrana = (() => {
     return false;
   }
 
+  const PO = new WeakSet(); // polia, ktorým už bol pripojený posluchač (tiché prekreslenie ich nechá)
   function po() {
     if (st.faza === 'rodicPin') tikPauza();
     const m = document.getElementById('rodic-heslo');
-    if (m) m.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const b = document.querySelector('[data-rodic-over]'); if (b) b.click(); } });
+    if (m && !PO.has(m)) { PO.add(m); m.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const b = document.querySelector('[data-rodic-over]'); if (b) b.click(); } }); }
     const n = document.getElementById('rodic-meno');
-    if (n) n.addEventListener('input', () => { tvorba().meno = n.value; });
+    if (n && !PO.has(n)) { PO.add(n); n.addEventListener('input', () => { tvorba().meno = n.value; }); }
   }
 
   return { brany: { rodicTvorba, rodicPin }, vyber, klik, po };
