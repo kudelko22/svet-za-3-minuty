@@ -221,3 +221,6 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Overené: `test`, `build`; emulátor 1280 px: v angličtine zlá aj správna odpoveď bez výmeny prvkov na stránke; profil dieťaťa bez rodiča nemá prepínač (text „najprv si vytvorte účet rodiča“); panel rodiča: prehľad dieťaťa má Zapnúť/Vypnúť priateľov a funguje.
 - Neoverené: profil dieťaťa s rodičom očami, tablet, 360 px, staršie dieťa, vizuálne „bez poskoku“ (len kontrola DOM), `test:rules` (výstup nejasný, pravidlá sa nemenili). Konzola: len chyby spojenia z emulátora.
 - **3.6.2 NASADENÉ** (hosting, pravidlá, auth), push na GitHub, záloha `Desktop\svet-za-3-minuty-3.6.2.zip`. Živý web ukazuje 3.6.2, cache `svet3-v6`; v konzole jedna 404 na nejaký zdroj (rovnaká sa objavovala aj na emulátore).
+
+## 3.6.3 – Tento týždeň úplne hore (NENASADENÉ)
+- `views.domov`: karta „Tento týždeň“ so stromom je teraz prvá, nad Misiou dňa. Verzia 44 / 3.6.3, cache `svet3-v7`, `NOVINKY`. Overené: `test`, `build`, poradie v kóde; na emulátore nevidené.
