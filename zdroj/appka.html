@@ -1615,6 +1615,7 @@ let toastT;
 function toast(text) { const t = document.getElementById('toast'); t.textContent = text; t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
 
 // pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
+const staryOk = () => !S.get('stary-hotovo', false); // starý lokálny pokrok dostane len prvý účet na zariadení, potom sa už nepoužije
 const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
 const st = {
   meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [], dietaId: null, avatar: null,
@@ -1670,8 +1671,8 @@ function row(t) {
 /* Brána pred appkou: prihlásenie rodiča, výber dieťaťa a tvorba postavičky */
 const vekText = v => v === 'starsi' ? '9–12 rokov' : '5–8 rokov';
 function noveUpravovanie(prve) {
-  const body = prve ? STARY.body || 0 : 0;
-  return { id: null, meno: prve ? STARY.meno : '', vek: prve ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(body), body, kat: 'vlasy', novy: true, prve, potvrd: false };
+  const stary = prve && staryOk(), body = stary ? STARY.body || 0 : 0;
+  return { id: null, meno: stary ? STARY.meno : '', vek: stary ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(body), body, kat: 'vlasy', novy: true, prve, potvrd: false };
 }
 // Účet rodiča (3.5): odomknutie PIN-om je len v pamäti, samo sa zamkne po 5 minútach nečinnosti, pri zmene dieťaťa a pri odhlásení
 const Rodic = {
@@ -1705,6 +1706,9 @@ const brany = {
   nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
   bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
       <p class="muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>Skúsiť znova</button></div>`,
+  chybaNacitania: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Nepodarilo sa načítať</h1>
+      <p class="muted">${esc((window.Cloud && window.Cloud.chybaNacitania) || 'Chýba internet alebo je spojenie pomalé.')}</p>
+      <button class="btn wide" data-reload>Skúsiť znova</button><button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa</button></div>`,
   prihlasenie: () => {
     // počas prihlasovania sa na tlačidle točí koliesko a tlačidlá sú zablokované (žiadne dvojité ťuknutie)
     const C = window.Cloud || {}, p = C.pracuje || '', zam = p ? ' disabled' : '';
@@ -4024,7 +4028,7 @@ const RodicVyzva = {
   volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !Novinky.caka && !document.querySelector('.novinky, .oslava'); },
   skontroluj() {
     const C = window.Cloud;
-    if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil || S.get('rodic-neskor', 0) > Date.now()) return;
+    if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil || S.get('rodic-neskor-' + (C.pouzivatel ? C.pouzivatel.uid : ''), 0) > Date.now()) return;
     this.caka = true;
     const skus = n => setTimeout(() => {
       const C2 = window.Cloud;
@@ -4048,7 +4052,7 @@ const RodicVyzva = {
       e.stopPropagation();
       const b = e.target.closest('[data-rv]'); if (!b) return;
       Zvuk.play('tap'); zavri();
-      if (b.dataset.rv === 'ano') Rodic.chod('rodicTvorba'); else S.set('rodic-neskor', Date.now() + 3 * 864e5);
+      if (b.dataset.rv === 'ano') Rodic.chod('rodicTvorba'); else S.set('rodic-neskor-' + ((window.Cloud.pouzivatel || {}).uid || ''), Date.now() + 3 * 864e5);
     });
   },
 };
@@ -4712,7 +4716,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
   initializeFirestore, getFirestore, connectFirestoreEmulator, persistentLocalCache,
-  collection, doc, onSnapshot, getDoc, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, writeBatch, addDoc, updateDoc, deleteField,
+  collection, doc, onSnapshot, getDoc, getDocs, setDoc, deleteDoc, serverTimestamp, query, orderBy, limit, writeBatch, addDoc, updateDoc, deleteField,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname); // skúšanie na emulátore, nie ostré dáta
@@ -4787,13 +4791,16 @@ async function zapisRodica(zmeny) {
     n.hnitie = Object.fromEntries(Object.entries(h).filter(([k]) => !ids.length || ids.includes(k)));
   }
   const p = { meno: zmeny.meno !== undefined ? String(zmeny.meno).trim().slice(0, 20) || 'Rodič' : stare.meno, ikona: zmeny.ikona || stare.ikona, pin: zmeny.pin || stare.pin, nastavenia: n, verzia: 1 };
-  await setDoc(doc(db, 'rodiny', C.pouzivatel.uid, 'rodic', 'profil'), { ...p, upravene: serverTimestamp() });
+  const z = setDoc(doc(db, 'rodiny', C.pouzivatel.uid, 'rodic', 'profil'), { ...p, upravene: serverTimestamp() });
+  z.catch(() => {});
+  // bez spojenia sa zápis nevyrieši: po 8 s to vzdáme (zápis ostane vo fronte a odíde, keď bude internet)
+  await Promise.race([z, new Promise((_, no) => setTimeout(() => no({ code: 'unavailable' }), 8000))]);
   C.rodic.profil = p; C.rodic.nacitane = true;
   return true;
 }
 
 const Cloud = {
-  pouzivatel: null, deti: [], nacitane: false, chyba: '', stavUlozenia: '', ticho: false, pracuje: '',
+  pouzivatel: null, deti: [], nacitane: false, chyba: '', chybaNacitania: '', stavUlozenia: '', ticho: false, pracuje: '',
   // profil rodiča (rodiny/<uid>/rodic/profil), null kým ho rodič nevytvorí; prepotvrdene = čas posledného potvrdenia heslom účtu
   rodic: { nacitane: false, profil: null, prepotvrdene: 0 },
   dieta(id) { return this.deti.find(x => x.id === id) || null; },
@@ -4834,6 +4841,9 @@ const Cloud = {
   async rodicUloz(zmeny) { return zapisRodica(zmeny || {}); },
   async rodicZmaz() {
     if (!this.pouzivatel) return false;
+    // prepínače vädnutia z cloudu si necháme v telefóne, aby sa po zmazaní profilu nevrátili na predvolené
+    const h = (this.rodic.profil && this.rodic.profil.nastavenia && this.rodic.profil.nastavenia.hnitie) || {};
+    for (const k of Object.keys(h)) S.set('hnitie-' + k, h[k] !== false);
     await deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'rodic', 'profil'));
     this.rodic.profil = null; Rodic.zamkni();
     return true;
@@ -4898,7 +4908,9 @@ const Cloud = {
   ulozDieta(u) {
     const id = u.id || noveId(), stare = this.deti.find(x => x.id === id);
     const prazdne = { body: 0, done: [], fav: [], dni: [] };
-    const zaklad = id === st.dietaId ? st : stare || (u.prve && (STARY.body || STARY.done.length) ? STARY : prazdne);
+    const zaklad = id === st.dietaId ? st : stare || (u.prve && staryOk() && (STARY.body || STARY.done.length) ? STARY : prazdne);
+    if (u.prve) S.set('stary-hotovo', true);
+    S.set('pokrok-hotovo-' + this.pouzivatel.uid, true);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
       body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-60), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
@@ -4911,6 +4923,7 @@ const Cloud = {
     if (!stare) { const rodic = this.novyUcet; this.novyUcet = false; setTimeout(() => Sprievodca.start(rodic ? SPR_RODIC : SPR_KROKY), 1500); }
   },
   zmazDieta(id) {
+    S.set('pokrok-hotovo-' + this.pouzivatel.uid, true);
     this.deti = this.deti.filter(x => x.id !== id);
     deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'deti', id)).catch(e => toast('Nepodarilo sa odstrániť: ' + chybaText(e)));
     socZmaz(id);
@@ -4921,6 +4934,9 @@ const Cloud = {
   },
 };
 window.Cloud = Cloud;
+// pokrok sa uloží hneď, keď appka ide do pozadia alebo sa zatvára (inak by sa zmena z posledných 0,8 s stratila)
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') Cloud.ulozHned(); });
+addEventListener('pagehide', () => Cloud.ulozHned());
 
 // ---- Priatelia (verzia 2.0): verejný profil profily/<id dieťaťa>, kód kody/<KÓD>, žiadosti a priatelia pod profilom,
 // správy rozhovory/<id1_id2>/spravy. Čo kto smie, stráži firestore.rules (len nálepky a hotové vety, len medzi priateľmi).
@@ -4998,8 +5014,13 @@ function socUlozProfil() {
   setDoc(doc(db, 'profily', Soc.pid), { ...d, upravene: serverTimestamp() }).catch(() => { socOtlacok = ''; });
 }
 function socZmaz(id) {
-  getDoc(doc(db, 'profily', id)).then(sn => {
+  getDoc(doc(db, 'profily', id)).then(async sn => {
     if (!sn.exists()) return;
+    // najprv zmažeme priateľstvá na oboch stranách (kým profil ešte existuje a pravidlá to dovolia)
+    try {
+      const pr = await getDocs(collection(db, 'profily', id, 'priatelia'));
+      await Promise.allSettled(pr.docs.map(x => { const b2 = writeBatch(db); b2.delete(doc(db, 'profily', id, 'priatelia', x.id)); b2.delete(doc(db, 'profily', x.id, 'priatelia', id)); return b2.commit(); }));
+    } catch (e) { /* aj bez toho profil zmažeme */ }
     const b = writeBatch(db); b.delete(doc(db, 'profily', id)); if (sn.data().kod) b.delete(doc(db, 'kody', sn.data().kod));
     return b.commit();
   }).catch(() => {});
@@ -5070,7 +5091,7 @@ Object.assign(Soc, {
     return addDoc(collection(db, 'rozhovory', rozhovor(Soc.pid, f), 'spravy'), { od: Soc.pid, ...m, kedy: serverTimestamp() });
   },
   // pochvala témou všetkým priateľom naraz
-  pochval(t, h) { return Promise.all(Object.keys(Soc.priatelia).map(f => Soc.posli(f, { t, h }))); },
+  pochval(t, h) { return Promise.allSettled(Object.keys(Soc.priatelia).map(f => Soc.posli(f, { t, h }))).then(v => { if (v.length && !v.some(x => x.status === 'fulfilled')) throw 'Správa sa nikomu nedostala.'; return v; }); },
   // srdiečko na správu priateľa (druhé ťuknutie ho zruší)
   reaguj(f, id) {
     const m = (Soc.spravy[f] || []).find(x => x.id === id);
@@ -5081,9 +5102,9 @@ Object.assign(Soc, {
   // „Videné“: zapíšeme, len keď pribudla nová správa od priateľa
   precitaj(f) {
     const m = (Soc.spravy[f] || []).filter(x => x.od === f).slice(-1)[0];
-    if (!m || (socCitanie[f] || 0) >= m.kedy) return;
-    socCitanie[f] = m.kedy;
-    setDoc(doc(db, 'rozhovory', rozhovor(Soc.pid, f), 'citane', Soc.pid), { kedy: serverTimestamp() }).catch(() => { socCitanie[f] = 0; });
+    if (!m || (socCitanie[Soc.pid + ':' + f] || 0) >= m.kedy) return;
+    socCitanie[Soc.pid + ':' + f] = m.kedy;
+    setDoc(doc(db, 'rozhovory', rozhovor(Soc.pid, f), 'citane', Soc.pid), { kedy: serverTimestamp() }).catch(() => { socCitanie[Soc.pid + ':' + f] = 0; });
   },
 });
 Cloud.soc = Soc;
@@ -5141,15 +5162,21 @@ function zobrazPoNacitani() {
 }
 // pokrok z verzie 5 (dokument pokrok/<uid>) sa prenesie ako prvé dieťa
 async function prevodStareho(u) {
+  const ten = () => Cloud.pouzivatel && Cloud.pouzivatel.uid === u.uid;
   try {
+    // ak už toto zariadenie malo deti tohto účtu (aj zmazané), starý dokument sa znova neprenáša; nič sa nemaže
+    if (!S.get('pokrok-hotovo-' + u.uid, false)) {
     const s = await getDoc(doc(db, 'pokrok', u.uid));
+    if (!ten()) return;
     if (s.exists() && !Cloud.deti.length) {
       const c = s.data(), id = noveId();
       const d = { meno: (c.meno || 'Dieťa').slice(0, 20), vek: c.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: nahodnyAvatar(),
         body: c.body || 0, done: c.done || [], fav: c.fav || [], dni: (c.dni || []).slice(-60), odznaky: [], poradie: Date.now() };
-      Cloud.deti = [{ id, ...d }]; zapis(id, d); S.set('aktivne', id);
+      Cloud.deti = [{ id, ...d }]; zapis(id, d); S.set('aktivne', id); S.set('pokrok-hotovo-' + u.uid, true);
+    }
     }
   } catch (e) { /* bez starého pokroku pokračujeme ďalej */ }
+  if (!ten()) return;
   zobrazPoNacitani();
 }
 
@@ -5160,11 +5187,14 @@ onAuthStateChanged(auth, u => {
   Cloud.rodic = { nacitane: false, profil: null, prepotvrdene: 0 }; Rodic.zamkni();
   clearTimeout(casovac); casovac = null;
   if (!u) {
+    Object.assign(st, { meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [] }); // nič z predošlého účtu v pamäti
     // po návrate z Googlu sa prihlásenie ešte dokončuje: neukazujeme prihlasovaciu obrazovku, aby sa neťukalo znova
     Object.assign(st, { dietaId: null, avatar: null, flow: null, faza: dokoncujeGoogle ? 'nacitava' : 'prihlasenie', sprava: dokoncujeGoogle ? 'Dokončuje sa prihlásenie cez Google…' : '' });
     render(); return;
   }
   Object.assign(st, { faza: 'nacitava', sprava: 'Prihlásené, načítavajú sa deti…' }); render();
+  Cloud.chybaNacitania = '';
+  setTimeout(() => { if (Cloud.pouzivatel === u && st.faza === 'nacitava' && !Cloud.nacitane) { st.faza = 'chybaNacitania'; render(); } }, 12000); // časový limit: ak sa nič nenačíta, ukážeme východ
   odberRodic = onSnapshot(doc(db, 'rodiny', u.uid, 'rodic', 'profil'), snap => {
     const bolo = !!Cloud.rodic.profil;
     Cloud.rodic.profil = snap.exists() ? snap.data() : null; Cloud.rodic.nacitane = true;
@@ -5176,7 +5206,7 @@ onAuthStateChanged(auth, u => {
     if (!Cloud.nacitane) {
       if (snap.empty && snap.metadata.fromCache) return; // prvé spustenie: počkáme na odpoveď z cloudu
       Cloud.nacitane = true; Cloud.deti = deti;
-      if (deti.length) zobrazPoNacitani(); else prevodStareho(u);
+      if (deti.length) { S.set('pokrok-hotovo-' + u.uid, true); zobrazPoNacitani(); } else prevodStareho(u);
       return;
     }
     Cloud.deti = deti;
@@ -5189,7 +5219,10 @@ onAuthStateChanged(auth, u => {
     }
     if (a && st.faza === 'appka' && !snap.metadata.hasPendingWrites && !snap.metadata.fromCache) prevezmi(a);
     if (st.faza === 'vyber') render();
-  }, e => { Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav(); });
+  }, e => {
+    Cloud.stavUlozenia = 'Cloud sa nedá načítať: ' + chybaText(e); obnovStav();
+    if (!Cloud.nacitane && st.faza === 'nacitava') { Cloud.chybaNacitania = chybaText(e); st.faza = 'chybaNacitania'; render(); }
+  });
 });
 getRedirectResult(auth).catch(e => { Cloud.chyba = chybaText(e); }).finally(() => {
   const bolo = dokoncujeGoogle;

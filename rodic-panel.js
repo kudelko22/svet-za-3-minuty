@@ -122,7 +122,7 @@ const RodicPanel = (() => {
     else if (d.rpVyber !== undefined) { zavri(); Rodic.zamkni(); chod('vyber'); }
     else if (d.rpHnitie) {
       const id = d.rpHnitie, ted = hnitieZapnute(id);
-      C.rodicUloz({ nastavenia: { hnitie: { [id]: !ted } } }).then(() => { Zvuk.play('tap'); toast(ted ? 'Vädnutie stromu je vypnuté.' : 'Vädnutie stromu je zapnuté.'); if (st.faza.startsWith('rodic')) render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
+      C.rodicUloz({ nastavenia: { hnitie: { [id]: !ted } } }).then(() => { S.set('hnitie-' + id, !ted); Zvuk.play('tap'); toast(ted ? 'Vädnutie stromu je vypnuté.' : 'Vädnutie stromu je zapnuté.'); if (st.faza.startsWith('rodic')) render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
     }
     else if (d.rpSoczapni !== undefined) {
       if (C.soc) socAkcia(C.soc.zapni(), () => { Zvuk.play('ok'); toast('Priatelia sú zapnutí.'); render(); });

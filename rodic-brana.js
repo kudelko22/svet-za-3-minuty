@@ -222,7 +222,7 @@ const RodicBrana = (() => {
     if (d.rodicSpat !== undefined) {
       Zvuk.play('whoosh'); S2.pin = ''; S2.chyba = '';
       if (st.faza === 'rodicTvorba' && S2.tv && S2.tv.krok !== 'profil') { S2.tv.krok = S2.tv.krok === 'pin2' ? 'pin1' : 'profil'; render(); return true; }
-      S2.tv = null; S2.zab = null; Rodic.chod('vyber'); return true;
+      S2.tv = null; S2.zab = null; S2.pracuje = false; Rodic.chod('vyber'); return true;
     }
     if (d.rodicIkona) {
       tvorba().ikona = d.rodicIkona; Zvuk.play('pop');
