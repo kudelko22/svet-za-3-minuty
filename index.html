@@ -1091,6 +1091,11 @@ body.dm-rezim::before { display: none; }
 .spr-karta b { display: block; font: 700 1.15rem/1.2 var(--f-display); }
 .spr-karta small { display: block; color: var(--muted); font-weight: 700; }
 .spr-karta .auto-play { flex: none; }
+/* Ďalej v angličtine ostáva viditeľné nad dolným menu, netreba rolovať */
+.ang-pad { height: 70px; }
+.anim > .ang-dalej-bar, .anim > .ang-pad { animation: none; }
+.ang-dalej-bar { position: fixed; left: 0; right: 0; bottom: var(--nav-v, 70px); z-index: 4; padding: 22px 0 10px; background: linear-gradient(to bottom, transparent, var(--fon) 45%); pointer-events: none; }
+.ang-dalej-bar .btn { pointer-events: auto; }
 .poz-karta { display: grid; gap: 10px; }
 .poz-karta .poz-rad { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 8px; margin: 0 -4px; scrollbar-width: none; }
 .poz-karta .poz-rad::-webkit-scrollbar { display: none; }
@@ -1259,14 +1264,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=48"></script>
-<script src="obrazky.js?v=48"></script>
-<script src="misie.js?v=48"></script>
-<script src="anglictina.js?v=48"></script>
-<script src="rodic-brana.js?v=48"></script>
-<script src="rodic-panel.js?v=48"></script>
+<script src="temy.js?v=49"></script>
+<script src="obrazky.js?v=49"></script>
+<script src="misie.js?v=49"></script>
+<script src="anglictina.js?v=49"></script>
+<script src="rodic-brana.js?v=49"></script>
+<script src="rodic-panel.js?v=49"></script>
 <script>
-const VERZIA_APPKY = 48; const VERZIA_NAZOV = '3.7.3'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 49; const VERZIA_NAZOV = '3.7.4'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3898,7 +3903,7 @@ const Ang = {
   },
   pata(q, o) {
     return `${q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''}
-      ${q.spravne ? `<div class="card ang-vys nova"><small class="lbl-mala">Vysvetlenie</small><p>${esc(o.vys)}</p></div><button class="btn wide cta" data-ang-dalej>${q.i === q.qs.length - 1 ? 'Dokončiť' : 'Ďalej'}</button>` : ''}`;
+      ${q.spravne ? `<div class="card ang-vys nova"><small class="lbl-mala">Vysvetlenie</small><p>${esc(o.vys)}</p></div><div class="ang-pad"></div><div class="ang-dalej-bar"><div class="gut"><button class="btn wide cta" data-ang-dalej>${q.i === q.qs.length - 1 ? 'Dokončiť' : 'Ďalej'}</button></div></div>` : ''}`;
   },
   /* Vyhodnotenie bez prekreslenia obrazovky: zmenia sa len odpovede, pokrok a pätička (reakcia, vysvetlenie, tlačidlo) */
   uprav() {
@@ -3910,7 +3915,7 @@ const Ang = {
       b.disabled = q.spravne || q.zle.includes(i);
     });
     main.querySelectorAll('.ang-pokrok i').forEach((el, i) => { el.className = i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''; });
-    main.querySelectorAll('.misia-reakcia, .ang-vys, [data-ang-dalej]').forEach(el => el.remove());
+    main.querySelectorAll('.misia-reakcia, .ang-vys, .ang-pad, .ang-dalej-bar').forEach(el => el.remove());
     ans.insertAdjacentHTML('afterend', this.pata(q, o));
   },
   /* Ďalšia otázka: krátke vyblednutie, potom nový obsah (pri obmedzenom pohybe hneď) */
@@ -3941,6 +3946,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 49, obr: () => IK_KAT.anglictina, n: 'Ďalej bez rolovania', p: 'V angličtine ostane tlačidlo Ďalej po odpovedi stále na obrazovke, netreba rolovať dolu.' },
   { v: 48, obr: () => IK.ohen, n: 'Najprv téma, potom misia', p: 'Na Domove je téma dňa číslo 1 a zvýraznená. Misia dňa je číslo 2 a odomkne sa, keď prebereš tému.' },
   { v: 47, obr: () => IK.mozog, n: 'Bez blikania', p: 'Misie a kvízy sa po odpovedi už neprekresľujú. Okno Čo je nové sa ukáže až po úvodnej obrazovke so sovičkou.' },
   { v: 46, obr: () => IK.duha, n: 'Plynulé pozadie', p: 'Pozadie sa pri výbere mení plynulo a obrazovka už neblikne.' },
@@ -4463,6 +4469,7 @@ function render(tichy) {
     const t = document.createElement('div'); t.innerHTML = html; morph(main, t, true);
   } else { main.classList.add('anim'); main.innerHTML = html; }
   ocisluj();
+  const navEl = document.getElementById('nav'); if (navEl && navEl.offsetHeight) document.documentElement.style.setProperty('--nav-v', navEl.offsetHeight + 'px');
   if (st.view === 'domov' && !document.querySelector('.oslava')) Novinky.skontroluj();
   if (st.view === 'domov' && !document.querySelector('.oslava')) RodicVyzva.skontroluj();
   if (st.view === 'priatel') { const ch = document.getElementById('chat'); if (ch) ch.scrollTop = ch.scrollHeight; const So = socC(); if (So && So.precitaj) So.precitaj(st.priatel); }

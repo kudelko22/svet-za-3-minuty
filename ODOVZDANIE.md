@@ -245,3 +245,7 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - `kartaMisie` v `zdroj/appka.html`: číslo 1 = Téma dňa (tlačidlo, zvýraznená žltým a prerušovaným rámom, kým nie je prebratá; po téme zelená s ✓), číslo 2 = Misia (zamknutá a šedá „po téme dňa“, nedá sa ťuknúť, kým téma nie je hotová; potom zvýraznená a klikateľná). Čísla ostávajú vždy. Verzia 48 / 3.7.3, cache `svet3-v11`.
 - Dôsledok: kým dieťa neprebralo tému dňa, nedostane sa do misie z Domova. Misia je dostupná ešte z karty na konci témy.
 - Overené: `test`, `build`, emulátor (stavy pred a po téme, zamknutá karta nie je tlačidlo). Neoverené: vzhľad na snímke (panel bol skrytý), telefón.
+
+## 3.7.3 NASADENÉ (záloha `Desktop\svet-za-3-minuty-3.7.3.zip`) a 3.7.4 – angličtina: Ďalej bez rolovania (NENASADENÉ)
+- 3.7.4: po správnej odpovedi v angličtine je tlačidlo Ďalej v pevnom páse (`.ang-dalej-bar`, fixed) hneď nad dolným menu; odsadenie `.ang-pad`, výška menu sa berie z `--nav-v` (nastavuje `render()`). Pás nemá animáciu `rise` (inak by sa posunul). Verzia 49 / 3.7.4, cache `svet3-v12`.
+- Overené: `test`, `build`, emulátor 390x700: tlačidlo je viditeľné bez rolovania nad menu (566 až 621, menu od 631). Neoverené: tablet, veľmi nízke obrazovky, dlhé vysvetlenie.
