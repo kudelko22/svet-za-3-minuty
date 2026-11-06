@@ -14,10 +14,11 @@
   --spring: cubic-bezier(.25, 1.55, .5, 1);
   --f-display: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif;
   --f-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --fon: #E3F4FF; --b1: rgb(255 111 168 / .45); --b2: rgb(255 210 63 / .55); --b3: rgb(47 191 113 / .4); --b4: rgb(124 108 255 / .4);
   color-scheme: light;
 }
 * { box-sizing: border-box; }
-body { color: var(--ink); font: 700 16px/1.55 var(--f-body); -webkit-text-size-adjust: 100%; background-color: var(--sky); transition: background-color .5s; }
+body { color: var(--ink); font: 700 16px/1.55 var(--f-body); -webkit-text-size-adjust: 100%; background-color: var(--fon); transition: background-color .5s; }
 body.tinted { background-color: color-mix(in srgb, var(--kc) 22%, #fff); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -34,10 +35,10 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 /* Pozadie: plávajúce farebné škvrny a čmáranice */
 .blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
 .blobs i { position: absolute; width: 75vmax; height: 75vmax; border-radius: 50%; animation: drift 22s ease-in-out infinite alternate; transition: opacity .5s; }
-.blobs i:nth-child(1) { left: -32vmax; top: -30vmax; background: radial-gradient(circle, rgb(255 111 168 / .45), transparent 62%); }
-.blobs i:nth-child(2) { right: -38vmax; top: 8vh; background: radial-gradient(circle, rgb(255 210 63 / .55), transparent 62%); animation-duration: 26s; animation-delay: -6s; }
-.blobs i:nth-child(3) { left: -26vmax; bottom: -38vmax; background: radial-gradient(circle, rgb(47 191 113 / .4), transparent 62%); animation-duration: 30s; }
-.blobs i:nth-child(4) { right: -30vmax; bottom: -32vmax; background: radial-gradient(circle, rgb(124 108 255 / .4), transparent 62%); animation-duration: 24s; animation-delay: -12s; }
+.blobs i:nth-child(1) { left: -32vmax; top: -30vmax; background: radial-gradient(circle, var(--b1), transparent 62%); }
+.blobs i:nth-child(2) { right: -38vmax; top: 8vh; background: radial-gradient(circle, var(--b2), transparent 62%); animation-duration: 26s; animation-delay: -6s; }
+.blobs i:nth-child(3) { left: -26vmax; bottom: -38vmax; background: radial-gradient(circle, var(--b3), transparent 62%); animation-duration: 30s; }
+.blobs i:nth-child(4) { right: -30vmax; bottom: -32vmax; background: radial-gradient(circle, var(--b4), transparent 62%); animation-duration: 24s; animation-delay: -12s; }
 .blobs::after { content: ""; position: absolute; inset: -180px 0 0 -180px; animation: doodle 40s linear infinite;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' opacity='.5'%3E%3Cpath d='M18 30l6-6 6 6 6-6' stroke='%23B9A6FF'/%3E%3Ccircle cx='132' cy='28' r='6' stroke='%23FF9EC7'/%3E%3Cpath d='M78 92v14M71 99h14' stroke='%2389B4FF'/%3E%3Cpath d='M140 118l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z' stroke='%23FFC94A'/%3E%3Ccircle cx='32' cy='140' r='3.5' fill='%237FDBA6' stroke='none'/%3E%3Cpath d='M98 164q6-8 12 0t12 0' stroke='%23FFB36B'/%3E%3C/g%3E%3C/svg%3E"); }
 @keyframes drift { to { transform: translate(9vmax, 7vmax) scale(1.2); } }
@@ -1039,6 +1040,12 @@ body.dm-rezim::before { display: none; }
 .spr-karta b { display: block; font: 700 1.15rem/1.2 var(--f-display); }
 .spr-karta small { display: block; color: var(--muted); font-weight: 700; }
 .spr-karta .auto-play { flex: none; }
+.poz-karta { display: grid; gap: 10px; }
+.poz-karta .poz-rad { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 8px; margin: 0 -4px; scrollbar-width: none; }
+.poz-karta .poz-rad::-webkit-scrollbar { display: none; }
+.poz-vol { flex: none; display: grid; justify-items: center; gap: 4px; width: 76px; padding: 6px 4px; border: 3px solid transparent; border-radius: 18px; background: none; font: 700 .85rem/1.15 var(--f-display); color: var(--ink); }
+.poz-vol i { display: block; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: radial-gradient(circle at 28% 30%, var(--p1), transparent 62%), radial-gradient(circle at 72% 70%, var(--p2), transparent 62%), var(--p0); box-shadow: 0 3px 0 var(--ink); }
+.poz-vol[aria-pressed="true"] { border-color: var(--ink); background: var(--soft); }
 
 /* Úvodná obrazovka pri spustení (rozmery v px sedia s obrázkami ikony/start z generátora) */
 .uvod { position: fixed; inset: 0; z-index: 80; overflow: hidden; background: #E3F4FF; }
@@ -1207,7 +1214,7 @@ body.dm-rezim::before { display: none; }
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 44; const VERZIA_NAZOV = '3.6.3'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 45; const VERZIA_NAZOV = '3.7'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1222,6 +1229,30 @@ const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Pokrok dieťaťa ukladá Cloud (modul Firebase dole) do jeho profilu; v telefóne ostávajú len nastavenia
 const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby', 'vybrate'];
+/* Pozadie appky: výber v profile, pamätá sa zvlášť pre každé dieťa na tomto zariadení */
+const POZADIA = [
+  { id: 'nebo', n: 'Nebo', fon: '#E3F4FF', b: ['rgb(255 111 168 / .45)', 'rgb(255 210 63 / .55)', 'rgb(47 191 113 / .4)', 'rgb(124 108 255 / .4)'] },
+  { id: 'ruzova', n: 'Ružová', fon: '#FFE6F0', b: ['rgb(255 111 168 / .5)', 'rgb(255 180 120 / .5)', 'rgb(255 210 63 / .4)', 'rgb(190 120 255 / .4)'] },
+  { id: 'luka', n: 'Lúka', fon: '#E4F8E8', b: ['rgb(47 191 113 / .45)', 'rgb(255 226 90 / .5)', 'rgb(90 200 230 / .4)', 'rgb(160 220 90 / .45)'] },
+  { id: 'slnko', n: 'Slnko', fon: '#FFF4D6', b: ['rgb(255 190 60 / .55)', 'rgb(255 140 90 / .45)', 'rgb(255 111 168 / .35)', 'rgb(255 226 90 / .55)'] },
+  { id: 'fialova', n: 'Fialová', fon: '#EEE8FF', b: ['rgb(124 108 255 / .5)', 'rgb(255 111 168 / .4)', 'rgb(90 160 255 / .4)', 'rgb(190 120 255 / .45)'] },
+  { id: 'more', n: 'More', fon: '#DFF6F7', b: ['rgb(60 190 210 / .5)', 'rgb(90 140 255 / .4)', 'rgb(47 191 113 / .35)', 'rgb(120 220 240 / .5)'] },
+];
+const Pozadie = {
+  kluc: () => 'pozadie-' + (st.dietaId || ''),
+  dnes() { const id = S.get(this.kluc(), 'nebo'); return POZADIA.find(p => p.id === id) || POZADIA[0]; },
+  pouzi() {
+    const p = this.dnes(), r = document.documentElement && document.documentElement.style;
+    if (!r || !r.setProperty) return;
+    r.setProperty('--fon', p.fon); p.b.forEach((c, i) => r.setProperty('--b' + (i + 1), c));
+  },
+  zvol(id) { if (!POZADIA.some(p => p.id === id)) return; S.set(this.kluc(), id); this.pouzi(); },
+  karta() {
+    const a = this.dnes().id;
+    return `<section class="card poz-karta"><span class="lbl">Pozadie appky</span>
+      <div class="poz-rad">${POZADIA.map(p => `<button class="poz-vol" data-pozadie="${p.id}" aria-pressed="${p.id === a}" style="--p0:${p.fon};--p1:${p.b[0]};--p2:${p.b[1]}"><i></i>${p.n}</button>`).join('')}</div></section>`;
+  },
+};
 const S = {
   get(k, d) { try { const v = localStorage.getItem('svet3:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) {
@@ -3055,6 +3086,7 @@ const views = {
         <div class="card mini" style="--c:#FFE3C7"><b>${ii(IK.ohen)} ${s}</b><small>${dni(s)} po sebe</small></div>
       </section>
       ${kartaOdznakov()}
+      ${Pozadie.karta()}
       <button class="card spr-karta" data-sprievodca>${owl('hi')}<span><b>Sprievodca appkou</b><small>Sovička ti znova ukáže, čo kde je.</small></span><span class="auto-play">${IKO.play}</span></button>
       ${maRodica() ? '' : prehladRodica()}
       <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
@@ -3848,6 +3880,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 45, obr: () => IK.duha, n: 'Vlastné pozadie', p: 'V profile Ja si môžeš vybrať farbu pozadia appky: Nebo, Ružová, Lúka, Slnko, Fialová alebo More.' },
   { v: 44, obr: () => IK.ohen, n: 'Tvoj týždeň hore', p: 'Karta Tento týždeň so stromom múdrosti je teraz na Domove úplne hore.' },
   { v: 43, obr: () => IK_KAT.anglictina, n: 'Angličtina bez blikania', p: 'Kvíz v angličtine sa po odpovedi už neprekresľuje, všetko ide plynulo.' },
   { v: 43, obr: () => IK.rodina, n: 'Priateľov zapína rodič', p: 'Priateľov zapína a vypína len rodič, v paneli za PIN-om. Dieťa tu už nič neprepína.' },
@@ -4331,6 +4364,7 @@ function ocisluj() {
 
 function render() {
   Uvod.skontroluj();
+  Pozadie.pouzi();
   const brana = st.faza !== 'appka', auto = !brana && !!st.auto, hra = !brana && !auto && !!st.hra, flow = !brana && !auto && !hra && !!st.flow;
   const dm = !brana && !auto && !hra && !flow && st.view === 'priatel'; // rozhovor na celú obrazovku
   document.getElementById('top').hidden = brana || auto || hra || flow || dm;
@@ -4503,6 +4537,8 @@ document.addEventListener('click', e => {
     st.kat = d.kat; st.q = '';
     if (d.kat && d.kat !== 'fav') st.skupina = (skupinaKat(d.kat) || {}).id || ''; else if (d.kat === 'fav') st.skupina = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
+  } else if (d.pozadie) {
+    Zvuk.play('pop'); Pozadie.zvol(d.pozadie); render();
   } else if (d.vek) {
     Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render();
   } else if (d.citaj !== undefined && f) {
