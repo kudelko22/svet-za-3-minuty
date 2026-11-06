@@ -257,3 +257,10 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Príčinu, prečo okno u vlastníka „vôbec nevyskočilo“, som nenašiel istotou: v emulátore sa ukázalo (po 0,8 s s 10 položkami). Možné príčiny sú čakanie na úvodnú obrazovku alebo skoré zapísanie verzie. Ak sa ani teraz neukáže, treba zistiť, aký stav (účet, dieťa, rodič) appka má pri otvorení.
 - Verzia 50 / 3.7.5, cache `svet3-v13`. Overené: `test`, `build`, emulátor (angličtina, misia, Čo je nové). Neoverené: telefón, PWA po aktualizácii.
 - **3.7.5 NASADENÉ**, push, záloha `Desktop\svet-za-3-minuty-3.7.5.zip`.
+
+## 3.7.6 – výber štýlu pozadia (NENASADENÉ)
+- Karta Pozadie v profile `ja`: hore tri štýly (Animované, Jednofarebné, Jemný vzor, kreslené SVG ikony), pod nimi farby. Animované a Jemný vzor používajú pôvodných 6 tém (Nebo…More), Jednofarebné 8 pastelov (`FARBY`: Mäta, Obloha, Broskyňa, Citrón, Levanduľa, Ružová, Mrak, Večer – najhlbšia).
+- Ukladanie len v localStorage na zariadení, zvlášť pre dieťa: `svet3:pozadie-styl-<id>` a `svet3:pozadie-farba-<id>` (téma ostáva `pozadie-<id>`). `firestore.rules` sa nemenili. Predvolené Animované; pri `prefers-reduced-motion` predvolene Jemný vzor.
+- CSS cez `html[data-fon-styl]`: farba = `.blobs` skryté (žiadna animácia ani škvrny), vzor = škvrny skryté a čmáranice stoja. Hry: `body.hra-rezim .blobs` ostáva ako predtým.
+- Pravý tmavý režim nie je: appka je zámerne svetlá (tmavý text na kartách). „Tmavý variant“ je preto Večer, hlbšia levanduľová (#DCD9F6).
+- Verzia 51 / 3.7.6, cache `svet3-v14`. Overené: `test`, `build`, emulátor 390 px (výber štýlu a farby, ukladanie, kontrast textu mimo kariet na Domov/Témy/Hry/Priatelia/Ja pri Večer ≥ 4,4). Neoverené: kvízy, misia, strom, správy pri každej farbe očami, telefón, PWA po aktualizácii.

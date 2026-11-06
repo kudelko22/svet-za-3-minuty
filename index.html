@@ -1102,6 +1102,13 @@ body.dm-rezim::before { display: none; }
 .poz-karta .poz-rad::-webkit-scrollbar { display: none; }
 .poz-vol { flex: none; display: grid; justify-items: center; gap: 4px; width: 76px; padding: 6px 4px; border: 3px solid transparent; border-radius: 18px; background: none; font: 700 .85rem/1.15 var(--f-display); color: var(--ink); }
 .poz-vol i { display: block; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); background: radial-gradient(circle at 28% 30%, var(--p1), transparent 62%), radial-gradient(circle at 72% 70%, var(--p2), transparent 62%), var(--p0); box-shadow: 0 3px 0 var(--ink); }
+.poz-karta .poz-styly { display: flex; gap: 8px; }
+.poz-styl { flex: 1; width: auto; min-width: 0; }
+.poz-styl i { background: var(--paper); overflow: hidden; }
+.poz-styl svg { display: block; width: 100%; height: 100%; }
+html[data-fon-styl="farba"] .blobs { display: none; }
+html[data-fon-styl="vzor"] .blobs i { display: none; }
+html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 .poz-vol[aria-pressed="true"] { border-color: var(--ink); background: var(--soft); }
 
 /* Úvodná obrazovka pri spustení (rozmery v px sedia s obrázkami ikony/start z generátora) */
@@ -1265,14 +1272,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=50"></script>
-<script src="obrazky.js?v=50"></script>
-<script src="misie.js?v=50"></script>
-<script src="anglictina.js?v=50"></script>
-<script src="rodic-brana.js?v=50"></script>
-<script src="rodic-panel.js?v=50"></script>
+<script src="temy.js?v=51"></script>
+<script src="obrazky.js?v=51"></script>
+<script src="misie.js?v=51"></script>
+<script src="anglictina.js?v=51"></script>
+<script src="rodic-brana.js?v=51"></script>
+<script src="rodic-panel.js?v=51"></script>
 <script>
-const VERZIA_APPKY = 50; const VERZIA_NAZOV = '3.7.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 51; const VERZIA_NAZOV = '3.7.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1296,19 +1303,42 @@ const POZADIA = [
   { id: 'fialova', n: 'Fialová', fon: '#EEE8FF', b: ['rgb(124 108 255 / .5)', 'rgb(255 111 168 / .4)', 'rgb(90 160 255 / .4)', 'rgb(190 120 255 / .45)'] },
   { id: 'more', n: 'More', fon: '#DFF6F7', b: ['rgb(60 190 210 / .5)', 'rgb(90 140 255 / .4)', 'rgb(47 191 113 / .35)', 'rgb(120 220 240 / .5)'] },
 ];
+const FARBY = [
+  { id: 'mata', n: 'Mäta', c: '#DDF5EA' }, { id: 'obloha', n: 'Obloha', c: '#DCEEFF' },
+  { id: 'broskyna', n: 'Broskyňa', c: '#FFE3D6' }, { id: 'citron', n: 'Citrón', c: '#FFF6C9' },
+  { id: 'levandula', n: 'Levanduľa', c: '#E9E1FF' }, { id: 'ruzova', n: 'Ružová', c: '#FFE2EC' },
+  { id: 'mrak', n: 'Mrak', c: '#E8EAF2' }, { id: 'vecer', n: 'Večer', c: '#DCD9F6' },
+];
+const STYLY = [
+  { id: 'anim', n: 'Animované', svg: '<circle cx="14" cy="16" r="9" fill="#FF6FA8" opacity=".7"/><circle cx="30" cy="30" r="10" fill="#FFD23F" opacity=".8"/><path d="M8 40q6-6 12 0M30 8q4 4 8 0" fill="none" stroke="#2B2240" stroke-width="3" stroke-linecap="round"/>' },
+  { id: 'farba', n: 'Jednofarebné', svg: '<rect x="8" y="8" width="28" height="28" rx="8" fill="#DCEEFF" stroke="#2B2240" stroke-width="3"/>' },
+  { id: 'vzor', n: 'Jemný vzor', svg: '<path d="M9 14l4-4 4 4M30 10v8M26 14h8M12 32a3 3 0 106 0 3 3 0 10-6 0M28 34q4-6 8 0" fill="none" stroke="#2B2240" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' },
+];
 const Pozadie = {
   kluc: () => 'pozadie-' + (st.dietaId || ''),
+  styl() { const s = S.get('pozadie-styl-' + (st.dietaId || ''), tiche ? 'vzor' : 'anim'); return STYLY.some(x => x.id === s) ? s : 'anim'; },
+  farba() { const id = S.get('pozadie-farba-' + (st.dietaId || ''), 'obloha'); return FARBY.find(f => f.id === id) || FARBY[1]; },
   dnes() { const id = S.get(this.kluc(), 'nebo'); return POZADIA.find(p => p.id === id) || POZADIA[0]; },
   pouzi() {
     const p = this.dnes(), r = document.documentElement && document.documentElement.style;
     if (!r || !r.setProperty) return;
-    r.setProperty('--fon', p.fon); p.b.forEach((c, i) => r.setProperty('--b' + (i + 1), c));
+    const styl = this.styl();
+    document.documentElement.dataset.fonStyl = styl;
+    r.setProperty('--fon', styl === 'farba' ? this.farba().c : p.fon); p.b.forEach((c, i) => r.setProperty('--b' + (i + 1), c));
   },
   zvol(id) { if (!POZADIA.some(p => p.id === id)) return; S.set(this.kluc(), id); this.pouzi(); },
-  karta() {
+  zvolStyl(id) { if (!STYLY.some(x => x.id === id)) return; S.set('pozadie-styl-' + (st.dietaId || ''), id); this.pouzi(); },
+  zvolFarbu(id) { if (!FARBY.some(f => f.id === id)) return; S.set('pozadie-farba-' + (st.dietaId || ''), id); this.pouzi(); },
+  rad() {
+    if (this.styl() === 'farba') { const a = this.farba().id; return FARBY.map(f => `<button class="poz-vol" data-pozfarba="${f.id}" aria-pressed="${f.id === a}" style="--p0:${f.c};--p1:transparent;--p2:transparent"><i></i>${f.n}</button>`).join(''); }
     const a = this.dnes().id;
+    return POZADIA.map(p => `<button class="poz-vol" data-pozadie="${p.id}" aria-pressed="${p.id === a}" style="--p0:${p.fon};--p1:${p.b[0]};--p2:${p.b[1]}"><i></i>${p.n}</button>`).join('');
+  },
+  karta() {
+    const s = this.styl();
     return `<section class="card poz-karta"><span class="lbl">Pozadie appky</span>
-      <div class="poz-rad">${POZADIA.map(p => `<button class="poz-vol" data-pozadie="${p.id}" aria-pressed="${p.id === a}" style="--p0:${p.fon};--p1:${p.b[0]};--p2:${p.b[1]}"><i></i>${p.n}</button>`).join('')}</div></section>`;
+      <div class="poz-styly">${STYLY.map(x => `<button class="poz-vol poz-styl" data-pozstyl="${x.id}" aria-pressed="${x.id === s}"><i><svg viewBox="0 0 44 44" aria-hidden="true">${x.svg}</svg></i>${x.n}</button>`).join('')}</div>
+      <div class="poz-rad">${this.rad()}</div></section>`;
   },
 };
 const S = {
@@ -3952,6 +3982,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 51, obr: () => IK.duha, n: 'Jednofarebné pozadie', p: 'V profile Ja v karte Pozadie si vyber Animované, Jednofarebné s ôsmimi jemnými farbami alebo Jemný vzor bez pohybu. Jednofarebné a vzor šetria telefón.' },
   { v: 50, obr: () => IK.ziarovka, n: 'Nápoveda hore', p: 'Keď odpovieš zle, hláška Skús inú možnosť sa ukáže hneď nad odpoveďami, netreba rolovať.' },
   { v: 49, obr: () => IK_KAT.anglictina, n: 'Ďalej bez rolovania', p: 'V angličtine ostane tlačidlo Ďalej po odpovedi stále na obrazovke, netreba rolovať dolu.' },
   { v: 48, obr: () => IK.ohen, n: 'Najprv téma, potom misia', p: 'Na Domove je téma dňa číslo 1 a zvýraznená. Misia dňa je číslo 2 a odomkne sa, keď prebereš tému.' },
@@ -4644,6 +4675,14 @@ document.addEventListener('click', e => {
     st.kat = d.kat; st.q = '';
     if (d.kat && d.kat !== 'fav') st.skupina = (skupinaKat(d.kat) || {}).id || ''; else if (d.kat === 'fav') st.skupina = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
+  } else if (d.pozstyl || d.pozfarba) {
+    Zvuk.play('pop');
+    if (d.pozstyl) Pozadie.zvolStyl(d.pozstyl); else Pozadie.zvolFarbu(d.pozfarba);
+    const k = document.querySelector('.poz-karta');
+    if (k) {
+      k.querySelector('.poz-rad').innerHTML = Pozadie.rad();
+      k.querySelectorAll('.poz-styl').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.pozstyl === Pozadie.styl())));
+    }
   } else if (d.pozadie) {
     // bez prekreslenia obrazovky: len prepne farby, výber a zvuk, aby nič neblikalo
     Zvuk.play('pop'); Pozadie.zvol(d.pozadie);
