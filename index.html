@@ -46,7 +46,14 @@ body { margin: 0; }
 img { max-width: 100%; }
 /* Kreslený svet: farebné plávajúce škvrny a čmáranice, hrubé tmavé obrysy, šťavnaté farby, tlačidlá ako v hre.
    Zámerne jeden svetlý vzhľad (ako detská knižka), preto bez tmavého režimu. */
+/* plynulá zmena pozadia: farby sa dajú prechodom plynule premeniť */
+@property --fon { syntax: "<color>"; inherits: true; initial-value: #E3F4FF; }
+@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 111 168 / .45); }
+@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 210 63 / .55); }
+@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(47 191 113 / .4); }
+@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(124 108 255 / .4); }
 :root {
+  transition: --fon .7s ease, --b1 .7s ease, --b2 .7s ease, --b3 .7s ease, --b4 .7s ease;
   --ink: #2B2240; --paper: #FFFFFF; --sky: #E3F4FF; --muted: #5F587A; --soft: #F3EFFF;
   --sun: #FFD23F; --grass: #2FBF71; --grass-d: #1E9A57; --blue: #4C7DFF; --coral: #FF5A5F; --orange: #FF9F1C; --pink: #FF6FA8;
   --ok-bg: #D9F8E6; --bad-bg: #FFE1E1;
@@ -1248,14 +1255,14 @@ body.dm-rezim::before { display: none; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=45"></script>
-<script src="obrazky.js?v=45"></script>
-<script src="misie.js?v=45"></script>
-<script src="anglictina.js?v=45"></script>
-<script src="rodic-brana.js?v=45"></script>
-<script src="rodic-panel.js?v=45"></script>
+<script src="temy.js?v=46"></script>
+<script src="obrazky.js?v=46"></script>
+<script src="misie.js?v=46"></script>
+<script src="anglictina.js?v=46"></script>
+<script src="rodic-brana.js?v=46"></script>
+<script src="rodic-panel.js?v=46"></script>
 <script>
-const VERZIA_APPKY = 45; const VERZIA_NAZOV = '3.7'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 46; const VERZIA_NAZOV = '3.7.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3921,6 +3928,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 46, obr: () => IK.duha, n: 'Plynulé pozadie', p: 'Pozadie sa pri výbere mení plynulo a obrazovka už neblikne.' },
   { v: 45, obr: () => IK.duha, n: 'Vlastné pozadie', p: 'V profile Ja si môžeš vybrať farbu pozadia appky: Nebo, Ružová, Lúka, Slnko, Fialová alebo More.' },
   { v: 44, obr: () => IK.ohen, n: 'Tvoj týždeň hore', p: 'Karta Tento týždeň so stromom múdrosti je teraz na Domove úplne hore.' },
   { v: 43, obr: () => IK_KAT.anglictina, n: 'Angličtina bez blikania', p: 'Kvíz v angličtine sa po odpovedi už neprekresľuje, všetko ide plynulo.' },
@@ -4579,7 +4587,9 @@ document.addEventListener('click', e => {
     if (d.kat && d.kat !== 'fav') st.skupina = (skupinaKat(d.kat) || {}).id || ''; else if (d.kat === 'fav') st.skupina = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
   } else if (d.pozadie) {
-    Zvuk.play('pop'); Pozadie.zvol(d.pozadie); render();
+    // bez prekreslenia obrazovky: len prepne farby, výber a zvuk, aby nič neblikalo
+    Zvuk.play('pop'); Pozadie.zvol(d.pozadie);
+    document.querySelectorAll('.poz-vol').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.pozadie === d.pozadie)));
   } else if (d.vek) {
     Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render();
   } else if (d.citaj !== undefined && f) {
