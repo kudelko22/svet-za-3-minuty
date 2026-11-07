@@ -391,3 +391,10 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Prepínač „Vibrácie“ je v paneli rodiča (`rodic-panel.js`, karta pod hlasom), tlačidlo `data-vibracie`, uložené v zariadení.
 - Doplnené správne odpovede v hrách a kvíze; test v `zdroj/test.js` (bez vibrate, vypnuté, reduced-motion).
 - NEOVERENÉ: skutočný telefón (Android), vzhľad prepínača v paneli rodiča.
+
+## 4.1 B: nové hry pre každý vek (session v41-hry, vetva `claude/loving-hypatia-cb1134`, nenasadené, verzia sa nemenila)
+- Päť nových hier na spoločnom „kvízovom motore“ (`KV_HRY`, `kvHtml`, `Hra.kv`, `obnovKv` v `appka.html`; kolo = prompt, možnosti, poradie správnych ťuknutí; po ťuknutí sa mení len kolo cez `obnovKolo`/morph, bez prekreslenia obrazovky).
+- Mladšie deti (bez čítania, bez časovača): **Ktorý je iný?** (180 b.), **Nájdi tieň** (350 b.). Obe vekové skupiny: **Zoraď čísla** (450, mladší 1–10, starší do 99, aj zostupne), **Čo bude ďalej?** (500, vzory farieb a tvarov, ľahké pre mladších, ťažšie pre starších). Starší: **Poskladaj slovo** (650, slová z `KV_SLOVA` podľa obrázka témy).
+- Zaregistrované v `HRY` (zoznam, výber podľa veku cez `len`), `OBR_HRY`, `rekordText`, `stavHry`, `vysledokHry`, klik `data-kv`. Body = „hneď správne z 6“ ako pri Koľko ich je?. Odznak „Majster hier“ počíta nové hry automaticky.
+- Test: nový blok `NOVE_HRY_41` v `test.js`, upravený riadok `nove hry`. Celý `node zdroj/test.js` trvá ~100 s.
+- Doplniť pri zlučovaní: `NOVINKY`, verzia, cache `sw.js`. Neoverené na telefóne.
