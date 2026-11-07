@@ -414,3 +414,7 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - `VERZIA_APPKY` 57 / `4.2`, NOVINKY v:57, cache `svet3-v20`. `test.js`: bloky `KRTKO_42`, `KONIEC_TEMY_42`, upravené testy domova, sprievodcu a nových hier.
 - Overené: `node zdroj/test.js` vypíše OK (proces potom visí aj na pôvodnej 4.1, preto spúšťať s `timeout`), build OK, prehliadač (vlastný statický server na 5051 + bežiace auth/firestore emulátory): 360 px a tablet, tmavý aj farebný stromček, okno týždňa, dlhé meno, hra Ťukaj krtkov aj výsledok, obrazovka po téme.
 - NEOVERENÉ: vibrácie a plynulosť animácií na skutočnom telefóne, sprievodca očami (nové ciele), hra v hĺbke (dlhé hranie), update z 4.1 cez starý service worker.
+
+## 4.2.1 doladenie (tá istá vetva, commit po 4.2)
+- Stromček v lište väčší (54 px, žiarivý keď je hotovo). Meno v hlavičke sa nikdy neorezáva (zalamuje sa aj na 3 riadky, podnadpis „Svet za 3 minúty“ skrytý). Tlačidlo zvuku je na Domove skryté (inde ostalo).
+- Ťažšie hry pre 9–12: Zoraď čísla 5–6 čísel do 999, Poskladaj slovo len dlhšie slová (6+ písmen), Ťukaj krtkov oveľa rýchlejší (2–3 naraz, kratší čas, menej zlatých). Cache `svet3-v21`, názov verzie 4.2.1.

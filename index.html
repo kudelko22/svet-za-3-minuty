@@ -100,8 +100,8 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .hi { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .av { flex: none; width: 60px; padding: 0; border: 0; background: none; animation: wiggle 4s ease-in-out infinite; transform-origin: 50% 90%; }
 .hi > div { min-width: 0; }
-.hi small { display: block; font-size: .8rem; color: var(--muted); font-weight: 800; }
-.hi b { display: block; font: 700 1.55rem/1.15 var(--f-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hi small { display: none; font-size: .8rem; color: var(--muted); font-weight: 800; }
+.hi b { display: block; font: 700 1.4rem/1.1 var(--f-display); white-space: normal; overflow-wrap: anywhere; } /* meno sa vždy ukáže celé, v prípade potreby na dvoch riadkoch */
 #pozdrav span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
 .top-r { flex: none; display: flex; align-items: center; gap: 8px; }
 .snd { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--ink); background: var(--paper); box-shadow: 0 3px 0 var(--ink); font-size: 1.2rem; padding: 0; }
@@ -1272,13 +1272,15 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 .okruh-karta { display: grid; gap: 12px; width: min(100%, 420px); max-height: 90vh; overflow: auto; padding: 16px; border: 3px solid var(--ink); border-radius: 26px; background: var(--paper); box-shadow: 0 6px 0 var(--ink); animation: rise .35s var(--spring) both; }
 .okruh-karta .muted { margin: 0; }
 /* stromček v hornej lište a z neho vyrastené okno týždňa (4.2) */
-.tyz-strom { position: relative; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 3px solid var(--ink); border-radius: 50%; background: #EAFBEF; box-shadow: 0 3px 0 var(--ink); transition: background .3s; -webkit-tap-highlight-color: transparent; }
+.tyz-strom { position: relative; display: grid; place-items: center; width: 54px; height: 54px; padding: 0; border: 3px solid var(--ink); border-radius: 50%; background: #EAFBEF; box-shadow: 0 3px 0 var(--ink); transition: background .3s; -webkit-tap-highlight-color: transparent; }
 .tyz-strom[hidden] { display: none; }
-.tyz-strom svg { width: 32px; height: 32px; overflow: visible; }
-.tyz-strom.spi { background: #CFCADF; }
+.tyz-strom svg { width: 42px; height: 42px; overflow: visible; }
+.snd[hidden] { display: none; }
+.tyz-strom.spi { background: #CFCADF; box-shadow: 0 3px 0 var(--ink), 0 0 0 3px #fff; }
 .tyz-strom.spi svg { transform: scale(.88); transform-origin: 50% 90%; }
 .tyz-strom.hotovo { animation: tsDych 2.6s ease-in-out infinite; }
-.tyz-strom.hotovo::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2.5px dotted #2FBF71; opacity: .7; pointer-events: none; }
+.tyz-strom.hotovo { box-shadow: 0 3px 0 var(--ink), 0 0 14px 4px rgba(76, 208, 125, .75); }
+.tyz-strom.hotovo::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2.5px dotted #2FBF71; opacity: .7; pointer-events: none; }
 .tyz-strom:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
 .ts-z { animation: tsZ 2.4s ease-in-out infinite; }
 .ts-i { animation: tsIskra 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -1293,7 +1295,7 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 @keyframes tyzsIn { from { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } 40% { opacity: 1; } }
 @keyframes tyzsOut { to { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } }
 @media (prefers-reduced-motion: reduce) { .tyz-strom.hotovo, .ts-z, .ts-i, .tyzs-karta { animation: none; } }
-@media (max-width: 380px) { .top-r { gap: 6px; } .tyz-strom, .snd { width: 40px; height: 40px; } .tyz-strom svg { width: 29px; height: 29px; } }
+@media (max-width: 380px) { .top-r { gap: 6px; } .tyz-strom { width: 50px; height: 50px; } .tyz-strom svg { width: 38px; height: 38px; } .snd { width: 40px; height: 40px; } .hi b { font-size: 1.25rem; } }
 .tyz-viac { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: 2.5px solid var(--ink); border-radius: 18px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); font: 700 1rem/1.2 var(--f-display); text-align: left; cursor: pointer; }
 .tyz-viac:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .tyz-viac-ik { display: grid; width: 24px; height: 24px; } .tyz-viac-ik .ii, .tyz-viac-ik svg { width: 100%; height: 100%; }
@@ -1470,7 +1472,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="rodic-brana.js?v=57"></script>
 <script src="rodic-panel.js?v=57"></script>
 <script>
-const VERZIA_APPKY = 57; const VERZIA_NAZOV = '4.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 57; const VERZIA_NAZOV = '4.2.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -3094,17 +3096,17 @@ const Hra = {
     const dalsia = () => {
       if (st.hra !== h || !h.beh) return;
       this.krtkoVysun(h);
-      if (!h.mal && h.zostava < 22 && Math.random() < .4) this.krtkoVysun(h); // starší: občas dvaja naraz
-      h.dalsia = setTimeout(dalsia, Math.max(h.mal ? 520 : 360, (h.mal ? 950 : 740) - (30 - h.zostava) * 12));
+      if (!h.mal) { if (Math.random() < .6) this.krtkoVysun(h); if (h.zostava < 20 && Math.random() < .5) this.krtkoVysun(h); } // starší: dvaja, neskôr aj traja naraz
+      h.dalsia = setTimeout(dalsia, Math.max(h.mal ? 520 : 300, (h.mal ? 950 : 640) - (30 - h.zostava) * (h.mal ? 12 : 13)));
     };
     dalsia();
   },
   krtkoVysun(h) {
     const diery = [...main.querySelectorAll('.diera')], volne = diery.map((_, i) => i).filter(i => !h.hore[i]);
     if (!volne.length) return;
-    const i = volne[nahodne(volne.length)], zlaty = Math.random() < .12, el = diery[i], k = { zlaty };
+    const i = volne[nahodne(volne.length)], zlaty = Math.random() < (h.mal ? .12 : .08), el = diery[i], k = { zlaty };
     h.hore[i] = k; el.classList.toggle('zlaty', zlaty); el.classList.add('hore');
-    k.to = setTimeout(() => { if (h.hore[i] === k) { delete h.hore[i]; el.classList.remove('hore', 'zlaty'); } }, Math.max(850, (h.mal ? 1800 : 1300) - (30 - h.zostava) * 14));
+    k.to = setTimeout(() => { if (h.hore[i] === k) { delete h.hore[i]; el.classList.remove('hore', 'zlaty'); } }, Math.max(h.mal ? 850 : 520, (h.mal ? 1800 : 1000) - (30 - h.zostava) * (h.mal ? 14 : 16)));
   },
   krt(i, b) {
     const h = st.hra;
@@ -3335,7 +3337,7 @@ const KV_HRY = {
   },
   poradie(mal) {
     return Array.from({ length: KV_KOL }, (_, r) => {
-      const n = mal ? (r < 3 ? 3 : 4) : (r < 3 ? 4 : 5), max = mal ? 10 : 99, zostupne = r % 3 === 2;
+      const n = mal ? (r < 3 ? 3 : 4) : (r < 2 ? 5 : 6), max = mal ? 10 : 999, zostupne = r % 3 === 2;
       const cisla = []; while (cisla.length < n) { const x = 1 + nahodne(max); if (!cisla.includes(x)) cisla.push(x); }
       const sprav = [...cisla].sort((a, b) => zostupne ? b - a : a - b);
       const moz = mix(n).map(i => ({ z: cisla[i], html: String(cisla[i]), sl: String(cisla[i]) }));
@@ -3343,7 +3345,7 @@ const KV_HRY = {
     });
   },
   slovo() {
-    const ok = Object.keys(KV_SLOVA).filter(id => TV().some(t => t.id === id));
+    const vsetky = Object.keys(KV_SLOVA).filter(id => TV().some(t => t.id === id)), dlhe = vsetky.filter(id => KV_SLOVA[id].length >= 6), ok = dlhe.length >= KV_KOL ? dlhe : vsetky; // starší dostanú dlhšie slová
     return mix(ok.length).slice(0, KV_KOL).map(i => {
       const id = ok[i], p = [...KV_SLOVA[id].toLocaleUpperCase('sk')];
       let ml; do ml = mix(p.length); while (ml.every((x, j) => x === j));
@@ -5069,7 +5071,7 @@ function paintHead() {
   });
   const b = document.getElementById('body');
   if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
-  const z = document.getElementById('snd'); z.innerHTML = Zvuk.on ? IK.repro : IK.reproVyp; z.setAttribute('aria-pressed', Zvuk.on);
+  const z = document.getElementById('snd'); z.innerHTML = Zvuk.on ? IK.repro : IK.reproVyp; z.setAttribute('aria-pressed', Zvuk.on); z.hidden = st.view === 'domov' && st.faza === 'appka'; // na Domove tlačidlo zvuku nezavadzia
   const av = document.getElementById('av'), k = JSON.stringify(st.avatar);
   if (av.dataset.k !== k) {
     av.dataset.k = k; av.innerHTML = st.avatar ? postavicka(st.avatar) : owl('hi');
