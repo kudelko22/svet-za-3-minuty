@@ -329,6 +329,15 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   for (let i = 0; i < 600; i++) { if (h.y > 240) h.vy = h.skok; sovaKrok(h, 1 / 60); }
   if (!h.prekazky.length) chyby.push("sova bez ceruziek"); Hra.sovaKresli(h); Hra.koniec(false, 31);
   if (!st.odznaky.includes("sova30") || !st.odznaky.includes("sova10")) chyby.push("odznaky sova"); Hra.zrus(); }
+/* PRIPOMIENKA_44: pas stromu a pripomienky na Domove */
+{ const dp = st.dni, pv = st.flow; const dnes = key(new Date()), vcera = new Date(); vcera.setDate(vcera.getDate() - 1);
+  S.set(Pripomienka.kluc(), "");
+  st.dni = [key(vcera)]; if (!/séria 1 deň padne/.test(Pripomienka.text())) chyby.push("pripomienka seria: " + Pripomienka.text());
+  st.dni = [key(vcera), dnes]; if (Pripomienka.text()) chyby.push("pripomienka ked je dnes hotovo");
+  st.dni = [key(vcera)]; Pripomienka.zavri({}); if (Pripomienka.text()) chyby.push("pripomienka po zavreti");
+  S.set(Pripomienka.kluc(), ""); st.dni = []; if (Pripomienka.text()) chyby.push("pripomienka bez historie");
+  const html = (st.dni = [key(vcera)], Pripomienka.html()); if (!/data-strom/.test(html) || !/data-prip-zavri/.test(html) || /[\u{1F300}-\u{1FAFF}]/u.test(html)) chyby.push("pas stromu html");
+  st.dni = dp; S.set(Pripomienka.kluc(), ""); }
 /* STROM_44: animacia stromu len ako zaver dnesnej temy dna, raz za den, nikdy pri kvize, inej teme ani precvicovani */
 { const f = { typ: "tema", id: temaDna().id, odp: { 3: { ok: true } } }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), "");
   if (!Oslava.treba(f)) chyby.push("oslava tema dna");
