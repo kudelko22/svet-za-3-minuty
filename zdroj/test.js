@@ -451,3 +451,10 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   const zle = linky.length < 20 ? ['malo uvodnych obrazkov: ' + linky.length] : linky.filter(h => !fs.existsSync(path.join(R, h)));
   if (!idx.includes('id="uvod"')) zle.push('chyba uvodna obrazovka');
   if (zle.length) { console.log('CHYBY uvod', zle); process.exit(1); } }
+// 4.1 D: limit dĺžky mena a ochrana pred pretekaním
+{ const src = fs.readFileSync(path.join(R, 'zdroj', 'appka.html'), 'utf8'), zle = [];
+  const m = src.match(/id="meno-dietata"[^>]*maxlength="(\d+)"/);
+  if (!m || +m[1] < 10 || +m[1] > 20) zle.push('meno dietata: maxlength 10 az 20');
+  if (!/\.dieta b[^}]*line-clamp/.test(src)) zle.push('chyba orezanie mena v vybere dietata');
+  if (!/\.prof-meno[^}]*min-width: 0/.test(src) || !/\.h1, \.h2[^}]*overflow-wrap: anywhere/.test(src)) zle.push('chyba zalamovanie nadpisov');
+  if (zle.length) { console.log('CHYBY meno', zle); process.exit(1); } }

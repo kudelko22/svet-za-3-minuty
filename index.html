@@ -1288,6 +1288,25 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* 4.1 D: dlhé mená a texty nesmú pretekať ani prekrývať okolie */
+.h1, .h2, .auto-t, .dieta b, .dieta small, .prof-meno, .prof-meno .h1, .dm-kto b, .dm-prazdny b, .soc-hlava b, .konv-t b, .misia-pas-t b, .misia-riadok-t, .msg-x, .toast, .btn, .chip, .fbk, .ans > span { overflow-wrap: anywhere; }
+.deti { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dieta { min-width: 0; }
+.dieta b, .dieta small { max-width: 100%; text-align: center; }
+.dieta b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.prof-top { min-width: 0; }
+.prof-meno { min-width: 0; flex: 1; }
+.prof-meno .h1 { max-width: 100%; }
+.ans > span:not(.em) { min-width: 0; }
+.soc-hlava { min-width: 0; }
+.soc-hlava b { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dm-kto > span:not(.soc-av) { min-width: 0; }
+.dm-kto b, .dm-kto small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dm-prazdny b { max-width: 100%; }
+.konv-t b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip { max-width: 100%; }
+.pr-ik + span, .brana .muted, .card .muted { overflow-wrap: anywhere; }
+.auto-t { max-width: 100%; }
 </style>
 </head>
 <body>
