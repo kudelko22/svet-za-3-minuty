@@ -62,7 +62,14 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .hi > div { min-width: 0; }
 .hi small { display: none; font-size: .8rem; color: var(--muted); font-weight: 800; }
 .hi b { display: block; font: 700 1.4rem/1.1 var(--f-display); white-space: normal; overflow-wrap: anywhere; } /* meno sa vždy ukáže celé, v prípade potreby na dvoch riadkoch */
-#pozdrav span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
+#pozdrav { display: flex; flex-direction: column; align-items: flex-start; overflow-wrap: normal; word-break: normal; hyphens: none; }
+.hi #pozdrav, #pozdrav .pz-w { overflow-wrap: normal; word-break: normal; }
+#pozdrav .pz-w { display: block; white-space: nowrap; }
+#pozdrav .pz-ahoj { font-size: .78em; line-height: 1.05; }
+#pozdrav.pz-zalom .pz-w { white-space: normal; }
+#pozdrav.pz-lom .pz-w { overflow-wrap: anywhere; }
+#pozdrav .pz-s { display: inline-block; white-space: nowrap; }
+#pozdrav .pz-s span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
 .top-r { flex: none; display: flex; align-items: center; gap: 8px; }
 .snd { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--ink); background: var(--paper); box-shadow: 0 3px 0 var(--ink); font-size: 1.2rem; padding: 0; }
 .snd[aria-pressed="false"] { background: #E4E0EE; }
@@ -1393,7 +1400,10 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 /* 4.1 D: dlhé mená a texty nesmú pretekať ani prekrývať okolie */
-.h1, .h2, .auto-t, .dieta b, .dieta small, .prof-meno, .prof-meno .h1, .dm-kto b, .dm-prazdny b, .soc-hlava b, .konv-t b, .misia-pas-t b, .misia-riadok-t, .msg-x, .toast, .btn, .chip, .fbk, .ans > span { overflow-wrap: anywhere; }
+/* 4.4 typografia: slová sa lámu len medzi slovami, v strede slova až keď sa inak nezmestí (break-word nemení šírku boxov ako anywhere) */
+.h1, .h2, .auto-t, .dieta b, .dieta small, .prof-meno, .prof-meno .h1, .dm-kto b, .dm-prazdny b, .soc-hlava b, .konv-t b, .misia-pas-t b, .misia-riadok-t, .msg-x, .toast, .btn, .chip, .fbk, .ans > span { overflow-wrap: break-word; word-break: normal; hyphens: manual; }
+.h1, .h2, .tt, .qt, .btn, .chip, .sticker, .toast, .misia-pas-t b, .tile b, .sp-t b { text-wrap: balance; }
+.muted, .fbk p, .os-veta, .note-card p { text-wrap: pretty; }
 .deti { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .dieta { min-width: 0; }
 .dieta b, .dieta small { max-width: 100%; text-align: center; }
@@ -5103,14 +5113,49 @@ function dokonci(f) {
   f.noveHry = noveHry(bodyPred, st.body);
 }
 
+function fitPozdrav() {
+  try {
+    const el = document.getElementById('pozdrav'), gut = el && el.closest('.gut'); if (!gut || !gut.clientWidth) return;
+    const hi = el.closest('.hi'), tr = gut.querySelector('.top-r'), av = hi.querySelector('.av');
+    el.style.fontSize = ''; el.classList.remove('pz-zalom', 'pz-lom');
+    let fs = parseFloat(getComputedStyle(el).fontSize);
+    const siroke = () => el.scrollWidth > el.clientWidth + 1; // obsah, ktorý sa nezmestil, vytŕča za stĺpec
+    while (siroke() && fs > 16) { fs -= 1; el.style.fontSize = fs + 'px'; }
+    if (siroke()) { // dlhé meno: zalomí sa medzi slovami a ešte sa trochu zmenší
+      el.classList.add('pz-zalom');
+      while (siroke() && fs > 12) { fs -= 1; el.style.fontSize = fs + 'px'; }
+      if (siroke()) el.classList.add('pz-lom'); // až celkom nakoniec sa slovo smie zlomiť
+    }
+  } catch (e) { /* písmo sa nezmení */ }
+}
+addEventListener('resize', () => fitPozdrav());
+try { document.fonts && document.fonts.ready.then(() => fitPozdrav()); } catch (e) { /* bez písiem */ }
 function paintHead() {
   const el = document.getElementById('pozdrav');
-  el.textContent = '';
-  [...(st.meno ? `Ahoj, ${st.meno}!` : 'Ahoj!')].forEach((ch, i) => {
-    const s = document.createElement('span'); s.textContent = ch; s.style.setProperty('--k', i);
-    if (i >= 6 && ch.trim() && ch !== '!') s.style.color = DUHA[(i - 6) % DUHA.length];
-    el.appendChild(s);
-  });
+  // 4.4: pozdrav má dva riadky: „Ahoj,“ a pod ním meno. Slovo sa nikdy nelámé, dlhé meno sa zmenší, aby sa zmestilo.
+  const sk = st.meno ? `${st.meno}!` : '', gk = st.meno ? 'Ahoj,' : 'Ahoj!', kl = gk + '|' + sk;
+  if (el.dataset.kl !== kl) {
+    el.dataset.kl = kl; el.textContent = ''; el.style.fontSize = '';
+    let i = 0;
+    [[gk, false], [sk, true]].forEach(([w, meno]) => {
+      if (!w) return;
+      const g = document.createElement('span'); g.className = 'pz-w' + (meno ? ' pz-meno' : st.meno ? ' pz-ahoj' : '');
+      // písmená sú inline-block, preto každé slovo je v nedeliteľnej skupine (.pz-s): zalomiť sa dá len medzi slovami
+      let j = 0;
+      w.split(' ').forEach((slovo, n) => {
+        if (n) g.appendChild(document.createTextNode(' '));
+        const sk2 = document.createElement('span'); sk2.className = 'pz-s';
+        [...slovo].forEach(ch => {
+          const s = document.createElement('span'); s.textContent = ch; s.style.setProperty('--k', i++);
+          if (meno && ch !== '!') s.style.color = DUHA[j % DUHA.length];
+          j++; sk2.appendChild(s);
+        });
+        g.appendChild(sk2); j++;
+      });
+      el.appendChild(g);
+    });
+  }
+  fitPozdrav();
   const b = document.getElementById('body');
   if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
   const z = document.getElementById('snd'); z.innerHTML = Zvuk.on ? IK.repro : IK.reproVyp; z.setAttribute('aria-pressed', Zvuk.on); z.hidden = st.view === 'domov' && st.faza === 'appka'; // na Domove tlačidlo zvuku nezavadzia

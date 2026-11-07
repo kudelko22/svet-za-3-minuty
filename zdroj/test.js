@@ -575,7 +575,7 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   const m = src.match(/id="meno-dietata"[^>]*maxlength="(\d+)"/);
   if (!m || +m[1] < 10 || +m[1] > 20) zle.push('meno dietata: maxlength 10 az 20');
   if (!/\.dieta b[^}]*line-clamp/.test(src)) zle.push('chyba orezanie mena v vybere dietata');
-  if (!/\.prof-meno[^}]*min-width: 0/.test(src) || !/\.h1, \.h2[^}]*overflow-wrap: anywhere/.test(src)) zle.push('chyba zalamovanie nadpisov');
+  if (!/\.prof-meno[^}]*min-width: 0/.test(src) || !/\.h1, \.h2[^}]*overflow-wrap: (anywhere|break-word)/.test(src)) zle.push('chyba zalamovanie nadpisov');
   if (zle.length) { console.log('CHYBY meno', zle); process.exit(1); } }
 
 // vibrácie: Haptika je bezpečná bez navigator.vibrate, rešpektuje prepínač a "menej pohybu"
