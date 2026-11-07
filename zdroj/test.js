@@ -6,7 +6,7 @@ const skript = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m)[1];
 const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
-const src = ['temy.js', 'obrazky.js', 'misie.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
+const src = ['temy.js', 'obrazky.js', 'misie.js', 'tyzden.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
@@ -70,6 +70,25 @@ for (const v of ['domov','temy','hry','odznaky','ja','misia','anglictina']) { st
   for (const mm of MISIE) { st.misia = Misie.nova(mm, true); if (mm.t === 'keby') kl({ miVol: "1" }); render(); st.misia.koniec = { zisk: 0, noveOdznaky: [], noveOdmeny: [], noveHry: [] }; render(); }
   kl({ miSpat: "" }); kl({ miU: "3" }); render(); if (Misie.uroven() !== 3) throw new Error("misie: uroven");
   go("domov"); go("misia"); go("domov");
+}
+/* TYZDEN: okruh tyzdna a historia dni */
+{
+  const ok = Tyzden.okruhy(); if (ok[0].id !== 'zmiesany' || ok.length !== SKUPINY.length + 1) throw new Error('tyzden: okruhy');
+  localStorage.d = Object.fromEntries(Object.entries(localStorage.d).filter(([k]) => !k.includes('tyzden')));
+  if (Tyzden.vybrany() !== 'zmiesany') throw new Error('tyzden: predvolene');
+  const v = TV(), dnes = key(new Date()), dni0 = Tyzden.dni();
+  if (dni0.length !== 7 || dni0.filter(x => x.jeDnes).length !== 1 || dni0[0].den !== 'Po' || dni0[6].den !== 'Ne') throw new Error('tyzden: dni');
+  for (const x of dni0) { if (x.jeBudúci !== (x.datum > dnes)) throw new Error('tyzden: buduci'); if (x.temaId !== v[Tyzden._cislo(x.datum) % v.length].id) throw new Error('tyzden: zmiesany vzorec ' + x.datum); }
+  if (temaDna().id !== Tyzden.temaDna(dnes)) throw new Error('tyzden: temaDna');
+  Tyzden.nastav('veda');
+  if (Tyzden.vybrany() !== 'veda') throw new Error('tyzden: nastav');
+  const g = SKUPINY.find(x => x.id === 'veda'), dni1 = Tyzden.dni();
+  for (const x of dni1) { const t = byId(x.temaId); if (x.datum >= dnes ? !g.kat.includes(t.k) : x.temaId !== dni0.find(y => y.datum === x.datum).temaId) throw new Error('tyzden: okruh/minulost ' + x.datum); }
+  if (Tyzden.dni()[0].temaId !== dni1[0].temaId) throw new Error('tyzden: stabilita');
+  if (Tyzden.nastav('nic') !== false) throw new Error('tyzden: neplatny');
+  Tyzden.nastav('zmiesany'); if (Tyzden.vybrany() !== 'zmiesany') throw new Error('tyzden: spat');
+  const buduci = dni0.find(x => x.jeBudúci); if (buduci && Tyzden.otvor(buduci.datum)) throw new Error('tyzden: buduci otvoreny');
+  if (!Tyzden.otvor(dnes) || !st.flow || st.flow.id !== temaDna().id) throw new Error('tyzden: otvor'); st.flow = null;
 }
 /* ANGLICTINA: samostatny bonus */
 {

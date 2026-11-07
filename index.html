@@ -1288,6 +1288,7 @@ html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 <script src="temy.js?v=53"></script>
 <script src="obrazky.js?v=53"></script>
 <script src="misie.js?v=53"></script>
+<script src="tyzden.js?v=53"></script>
 <script src="anglictina.js?v=53"></script>
 <script src="rodic-brana.js?v=53"></script>
 <script src="rodic-panel.js?v=53"></script>
@@ -1707,7 +1708,7 @@ const ANGT = () => T.filter(t => t.k === 'anglictina' && preVek(t));
 const naVek = q => st.vek === 'starsi' && q.h ? { ...q, a: [q.a[0], ...q.h.map(t => ['', t])], povodna: q } : q;
 const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
 const denCislo = () => { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); };
-const temaDna = () => { const v = TV(); return v[denCislo() % v.length]; };
+const temaDna = () => byId(Tyzden.temaDna(key(new Date())));
 
 function seria() {
   let n = 0; const d = new Date();
