@@ -1374,7 +1374,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 55; const VERZIA_NAZOV = '4.0.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 56; const VERZIA_NAZOV = '4.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4364,6 +4364,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 56, obr: () => OBR_HRY.pocitaj, n: 'Verzia 4.1: nové hry a prehľad týždňa', p: 'Päť nových hier: Ktorý je iný?, Nájdi tieň, Zoraď čísla, Čo bude ďalej? a Poskladaj slovo. Na karte Tento týždeň je tlačidlo Prehľad týždňa s dňami, súčtami a históriou. Dlhé mená sa už nepretekajú. Rodič môže v paneli zapnúť alebo vypnúť vibrácie.' },
   { v: 55, obr: () => IK_KAT.anglictina, n: 'Verzia 4.0.1: opravy', p: 'Karta Tento týždeň je na Domove znova úplne hore. Počas angličtiny nič nezavadzia hore ani dole a po dohraní je okno prehľadnejšie. Opravené sú aj drobné chyby v textoch.' },
   { v: 55, obr: () => owl('cheer'), n: 'Nový sprievodca', p: 'Sovička ukáže aj Tému dňa, týždeň s okruhom, kvízik z angličtiny, strom múdrosti, hry a priateľov. Krátku prehliadku noviniek si môžeš pustiť hneď, celého sprievodcu nájdeš v karte Ja.' },
   { v: 54, obr: () => IK.duha, n: 'Verzia 4.0: okruh týždňa', p: 'Téma dňa je zasa Téma dňa. Vyber si okruh týždňa alebo nechaj Zmiešaný, pozri si témy predošlých dní a nájdeš všetko na prehľadnejšom Domove s kartou Objavuj.' },
@@ -4439,7 +4440,7 @@ const Novinky = {
     el.className = 'novinky'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Čo je nové');
     el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('cheer')}<div><small>Verzia ${VERZIA_NAZOV}</small><h2>Čo je nové?</h2></div></div>
       <div class="nov-zoznam">${z.map((n, i) => `<div class="nov-polozka" style="--i:${i}"><span class="nov-obr${n.siroky ? ' siroky' : ''}">${n.obr()}</span><div><b>${n.n}</b><small>${n.p}</small></div></div>`).join('')}</div>
-      ${z.some(n => n.v === 55) ? '<button class="btn wide ghost" data-novinky-tour style="margin-bottom:8px">Ukáž mi novinky</button>' : ''}
+      ${z.some(n => n.v >= 55) ? '<button class="btn wide ghost" data-novinky-tour style="margin-bottom:8px">Ukáž mi novinky</button>' : ''}
       <button class="btn wide cta" data-novinky-ok>Super, poďme na to!</button></div>`;
     document.body.appendChild(el);
     Zvuk.play('cink'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .25, 24, ['star', 'dot']), 300);
