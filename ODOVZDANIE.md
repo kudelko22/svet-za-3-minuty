@@ -385,3 +385,9 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Jeden CSS blok „4.1 D“ na konci `<style>` v `appka.html` (bez zmien v JS): `overflow-wrap:anywhere` pre nadpisy, `.btn`, `.chip`, odpovede kvízu, správy; `.deti` na `minmax(0,1fr)` + meno dieťaťa vo výbere orezané na 2 riadky (`line-clamp`); `.prof-meno` (profil Ja) s `min-width:0`; hlavička rozhovoru, `.dm-kto`, `.konv-t b` s tromi bodkami; `.chip` max 100 %. Už existovalo: orezanie v hlavičke Domova (`.hi b`), rebríčku, príbehoch, žiadostiach.
 - Limit mena: vstup dieťaťa `maxlength=20` už bol, cloud/profil/rodič rezú na 20 (`slice(0,20)`); existujúce dlhšie mená sa len zalomia/orežú vizuálne. `test.js`: nový blok kontroluje maxlength 10–20 a prítomnosť pravidiel.
 - Overené: `node zdroj/test.js` OK, `zostav.js` (index.html zostavený). NEOVERENÉ v prehliadači: navigácia vstavaného prehliadača na lokálny server bola zamietnutá, takže extrémne mená (40 znakov, bez medzier, diakritika) na 360 px a tablete nikto očami neskúšal. Nepreverené: okno rodiča, okno Týždeň, výsledky hier, dlhé anglické slová.
+
+## 4.1 A vibrácie (vetva claude/wonderful-shtern-593446, nenasadené, verzia nezmenená)
+- `Haptika` v `appka.html` (pred čítaním nahlas): vzory tuk/spravne/nespravne/hotovo/hviezdicka, `Haptika.hraj(vzor|pole)`, kontrola `navigator.vibrate`, prepínač `S.get('vibracie', true)` a `prefers-reduced-motion`. Staré `vibruj(...)` volania idú cez Haptiku (bzučanie skrátené na max. 60 ms).
+- Prepínač „Vibrácie“ je v paneli rodiča (`rodic-panel.js`, karta pod hlasom), tlačidlo `data-vibracie`, uložené v zariadení.
+- Doplnené správne odpovede v hrách a kvíze; test v `zdroj/test.js` (bez vibrate, vypnuté, reduced-motion).
+- NEOVERENÉ: skutočný telefón (Android), vzhľad prepínača v paneli rodiča.
