@@ -1,4 +1,4 @@
-/* Misia dňa: dátové misie. Úprava bez programovania: pridaj objekt na koniec zoznamu MISIE.
+/* Téma dňa (misia): dátové misie. Úprava bez programovania: pridaj objekt na koniec zoznamu MISIE.
    t = typ (detektiv, keby, pravdy, coak, vyzva), u = náročnosť 1 až 3, id musí byť jedinečné.
    detektiv a coak: pribeh, ind (indície, len detektiv), q, o (možnosti), s (číslo správnej od 0), vys.
    pravdy: v = tri tvrdenia { t, ok (true = pravda), e (vysvetlenie) }.

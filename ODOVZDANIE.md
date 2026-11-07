@@ -343,3 +343,13 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Ukladanie: len localStorage `svet3:tyzden-okruhy-<id dieťaťa>` (zoznam zmien `{od,id}`), bez cloudu, `firestore.rules` nezmenené. Zmena platí od dnes do nedele; minulé dni ostávajú, ako boli; od pondelka je znova Zmiešaný. Rodič to v prehľade zatiaľ nevidí (nerobené).
 - Texty „Téma dňa“ do Domova dopíše session B; stará „Misia dňa“ v appka.html ostala (nesiahal som na vzhľad).
 - Overené: `node zdroj/test.js` OK (nový blok TYZDEN), `zostav.js`. Neoverené: v prehliadači, telefón, zmena veku dieťaťa v strede týždňa môže zmeniť pool (témy dní sa vtedy prepočítajú). Pozn.: proces testu sa po „OK“ ešte ~100 s neukončí (pôvodný stav?).
+
+## Verzia 4.0, časť B: nový Domov (session v40-vzhlad)
+
+Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšovala (to urobí zlučovanie 4.0).
+- „Misia dňa“ sa všade volá **Téma dňa** (karta, nálepky, Novinky, odznak, sprievodca). Typy hier ostali.
+- Domov: Téma dňa (hero s misiou ako časť 2) a Angličtina v spoločnom žltom bloku, potom karta **Tento týždeň** (7 dní ako tlačidlá, minulé a dnešok otvoria tému dňa, budúce sú jemne zamknuté, tlačidlo **Okruh**, séria, strom), Ďalšia odmena, Appka na ploche, karta **Objavuj** a malé odkazy Režim do auta a Odznaky.
+- Nový pohľad `objavuj` (`views.objavuj`): kvízy, Iná téma, Oblasti tém a Objavujte ďalej presne ako predtým. Spodná lišta sa tvári, že je to Domov. `test.js` kontroly „Znova o“ idú na `objavuj`.
+- Okno Okruh: `Okruh.ukaz()`, voľby z `Tyzden.okruhy()`, výber cez `Tyzden.nastav(id)` a jedno tiché `render(true)`.
+- Rozhranie k session A: `TY()` = `window.Tyzden` alebo záložná `TyzdenZaloha` (v `appka.html` pred `views`); Domov berie dnešnú tému z `tD()` = `TY().temaDna(dnes)`. Pri zlučovaní: ak A nezmení globálne `temaDna()`, tlačidlá „Strom, Poďme na tému dňa“ a `Auto`/`Sprievodca` stále používajú staré `temaDna()`; treba ho nechať ukazovať na `Tyzden.temaDna(dnes)` (pozor na rekurziu, ak `Tyzden` volá `temaDna()`). Ikona okruhu: reťazec názvu v `IK`/`IK_KAT`, markup `<svg…` alebo funkcia.
+- Neoverené: s reálnym `tyzden.js`, tablet, tmavé pozadia 3.7.x jedno po druhom, snímka „pred“ sa nerobila.

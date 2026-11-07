@@ -37,7 +37,7 @@ st.upravuje.meno = "Ema"; tvorbaKlik(document.createElement("button"), { ulozitD
 if (!window.Cloud.ulozene || window.Cloud.ulozene.vek !== "starsi") throw new Error("tvorba neulozila");
 for (const a of [nahodnyAvatar(), nahodnyAvatar(), nahodnyAvatar()]) postavicka(a, true);
 st.faza = "appka"; st.dietaId = "d1"; st.avatar = nahodnyAvatar(); st.meno = "Emka";
-for (const v of ['domov','temy','hry','odznaky','ja','misia','anglictina']) { st.view = v; render(); }
+for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglictina']) { st.view = v; render(); }
 /* MISIA DNA */
 {
   const kl = (d) => Misie.klik(document.createElement("button"), d);
@@ -340,7 +340,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (!v.prehra || v.zivoty !== 0 || !main.innerHTML.includes("zivoty")) chyby.push("vyzva tri zle");
   v.i = v.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("Došli životy")) chyby.push("vyzva prehra");
   st.flow = null; kvizZamkni("vyzva"); startKviz("vyzva"); if (st.flow) chyby.push("vyzva zamok");
-  st.view = "domov"; render(); if (!main.innerHTML.includes("Znova o")) chyby.push("vyzva cas na domove");
+  st.view = "objavuj"; render(); if (!main.innerHTML.includes("Znova o")) chyby.push("vyzva cas na objavuj");
   odomkni();
   const dniPred = JSON.stringify(st.dni); startKviz(""); dokonci(st.flow); if (JSON.stringify(st.dni) !== dniPred) chyby.push("kviz bez spravnej pridal den");
   st.flow = null; st.body = 500; Hra.start("sova"); if (!st.hra) chyby.push("sova start"); Hra.sovaKresli(st.hra); Hra.zrus(); render(); }
@@ -355,7 +355,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   tz.i = tz.kroky.length - 1; renderFlow(); if (!main.innerHTML.includes("Ďalší ťažký kvíz môžeš hrať o 15 min")) chyby.push("tazky koniec text");
   st.flow = null; startKviz("tazky"); if (st.flow) chyby.push("tazky zamok");
   kvizZamkni("vyzva"); kvizZamkni("rychly"); if (kvizMinuty("vyzva") !== 30 || kvizMinuty("rychly") !== 5) chyby.push("prestavky 30 a 5");
-  st.view = "domov"; render(); if ((main.innerHTML.match(/Znova o/g) || []).length !== 3) chyby.push("domov tri prestavky");
+  st.view = "objavuj"; render(); if ((main.innerHTML.match(/Znova o/g) || []).length !== 3) chyby.push("objavuj tri prestavky");
   odomkni(); const ina = TV().find(x => x.id !== temaDna().id && !st.done.includes(x.id)); startTema(ina.id); const fi = st.flow;
   fi.kroky.forEach((k, i) => { if (k.t === "q") fi.odp[i] = { v: 0, ok: true, p: "x" }; }); dokonci(fi); if (fi.zisk !== 10) chyby.push("ina tema body " + fi.zisk);
   const dna = temaDna(); st.done = st.done.filter(x => x !== dna.id); startTema(dna.id); const fd = st.flow;
@@ -432,6 +432,16 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   for (const t of ["si kokot", "s.p.r.o.s.t.e debiil", "kuuurva", "j3b"]) if (socKontrola(t) !== "slova") chyby.push("filter nezachytil: " + t);
   for (const t of ["zavolaj 0911 222 333", "mail@a.sk", "www.x.sk"]) if (socKontrola(t) !== "udaje") chyby.push("filter nezachytil udaj: " + t);
   for (const t of ["Ahoj, ako sa mas?", "hovädzie mäso", "ahoj naživo", "To je sranda"]) if (socKontrola(t)) chyby.push("filter blokuje bezny text: " + t); }
+/* DOMOV 4.0: Téma dňa, týždeň, okruh, Objavuj */
+{ Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi", view: "domov" }); render();
+  const h = main.innerHTML;
+  if (h.includes("Misia dňa") || !h.includes("Téma dňa")) throw new Error("domov: nazov Tema dna");
+  if ((h.match(/data-tyz-den=/g) || []).length < 1 || !h.includes("data-okruh-otvor") || !h.includes('data-go="objavuj"')) throw new Error("domov: tyzden/okruh/objavuj");
+  if (h.includes("data-kviz") || h.includes("data-skupina")) throw new Error("domov: kvizy a oblasti maju byt v Objavuj");
+  st.view = "objavuj"; render(); const o = main.innerHTML;
+  if (!o.includes("data-kviz") || !o.includes("data-nahodna") || (o.match(/data-skupina=/g) || []).length !== SKUPINY.length) throw new Error("objavuj: chyba kvizy alebo oblasti");
+  st.view = "domov"; render(); Okruh.ukaz(); if (!document.querySelector(".okruh-okno") || !document.querySelector("[data-okruh-id]")) throw new Error("okruh okno");
+  Tyzden.nastav("priroda"); if (TY().vybrany() !== "priroda") throw new Error("okruh nastav"); Tyzden.nastav("zmiesany"); st.view = "domov"; render(); }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);
