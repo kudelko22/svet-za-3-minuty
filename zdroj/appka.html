@@ -1466,7 +1466,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 59; const VERZIA_NAZOV = '4.4'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 60; const VERZIA_NAZOV = '4.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4600,6 +4600,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 60, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.5: počty a e-mail rodiča pre autora', p: 'Appka teraz ukladá len súhrnné počty (koľko tém je hotových, aký je vek dieťaťa, verzia appky). Žiadne mená detí ani odpovede, len e-mail rodiča, aby vedel autor spravovať účty. Slúži to na to, aby autor vedel, ktoré témy vylepšiť.' },
   { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Stromček hore je teraz väčší polkruh s počtom dní série (1, 2, 3 a ďalej), keď strom schne, zožltne. Raz za deň ti Domov jemne pripomenie sériu alebo lekciu (zavrieš ju krížikom). Pri ťuknutí na strom sa okno týždňa zavrie.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
   { v: 57, obr: () => OBR_HRY.krtko, n: 'Verzia 4.2: kratší Domov a nová hra', p: 'Týždeň je schovaný v stromčeku hore: ťukni naň a rozvinie sa. Tmavý stromček znamená, že dnešná téma čaká, farebný, že je hotovo. Po téme je obrazovka kratšia, ostatné je zbalené. Nová hra Ťukaj krtkov nahradila Čo bude ďalej?.' },
@@ -5687,7 +5688,7 @@ const Cloud = {
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
-    zapis(id, d);
+    zapis(id, d); zapisStat();
     this.vyber(id, stare ? 'ja' : 'domov');
     // nové dieťa: Sovička ukáže appku; pri úplne novom účte rodičovi celú prehliadku
     if (!stare) { const rodic = this.novyUcet; this.novyUcet = false; setTimeout(() => Sprievodca.start(rodic ? SPR_RODIC : SPR_KROKY), 1500); }
@@ -5899,6 +5900,28 @@ function zapis(id, d) {
   z.then(() => { Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; obnovStav(); },
     e => { Cloud.stavUlozenia = 'Neuložené: ' + chybaText(e); obnovStav(); });
 }
+// Anonymné štatistiky pre vlastníka (admin.html): len počty a id tém, bez mena a obsahu; pravidlá `statistiky/{uid}`
+let statOtlacok = '';
+function zapisStat() {
+  try {
+    if (!Cloud.pouzivatel || !Cloud.deti.length) return;
+    const dnes = key(new Date()), D = /^d{4}-dd-dd$/;
+    const dni = [...new Set(Cloud.deti.flatMap(x => x.dni || []).concat(dnes))].filter(x => D.test(x)).sort();
+    const hry = [...new Set([...(S.get('statHry', []) || []), ...HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).map(h => h.id)])].slice(0, 60);
+    S.set('statHry', hry);
+    const ang = Math.max(S.get('statAng', 0) || 0, Object.keys(Ang.data().dni || {}).length); S.set('statAng', ang);
+    const pri = Math.max(S.get('statPri', 0) || 0, Object.keys(Soc.priatelia || {}).length); S.set('statPri', pri);
+    const d = {
+      od: dni[0], posledne: dnes, verzia: VERZIA_APPKY, nazov: String(VERZIA_NAZOV).slice(0, 12),
+      mladsi: Cloud.deti.filter(x => x.vek !== 'starsi').length, starsi: Cloud.deti.filter(x => x.vek === 'starsi').length,
+      temy: Cloud.deti.reduce((a, x) => a + (x.done || []).length, 0),
+      done: [...new Set(Cloud.deti.flatMap(x => x.done || []))].slice(0, 500), fav: [...new Set(Cloud.deti.flatMap(x => x.fav || []))].slice(0, 500),
+      hry, ang, priatelia: pri, dni: dni.slice(-60), email: String(Cloud.pouzivatel.email || '').slice(0, 120),
+    };
+    const o = JSON.stringify(d); if (o === statOtlacok) return; statOtlacok = o;
+    setDoc(doc(db, 'statistiky', Cloud.pouzivatel.uid), { ...d, upravene: serverTimestamp() }).catch(() => { statOtlacok = ''; });
+  } catch (e) { /* štatistiky nikdy nesmú rozbiť ukladanie */ }
+}
 function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
@@ -5906,6 +5929,7 @@ function ulozAktivne() {
   Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
   zapis(d.id, d);
   socUlozProfil();
+  zapisStat();
 }
 function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
 function obnovPrihlasenie() {

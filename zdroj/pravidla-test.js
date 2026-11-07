@@ -116,6 +116,49 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, deleteDoc,
   await t('profil bez času servera neprejde', setDoc(rd(fb, 'ub'), rp({ upravene: new Date() })), false);
   await t('rodič A zmaže svoj profil', deleteDoc(rd(fa, 'ua')), true);
 
+  // ---- Štatistiky pre vlastníka (4.5) ----
+  const st = (o = {}) => ({ od: '2026-11-01', posledne: '2026-11-07', verzia: 60, nazov: '4.5', mladsi: 1, starsi: 0, email: 'rodic@example.com', temy: 3, done: ['farma'], fav: [], hry: ['pexeso'], ang: 2, priatelia: 0, dni: ['2026-11-07'], upravene: serverTimestamp(), ...o });
+  const vl = env.authenticatedContext('uvlastnik', { email: 'kudela.alexo@gmail.com', email_verified: true, firebase: { sign_in_provider: 'google.com' } }).firestore();
+  const vlHeslo = env.authenticatedContext('ufalosny', { email: 'kudela.alexo@gmail.com', email_verified: true, firebase: { sign_in_provider: 'password' } }).firestore();
+  const vlNeoverený = env.authenticatedContext('ufalosny2', { email: 'kudela.alexo@gmail.com', email_verified: false, firebase: { sign_in_provider: 'google.com' } }).firestore();
+  const inyGoogle = env.authenticatedContext('uiny', { email: 'iny@gmail.com', email_verified: true, firebase: { sign_in_provider: 'google.com' } }).firestore();
+  const sd = (f, u) => doc(f, 'statistiky', u);
+  await t('rodina A zapíše svoje štatistiky', setDoc(sd(fa, 'ua'), st()), true);
+  await t('rodina B zapíše svoje štatistiky', setDoc(sd(fb, 'ub'), st({ mladsi: 0, starsi: 2 })), true);
+  await t('rodina A zmení svoje štatistiky', setDoc(sd(fa, 'ua'), st({ temy: 4 })), true);
+  await t('rodina B nezapíše štatistiky A', setDoc(sd(fb, 'ua'), st()), false);
+  await t('neprihlásený nezapíše štatistiky', setDoc(sd(nik, 'ux'), st()), false);
+  await t('štatistiky so zlým e-mailom neprejdú', setDoc(sd(fa, 'ua'), st({ email: 'nie e-mail' })), false);
+  await t('vlastník zablokuje účet', setDoc(doc(vl, 'blokovani', 'ub'), { email: 'x@y.sk', kedy: serverTimestamp() }), true);
+  await t('vlastník číta zoznam blokovaných', getDocs(collection(vl, 'blokovani')), true);
+  await t('cudzí nezablokuje účet', setDoc(doc(inyGoogle, 'blokovani', 'ua'), { email: 'x@y.sk', kedy: serverTimestamp() }), false);
+  await t('rodina nečíta zoznam blokovaných', getDocs(collection(fb, 'blokovani')), false);
+  await t('zablokovaná rodina nezapíše štatistiky', setDoc(sd(fb, 'ub'), st()), false);
+  await t('zablokovaná rodina nezapíše dieťa', setDoc(doc(fb, 'rodiny', 'ub', 'deti', B), { meno: 'X' }), false);
+  await t('zablokovaná rodina nevytvorí kód', setDoc(doc(fb, 'kody', 'QQQQ-BBBB'), { pid: B, rodina: 'ub' }), false);
+  await t('zablokovaná rodina nepošle správu', addDoc(rozh(fb), { od: B, n: 'sova', kedy }), false);
+  await t('zablokovaná rodina stále číta svoje dáta', getDocs(collection(fb, 'rodiny', 'ub', 'deti')), true);
+  await t('vlastník odblokuje účet', deleteDoc(doc(vl, 'blokovani', 'ub')), true);
+  await t('odblokovaná rodina zapíše štatistiky', setDoc(sd(fb, 'ub'), st()), true);
+  await t('štatistiky s menom neprejdú', setDoc(sd(fa, 'ua'), st({ meno: 'Ema' })), false);
+  await t('štatistiky s cudzím poľom (telefón) neprejdú', setDoc(sd(fa, 'ua'), st({ telefon: '0900' })), false);
+  await t('štatistiky so zlým dňom neprejdú', setDoc(sd(fa, 'ua'), st({ od: 'včera' })), false);
+  await t('štatistiky bez času servera neprejdú', setDoc(sd(fa, 'ua'), st({ upravene: new Date() })), false);
+  await t('rodina A nečíta svoje štatistiky', getDoc(sd(fa, 'ua')), false);
+  await t('rodina B nevypíše štatistiky', getDocs(collection(fb, 'statistiky')), false);
+  await t('neprihlásený nevypíše štatistiky', getDocs(collection(nik, 'statistiky')), false);
+  await t('iný Google účet nevypíše štatistiky', getDocs(collection(inyGoogle, 'statistiky')), false);
+  await t('účet s heslom a e-mailom vlastníka nevypíše štatistiky', getDocs(collection(vlHeslo, 'statistiky')), false);
+  await t('neoverený e-mail vlastníka nevypíše štatistiky', getDocs(collection(vlNeoverený, 'statistiky')), false);
+  await t('vlastník vypíše štatistiky', getDocs(collection(vl, 'statistiky')), true);
+  await t('vlastník nezapíše cudzie štatistiky', setDoc(sd(vl, 'ua'), st()), false);
+  await t('vlastník nečíta deti rodiny A', getDocs(collection(vl, 'rodiny', 'ua', 'deti')), false);
+  await t('vlastník nečíta profil rodiča A', getDoc(rd(vl, 'ua')), false);
+  await t('vlastník nečíta profily detí', getDocs(collection(vl, 'profily')), false);
+  await t('vlastník nečíta správy', getDocs(rozh(vl)), false);
+  await t('rodina A zmaže svoje štatistiky', deleteDoc(sd(fa, 'ua')), true);
+  await t('rodina B nezmaže cudzie štatistiky', deleteDoc(sd(fb, 'ub2')), false);
+
   await env.clearFirestore(); await env.cleanup();
   console.log('Pravidlá: prešlo', ok.length, 'z', ok.length + zle.length);
   if (zle.length) { console.log('ZLYHALO:\n- ' + zle.join('\n- ')); process.exit(1); }
