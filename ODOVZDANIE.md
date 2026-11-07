@@ -432,3 +432,9 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 
 ## 4.3 + 4.2.1 zlúčené (verzia 58 / 4.3, cache svet3-v22)
 - Zlúčená vetva 4.2 (`claude/busy-varahamihira-cd48c6`) do 4.3. Konflikty len vo verzii, NOVINKY (4.2 ostáva v:57, 4.3 je v:58), `sw.js`, `ODOVZDANIE.md`; `index.html` znova zostavený.
+
+## 4.4 Strom po téme dňa (verzia 59 / 4.4, cache svet3-v23; vetva `claude/hopeful-kirch-4078e9`, nenasadené, nepushnuté, čaká na „nasaď 4.4“)
+- Animácia stromu je jediná: `Oslava` (veľká oslava pred záverom témy, volaná v `data-dalej` pri kroku `koniec`, výsledok a karta misie sa ukážu až po „Pokračovať“). Okno stromu (`Strom.ukaz`) a stromček v lište (`TyzStrom`) sa animujú len po ťuknutí dieťaťa, nie pri odmenách.
+- Zmena: `Oslava.treba(f)` platí len pre `typ === 'tema'`, `f.id === temaDna().id`, nie precvičovanie, aspoň jedna správna odpoveď a ešte neukázané dnes (príznak `oslava-<dieťa>`). Predtým sa ukázala aj po kvíze alebo inej téme a po kvíze pred témou dňa sa už nikdy neukázala.
+- Test: blok `STROM_44` v `test.js` (téma dňa áno; kvíz, iná téma, precvičovanie, samé zlé odpovede nie; po kvíze dnes ešte áno; druhýkrát nie). `zdroj\spusti.cmd test` OK, build OK.
+- NEOVERENÉ: emulátor (worktree nemá `node_modules`, preto nespustený), poradie téma → strom → misia očami, 360 px a tablet, plynulosť. Okrajový prípad: ak dieťa najprv dohrá kvíz, strom o stupeň vyrastie potichu už tam a oslava po téme dňa to ukáže len ako novú sériu.

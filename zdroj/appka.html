@@ -1434,7 +1434,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 58; const VERZIA_NAZOV = '4.3'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 59; const VERZIA_NAZOV = '4.4'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4147,8 +4147,8 @@ const tyzdenStromu = dnes => {
 };
 const Oslava = {
   kluc: () => 'oslava-' + (st.dietaId || 'x'),
-  // volá sa pred dokonci(): dnes ešte nič hotové = séria sa práve predĺži
-  treba: f => !!f && !f.precvic && Object.values(f.odp || {}).some(o => o.ok) && !st.dni.includes(key(new Date())) && S.get(Oslava.kluc(), '') !== key(new Date()),
+  // 4.4: len záver dnešnej témy dňa (nie iná téma, kvíz, hra ani precvičovanie), raz za deň, pred misiou
+  treba: f => !!f && !f.precvic && f.typ === 'tema' && !!f.id && f.id === temaDna().id && Object.values(f.odp || {}).some(o => o.ok) && S.get(Oslava.kluc(), '') !== key(new Date()),
   // volá sa po dokonci(): dnešný deň je už zapísaný
   ukaz(dalej) {
     const dnes = key(new Date()); S.set(this.kluc(), dnes);
@@ -4539,6 +4539,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: strom po téme dňa', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Pri kvízoch, hrách, iných témach a precvičovaní sa neanimuje.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
   { v: 57, obr: () => OBR_HRY.krtko, n: 'Verzia 4.2: kratší Domov a nová hra', p: 'Týždeň je schovaný v stromčeku hore: ťukni naň a rozvinie sa. Tmavý stromček znamená, že dnešná téma čaká, farebný, že je hotovo. Po téme je obrazovka kratšia, ostatné je zbalené. Nová hra Ťukaj krtkov nahradila Čo bude ďalej?.' },
   { v: 56, obr: () => OBR_HRY.pocitaj, n: 'Verzia 4.1: nové hry a prehľad týždňa', p: 'Päť nových hier: Ktorý je iný?, Nájdi tieň, Zoraď čísla, Čo bude ďalej? a Poskladaj slovo. Na karte Tento týždeň je tlačidlo Prehľad týždňa s dňami, súčtami a históriou. Dlhé mená sa už nepretekajú. Rodič môže v paneli zapnúť alebo vypnúť vibrácie.' },
