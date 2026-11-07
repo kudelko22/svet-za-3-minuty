@@ -382,6 +382,10 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (Sprievodca.el) chyby.push("sprievodca rodic neskoncil");
   for (const k of SPR_RODIC.filter(k => k.v && k.v !== "priatelia" && typeof k.cil === "string" && k.cil[0] === "." && !k.ak)) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca rodic ciel " + k.cil); }
   for (const k of SPR_UCET.filter(k => typeof k.cil === "string")) { const x = k.cil.replace(".tvorba ", "").replace("#", "").replace(".", "").replace("[", "").replace("]", ""); if (!brany.tvorba().includes(x)) chyby.push("sprievodca ucet ciel " + k.cil); }
+  Sprievodca.start(SPR_NOVE); if (Sprievodca.kroky !== SPR_NOVE) chyby.push("sprievodca nove nezacal");
+  for (let i = 0; i < 20 && Sprievodca.el; i++) { const k = SPR_NOVE[Sprievodca.i]; if (k.v && st.view !== k.v) chyby.push("sprievodca nove krok " + Sprievodca.i + " na " + st.view); Sprievodca.dalej(); }
+  if (Sprievodca.el) chyby.push("sprievodca nove neskoncil");
+  for (const k of SPR_NOVE.filter(k => k.v)) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca nove ciel " + k.cil); }
   Sprievodca.start(); if (Sprievodca.kroky !== SPR_KROKY) chyby.push("sprievodca pre dieta"); Sprievodca.zavri(true);
   st.view = "domov"; render(); }
 /* V35_TEST */

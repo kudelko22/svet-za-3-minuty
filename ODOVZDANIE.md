@@ -365,3 +365,9 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Karta Tento týždeň je na Domove úplne prvá (nad aj nad odkazom na novú adresu). `VERZIA_APPKY` 55 / `4.0.1`, `NOVINKY` v:55, cache `svet3-v18`.
 - Kvíz z angličtiny (denný, skupiny): `render()` skrýva `#top` aj `#nav` pri `st.view==='anglictina' && st.ang`, trieda `body.ang-rezim` (tlačidlo Ďalej na spodku obrazovky). Lekcie idú cez flow, tam už boli skryté. Obrazovka po dohraní: bez pruhu pokroku, tlačidlo „Späť na angličtinu“ namiesto druhého „Hotovo“.
 - Texty: „Začnite sériu“ -> „Začni sériu“, oprava vety v Novinkách v41. Zvyšky „Misia dňa“ sú len v komentároch. Plný prehľad všetkých textov sa nerobil riadok po riadku.
+
+## 4.0.2 Upgrade sprievodcu (vetva `claude/goofy-wozniak-7c880b`, nenasadené, nepushnuté)
+- Dieťa (`SPR_KROKY`): nový krok Sovička Múdra, kvízik z angličtiny (`.ang-karta`), samostatný krok Strom múdrosti (`.tyzden-strom`, hviezdičky ubúdajú), texty Objavuj a Hry (podľa veku). Rodič (`SPR_RODIC`): krok angličtiny, hry s vädnutím stromu. Účet rodiča a priatelia tam už boli.
+- Nové `SPR_NOVE` (krátka „Čo je nové“ prehliadka, 5 krokov) sa ponúka tlačidlom „Ukáž mi novinky“ v okne Čo je nové (len keď je v ňom NOVINKY v:55), nové účty ju nevidia. Celý sprievodca ostáva v karte Ja, dá sa zavrieť krížikom.
+- `VERZIA_APPKY` 55 / `4.0.2`, NOVINKY v:55. Ak 4.0.1 tiež zvýši verziu, pri zlúčení treba prečíslovať.
+- Overené: `node zdroj/test.js` OK (nový test prejde SPR_NOVE), build OK. NEOVERENÉ: emulátor a vzhľad v prehliadači, ilustrácie sú stále sovička v rôznych náladách (nové kresby sa nerobili).
