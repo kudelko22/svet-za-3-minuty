@@ -336,3 +336,13 @@ Zmena len v `views.domov` a CSS (`.skupiny.rad`, `.acts.kompakt`) v `zdroj/appka
 - Overené: `test` OK; emulátor 1024 px (nový účet, dieťa): prechody Domov/Témy/Hry/Ja a prechod do účtu rodiča bez prázdnej obrazovky; opakované `render()` na tej istej obrazovke = 0 odstránených uzlov a scroll ostal; odpoveď v kvíze téme a v angličtine bez prekreslenia (po odpovedi 0 uzlov), zmena pozadia bez blikania. Konzola: len 404 `a/zoznam.json` (emulátor) a „unknown error fetching script“, nie nové.
 - NEOVERENÉ: reálne snímky očami, telefón, priatelia/chat s dvoma účtami, PIN a panel rodiča s existujúcim rodičom, voľné písanie a hry podľa veku, obnova po novom `sw.js`. Skripty `spusti.cmd test` sa v tejto session zasekli na stdin, test sa spustil priamo cez `node zdroj/test.js`.
 - Nasadenie až na pokyn vlastníka „nasaď 3.9“: pravidlá nie, hosting, push, záloha zip, kontrola webu.
+
+## Verzia 4.0, časť B: nový Domov (session v40-vzhlad)
+
+Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšovala (to urobí zlučovanie 4.0).
+- „Misia dňa“ sa všade volá **Téma dňa** (karta, nálepky, Novinky, odznak, sprievodca). Typy hier ostali.
+- Domov: Téma dňa (hero s misiou ako časť 2) a Angličtina v spoločnom žltom bloku, potom karta **Tento týždeň** (7 dní ako tlačidlá, minulé a dnešok otvoria tému dňa, budúce sú jemne zamknuté, tlačidlo **Okruh**, séria, strom), Ďalšia odmena, Appka na ploche, karta **Objavuj** a malé odkazy Režim do auta a Odznaky.
+- Nový pohľad `objavuj` (`views.objavuj`): kvízy, Iná téma, Oblasti tém a Objavujte ďalej presne ako predtým. Spodná lišta sa tvári, že je to Domov. `test.js` kontroly „Znova o“ idú na `objavuj`.
+- Okno Okruh: `Okruh.ukaz()`, voľby z `Tyzden.okruhy()`, výber cez `Tyzden.nastav(id)` a jedno tiché `render(true)`.
+- Rozhranie k session A: `TY()` = `window.Tyzden` alebo záložná `TyzdenZaloha` (v `appka.html` pred `views`); Domov berie dnešnú tému z `tD()` = `TY().temaDna(dnes)`. Pri zlučovaní: ak A nezmení globálne `temaDna()`, tlačidlá „Strom, Poďme na tému dňa“ a `Auto`/`Sprievodca` stále používajú staré `temaDna()`; treba ho nechať ukazovať na `Tyzden.temaDna(dnes)` (pozor na rekurziu, ak `Tyzden` volá `temaDna()`). Ikona okruhu: reťazec názvu v `IK`/`IK_KAT`, markup `<svg…` alebo funkcia.
+- Neoverené: s reálnym `tyzden.js`, tablet, tmavé pozadia 3.7.x jedno po druhom, snímka „pred“ sa nerobila.
