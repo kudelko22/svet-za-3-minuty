@@ -88,6 +88,7 @@ const RodicPanel = (() => {
           <p class="muted">Priateľov a správy každého dieťaťa vidíte v jeho prehľade. Tam ich môžete aj zapnúť alebo vypnúť.</p>
           ${C.deti.map(d => `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ghost" data-rp-dieta="${esc(d.id)}">Prehľad</button></div>`).join('')}</section>
         <section class="card prof"><span class="lbl">${ii(IK.bublina)} Hlas na čítanie</span><div id="hlasy">${hlasyHtml()}</div></section>
+        <section class="card prof"><span class="lbl">Vibrácie na tomto zariadení</span><div class="hlasy" id="vibracie">${vibraciePrepinac()}</div><p class="muted">Jemné bzučanie pri odpovediach a odmenách. Funguje na Androide, na iPhone nie.</p></section>
         ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}
         <section class="card prof potvrd"><span class="lbl">Zmazať profil rodiča</span>
           <p class="muted">Panel a PIN zmiznú. Deti, ich pokrok a priatelia ostanú. Appka sa vráti do stavu bez účtu rodiča.</p>

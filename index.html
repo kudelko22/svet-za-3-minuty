@@ -1598,7 +1598,16 @@ const Zvuk = (() => {
     },
   };
 })();
-const vibruj = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
+/* Haptika: jemné vibrácie (Android; iPhone ich nepodporuje, vtedy sa nič nedeje). Vypína sa v profile (v zariadení) a pri „menej pohybu“. */
+const Haptika = {
+  vzory: { tuk: 12, spravne: [15, 40, 25], nespravne: 40, hotovo: [30, 50, 30, 50, 40], hviezdicka: [12, 30, 24] },
+  zapnute: () => S.get('vibracie', true) !== false,
+  mozno: () => { try { return !!navigator.vibrate && !matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } },
+  hraj(p) { try { if (!Haptika.zapnute() || !Haptika.mozno()) return false; return navigator.vibrate(typeof p === 'string' ? Haptika.vzory[p] : p); } catch (e) { return false; } },
+};
+// staré volania s číslami ostávajú, ale každé bzučanie sa skráti na jemných najviac 60 ms
+const vibruj = p => Haptika.hraj(Array.isArray(p) ? p.map((x, i) => i % 2 ? x : Math.min(x, 60)) : Math.min(p, 60));
+const vibraciePrepinac = () => `<button class="hlas" data-vibracie aria-pressed="${Haptika.zapnute()}"><b>Vibrácie</b><small>${Haptika.zapnute() ? 'zapnuté' : 'vypnuté'}</small></button>`;
 
 /* Čítanie nahlas (hlas telefónu) */
 /* Krásny hlas: vety nahraté vopred hlasom Microsoft Viktória (a/<kľúč>.mp3, zoznam a/zoznam.json, skript zdroj/hlas.js).
@@ -2850,7 +2859,7 @@ const Hra = {
     if (h.karty[a] === h.karty[c]) {
       h.najdene.push(h.karty[a]); h.otocene = [];
       [a, c].forEach(j => karty[j] && karty[j].classList.add('najdena'));
-      Zvuk.play('ok'); const [x, y] = stred(b); FX.burst(x, y, 16, ['star', 'dot'], 6);
+      Zvuk.play('ok'); Haptika.hraj('spravne'); const [x, y] = stred(b); FX.burst(x, y, 16, ['star', 'dot'], 6);
       if (h.najdene.length * 2 === h.karty.length) h.dalsia = setTimeout(() => { if (st.hra === h) this.koniec(true, h.tahy); }, 600);
     } else {
       h.zamok = true;
@@ -2932,7 +2941,7 @@ const Hra = {
     if (!h || h.id !== 'hadaj' || h.odp || h.hotovo) return;
     const ok = id === h.kola[h.i];
     h.odp = id;
-    if (ok) { h.spravne++; Zvuk.play('ok'); } else { Zvuk.play('bad'); vibruj(60); }
+    if (ok) { h.spravne++; Zvuk.play('ok'); Haptika.hraj('spravne'); } else { Zvuk.play('bad'); vibruj(60); }
     obnovStavHry(); obnovHadaj();
     h.dalsia = setTimeout(() => {
       if (st.hra !== h) return;
@@ -4133,7 +4142,7 @@ const Ang = {
     if (!q || q.koniec) return false;
     if (d.angVol !== undefined) {
       const i = +d.angVol, o = q.qs[q.i];
-      if (i === o.s) { q.spravne = true; Zvuk.play('star'); } else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); }
+      if (i === o.s) { q.spravne = true; Zvuk.play('star'); Haptika.hraj('spravne'); } else { q.zle.push(i); q.chyby++; Zvuk.play('bad'); vibruj(30); }
       this.uprav(); return true;
     }
     if (d.angDalej !== undefined) { this.dalsia(); return true; }
@@ -4777,6 +4786,11 @@ document.addEventListener('click', e => {
   if (d.bub !== undefined) { Hra.bub(b); return; }
   if (d.pad !== undefined) { Hra.pad(+d.pad); return; }
   if (d.diel) { Hra.diel(+d.diel); return; }
+  if (d.vibracie !== undefined) {
+    S.set('vibracie', !Haptika.zapnute()); b.setAttribute('aria-pressed', Haptika.zapnute());
+    const m = b.querySelector('small'); if (m) m.textContent = Haptika.zapnute() ? 'zapnuté' : 'vypnuté';
+    Haptika.hraj('tuk'); return;
+  }
   if (d.hlas !== undefined) {
     if (d.hlas === 'viktoria') S.set('hlas-telefon', false); else { S.set('hlas', d.hlas); S.set('hlas-telefon', true); }
     document.querySelectorAll('[data-hlas]').forEach(x => x.setAttribute('aria-pressed', x === b));
@@ -4907,7 +4921,7 @@ document.addEventListener('click', e => {
     zapisChybu(f.kroky[f.i], ok);
     renderFlow(false);
     if (ok) {
-      Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); vibruj(40);
+      Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); Haptika.hraj('hotovo');
       FX.burst(x, y, 30); letiText(x, y - 20, 'Správne!'); zablesk('rgb(47 191 113 / .35)');
     } else {
       Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');

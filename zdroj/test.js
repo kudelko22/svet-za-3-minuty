@@ -451,3 +451,16 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   const zle = linky.length < 20 ? ['malo uvodnych obrazkov: ' + linky.length] : linky.filter(h => !fs.existsSync(path.join(R, h)));
   if (!idx.includes('id="uvod"')) zle.push('chyba uvodna obrazovka');
   if (zle.length) { console.log('CHYBY uvod', zle); process.exit(1); } }
+
+// vibrácie: Haptika je bezpečná bez navigator.vibrate, rešpektuje prepínač a "menej pohybu"
+{ const zle = [], src2 = html;
+  if (!/const Haptika = \{/.test(src2) || !/data-vibracie/.test(src2)) zle.push('chyba Haptika alebo prepinac');
+  if (!/navigator\.vibrate/.test(src2) || !/prefers-reduced-motion: reduce\)'\)\.matches/.test(src2) && !/prefers-reduced-motion/.test(src2.slice(src2.indexOf('const Haptika'), src2.indexOf('const Haptika') + 900))) zle.push('Haptika nerespektuje reduced-motion');
+  const blok = src2.slice(src2.indexOf('const Haptika'), src2.indexOf('const vibraciePrepinac'));
+  const H = new Function('S', 'matchMedia', 'navigator', blok + '; return Haptika;');
+  const volane = [], mk = (v, m) => H({ get: () => v }, () => ({ matches: m }), global.navigator && 0 ? 0 : { vibrate: p => (volane.push(p), true) });
+  if (H({ get: () => true }, () => ({ matches: false }), {}).hraj('tuk') !== false) zle.push('bez vibrate ma vratit false');
+  if (!mk(true, false).hraj('spravne') || volane.length !== 1) zle.push('zapnute nevibruje');
+  if (mk(false, false).hraj('tuk') || volane.length !== 1) zle.push('vypnute vibruje');
+  if (mk(true, true).hraj('tuk') || volane.length !== 1) zle.push('reduced-motion vibruje');
+  if (zle.length) { console.log('CHYBY vibracie', zle); process.exit(1); } }

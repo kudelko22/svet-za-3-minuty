@@ -360,3 +360,9 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - `VERZIA_APPKY` 54 / `4.0`, jedno `NOVINKY` v:54, cache `sw.js` `svet3-v17`. Pravidlá sa nemenili.
 - Overené: `node zdroj/test.js` OK. Emulátor (nový účet, dieťa 5–8, 390 a 360 px): pás Tento týždeň z reálneho `Tyzden`, zmena okruhu na Príroda zmenila dnešnú aj nedeľnú tému, minulé dni ostali, Zmiešaný vrátil pôvodné; klik na pondelok otvoril jeho tému, budúci deň je zamknutý a `otvor` ho nepustí; karta Objavuj (kvíz, 4 oblasti, Objavujte ďalej); „Misia dňa“ sa v texte nikde neukazuje, Novinka sa volá „Verzia 4.0: okruh týždňa“; hotové dni sa v páse označia. Zmena okruhu = jedno tiché prekreslenie Domova. Konzola len známe 404 `a/zoznam.json` a „unknown error fetching script“.
 - NEOVERENÉ: hry podľa veku a angličtina očami, pozadia, séria rýchlych snímok pri blikaní (len počet prekreslení), účet rodiča s históriou, tablet, update z živého 3.9 cez starý service worker (v emulátore pri teste s ručne podstrčeným starým `sw.js` cache zlyhala a navigácia skončila chybou, vyzerá to ako vlastnosť panela/emulátora, ale na ostrej verzii po nasadení skontrolovať, že prvé načítanie 4.0 s inštalovaným 3.9 nespadne).
+
+## 4.1 A vibrácie (vetva claude/wonderful-shtern-593446, nenasadené, verzia nezmenená)
+- `Haptika` v `appka.html` (pred čítaním nahlas): vzory tuk/spravne/nespravne/hotovo/hviezdicka, `Haptika.hraj(vzor|pole)`, kontrola `navigator.vibrate`, prepínač `S.get('vibracie', true)` a `prefers-reduced-motion`. Staré `vibruj(...)` volania idú cez Haptiku (bzučanie skrátené na max. 60 ms).
+- Prepínač „Vibrácie“ je v paneli rodiča (`rodic-panel.js`, karta pod hlasom), tlačidlo `data-vibracie`, uložené v zariadení.
+- Doplnené správne odpovede v hrách a kvíze; test v `zdroj/test.js` (bez vibrate, vypnuté, reduced-motion).
+- NEOVERENÉ: skutočný telefón (Android), vzhľad prepínača v paneli rodiča.
