@@ -1255,8 +1255,11 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 @keyframes tyzsIn { from { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } 40% { opacity: 1; } }
 @keyframes tyzsOut { to { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } }
 /* 4.4: väčší stromček v lište, stav schne, pás stromu na Domove */
-.tyz-strom { width: 58px; height: 58px; }
-.tyz-strom svg { width: 46px; height: 46px; }
+.tyz-strom { display: flex; align-items: center; justify-content: center; gap: 2px; width: auto; min-width: 84px; height: 54px; padding: 0 14px 0 8px; border-radius: 30px; }
+.tyz-strom svg { flex: none; width: 42px; height: 42px; }
+.ts-pocet { font: 700 1.6rem/1 var(--f-display); color: var(--ink); min-width: .8em; text-align: center; }
+.tyz-strom.spi .ts-pocet { opacity: .55; }
+.tyz-strom.hotovo::after { border-radius: 34px; }
 .tyz-strom.schne { background: #FFE9B0; box-shadow: 0 3px 0 var(--ink), 0 0 0 3px #fff; }
 .ts-list { animation: tsList 3s ease-in infinite; transform-box: fill-box; }
 @keyframes tsList { 0% { opacity: 0; transform: translate(0, -4px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-3px, 9px) rotate(40deg); } }
@@ -1274,7 +1277,7 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 .sp-sip { flex: none; font: 700 1.6rem/1 var(--f-display); font-style: normal; }
 .sp-x { flex: none; }
 @media (prefers-reduced-motion: reduce) { .tyz-strom.hotovo, .ts-z, .ts-i, .tyzs-karta, .ts-list, .sp-k { animation: none; } }
-@media (max-width: 380px) { .top-r { gap: 6px; } .tyz-strom { width: 52px; height: 52px; } .tyz-strom svg { width: 42px; height: 42px; } .sp-ik { width: 50px; height: 50px; } .sp-k { width: 40px; height: 40px; } .snd { width: 40px; height: 40px; } .hi b { font-size: 1.25rem; } }
+@media (max-width: 380px) { .top-r { gap: 6px; } .tyz-strom { min-width: 76px; height: 50px; padding: 0 12px 0 6px; } .tyz-strom svg { width: 38px; height: 38px; } .ts-pocet { font-size: 1.4rem; } .sp-ik { width: 50px; height: 50px; } .sp-k { width: 40px; height: 40px; } .snd { width: 40px; height: 40px; } .hi b { font-size: 1.25rem; } }
 .tyz-viac { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: 2.5px solid var(--ink); border-radius: 18px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); font: 700 1rem/1.2 var(--f-display); text-align: left; cursor: pointer; }
 .tyz-viac:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .tyz-viac-ik { display: grid; width: 24px; height: 24px; } .tyz-viac-ik .ii, .tyz-viac-ik svg { width: 100%; height: 100%; }
@@ -3508,10 +3511,10 @@ const TyzStrom = {
     const b = document.getElementById('tyz-strom'); if (!b) return;
     const zap = st.faza === 'appka' && st.view === 'domov', hot = zap && this.jeHotovo();
     b.hidden = !zap; if (!zap) return;
-    const hn = hnStupen() ? 1 : 0, k = (hot ? 'h' : 's') + hn;
+    const hn = hnStupen() ? 1 : 0, s = seria(), k = (hot ? 'h' : 's') + hn + '-' + s;
     if (b.dataset.k !== k) {
-      b.dataset.k = k; b.innerHTML = stromTlacidlo(hot, hn); b.classList.toggle('hotovo', hot && !hn); b.classList.toggle('spi', !hot && !hn); b.classList.toggle('schne', !!hn);
-      b.setAttribute('aria-label', (hn ? 'Strom schne. ' : '') + (hot ? 'Tento týždeň. Dnešná téma je hotová.' : 'Tento týždeň. Dnešná téma ešte čaká.'));
+      b.dataset.k = k; b.innerHTML = stromTlacidlo(hot, hn) + `<b class="ts-pocet">${s}</b>`; b.classList.toggle('hotovo', hot && !hn); b.classList.toggle('spi', !hot && !hn); b.classList.toggle('schne', !!hn);
+      b.setAttribute('aria-label', (hn ? 'Strom schne. ' : '') + `Séria ${s} ${dni(s)}. ` + (hot ? 'Tento týždeň. Dnešná téma je hotová.' : 'Tento týždeň. Dnešná téma ešte čaká.'));
     }
   },
   obnov() { const k = document.querySelector('.tyzs-karta'); if (k) k.innerHTML = this.html(); },
@@ -3549,7 +3552,7 @@ const Pripomienka = {
     return st.dni.length ? 'Dnes ešte nebola žiadna lekcia. Téma dňa čaká.' : '';
   },
   html() {
-    const hn = hnStupen(), s = seria(), tx = this.text();
+    const hn = hnStupen(), s = seria(), tx = this.text(); if (!tx) return ''; // pás je len pripomienka; stav stromu a počet dní ukazuje polkruh v lište
     const stav = hn ? 'Strom schne' : 'Strom rastie';
     const pod = tx || (hn ? HN_TEXT[hn].p : `${STROM_STUPNE[stromStupen()].n}${s ? `, séria ${s} ${dni(s)}` : ''}`);
     return `<div class="strom-pas${hn ? ' schne' : ''}${tx ? ' pripomienka' : ''}" data-strom role="button" tabindex="0" aria-label="Strom múdrosti. ${esc(stav)}. ${esc(pod)}">
@@ -4587,7 +4590,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
-  { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Na Domove je hore pás so stromom: ukazuje, či rastie alebo schne, a raz za deň ti jemne pripomenie sériu alebo lekciu (zavrieš ho krížikom). Stromček v lište je väčší a pri ťuknutí na strom sa okno týždňa zavrie.' },
+  { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Stromček hore je teraz väčší polkruh s počtom dní série (1, 2, 3 a ďalej), keď strom schne, zožltne. Raz za deň ti Domov jemne pripomenie sériu alebo lekciu (zavrieš ju krížikom). Pri ťuknutí na strom sa okno týždňa zavrie.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
   { v: 57, obr: () => OBR_HRY.krtko, n: 'Verzia 4.2: kratší Domov a nová hra', p: 'Týždeň je schovaný v stromčeku hore: ťukni naň a rozvinie sa. Tmavý stromček znamená, že dnešná téma čaká, farebný, že je hotovo. Po téme je obrazovka kratšia, ostatné je zbalené. Nová hra Ťukaj krtkov nahradila Čo bude ďalej?.' },
   { v: 56, obr: () => OBR_HRY.pocitaj, n: 'Verzia 4.1: nové hry a prehľad týždňa', p: 'Päť nových hier: Ktorý je iný?, Nájdi tieň, Zoraď čísla, Čo bude ďalej? a Poskladaj slovo. Na karte Tento týždeň je tlačidlo Prehľad týždňa s dňami, súčtami a históriou. Dlhé mená sa už nepretekajú. Rodič môže v paneli zapnúť alebo vypnúť vibrácie.' },

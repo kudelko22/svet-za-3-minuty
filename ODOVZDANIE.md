@@ -445,3 +445,4 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Ikona `stromIkona('rastie'|'schne')`; stromček v lište je väčší (58 px, 52 px na 360) a pri vädnutí žltý s padajúcim listom (`.tyz-strom.schne`).
 - Test: blok `PRIPOMIENKA_44`. Overené na statickom serveri (port 5052, emulátor mal obsadené porty iná session): 360 px a tablet bez horizontálneho posuvu, okno týždňa sa pri strome zavrie, schnutie, zavretie pripomienky, hotový deň bez pripomienky.
 - NEOVERENÉ: celý emulátor s účtom, poradie téma → strom → misia na živej téme, očami animácie (kývanie, padajúci list), tmavé pozadia.
+- Oprava po pokyne vlastníka: stromček v lište je polkruh (pílulka, `.tyz-strom` min. 84 px, 76 px na 360) s ikonou stromu a počtom dní série `.ts-pocet` (hodnota `seria()`); stav hotovo/spí/schne ostáva farbou. Veľký pás stromu na Domove sa ukazuje len keď je pripomienka (inak `Pripomienka.html()` vráti prázdno). Overené na 360 px s dlhým menom (bez posuvu).
