@@ -1326,15 +1326,15 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=54"></script>
-<script src="obrazky.js?v=54"></script>
-<script src="misie.js?v=54"></script>
-<script src="tyzden.js?v=54"></script>
-<script src="anglictina.js?v=54"></script>
-<script src="rodic-brana.js?v=54"></script>
-<script src="rodic-panel.js?v=54"></script>
+<script src="temy.js?v=55"></script>
+<script src="obrazky.js?v=55"></script>
+<script src="misie.js?v=55"></script>
+<script src="tyzden.js?v=55"></script>
+<script src="anglictina.js?v=55"></script>
+<script src="rodic-brana.js?v=55"></script>
+<script src="rodic-panel.js?v=55"></script>
 <script>
-const VERZIA_APPKY = 54; const VERZIA_NAZOV = '4.0'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 55; const VERZIA_NAZOV = '4.0.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4142,6 +4142,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 55, obr: () => owl('cheer'), n: 'Nový sprievodca', p: 'Sovička ukáže aj Tému dňa, týždeň s okruhom, kvízik z angličtiny, strom múdrosti, hry a priateľov. Krátku prehliadku noviniek si môžeš pustiť hneď, celého sprievodcu nájdeš v karte Ja.' },
   { v: 54, obr: () => IK.duha, n: 'Verzia 4.0: okruh týždňa', p: 'Téma dňa je zasa Téma dňa. Vyber si okruh týždňa alebo nechaj Zmiešaný, pozri si témy predošlých dní a nájdeš všetko na prehľadnejšom Domove s kartou Objavuj.' },
   { v: 53, obr: () => IK.mozog, n: 'Bez blikania', p: 'Appka je plynulejšia: bez blikania pri odpovediach, prechodoch, správach a načítaní.' },
   { v: 52, obr: () => IK.ziarovka, n: 'Opravy a bezpečnejšia appka', p: 'Rodičovský panel sa po odchode sám zamkne, voľné písanie je len keď ho zapne rodič a nevhodné slová sa zachytia. Účty a ukladanie sú spoľahlivejšie, hry a angličtina plynulejšie. Opravené sú aj drobnosti vo vzhľade.' },
@@ -4215,11 +4216,14 @@ const Novinky = {
     el.className = 'novinky'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Čo je nové');
     el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('cheer')}<div><small>Verzia ${VERZIA_NAZOV}</small><h2>Čo je nové?</h2></div></div>
       <div class="nov-zoznam">${z.map((n, i) => `<div class="nov-polozka" style="--i:${i}"><span class="nov-obr${n.siroky ? ' siroky' : ''}">${n.obr()}</span><div><b>${n.n}</b><small>${n.p}</small></div></div>`).join('')}</div>
+      ${z.some(n => n.v === 55) ? '<button class="btn wide ghost" data-novinky-tour style="margin-bottom:8px">Ukáž mi novinky</button>' : ''}
       <button class="btn wide cta" data-novinky-ok>Super, poďme na to!</button></div>`;
     document.body.appendChild(el);
     Zvuk.play('cink'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .25, 24, ['star', 'dot']), 300);
     const b = el.querySelector('[data-novinky-ok]');
     if (b) b.addEventListener('click', e => { e.stopPropagation(); Zvuk.play('tap'); el.classList.add('pryc'); setTimeout(() => el.remove(), 300); });
+    const t = el.querySelector('[data-novinky-tour]');
+    if (t) t.addEventListener('click', e => { e.stopPropagation(); Zvuk.play('tap'); el.classList.add('pryc'); setTimeout(() => el.remove(), 300); setTimeout(() => Sprievodca.start(SPR_NOVE, { zavriet: 'Celého sprievodcu nájdeš v karte Ja.' }), 450); });
   },
 };
 // Okno „Vytvor si účet rodiča“ (3.5.1): pre účty bez rodiča, raz za spustenie appky, nikdy počas hry či kvízu; „Neskôr“ ho odloží na 3 dni
@@ -4263,15 +4267,18 @@ const SPR_RUKA = `<svg viewBox="0 0 64 72" aria-hidden="true"><g stroke="${INK}"
   <path d="M30 28 V37 M39 29 V37 M48 31 V38" fill="none" stroke-width="3"/></g></svg>`;
 const SPR_KROKY = [
   { id: 'vitaj', nalada: 'hi', tl: [['dalej', 'Ukáž mi to! →', 1], ['zavri', 'Teraz nie']], p: 'Ja som Sovička Múdra. Ukážem ti, čo všetko v appke nájdeš. Bude to rýchle, sľubujem!' },
+  { n: 'Sovička Múdra', nalada: 'happy', p: 'Pri každom kroku môžeš ťuknúť na reproduktor a ja ti ho prečítam nahlas. Keď chceš skončiť, ťukni na krížik.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň ťa tu čaká nová téma. S rodičom si ju prečítate za 3 minúty a potom odpovieš na pár otázok.' },
-  { v: 'domov', cil: '.tyzden', n: 'Tento týždeň', p: 'Za každý deň s témou dostaneš hviezdičku. Ťukni na minulý deň a otvoríš jeho tému. Tlačidlom Okruh vyberieš, o čom budú témy. Ťukni na strom dole a uvidíš ho.' },
+  { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Každý deň jeden krátky kvízik z angličtiny. Ťukneš na anglické slovo a vyberieš správny preklad.' },
+  { v: 'domov', cil: '.tyzden', n: 'Tento týždeň', p: 'Za každý deň s témou dostaneš hviezdičku. Ťukni na minulý deň a otvoríš jeho tému. Tlačidlom Okruh vyberieš, o čom budú témy.' },
+  { v: 'domov', cil: '.tyzden-strom', n: 'Strom múdrosti', nalada: 'cheer', p: 'Čím viac dní sa učíš, tým väčší strom vyrastie. Keď sa niekoľko dní neučíš, hviezdičky pomaly ubúdajú a strom vädne. Po prvej téme ožije.' },
   { v: 'domov', cil: '#stars', n: 'Tvoje body', nalada: 'cheer', p: 'Za správne odpovede zbieraš body. Za body sa odomykajú hry a nové veci pre tvoju postavičku.' },
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Keď ide rodina autom, appka prečíta tému aj otázky nahlas. Učiť sa dá aj cestou.' },
-  { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Tu sú kvízy, Iná téma, ktorá ťa prekvapí, a všetky oblasti tém.' },
+  { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Tu sú kvízy, Iná téma, ktorá ťa prekvapí, a všetky oblasti tém: príroda, ľudia, svet a veda.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťukni na Témy', p: 'Teraz si to vyskúšaj: ťukni na Témy dole.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: 'Témy sú v 4 oblastiach: príroda, ľudia, svet a veda. Ťukni na oblasť alebo hore napíš, čo hľadáš.' },
   { tap: 'hry', cil: '#nav-hry', n: 'Ťukni na Hry', nalada: 'happy', p: 'Výborne! Teraz ťukni na Hry.' },
-  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Za body sa odomykajú hry. Hraním sa body neminú.' },
+  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Za body sa odomykajú hry. Vidíš len tie, ktoré sú pre tvoj vek. Hraním sa body neminú.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťukni na Priatelia', p: 'Ešte dve zastávky. Ťukni na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
   { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia', p: () => socC() && socC().zapnute ? 'Tu sú tvoji kamaráti. Posielate si nálepky a súťažíte v týždennom rebríčku.' : 'Tu si pridáš kamarátov. Posielate si nálepky a súťažíte v týždennom rebríčku. Zapína to rodič.' },
   { tap: 'ja', cil: '#nav-ja', n: 'Ťukni na Ja', nalada: 'happy', p: 'Posledná zastávka. Ťukni na Ja.' },
@@ -4296,6 +4303,7 @@ const SPR_UCET = [
 const SPR_RODIC = [
   { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko →', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň jedna krátka téma na 3 minúty. Prečítate ju dieťaťu (alebo ju appka prečíta nahlas), porozprávate sa a dieťa odpovie na otázky. Za tému dňa je najviac bodov.' },
+  { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Denný kvízik z angličtiny má 6 otázok. Dieťa vyberá preklad slova a dostane krátke vysvetlenie. Ďalšie kvízy sú v Objavuj.' },
   { v: 'domov', cil: '.tyzden', n: 'Séria a strom múdrosti', p: 'Každý deň s témou pribudne hviezdička a rastie séria. Prvá téma dňa spustí oslavu a na strome múdrosti pribudne plod. Keď sú všetky odpovede zlé, treba otázky skúsiť ešte raz. Ťuknutím na minulý deň otvoríte jeho tému, tlačidlom Okruh vyberiete, o čom budú témy týždňa, a ťuknutím na strom uvidíte jeho stupeň.' },
   { v: 'domov', cil: '#stars', n: 'Body', nalada: 'cheer', p: 'Body sú za správne odpovede a odomykajú hry aj nové veci pre postavičku. Za inú tému ako tému dňa je najviac 10 bodov.' },
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Jedno ťuknutie a appka prečíta tému aj otázky nahlas, s prestávkou na odpoveď. Hodí sa na cestu, keď šoférujete.' },
@@ -4305,7 +4313,7 @@ const SPR_RODIC = [
   { tap: 'temy', cil: '#nav-temy', n: 'Ťuknite na Témy', p: 'Teraz si to vyskúšajte: ťuknite dole na Témy.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${TV().length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
   { tap: 'hry', cil: '#nav-hry', n: 'Ťuknite na Hry', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Hry.' },
-  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za body. Hraním sa body neminú, sú to odmeny za učenie.' },
+  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za body. Dieťa vidí hry podľa svojho veku, malé deti majú ľahšie. Hraním sa body neminú. Keď sa niekoľko dní neučí, strom vädne a najdrahšie hry si oddýchnu, po prvej téme sa všetko vráti.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťuknite na Priatelia', p: 'Ťuknite na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
   { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia zapína rodič', p: 'Deti si posielajú kreslené nálepky, hotové vety aj vlastné krátke slová. Priateľa pridajú len jeho kódom a druhá strana musí súhlasiť. Zapnúť aj vypnúť to môžete len vy.' },
   { tap: 'ja', cil: '#nav-ja', n: 'Ťuknite na Ja', nalada: 'happy', p: 'Posledná časť je profil. Ťuknite na Ja.' },
@@ -4316,6 +4324,16 @@ const SPR_RODIC = [
   { v: 'ja', cil: '.spr-karta', n: 'Sprievodca pre dieťa', p: 'Keď bude chcieť, Sovička ukáže appku aj dieťaťu, jeho slovami. Spustíte ho tu.' },
   { id: 'rodicucet', ak: () => !maRodica(), n: 'Účet rodiča', nalada: 'happy', tl: [['rodicucet', 'Vytvoriť účet rodiča →', 1], ['dalej', 'Neskôr']], p: 'Nastavenia, prehľady a mazanie profilov nemajú byť deťom na dosah. Vytvorte si účet rodiča s vlastným PIN-om (4 číslice), zaberie to chvíľku.' },
   { id: 'koniec', n: 'Všetko pripravené!', nalada: 'cheer', oslava: true, tl: [['dieta', 'Ukázať sprievodcu dieťaťu', 1], ['tema', 'Poďme na tému dňa →']], p: 'Teraz už viete všetko. Ukážte appku aj dieťaťu, alebo rovno začnite tému dňa.' },
+];
+// Krátka prehliadka noviniek pre tých, čo už starého sprievodcu videli (ponúka ju okno Čo je nové)
+const SPR_NOVE = [
+  { id: 'vitaj', n: 'Pozri, čo je nové', nalada: 'hi', tl: [['dalej', 'Ukáž mi to! →', 1], ['zavri', 'Teraz nie']], p: 'V appke pribudlo pár vecí. Ukážem ti ich za chvíľku.' },
+  { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Hore je zasa Téma dňa. Každý deň nová, na 3 minúty.' },
+  { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', p: 'Denný kvízik z angličtiny: vyberieš správny preklad slova.' },
+  { v: 'domov', cil: '.tyzden', n: 'Tento týždeň', p: 'Ťukni na minulý deň a otvoríš jeho tému. Tlačidlom Okruh vyberieš, o čom budú témy.' },
+  { v: 'domov', cil: '.tyzden-strom', n: 'Strom múdrosti', nalada: 'cheer', p: 'Strom rastie, keď sa učíš. Keď sa niekoľko dní neučíš, hviezdičky ubúdajú. Po prvej téme strom ožije.' },
+  { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Kvízy, Iná téma a všetky oblasti tém nájdeš tu.' },
+  { id: 'koniec', n: 'Hotovo!', nalada: 'cheer', tl: [['tema', 'Poďme na tému dňa! →', 1], ['domov', 'Zavrieť']], p: 'Celého sprievodcu nájdeš kedykoľvek v karte Ja.' },
 ];
 const Sprievodca = {
   el: null, i: 0, kroky: SPR_KROKY, o: {},
