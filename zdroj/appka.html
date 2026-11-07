@@ -1170,6 +1170,39 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 .okruh-okno.pryc { opacity: 0; transition: opacity .25s; }
 .okruh-karta { display: grid; gap: 12px; width: min(100%, 420px); max-height: 90vh; overflow: auto; padding: 16px; border: 3px solid var(--ink); border-radius: 26px; background: var(--paper); box-shadow: 0 6px 0 var(--ink); animation: rise .35s var(--spring) both; }
 .okruh-karta .muted { margin: 0; }
+.tyz-viac { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: 2.5px solid var(--ink); border-radius: 18px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); font: 700 1rem/1.2 var(--f-display); text-align: left; cursor: pointer; }
+.tyz-viac:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.tyz-viac-ik { display: grid; width: 24px; height: 24px; } .tyz-viac-ik .ii, .tyz-viac-ik svg { width: 100%; height: 100%; }
+.tyz-viac i { margin-left: auto; font-style: normal; font-size: 1.5rem; line-height: 1; }
+.tyz-karta { width: min(100%, 560px); max-height: 92vh; gap: 12px; }
+.tp-nav { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 8px; }
+.tp-nav-st { display: grid; justify-items: center; font-family: var(--f-display); } .tp-nav-st b { font-size: 1.1rem; } .tp-nav-st small { color: var(--muted); font-weight: 800; font-size: .95rem; }
+.tp-krok { width: 48px; height: 48px; border: 2.5px solid var(--ink); border-radius: 50%; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); font: 700 1.6rem/1 var(--f-display); cursor: pointer; }
+.tp-krok:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.tp-krok:disabled { opacity: .35; box-shadow: none; cursor: default; }
+.tp-suctu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tp-sucet { display: grid; align-content: center; justify-items: center; gap: 2px; padding: 10px 4px; border: 2.5px solid var(--ink); border-radius: 18px; background: #FFF3B8; color: var(--ink); text-align: center; font: 700 .9rem/1.15 var(--f-display); }
+.tp-sucet:nth-child(2) { background: #D9F2FF; } .tp-sucet:nth-child(3) { background: #FFE3BD; } .tp-sucet.zhas { background: var(--soft); }
+.tp-cis { font-size: 1.9rem; line-height: 1; } .tp-cis small { font-size: .95rem; }
+.tp-okruh { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 2.5px dashed var(--ink); border-radius: 18px; background: #fff; color: var(--ink); font: 700 1rem/1.2 var(--f-display); }
+.tp-okruh > span:nth-child(2) { flex: 1; } .tp-zmen { width: auto; padding: 8px 14px; min-height: 40px; }
+.tp-dni { display: grid; gap: 8px; }
+.tp-den { display: grid; grid-template-columns: 52px 46px minmax(0, 1fr) 14px; align-items: center; gap: 10px; width: 100%; min-height: 72px; padding: 8px 10px; border: 2.5px solid var(--ink); border-radius: 20px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); font-family: var(--f-display); text-align: left; animation: osIn .3s ease-out both; animation-delay: calc(var(--i) * 30ms); }
+button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.tp-den.hotovo { background: #FFF8D6; } .tp-den.dnes { background: #E3F4FF; outline: 3px solid var(--blue); outline-offset: 2px; }
+.tp-den.pred { background: #F4F2F9; box-shadow: none; } .tp-stitok.s-pred { background: #ECE8F5; }
+.tp-den.zmeskane { background: #FFEDEA; } .tp-den.buduci { background: var(--soft); border-style: dashed; box-shadow: none; opacity: .75; }
+.tp-datum { display: grid; justify-items: center; line-height: 1.15; } .tp-datum b { font-size: 1.15rem; } .tp-datum small { color: var(--muted); font-weight: 800; font-size: .85rem; }
+.tp-ik { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; border: 2.5px solid var(--ink); background: color-mix(in srgb, var(--c) 30%, #fff); } .tp-ik svg { width: 30px; height: 30px; }
+.tp-telo { display: grid; gap: 4px; min-width: 0; } .tp-tema { font-size: 1rem; line-height: 1.2; overflow-wrap: anywhere; }
+.tp-stitky { display: flex; flex-wrap: wrap; gap: 4px; }
+.tp-stitok { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; color: var(--ink); font: 700 .85rem/1.15 var(--f-display); }
+.tp-stitok .ii { display: grid; width: 16px; height: 16px; } .tp-stitok svg { width: 100%; height: 100%; animation: none; }
+.tp-stitok.s-hotovo { background: #BFF0D2; } .tp-stitok.s-dnes { background: #BFE3FF; } .tp-stitok.s-zmeskane { background: #FFC9C4; } .tp-stitok.s-buduci { background: #E4DDFA; } .tp-stitok.s-ang { background: #F1EEF8; }
+.tp-sip { font-size: 1.4rem; line-height: 1; }
+.tp-prazdno { text-align: center; }
+@media (max-width: 380px) { .tp-den { grid-template-columns: 44px 40px minmax(0, 1fr) 10px; gap: 8px; } .tp-ik { width: 40px; height: 40px; } .tp-ik svg { width: 26px; height: 26px; } .tp-cis { font-size: 1.6rem; } }
+@media (prefers-reduced-motion: reduce) { .tp-den { animation: none; } }
 .okruh-mriezka { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .okruh-volba { display: grid; justify-items: center; gap: 6px; padding: 10px 6px; border: 3px solid var(--ink); border-radius: 20px; background: #fff; color: var(--ink); box-shadow: 0 4px 0 var(--ink); font: 700 .95rem/1.15 var(--f-display); text-align: center; }
 .okruh-volba:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
@@ -3157,13 +3190,14 @@ function kartaTyzden() {
     <div class="week">${dni7.map((x, i) => { const bud = x['jeBudúci'];
       return `<button class="day${x.hotovo ? ' done' : ''}${x.jeDnes ? ' today' : ''}${bud ? ' budúci' : ''}" style="--d:${PASTEL[i]}" ${bud ? 'disabled aria-disabled="true"' : `data-tyz-den="${esc(x.datum)}"`}${x.jeDnes ? ' aria-current="date"' : ''} aria-label="${esc(x.den)} ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}.${bud ? ', ešte zamknuté' : ', ukáž tému dňa'}">${esc(x.den)}<i>${x.hotovo ? STAR() : bud ? ii(IK.zamok) : +x.datum.slice(8)}</i></button>`; }).join('')}</div>
     <p class="tyzden-tip">Ťukni na deň a otvoríš jeho tému.</p>
+    <button class="tyz-viac" data-tyz-prehlad aria-haspopup="dialog"><span class="tyz-viac-ik">${ii(IK.kalendar || STAR())}</span>Prehľad týždňa<i>›</i></button>
     <span class="streak${s ? '' : ' zhasnuta'}">${ii(IK.ohen)} ${s ? `${s} ${dni(s)} po sebe` : 'Začnite sériu dnes'}</span>
     <div class="tyzden-strom" data-strom role="button" tabindex="0" aria-label="Strom múdrosti">${MINI_STROM}<span>Môj strom múdrosti: <b>${hnStupen() ? HN_TEXT[hnStupen()].n : STROM_STUPNE[stromStupen()].n}</b></span><i>›</i></div>
   </section>`;
 }
 const Okruh = {
   ukaz() {
-    if (document.querySelector('.okruh-okno')) return;
+    if (document.querySelector('.okruh-okno:not(.tyz-okno)')) return;
     const Ty = TY(), vyb = Ty.vybrany(), el = document.createElement('div');
     el.className = 'okruh-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Okruh týždňa');
     el.innerHTML = `<div class="okruh-karta"><div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Okruh týždňa</h2><button class="ib" data-okruh-zavri aria-label="Zavrieť">${IKO.zavriet}</button></div>
@@ -3177,10 +3211,79 @@ const Okruh = {
     el.addEventListener('click', e => {
       e.stopPropagation();
       const v = e.target.closest('[data-okruh-id]');
-      if (v) { Zvuk.play('pop'); Ty.nastav(v.dataset.okruhId); zavri(); if (st.view === 'domov') render(true); return; }
+      if (v) { Zvuk.play('pop'); Ty.nastav(v.dataset.okruhId); zavri(); if (st.view === 'domov') render(true); TyzPrehlad.obnov(); return; }
       if (e.target === el || e.target.closest('[data-okruh-zavri]')) { Zvuk.play('tap'); zavri(); }
     });
     Zvuk.play('whoosh'); const p = el.querySelector('.okruh-volba[aria-pressed="true"]') || el.querySelector('.okruh-volba'); if (p) p.focus({ preventScroll: true });
+  },
+};
+/* Prehľad týždňa (verzia 4.1 C): okno s dňami, stavmi, súčtami a prechodom na minulé týždne. */
+const TyzPrehlad = {
+  posun: 0, MAX: 12,
+  /* najstarší deň, o ktorom vieme (dokončená téma alebo angličtina); bez neho história neexistuje */
+  najstarsi() {
+    const d = [...Object.values(st.kedy || {}), ...Object.keys(Ang.data().dni || {})].filter(x => typeof x === 'string' && /^\d{4}-\d\d-\d\d$/.test(x)).sort();
+    return d[0] || null;
+  },
+  maPredosly() {
+    const n = this.najstarsi(); if (!n || this.posun <= -this.MAX) return false;
+    return Tyzden.dni(undefined, this.posun - 1)[6].datum >= n;
+  },
+  stav(x, n) { return x.hotovo ? 'hotovo' : x['jeBudúci'] ? 'buduci' : x.jeDnes ? 'dnes' : !n || x.datum < n ? 'pred' : 'zmeskane'; },
+  zhrn(dni7, n) {
+    const prebehlo = dni7.filter(x => this.stav(x, n) !== 'buduci' && this.stav(x, n) !== 'pred'), a = Ang.data().dni || {};
+    return { hotovo: dni7.filter(x => x.hotovo).length, z: prebehlo.length, ang: dni7.filter(x => a[x.datum]).length };
+  },
+  html() {
+    const Ty = TY(), p = this.posun, dni7 = Ty.dni(undefined, p), a = Ang.data().dni || {}, s = seria(), nej = this.najstarsi(), z = this.zhrn(dni7, nej);
+    const okr = Ty.okruhy().find(o => o.id === (p === 0 ? Ty.vybrany() : Ty.okruhNa(dni7[0].datum))), d0 = dni7[0].datum, d6 = dni7[6].datum;
+    const rozsah = `${+d0.slice(8)}. ${d0.slice(5, 7) !== d6.slice(5, 7) ? `${+d0.slice(5, 7)}. ` : ''}– ${+d6.slice(8)}. ${+d6.slice(5, 7)}.`;
+    const nazovT = p === 0 ? 'Tento týždeň' : p === -1 ? 'Minulý týždeň' : `Pred ${-p} týždňami`;
+    const riadky = dni7.map((x, i) => {
+      const bud = x['jeBudúci'], t = byId(x.temaId), k = KAT[t.k], sv = this.stav(x, nej), aN = a[x.datum];
+      const popis = { hotovo: 'Hotovo', dnes: 'Dnes', zmeskane: 'Zmeškané', pred: 'Pred začiatkom', buduci: 'Čoskoro' }[sv];
+      const ikS = { hotovo: STAR(), dnes: IK.ohen, zmeskane: '', pred: '', buduci: IK.zamok }[sv];
+      const vnut = `<span class="tp-datum"><b>${esc(x.den)}</b><small>${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}.</small></span>
+        <span class="tp-ik" style="--c:${k.c}">${ikKat(t.k)}</span>
+        <span class="tp-telo"><b class="tp-tema">${bud ? 'Téma dňa sa ukáže v ten deň' : esc(t.t)}</b>
+          <span class="tp-stitky"><span class="tp-stitok s-${sv}">${ikS ? ii(ikS) : ''}${popis}</span>${bud || sv === 'pred' ? '' : `<span class="tp-stitok ${aN ? 's-hotovo' : 's-ang'}">${aN ? ii(IK.fajka) + ' Angličtina hotová' : 'Angličtina nebola'}</span>`}</span></span>
+        <span class="tp-sip">${bud ? '' : '›'}</span>`;
+      return bud ? `<div class="tp-den buduci" style="--i:${i}">${vnut}</div>`
+        : `<button class="tp-den ${sv}" style="--i:${i}" data-tp-den="${esc(x.datum)}" aria-label="${esc(x.den)} ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}., ${esc(t.t)}, ${popis}">${vnut}</button>`;
+    }).join('');
+    return `<div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Prehľad týždňa</h2><button class="ib" data-tp-zavri aria-label="Zavrieť">${IKO.zavriet}</button></div>
+      <div class="tp-nav"><button class="tp-krok" data-tp-krok="-1" ${this.maPredosly() ? '' : 'disabled'} aria-label="Predošlý týždeň">‹</button>
+        <div class="tp-nav-st"><b>${nazovT}</b><small>${rozsah}</small></div>
+        <button class="tp-krok" data-tp-krok="1" ${p < 0 ? '' : 'disabled'} aria-label="Nasledujúci týždeň">›</button></div>
+      <div class="tp-suctu" role="group" aria-label="Súčet týždňa">
+        <div class="tp-sucet"><span class="tp-cis">${z.hotovo}<small> z ${z.z}</small></span><span>Témy dňa hotové</span></div>
+        <div class="tp-sucet"><span class="tp-cis">${z.ang}<small> z ${z.z}</small></span><span>Angličtina</span></div>
+        <div class="tp-sucet ${s ? '' : 'zhas'}"><span class="tp-cis">${s}<small> ${dni(s)}</small></span><span>Séria po sebe</span></div></div>
+      <div class="tp-okruh"><span class="okruh-tl-ik">${okruhIk(okr)}</span><span>Okruh: <b>${okr ? esc(okr.nazov) : 'Zmiešaný'}</b></span>${p === 0 ? '<button class="btn ghost tp-zmen" data-tp-okruh>Zmeniť</button>' : ''}</div>
+      <div class="tp-dni">${riadky}</div>
+      ${nej || p ? '' : '<p class="muted tp-prazdno">Zatiaľ tu nie sú staršie týždne. Objavia sa, keď dokončíš prvé témy.</p>'}
+      <button class="btn wide ghost" data-tp-zavri>Zavrieť</button>`;
+  },
+  obnov() { const k = document.querySelector('.tyz-karta'); if (k) k.innerHTML = this.html(); },
+  ukaz() {
+    if (document.querySelector('.tyz-okno')) return;
+    this.posun = 0;
+    const el = document.createElement('div');
+    el.className = 'okruh-okno tyz-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Prehľad týždňa');
+    el.innerHTML = `<div class="okruh-karta tyz-karta">${this.html()}</div>`;
+    document.body.appendChild(el);
+    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-okno:not(.tyz-okno)')) zavri(); };
+    const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 250); };
+    document.addEventListener('keydown', kl);
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const kr = e.target.closest('[data-tp-krok]'), den = e.target.closest('[data-tp-den]');
+      if (kr && !kr.disabled) { Zvuk.play('tap'); this.posun = Math.min(0, this.posun + +kr.dataset.tpKrok); this.obnov(); return; }
+      if (den) { Zvuk.play('pop'); zavri(); Tyzden.otvor(den.dataset.tpDen); return; }
+      if (e.target.closest('[data-tp-okruh]')) { Zvuk.play('tap'); Okruh.ukaz(); return; }
+      if (e.target === el || e.target.closest('[data-tp-zavri]')) { Zvuk.play('tap'); zavri(); }
+    });
+    Zvuk.play('whoosh');
   },
 };
 const views = {
@@ -4722,6 +4825,7 @@ document.addEventListener('click', e => {
   if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
   if (d.auto) { Auto.ovladaj(d.auto); return; }
   if (RodicBrana.klik(b, d) || RodicPanel.klik(b, d)) return;
+  if (d.tyzPrehlad !== undefined) { Zvuk.play('tap'); TyzPrehlad.ukaz(); return; }
   if (d.okruhOtvor !== undefined) { Zvuk.play('tap'); Okruh.ukaz(); return; }
   if (d.tyzDen) { Zvuk.play('pop'); TY().otvor(d.tyzDen); return; }
   if (Misie.klik(b, d) || Ang.klik(b, d)) return;

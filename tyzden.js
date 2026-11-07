@@ -34,8 +34,9 @@ const Tyzden = {
     const pool = g ? v.filter(t => g.kat.includes(t.k)) : v, s = pool.length ? pool : v;
     return s[this._cislo(iso) % s.length].id;
   },
-  dni(dieta) {
+  dni(dieta, posun = 0) { // posun = počet týždňov dozadu (0 = tento týždeň, -1 = minulý)
     const dnes = this._dnes(), start = this._datum(this._pondelok(dnes)), nazvy = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
+    start.setDate(start.getDate() + 7 * Math.min(0, Math.trunc(+posun || 0)));
     return nazvy.map((den, i) => {
       const d = new Date(start); d.setDate(start.getDate() + i); const datum = key(d), temaId = this.temaDna(datum, dieta), bud = datum > dnes;
       return { datum, den, jeDnes: datum === dnes, jeBudúci: bud, jeBudici: bud, temaId, hotovo: st.done.includes(temaId) };

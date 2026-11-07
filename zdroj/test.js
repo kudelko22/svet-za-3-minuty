@@ -89,6 +89,27 @@ for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglicti
   Tyzden.nastav('zmiesany'); if (Tyzden.vybrany() !== 'zmiesany') throw new Error('tyzden: spat');
   const buduci = dni0.find(x => x.jeBudúci); if (buduci && Tyzden.otvor(buduci.datum)) throw new Error('tyzden: buduci otvoreny');
   if (!Tyzden.otvor(dnes) || !st.flow || st.flow.id !== temaDna().id) throw new Error('tyzden: otvor'); st.flow = null;
+  /* prehľad týždňa (4.1 C) */
+  const m1 = Tyzden.dni(undefined, -1), m0 = Tyzden.dni();
+  if (m1.length !== 7 || m1[0].den !== 'Po' || m1[6].den !== 'Ne' || m1.some(x => x.jeBudúci || x.jeDnes)) throw new Error('prehlad: minuly tyzden');
+  if (Tyzden._cislo(m0[0].datum) - Tyzden._cislo(m1[0].datum) !== 7) throw new Error('prehlad: posun o 7 dni');
+  if (Tyzden.dni(undefined, 5)[0].datum !== m0[0].datum || Tyzden.dni(undefined, 'x')[0].datum !== m0[0].datum) throw new Error('prehlad: kladny posun');
+  TyzPrehlad.posun = 0;
+  const h0 = TyzPrehlad.html();
+  if (h0.split('data-tp-den=').length - 1 !== m0.filter(x => !x.jeBudúci).length) throw new Error('prehlad: pocet tlacidiel dni');
+  if (!h0.includes('Tento týždeň') || !h0.includes('Séria po sebe') || !h0.includes('data-tp-okruh')) throw new Error('prehlad: obsah');
+  if (!/data-tp-krok="1" disabled/.test(h0)) throw new Error('prehlad: dopredu v tomto tyzdni');
+  if (/emoji|pre väčšie/i.test(h0)) throw new Error('prehlad: zakazany text');
+  const stav = TyzPrehlad.stav, ref = { hotovo: true, jeBudúci: false, jeDnes: true };
+  if (stav(ref) !== 'hotovo' || stav({ ...ref, hotovo: false }) !== 'dnes' || stav({ hotovo: false, jeBudúci: false, jeDnes: false, datum: '2026-01-02' }, '2026-01-01') !== 'zmeskane' || stav({ hotovo: false, jeBudúci: false, jeDnes: false, datum: '2026-01-02' }, '2026-01-03') !== 'pred' || stav({ hotovo: false, jeBudúci: false, jeDnes: false, datum: '2026-01-02' }, null) !== 'pred' || stav({ hotovo: false, jeBudúci: true }) !== 'buduci') throw new Error('prehlad: stav');
+  const z = TyzPrehlad.zhrn(m0, TyzPrehlad.najstarsi()); if (z.z > m0.filter(x => !x.jeBudúci).length || z.z < 1 || z.hotovo > z.z) throw new Error('prehlad: sucet');
+  // história: bez záznamov nie je predošlý týždeň, so záznamom o minulom týždni áno
+  const kedy0 = st.kedy; st.kedy = {};
+  if (TyzPrehlad.maPredosly()) throw new Error('prehlad: historia bez zaznamu');
+  st.kedy = { [m1[3].temaId]: m1[3].datum }; if (!TyzPrehlad.maPredosly()) throw new Error('prehlad: historia so zaznamom');
+  TyzPrehlad.posun = -1; const h1 = TyzPrehlad.html(); if (!h1.includes('Minulý týždeň') || h1.includes('data-tp-okruh') || !/data-tp-krok="1" >|data-tp-krok="1"  *aria/.test(h1.replace(/s+/g, ' '))) throw new Error('prehlad: minuly html');
+  if (TyzPrehlad.maPredosly()) throw new Error('prehlad: starsie nez zaznam');
+  TyzPrehlad.posun = 0; st.kedy = kedy0;
 }
 /* ANGLICTINA: samostatny bonus */
 {
