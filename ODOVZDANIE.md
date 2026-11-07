@@ -398,3 +398,11 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Zaregistrované v `HRY` (zoznam, výber podľa veku cez `len`), `OBR_HRY`, `rekordText`, `stavHry`, `vysledokHry`, klik `data-kv`. Body = „hneď správne z 6“ ako pri Koľko ich je?. Odznak „Majster hier“ počíta nové hry automaticky.
 - Test: nový blok `NOVE_HRY_41` v `test.js`, upravený riadok `nove hry`. Celý `node zdroj/test.js` trvá ~100 s.
 - Doplniť pri zlučovaní: `NOVINKY`, verzia, cache `sw.js`. Neoverené na telefóne.
+
+## 4.1 zlúčenie (session wonderful-haslett, nenasadené, nepushnuté, čaká na „nasaď 4.1“)
+- Zlúčených šesť vetiev v poradí 4.0.1, 4.0.2, 4.1 C, D, A, B (merge commity). Konflikty: `VERZIA_APPKY`/NOVINKY (4.0.1 vs 4.0.2), text „Začni/Začnite sériu“ vedľa tlačidla Prehľad týždňa (zostalo tlačidlo z C a „Začni“), `test.js` (D a A pridali bloky, ostali oba), `ODOVZDANIE.md` a `index.html` (vždy znovu `build`). Hry, Haptika a pás Týždeň sa v kóde nehádajú (každé má vlastné miesto, test prešiel).
+- Verzia: `VERZIA_APPKY` 56 / `4.1`, nová novinka v:56, 4.0.1 a 4.0.2 ostali ako v:55, tlačidlo „Ukáž mi novinky“ sa ukáže od v:55, cache `svet3-v19`.
+- Oprava navyše: `.hi > div { min-width: 0 }`, dlhé meno v hlavičke sa orezáva trojbodkou (predtým pretekalo).
+- Overené: `zdroj\spusti.cmd test` OK, emulátor (Domov s Týždňom hore, Prehľad týždňa, sprievodca, nové hry iný/tieň/poradie/rad pre 5–8 a slovo/poradie/rad pre 9–12, angličtina bez hornej lišty, meno max. 20 znakov, 360 px a tablet bez horizontálneho posuvu).
+- NEOVERENÉ: vibrácie len na skutočnom telefóne, hranie hier celé dokola, panel rodiča s prepínačom vibrácií (PIN), vizuálne blikanie len cez chybové hlásenia, nie očami.
+- Pozor: prehliadač v paneli držal starý cache (svet3-v17), pred skúškou zmazať service worker a `caches`.
