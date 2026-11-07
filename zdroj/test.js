@@ -211,7 +211,7 @@ if (new Set(ODZNAKY.map(o => o.id)).size !== ODZNAKY.length || ODZNAKY.length > 
   const zla = h.moznosti.find(x => x !== h.kola[0]); Hra.pocitaj(zla); if (!h.chyba || h.spravne !== 0) chyby.push("pocitaj chyba"); Hra.pocitaj(h.kola[0]); if (h.spravne !== 0 || h.odp !== h.kola[0]) chyby.push("pocitaj po chybe"); render(); Hra.zrus(); st.vek = v; }
 /* NOVE_HRY_41 */ for (const vek of ["mladsi", "starsi"]) { st.vek = vek; st.body = 2000;
   const ids = HRY_VID().map(x => x.id).filter(x => KV_HRY[x]);
-  if (vek === "mladsi" ? ids.join() !== "iny,tien,poradie,rad" : ids.join() !== "poradie,rad,slovo") chyby.push("nove hry podla veku " + vek + " " + ids);
+  if (vek === "mladsi" ? ids.join() !== "iny,tien,poradie" : ids.join() !== "poradie,slovo") chyby.push("nove hry podla veku " + vek + " " + ids);
   for (const id of ids) { Hra.start(id); const h = st.hra; if (!h || !h.kv || h.kola.length !== KV_KOL) { chyby.push("kv start " + id); continue; } render();
     for (const k of h.kola) { if (!k.sprav.length || !k.moz.length || new Set(k.moz.map(m => m.z)).size < (id === "slovo" ? 1 : k.moz.length)) chyby.push("kv kolo " + id);
       if (!k.sprav.every(z => k.moz.some(m => m.z === z))) chyby.push("kv sprav " + id);
@@ -226,7 +226,24 @@ if (new Set(ODZNAKY.map(o => o.id)).size !== ODZNAKY.length || ODZNAKY.length > 
     clearTimeout(h.dalsia);
     if (h.spravne !== KV_KOL - 1) chyby.push("kv spravne " + id + " " + h.spravne);
     Hra.zrus(); } }
+/* KRTKO_42 */ for (const vek of ["mladsi", "starsi"]) { st.vek = vek; st.body = 2000; Hra.start("krtko"); const h = st.hra;
+  if (!h || h.id !== "krtko" || h.beh || HRY.find(x => x.id === "krtko").cena !== 500) { chyby.push("krtko start " + vek); continue; } render();
+  if ((main.innerHTML.match(/data-krt=/g) || []).length !== 9 || !main.innerHTML.includes("data-hv-start") || !main.innerHTML.includes("krt-z")) chyby.push("krtko pole " + vek);
+  Hra.krtkoStart(); if (!h.beh) chyby.push("krtko beh");
+  h.hore[3] = { zlaty: false, to: null }; h.hore[5] = { zlaty: true, to: null }; const b = document.createElement("button");
+  Hra.krt(3, b); if (h.skore !== 1 || h.hore[3]) chyby.push("krtko tuk " + h.skore);
+  Hra.krt(5, b); if (h.skore !== 4 || h.hore[5]) chyby.push("krtko zlaty " + h.skore);
+  Hra.krt(3, b); if (h.skore !== 4) chyby.push("krtko prazdna diera");
+  if (rekordText("krtko", 1) !== "1 krtko" || rekordText("krtko", 3) !== "3 krtky" || rekordText("krtko", 7) !== "7 krtkov") chyby.push("krtko rekordText");
+  if (!OBR_HRY.krtko || OBR_HRY.rad || KV_HRY.rad || HRY.some(x => x.id === "rad")) chyby.push("krtko obrazok alebo stara hra rad");
+  Hra.zrus(); }
 st.vek = "mladsi";
+{ /* KONIEC_TEMY_42: obrazovka po teme je kratka, misia a jedno tlacidlo */
+  Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "domov" }); startTema(temaDna().id); const fl = st.flow;
+  fl.kroky.forEach((k, i) => { if (k.t === "q") fl.odp[i] = { v: 0, ok: true, p: "x" }; }); fl.i = fl.kroky.length - 2; dokonci(fl); fl.i++; renderFlow();
+  const w = main.innerHTML, nb = (w.match(/<button/g) || []).length;
+  if (!w.includes("win-krat") || !w.includes("data-mi-start") || !w.includes("data-zavriet") || w.includes("data-nahodna") !== Misie.splnenaDnes() || nb > 9) chyby.push("koniec temy " + nb);
+  st.flow = null; st.view = "domov"; render(); }
 Hra.start("hadaj"); { const h = st.hra; if (h.moznosti.length !== 3 || !h.moznosti.includes(h.kola[0]) || h.kola.length !== 8) chyby.push("hadaj moznosti"); Hra.hadaj(h.kola[0]); if (h.spravne !== 1) chyby.push("hadaj spravne"); }
 for (const mal of [true, false]) for (let i = 0; i < 400; i++) { const [t, v] = priklad(mal), x = eval(t.replace("−", "-").replace("×", "*")); if (x !== v || v < 0 || (mal && v > 10)) chyby.push("priklad " + t + " = " + v); }
 Hra.start("bubliny"); Hra.bublinyStart(); { const h = st.hra; if (!h.beh || !h.moznosti.includes(h.vysl) || new Set(h.moznosti).size !== h.moznosti.length) chyby.push("bubliny"); }
@@ -363,7 +380,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "domov" }); render();
   if (main.innerHTML.includes("data-plocha")) chyby.push("plocha karta na pocitaci bez instalacie");
   Plocha.udalost = { prompt() {}, userChoice: Promise.resolve({ outcome: "dismissed" }) }; render();
-  if (!main.innerHTML.includes("data-plocha") || !main.innerHTML.includes("tyzden")) chyby.push("plocha karta");
+  if (!main.innerHTML.includes("data-plocha") || !main.innerHTML.includes("plocha-karta")) chyby.push("plocha karta");
   Plocha.navod(); if (Plocha.udalost) chyby.push("plocha instalacia");
   st.view = "ja"; render(); if (!main.innerHTML.includes("data-plocha")) chyby.push("plocha v profile");
   st.faza = "prihlasenie"; render(); st.faza = "appka"; st.view = "domov"; render(); Uvod.skontroluj(); Uvod.skry();
@@ -424,7 +441,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   Sprievodca.start(SPR_NOVE); if (Sprievodca.kroky !== SPR_NOVE) chyby.push("sprievodca nove nezacal");
   for (let i = 0; i < 20 && Sprievodca.el; i++) { const k = SPR_NOVE[Sprievodca.i]; if (k.v && st.view !== k.v) chyby.push("sprievodca nove krok " + Sprievodca.i + " na " + st.view); Sprievodca.dalej(); }
   if (Sprievodca.el) chyby.push("sprievodca nove neskoncil");
-  for (const k of SPR_NOVE.filter(k => k.v)) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca nove ciel " + k.cil); }
+  for (const k of SPR_NOVE.filter(k => k.v && k.cil[0] === ".")) { st.view = k.v; if (!views[k.v]().includes(k.cil.slice(1))) chyby.push("sprievodca nove ciel " + k.cil); }
   Sprievodca.start(); if (Sprievodca.kroky !== SPR_KROKY) chyby.push("sprievodca pre dieta"); Sprievodca.zavri(true);
   st.view = "domov"; render(); }
 /* V35_TEST */
@@ -433,7 +450,10 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   for (let i = 0; i < STROM_STUPNE.length; i++) { const sv = stromSvg({ stupen: i, plody: STROM_STUPNE[i].plody, kos: 2, novy: 'kos', z: .8, sova: true }); if (!sv.startsWith("<svg") || (i && !sv.includes("os-koruna"))) chyby.push("strom svg " + i); }
   if (PLODY.length < Math.max(...STROM_STUPNE.map(x => x.plody))) chyby.push("malo miest na plody");
   Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "domov" }); render();
-  if (!main.innerHTML.includes("data-strom") || !main.innerHTML.includes("tyzden-strom")) chyby.push("karta strom");
+  if (main.innerHTML.includes("tyzden-karta")) chyby.push("karta Tento tyzden ma byt schovana");
+  { const sv = stromTlacidlo(true), sp = stromTlacidlo(false); if (!sv.includes("ts-i") || sp.includes("ts-i") || !sp.includes("ts-z") || !sv.startsWith("<svg") || !sp.startsWith("<svg")) chyby.push("strom v lište: stavy"); TyzStrom.maluj();
+    const kd = st.kedy; st.kedy = {}; if (TyzStrom.jeHotovo()) chyby.push("strom: nema byt hotovo"); st.kedy = { [temaDna().id]: key(new Date()) }; if (!TyzStrom.jeHotovo()) chyby.push("strom: ma byt hotovo"); st.kedy = kd;
+    const ok = TyzStrom.html(); if (!ok.includes("tyzden-strom") || !ok.includes("data-tyz-den") || !ok.includes("data-tyz-prehlad") || !ok.includes("data-okruh-otvor") || !ok.includes("data-tyzs-zavri")) chyby.push("okno tyzdna"); }
   const dniPred = st.dni; for (const n of [0, 1, 5, 20, 40]) { st.dni = Array.from({ length: n }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz(); Oslava.ukaz(() => {}); }
   if (!stromStavHtml(5, 2).includes("Ešte 2 dni")) chyby.push("strom stav text " + stromStavHtml(5, 2));
   st.dni = dniPred; render(); }
@@ -479,7 +499,8 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
 { Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi", view: "domov" }); render();
   const h = main.innerHTML;
   if (h.includes("Misia dňa") || !h.includes("Téma dňa")) throw new Error("domov: nazov Tema dna");
-  if ((h.match(/data-tyz-den=/g) || []).length < 1 || !h.includes("data-okruh-otvor") || !h.includes('data-go="objavuj"')) throw new Error("domov: tyzden/okruh/objavuj");
+  if (h.includes("data-tyz-den=") || h.includes("data-okruh-otvor") || !h.includes('data-go="objavuj"')) throw new Error("domov: tyzden ma byt schovany, objavuj ostava");
+  { const ok = TyzStrom.html(); if (!ok.includes("data-tyz-den=") || !ok.includes("data-okruh-otvor")) throw new Error("okno tyzdna"); TyzStrom.maluj(); }
   if (h.includes("data-kviz") || h.includes("data-skupina")) throw new Error("domov: kvizy a oblasti maju byt v Objavuj");
   st.view = "objavuj"; render(); const o = main.innerHTML;
   if (!o.includes("data-kviz") || !o.includes("data-nahodna") || (o.match(/data-skupina=/g) || []).length !== SKUPINY.length) throw new Error("objavuj: chyba kvizy alebo oblasti");
