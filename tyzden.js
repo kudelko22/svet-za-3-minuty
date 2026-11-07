@@ -46,6 +46,6 @@ const Tyzden = {
     if (!/^\d{4}-\d\d-\d\d$/.test(iso) || iso > this._dnes()) return false;
     const id = this.temaDna(iso);
     if (!byId(id)) return false;
-    startTema(id); return true;
+    startTema(id, iso < this._dnes() && !st.done.includes(id)); return true; // zmeškaný deň = len na precvičenie (bez hviezdičiek, série a stromu)
   },
 };

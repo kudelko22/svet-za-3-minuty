@@ -111,6 +111,44 @@ for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglicti
   if (TyzPrehlad.maPredosly()) throw new Error('prehlad: starsie nez zaznam');
   TyzPrehlad.posun = 0; st.kedy = kedy0;
 }
+/* PRECVICOVANIE (4.3): zmeskany den sa da zahrat, ale nic neudeli */
+{
+  const dnes = key(new Date()), iso = Tyzden.dni(undefined, -1)[3].datum, tid = Tyzden.temaDna(iso);
+  const doneP = [...st.done], dniP = [...st.dni], kedyP = { ...st.kedy }, bodyP = st.body, hnP = hnStupen(), serP = seria(), odzP = [...st.odznaky];
+  st.done = st.done.filter(x => x !== tid); S.set('done', st.done);
+  if (!Tyzden.otvor(iso) || !st.flow || !st.flow.precvic || st.flow.id !== tid) throw new Error('precvic: otvor zmeskaneho dna');
+  const f = st.flow; render();
+  if (!main.innerHTML.includes('Len na precvičenie')) throw new Error('precvic: stitok pred zaciatkom');
+  f.kroky.filter(k => k.t === 'q').forEach((k, i) => { f.i = f.kroky.indexOf(k); odpovedz(f, 0); });
+  if (Oslava.treba(f)) throw new Error('precvic: oslava');
+  dokonci(f); f.i = f.kroky.length - 1; render();
+  if (f.zisk !== 0 || !main.innerHTML.includes('Len na precvičenie') || !main.innerHTML.includes('Dobre si si to zopakoval') || main.innerHTML.includes('stars3') || main.innerHTML.includes('odmena-karta')) throw new Error('precvic: zaver');
+  if (st.body !== bodyP || st.done.includes(tid) || JSON.stringify(st.dni) !== JSON.stringify(dniP) || JSON.stringify(st.kedy) !== JSON.stringify(kedyP) || st.odznaky.length !== odzP.length) throw new Error('precvic: zmenil stav tema');
+  if (hnStupen() !== hnP || seria() !== serP) throw new Error('precvic: strom/seria');
+  if (Tyzden.dni(undefined, -1)[3].hotovo) throw new Error('precvic: den nie je zmeskany');
+  pripisBody(50); if (st.body !== bodyP) throw new Error('precvic: pripisBody pri precvicovani');
+  // auto (do auta) z precvicovacej temy
+  st.auto = null; st.flow = { ...f, i: 0, precvic: true }; Auto.start(tid); const a = st.auto; Auto.zrus();
+  if (!a || !a.precvic) throw new Error('precvic: auto nededi priznak');
+  const va = dokonciAuto(byId(tid)); st.auto = null;
+  if (va.zisk || st.body !== bodyP || st.done.includes(tid) || st.dni.length !== dniP.length) throw new Error('precvic: auto zmenil stav');
+  st.flow = null;
+  // anglictina zo zmeskaneho dna
+  const angP = JSON.stringify(Ang.data()); st.ang = Ang.nova(true, 0, '', Tyzden._cislo(iso), true);
+  if (!st.ang.precvic) throw new Error('precvic: ang priznak');
+  st.view = 'anglictina'; render(); if (!main.innerHTML.includes('Len na precvičenie')) throw new Error('precvic: ang stitok');
+  Ang.dokonci(); if (st.body !== bodyP || JSON.stringify(Ang.data()) !== angP || !st.ang.koniec) throw new Error('precvic: ang zmenila stav');
+  render(); if (!main.innerHTML.includes('Dobre si si to zopakoval')) throw new Error('precvic: ang zaver');
+  st.ang = null; st.view = 'domov';
+  // prehlad: tlacidlo precvicovania len pre minuly den bez anglictiny
+  TyzPrehlad.posun = -1; const hp = TyzPrehlad.html(); if (!hp.includes('data-tp-ang')) { /* bez zaznamu historie sa dni berú ako Pred zaciatkom */ } TyzPrehlad.posun = 0;
+  if (TyzPrehlad.html().includes('data-tp-ang="' + dnes + '"')) throw new Error('precvic: dnes nema byt precvicovanie');
+  // dnesny den sa spravuje ako doteraz
+  st.done = st.done.filter(x => x !== temaDna().id);
+  if (!Tyzden.otvor(dnes) || st.flow.precvic) throw new Error('precvic: dnes je bezny'); st.flow = null;
+  // vrat stav
+  st.done = doneP; S.set('done', st.done); st.dni = dniP; st.kedy = kedyP; st.body = bodyP;
+}
 /* ANGLICTINA: samostatny bonus */
 {
   if (SKUPINY.some(g => g.kat.includes("anglictina")) || TV().some(x => x.k === "anglictina")) throw new Error("ang: v beznych temach");

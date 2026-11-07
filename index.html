@@ -1257,6 +1257,9 @@ button.day:not(:disabled):not(.today) { color: var(--ink); }
 .tp-okruh { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 2.5px dashed var(--ink); border-radius: 18px; background: #fff; color: var(--ink); font: 700 1rem/1.2 var(--f-display); }
 .tp-okruh > span:nth-child(2) { flex: 1; } .tp-zmen { width: auto; padding: 8px 14px; min-height: 40px; }
 .tp-dni { display: grid; gap: 8px; }
+.tp-prec { min-height: 44px; font-size: .9rem; padding: 6px 12px; margin-top: -2px; }
+.precvic-pozn { margin: 6px 0 0; font-size: .95rem; color: var(--ink); opacity: .8; }
+.precvic-stitok { display: inline-flex; margin: 4px 0; }
 .tp-den { display: grid; grid-template-columns: 52px 46px minmax(0, 1fr) 14px; align-items: center; gap: 10px; width: 100%; min-height: 72px; padding: 8px 10px; border: 2.5px solid var(--ink); border-radius: 20px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); font-family: var(--f-display); text-align: left; animation: osIn .3s ease-out both; animation-delay: calc(var(--i) * 30ms); }
 button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .tp-den.hotovo { background: #FFF8D6; } .tp-den.dnes { background: #E3F4FF; outline: 3px solid var(--blue); outline-offset: 2px; }
@@ -1408,15 +1411,15 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=56"></script>
-<script src="obrazky.js?v=56"></script>
-<script src="misie.js?v=56"></script>
-<script src="tyzden.js?v=56"></script>
-<script src="anglictina.js?v=56"></script>
-<script src="rodic-brana.js?v=56"></script>
-<script src="rodic-panel.js?v=56"></script>
+<script src="temy.js?v=57"></script>
+<script src="obrazky.js?v=57"></script>
+<script src="misie.js?v=57"></script>
+<script src="tyzden.js?v=57"></script>
+<script src="anglictina.js?v=57"></script>
+<script src="rodic-brana.js?v=57"></script>
+<script src="rodic-panel.js?v=57"></script>
 <script>
-const VERZIA_APPKY = 56; const VERZIA_NAZOV = '4.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 57; const VERZIA_NAZOV = '4.3'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -1839,7 +1842,17 @@ const ANGT = () => T.filter(t => t.k === 'anglictina' && preVek(t));
 // väčšie deti: namiesto ľahkých nesprávnych odpovedí ťažšie (q.h); pôvodná otázka ostáva v povodna
 const naVek = q => st.vek === 'starsi' && q.h ? { ...q, a: [q.a[0], ...q.h.map(t => ['', t])], povodna: q } : q;
 const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
-const denCislo = () => { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); };
+/* Precvičovanie (4.3): vynechaný deň sa dá zahrať dodatočne, ale bez hviezdičiek, série, stromu a odmien.
+   Jeden príznak `precvic` na aktivite (téma, auto, angličtina); všetky miesta, čo niečo udeľujú, idú cez Precvic.teraz() / pripisBody(). */
+const Precvic = {
+  je: x => !!(x && x.precvic),
+  teraz: () => Precvic.je(st.flow) || Precvic.je(st.auto) || Precvic.je(st.ang) || Precvic.je(st.misia),
+  stitok: () => '<span class="chip tmavy precvic-stitok" style="--c:#CFE8FF">Len na precvičenie</span>',
+  prazdne: () => ({ zisk: 0, noveOdznaky: [], noveOdmeny: [], noveHry: [], precvic: true }),
+  poznamka: () => '<p class="precvic-pozn">Len na precvičenie: nedostaneš hviezdičky, séria ani strom sa nezmenia.</p>',
+};
+function pripisBody(n) { if (!n || Precvic.teraz()) return 0; st.body += n; S.set('body', st.body); return n; }
+const denCislo = (dt = new Date()) => { const d = dt; return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); };
 const temaDna = () => byId(Tyzden.temaDna(key(new Date())));
 
 function seria() {
@@ -2289,11 +2302,12 @@ function povedzAuto(text, hotovo) {
   } catch (e) { koniec(); }
 }
 function dokonciAuto(t) {
+  if (Precvic.je(st.auto)) return Precvic.prazdne();
   const qn = t.z.filter(pre).length, bodyPred = st.body, dnes = key(new Date()), prvy = !st.done.includes(t.id);
   const zisk = Math.min(t.id === temaDna().id ? Infinity : 10, prvy ? qn * 10 + 10 : st.kedy[t.id] === dnes ? 0 : qn + 1); // zopakovaná téma: desatina, raz za deň
   if (prvy) { st.done.push(t.id); S.set('done', st.done); }
   zapisPrebrate(t.id);
-  st.body += zisk; S.set('body', st.body);
+  pripisBody(zisk);
   if (!st.dni.includes(dnes)) { st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
   return { zisk, noveOdznaky: noveOdznaky('auto', { uci: true }), noveOdmeny: noveOdmeny(bodyPred, st.body), noveHry: noveHry(bodyPred, st.body) };
 }
@@ -2307,11 +2321,11 @@ const Auto = {
   start(tid) {
     const t = byId(tid);
     if (!t) return;
-    const spat = st.auto ? st.auto.spat : st.view;
+    const spat = st.auto ? st.auto.spat : st.view, precvic = !!(st.flow && st.flow.precvic);
     const zrusene = this.zrus();
     const { segs, kroky } = autoPlan(t);
     st.flow = null;
-    st.auto = { tid, segs, kroky, k: 0, stav: 'hovori', gen: 0, pokracovat: S.get('auto-pokracovat', true), vysledok: null, odpocet: null, spat };
+    st.auto = { tid, segs, kroky, k: 0, stav: 'hovori', gen: 0, pokracovat: S.get('auto-pokracovat', true), vysledok: null, odpocet: null, spat, precvic };
     if (!('speechSynthesis' in window)) { st.auto.stav = 'rucne'; toast('Tento telefón nevie čítať nahlas. Text si prečítajte a ťuknite na Ďalej.'); }
     else if (!hlasSk() && speechSynthesis.getVoices().length) toast('Slovenský hlas v telefóne chýba, číta sa iným hlasom.');
     drzObrazovku(true);
@@ -2353,11 +2367,11 @@ const Auto = {
     const bezHlasu = a.stav === 'rucne', v = a.vysledok, gen = ++a.gen;
     a.stav = 'koniec'; a.zostava = null; renderAuto();
     Zvuk.play('win'); FX.rain(80);
-    const veta = `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} bodov.` : '')
+    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} bodov.` : '')
       + v.noveOdznaky.map(o => ` Nový odznak: ${o.n}.`).join('') + v.noveOdmeny.map(r => ` Pre postavičku máš ${NAZVY_ODMIEN[r.kluc]}.`).join('') + (v.noveHry || []).map(x => ` Odomkla sa nová hra ${x.n}.`).join('')
-      + (a.pokracovat && a.dalsia ? ' O chvíľu pokračujeme ďalšou témou.' : '');
+      + (a.pokracovat && a.dalsia && !a.precvic ? ' O chvíľu pokračujeme ďalšou témou.' : '');
     const pokracuj = () => {
-      if (st.auto !== a || a.gen !== gen || !a.pokracovat || !a.dalsia) return;
+      if (st.auto !== a || a.gen !== gen || !a.pokracovat || !a.dalsia || a.precvic) return;
       a.zostava = 10; obnovKoniecAuto();
       a.odpocet = setInterval(() => {
         if (st.auto !== a || a.gen !== gen) { clearInterval(a.odpocet); return; }
@@ -2367,7 +2381,7 @@ const Auto = {
     };
     setTimeout(() => {
       if (st.auto !== a || a.gen !== gen) return;
-      const kratko = ['Výborne! Téma je prebratá.', ...(a.pokracovat && a.dalsia ? ['O chvíľu pokračujeme ďalšou témou.'] : [])];
+      const kratko = a.precvic ? ['Dobre si si to zopakoval.'] : ['Výborne! Téma je prebratá.', ...(a.pokracovat && a.dalsia && !a.precvic ? ['O chvíľu pokračujeme ďalšou témou.'] : [])];
       if (bezHlasu) pokracuj(); else povedzAuto(Nahravky.moze(kratko) ? kratko : veta, pokracuj);
     }, 1500);
   },
@@ -2425,17 +2439,18 @@ function obnovKoniecAuto() {
 }
 function renderAuto() {
   const a = st.auto, t = byId(a.tid);
-  const hore = `<div class="auto-top"><span class="chip auto-chip" style="--c:#FF9F1C">${IKO.auto}Režim do auta</span><button class="ib" data-auto="stop" aria-label="Ukončiť">${IKO.zavriet}</button></div>`;
+  const hore = `<div class="auto-top"><span class="chip auto-chip" style="--c:#FF9F1C">${IKO.auto}Režim do auta</span>${a.precvic ? Precvic.stitok() : ''}<button class="ib" data-auto="stop" aria-label="Ukončiť">${IKO.zavriet}</button></div>`;
   main.classList.add('anim');
   if (a.stav === 'koniec') {
     const v = a.vysledok, d = a.dalsia && byId(a.dalsia);
     main.innerHTML = `<div class="auto auto-koniec">${hore}
       <div class="win-hero"><div class="burst"></div><div class="win-owl">${owl('cheer')}</div></div>
-      <h1 class="auto-t">Výborne${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
-      <p class="auto-text">Téma „${esc(t.t)}“ je prebratá.</p>
+      ${a.precvic ? Precvic.stitok() : ''}
+      <h1 class="auto-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
+      <p class="auto-text">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
       ${v.zisk ? `<div class="earn">${STAR()} +${v.zisk} bodov</div>` : ''}
       ${odmenyHtml(v)}
-      ${d ? `<button class="btn wide cta" data-auto="dalsia">Ďalšia téma: ${esc(d.t)} →</button>
+      ${d && !a.precvic ? `<button class="btn wide cta" data-auto="dalsia">Ďalšia téma: ${esc(d.t)} →</button>
         <p class="auto-odpocet" id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek">10</b> s</p>` : ''}
       <button class="btn ghost wide" data-auto="stop">Domov</button></div>`;
     ocisluj(); return;
@@ -3451,8 +3466,9 @@ const TyzPrehlad = {
         <span class="tp-telo"><b class="tp-tema">${bud ? 'Téma dňa sa ukáže v ten deň' : esc(t.t)}</b>
           <span class="tp-stitky"><span class="tp-stitok s-${sv}">${ikS ? ii(ikS) : ''}${popis}</span>${bud || sv === 'pred' ? '' : `<span class="tp-stitok ${aN ? 's-hotovo' : 's-ang'}">${aN ? ii(IK.fajka) + ' Angličtina hotová' : 'Angličtina nebola'}</span>`}</span></span>
         <span class="tp-sip">${bud ? '' : '›'}</span>`;
+      const angTl = !bud && !x.jeDnes && sv !== 'pred' && !aN ? `<button class="btn ghost tp-prec" data-tp-ang="${esc(x.datum)}">Angličtina z ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}.: len na precvičenie</button>` : '';
       return bud ? `<div class="tp-den buduci" style="--i:${i}">${vnut}</div>`
-        : `<button class="tp-den ${sv}" style="--i:${i}" data-tp-den="${esc(x.datum)}" aria-label="${esc(x.den)} ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}., ${esc(t.t)}, ${popis}">${vnut}</button>`;
+        : `<button class="tp-den ${sv}" style="--i:${i}" data-tp-den="${esc(x.datum)}" aria-label="${esc(x.den)} ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}., ${esc(t.t)}, ${popis}${x.jeDnes || x.hotovo ? '' : ', len na precvičenie'}">${vnut}</button>${angTl}`;
     }).join('');
     return `<div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Prehľad týždňa</h2><button class="ib" data-tp-zavri aria-label="Zavrieť">${IKO.zavriet}</button></div>
       <div class="tp-nav"><button class="tp-krok" data-tp-krok="-1" ${this.maPredosly() ? '' : 'disabled'} aria-label="Predošlý týždeň">‹</button>
@@ -3482,6 +3498,8 @@ const TyzPrehlad = {
       e.stopPropagation();
       const kr = e.target.closest('[data-tp-krok]'), den = e.target.closest('[data-tp-den]');
       if (kr && !kr.disabled) { Zvuk.play('tap'); this.posun = Math.min(0, this.posun + +kr.dataset.tpKrok); this.obnov(); return; }
+      const an = e.target.closest('[data-tp-ang]');
+      if (an) { zavri(); Ang.klik(an, { angPrec: an.dataset.tpAng }); return; }
       if (den) { Zvuk.play('pop'); zavri(); Tyzden.otvor(den.dataset.tpDen); return; }
       if (e.target.closest('[data-tp-okruh]')) { Zvuk.play('tap'); Okruh.ukaz(); return; }
       if (e.target === el || e.target.closest('[data-tp-zavri]')) { Zvuk.play('tap'); zavri(); }
@@ -3762,10 +3780,10 @@ function fillTemy() {
 }
 
 /* Téma a kvíz krok za krokom */
-function startTema(id) {
+function startTema(id, precvic = false) {
   const t = byId(id);
   const qs = t.z.filter(pre).map(naVek).map(q => ({ t: 'q', q, poradie: mix(q.a.length), tid: id }));
-  st.flow = { typ: 'tema', id, i: 0, odp: {}, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
+  st.flow = { typ: 'tema', id, i: 0, odp: {}, precvic: !!precvic, from: st.view, kroky: [{ t: 'uvod' }, { t: 'priklad' }, { t: 'rozhovor' }, ...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
 }
 // Kvízy (verzia 2.5): životy a prestávka po každom kvíze, aj keď je všetko správne (aby to nebolo príliš ľahké)
@@ -3813,8 +3831,8 @@ function krok(f, k) {
   if (k.t === 'uvod') {
     const kat = KAT[t.k];
     return `<div class="step"><div class="frame">${svg(t)}</div>
-      <div><span class="chip" style="--c:${kat.c}">${ii(ikKat(t.k))} ${kat.nazov}</span></div>
-      <h1 class="h1">${t.t}</h1>
+      <div><span class="chip" style="--c:${kat.c}">${ii(ikKat(t.k))} ${kat.nazov}</span>${f.precvic ? ' ' + Precvic.stitok() : ''}</div>
+      ${f.precvic ? Precvic.poznamka() : ''}<h1 class="h1">${t.t}</h1>
       <div class="say"><div class="say-head"><button class="say-owl" data-sova aria-label="Sovička Múdra">${owl('hi')}</button><span>Povedzte dieťaťu</span>${citaj('uvod')}</div>
         <div class="bubble"><p>${t.m}</p></div></div>
       <button class="btn auto-mini" data-auto-start="${t.id}">${IKO.auto}Celú tému nahlas (do auta)</button>
@@ -3842,14 +3860,20 @@ function krok(f, k) {
   // koniec
   const qn = f.kroky.filter(x => x.t === 'q').length, c = Object.values(f.odp).filter(o => o.ok).length;
   if (f.zle) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
-      <h1 class="h1">Nevadí${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
-      <p class="muted">Tentoraz nevyšla ani jedna odpoveď. Strom múdrosti narastie, keď otázky skúsiš ešte raz.</p>
+      ${f.precvic ? Precvic.stitok() : ''}<h1 class="h1">Nevadí${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
+      <p class="muted">${f.precvic ? 'Tentoraz nevyšla ani jedna odpoveď. Je to len na precvičenie, skús otázky ešte raz.' : 'Tentoraz nevyšla ani jedna odpoveď. Strom múdrosti narastie, keď otázky skúsiš ešte raz.'}</p>
       <div class="win-acts"><button class="btn wide cta" data-znova>↻ Nevadí, ale skús to ešte raz</button>
         <button class="btn blue wide" data-znova="tema">Prečítať tému ešte raz</button><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
   if (f.prehra) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
       <h1 class="h1">Došli životy!</h1>
       <div class="zivoty velke">${[...Array(f.maxZivoty).keys()].map(() => `<i class="strata">${IK.srdcePrazdne}</i>`).join('')}</div>
       <p class="muted">${KVIZY[druhKvizu(f)].koniec}, tentoraz bez bodov. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</p>
+      <div class="win-acts"><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
+  if (f.precvic) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('happy')}</button></div>
+      ${Precvic.stitok()}
+      <h1 class="h1">Dobre si si to zopakoval${st.meno ? ', ' + esc(st.meno) : ''}.</h1>
+      <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
+      <div class="earn plain">Tento deň ti ostáva vynechaný, ale tému už poznáš. Hviezdičky, séria a strom sa nezmenili.</div>
       <div class="win-acts"><button class="btn ghost wide" data-zavriet>Späť domov</button></div></div>`;
   const hv = c === qn ? 3 : c * 2 >= qn ? 2 : c ? 1 : 0;
   const rel = t ? t.r.map(byId).filter(Boolean) : [];
@@ -3897,7 +3921,7 @@ function renderFlow(anim = true) {
     main.classList.add('flow-dalej');
   } else { main.classList.remove('flow-dalej'); main.innerHTML = html; }
   ocisluj();
-  if (k.t === 'koniec' && anim && !f.prehra && !f.zle) oslava(f);
+  if (k.t === 'koniec' && anim && !f.prehra && !f.zle && !f.precvic) oslava(f);
 }
 
 function oslava(f) {
@@ -4020,7 +4044,7 @@ const tyzdenStromu = dnes => {
 const Oslava = {
   kluc: () => 'oslava-' + (st.dietaId || 'x'),
   // volá sa pred dokonci(): dnes ešte nič hotové = séria sa práve predĺži
-  treba: f => !!f && Object.values(f.odp || {}).some(o => o.ok) && !st.dni.includes(key(new Date())) && S.get(Oslava.kluc(), '') !== key(new Date()),
+  treba: f => !!f && !f.precvic && Object.values(f.odp || {}).some(o => o.ok) && !st.dni.includes(key(new Date())) && S.get(Oslava.kluc(), '') !== key(new Date()),
   // volá sa po dokonci(): dnešný deň je už zapísaný
   ukaz(dalej) {
     const dnes = key(new Date()); S.set(this.kluc(), dnes);
@@ -4128,9 +4152,10 @@ const Misie = {
   dokonci() {
     const q = st.misia, m = q.m, dnes = key(new Date()), d = this.data(), pred = st.body;
     let zisk = 0;
-    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; d.dnesMisia = m.id; st.body += zisk; S.set('body', st.body); }
-    if (!q.nahliad) { d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d); }
-    const odznaky = noveOdznaky('misia');
+    const bez = q.nahliad || q.precvic;
+    if (!bez && d.bodyDen !== dnes) { zisk = this.body(m, q.chyby); d.bodyDen = dnes; d.dnesMisia = m.id; pripisBody(zisk); }
+    if (!bez) { d.hotove[m.id] = { kedy: dnes, t: m.t }; S.set(this.kluc(), d); }
+    const odznaky = bez ? [] : noveOdznaky('misia');
     q.koniec = { zisk, noveOdznaky: odznaky, noveOdmeny: noveOdmeny(pred, st.body), noveHry: noveHry(pred, st.body) };
     Zvuk.play('win'); vibruj([40, 30, 40]); FX.burst(innerWidth / 2, innerHeight / 3, 30, ['star', 'dot']);
     paintHead(); render(); scrollTo(0, 0);
@@ -4303,13 +4328,16 @@ const Ang = {
     const vt = (i, m) => vs.length >= 2 ? veta(v(i), m) : slovo(w(4 + i), i === 0);
     return [slovo(w(0), true), slovo(w(1), false), vt(0, den % 2 === 0), slovo(w(2), (den + 1) % 2 === 0), vt(1, den % 2 === 1), slovo(w(3), false)];
   },
-  nova(nahliad, extra = 0, skup = '') { return { skup, qs: this.otazky(denCislo(), extra, skup), i: 0, zle: [], chyby: 0, spravne: false, koniec: null, nahliad: !!nahliad }; },
+  nova(nahliad, extra = 0, skup = '', den = null, precvic = false) { return { skup, qs: this.otazky(den == null ? denCislo() : den, extra, skup), i: 0, zle: [], chyby: 0, spravne: false, koniec: null, nahliad: !!nahliad || !!precvic, precvic: !!precvic }; },
   body: ch => ch > 2 ? 5 : 8,
   dokonci() {
     const q = st.ang, dnes = key(new Date()), d = this.data(), pred = st.body;
     let zisk = 0;
+    if (q.precvic) {
+      q.koniec = Precvic.prazdne(); Zvuk.play('ok'); render(); scrollTo(0, 0); return;
+    }
     if (q.skup) { d.skup = d.skup || {}; const z = d.skup[q.skup] || { n: 0 }; d.skup[q.skup] = { n: z.n + 1, ch: q.chyby }; S.set(this.kluc(), d); }
-    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(q.chyby); d.bodyDen = dnes; st.body += zisk; S.set('body', st.body); }
+    if (!q.nahliad && d.bodyDen !== dnes) { zisk = this.body(q.chyby); d.bodyDen = dnes; pripisBody(zisk); }
     if (!q.nahliad) { d.dni[dnes] = { ch: q.chyby }; if (!q.chyby) d.bezChyby = (d.bezChyby || 0) + 1; S.set(this.kluc(), d); }
     const odznaky = noveOdznaky('anglictina');
     q.koniec = { zisk, noveOdznaky: odznaky, noveOdmeny: noveOdmeny(pred, st.body), noveHry: noveHry(pred, st.body) };
@@ -4350,10 +4378,10 @@ const Ang = {
     const o = q.qs[q.i], k = q.koniec;
     const pokrok = `<div class="ang-pokrok" aria-label="Otázka ${q.i + 1} z ${q.qs.length}">${q.qs.map((_, i) => `<i class="${i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''}"></i>`).join('')}</div>`;
     const top = `<div class="hra-top"><button class="ib" data-ang-spat aria-label="Späť na angličtinu">${IKO.zavriet}</button><b class="hra-nazov">${q.skup ? esc(ANG_SKUPINY[q.skup]) : 'Kvízik z angličtiny'}</b></div>`;
-    if (k) return `${top}<section class="card misia-pribeh ang-koniec" style="text-align:center"><b class="misia-typ">Hotovo!</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} ${q.skup ? 'Môžeš si ho zahrať znova, otázky sa menia.' : 'Zajtra príde nový kvízik.'}</p></section>
-      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ii(STAR())}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
+    if (k) return `${top}<section class="card misia-pribeh ang-koniec" style="text-align:center">${q.precvic ? '<div>' + Precvic.stitok() + '</div>' : ''}<b class="misia-typ">${q.precvic ? 'Dobre si si to zopakoval' : 'Hotovo!'}</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} ${q.precvic ? '' : q.skup ? 'Môžeš si ho zahrať znova, otázky sa menia.' : 'Zajtra príde nový kvízik.'}</p></section>
+      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ii(STAR())}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
       ${odmenyHtml(k)}<button class="btn wide cta" data-ang-spat>Späť na angličtinu</button>`;
-    return `${top}${pokrok}${q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
+    return `${top}${pokrok}${q.precvic ? Precvic.stitok() + Precvic.poznamka() : q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
       <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
       <div class="ang-rea">${this.reakcia(q)}</div>
       <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:#FFE0EC"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
@@ -4393,6 +4421,7 @@ const Ang = {
     const q = st.ang;
     if (d.angStart !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'anglictina'; const hot = this.splnenaDnes(); st.ang = this.nova(hot, hot ? (Math.floor(Date.now() / 6e4) % 50) + 1 : 0); render(); scrollTo(0, 0); return true; }
     if (d.angSkup !== undefined) { Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'anglictina'; const z = (this.data().skup || {})[d.angSkup]; st.ang = this.nova(true, z ? z.n : 0, d.angSkup); render(); scrollTo(0, 0); return true; }
+    if (d.angPrec !== undefined) { const cislo = Tyzden._cislo(d.angPrec); if (!/^\d{4}-\d\d-\d\d$/.test(d.angPrec) || d.angPrec >= key(new Date())) return true; Zvuk.play('start'); Hlas.stop(); st.flow = null; st.view = 'anglictina'; st.ang = this.nova(true, 0, '', cislo, true); render(); scrollTo(0, 0); return true; }
     if (d.angSpat !== undefined) { Zvuk.play('whoosh'); st.ang = null; render(); scrollTo(0, 0); return true; }
     if (!q || q.koniec) return false;
     if (d.angVol !== undefined) {
@@ -4406,6 +4435,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 57, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
   { v: 56, obr: () => OBR_HRY.pocitaj, n: 'Verzia 4.1: nové hry a prehľad týždňa', p: 'Päť nových hier: Ktorý je iný?, Nájdi tieň, Zoraď čísla, Čo bude ďalej? a Poskladaj slovo. Na karte Tento týždeň je tlačidlo Prehľad týždňa s dňami, súčtami a históriou. Dlhé mená sa už nepretekajú. Rodič môže v paneli zapnúť alebo vypnúť vibrácie.' },
   { v: 55, obr: () => IK_KAT.anglictina, n: 'Verzia 4.0.1: opravy', p: 'Karta Tento týždeň je na Domove znova úplne hore. Počas angličtiny nič nezavadzia hore ani dole a po dohraní je okno prehľadnejšie. Opravené sú aj drobné chyby v textoch.' },
   { v: 55, obr: () => owl('cheer'), n: 'Nový sprievodca', p: 'Sovička ukáže aj Tému dňa, týždeň s okruhom, kvízik z angličtiny, strom múdrosti, hry a priateľov. Krátku prehliadku noviniek si môžeš pustiť hneď, celého sprievodcu nájdeš v karte Ja.' },
@@ -4890,6 +4920,7 @@ const Uvod = {
   skontroluj() { if (this.bolo) return; const t = performance.now(); if (st.faza === 'nacitava' && t < 3500) return; this.bolo = true; setTimeout(() => this.skry(), Math.max(0, 1100 - t)); },
 };
 function dokonci(f) {
+  if (f.precvic) { f.zisk = 0; Object.assign(f, Precvic.prazdne()); return; }
   const c = Object.values(f.odp).filter(o => o.ok).length, dnes = key(new Date()), bodyPred = st.body;
   const qn = f.kroky.filter(x => x.t === 'q').length;
   if (f.typ === 'tema') {
@@ -4909,7 +4940,7 @@ function dokonci(f) {
     S.set(kl, dnes);
     kvizZamkni(druhKvizu(f));
   }
-  st.body += f.zisk; S.set('body', st.body);
+  pripisBody(f.zisk);
   // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
   if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
   f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
@@ -5200,7 +5231,7 @@ document.addEventListener('click', e => {
     zapisChybu(f.kroky[f.i], ok);
     renderFlow(false);
     if (ok) {
-      Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); Haptika.hraj('hotovo');
+      Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); Haptika.hraj(f.precvic ? 'spravne' : 'hotovo');
       FX.burst(x, y, 30); letiText(x, y - 20, 'Správne!'); zablesk('rgb(47 191 113 / .35)');
     } else {
       Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');
