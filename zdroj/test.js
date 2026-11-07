@@ -188,6 +188,24 @@ if (new Set(ODZNAKY.map(o => o.id)).size !== ODZNAKY.length || ODZNAKY.length > 
 /* HRY_PRE_MALE */ { const v = st.vek; st.vek = "mladsi"; if (HRY_VID().some(x => x.id === "bubliny") || !HRY_VID().some(x => x.id === "pocitaj")) chyby.push("hry malych"); st.vek = "starsi"; if (!HRY_VID().some(x => x.id === "bubliny") || HRY_VID().some(x => x.id === "pocitaj")) chyby.push("hry starsich"); st.vek = "mladsi";
   st.body = 1000; Hra.start("pocitaj"); const h = st.hra; if (!h || h.kola.length !== 5 || h.moznosti.length !== 3 || !h.moznosti.includes(h.kola[0])) chyby.push("pocitaj start");
   const zla = h.moznosti.find(x => x !== h.kola[0]); Hra.pocitaj(zla); if (!h.chyba || h.spravne !== 0) chyby.push("pocitaj chyba"); Hra.pocitaj(h.kola[0]); if (h.spravne !== 0 || h.odp !== h.kola[0]) chyby.push("pocitaj po chybe"); render(); Hra.zrus(); st.vek = v; }
+/* NOVE_HRY_41 */ for (const vek of ["mladsi", "starsi"]) { st.vek = vek; st.body = 2000;
+  const ids = HRY_VID().map(x => x.id).filter(x => KV_HRY[x]);
+  if (vek === "mladsi" ? ids.join() !== "iny,tien,poradie,rad" : ids.join() !== "poradie,rad,slovo") chyby.push("nove hry podla veku " + vek + " " + ids);
+  for (const id of ids) { Hra.start(id); const h = st.hra; if (!h || !h.kv || h.kola.length !== KV_KOL) { chyby.push("kv start " + id); continue; } render();
+    for (const k of h.kola) { if (!k.sprav.length || !k.moz.length || new Set(k.moz.map(m => m.z)).size < (id === "slovo" ? 1 : k.moz.length)) chyby.push("kv kolo " + id);
+      if (!k.sprav.every(z => k.moz.some(m => m.z === z))) chyby.push("kv sprav " + id);
+      if (id === "poradie") { const c = k.moz.map(m => +m.z), up = k.sprav[0] < k.sprav[1]; if (k.sprav.some((x, i) => i && (up ? x < k.sprav[i - 1] : x > k.sprav[i - 1]))) chyby.push("poradie usporiadanie"); }
+      if (id === "slovo" && (k.sprav.join("") === k.moz.map(m => m.z).join("") )) chyby.push("slovo premiesane"); }
+    const k0 = h.kola[0], zle = k0.sloty ? k0.moz.findIndex(m => m.z !== k0.sprav[0]) : k0.moz.findIndex(m => m.z !== k0.sprav[0]);
+    if (zle >= 0) { Hra.kv(zle); if (!h.chyba) chyby.push("kv chyba " + id); }
+    for (const z of k0.sprav) Hra.kv(k0.moz.findIndex((m, j) => m.z === z && !h.vzate.includes(j)));
+    if (!h.odp || h.spravne !== 0) chyby.push("kv po chybe " + id);
+    for (let i = 1; i < h.kola.length; i++) { clearTimeout(h.dalsia); h.i = i; h.odp = false; h.krok = 0; h.vzate = []; h.zle = []; h.chyba = false; const k = h.kola[i];
+      for (const z of k.sprav) Hra.kv(k.moz.findIndex((m, j) => m.z === z && !h.vzate.includes(j))); }
+    clearTimeout(h.dalsia);
+    if (h.spravne !== KV_KOL - 1) chyby.push("kv spravne " + id + " " + h.spravne);
+    Hra.zrus(); } }
+st.vek = "mladsi";
 Hra.start("hadaj"); { const h = st.hra; if (h.moznosti.length !== 3 || !h.moznosti.includes(h.kola[0]) || h.kola.length !== 8) chyby.push("hadaj moznosti"); Hra.hadaj(h.kola[0]); if (h.spravne !== 1) chyby.push("hadaj spravne"); }
 for (const mal of [true, false]) for (let i = 0; i < 400; i++) { const [t, v] = priklad(mal), x = eval(t.replace("−", "-").replace("×", "*")); if (x !== v || v < 0 || (mal && v > 10)) chyby.push("priklad " + t + " = " + v); }
 Hra.start("bubliny"); Hra.bublinyStart(); { const h = st.hra; if (!h.beh || !h.moznosti.includes(h.vysl) || new Set(h.moznosti).size !== h.moznosti.length) chyby.push("bubliny"); }
@@ -196,7 +214,7 @@ if (st.chyby[0] !== "ruky:1" || !prehladRodica().includes("Kedy si umývame ruky
 zapisChybu({ tid: "ruky", q: byId("ruky").z[1] }, true); if (st.chyby.length) chyby.push("chyba sa nezmazala");
 Hra.start("opakuj"); { const h = st.hra; h.seq = [2]; h.faza = "hra"; h.krok = 0; Hra.pad(2); if (h.faza !== "cakaj") chyby.push("opakuj dobre"); h.seq = [1, 3]; h.faza = "hra"; h.krok = 0; Hra.pad(0); if (h.faza !== "koniec") chyby.push("opakuj zle"); }
 Hra.start("hviezdy"); Hra.zrus(); if (st.hra) chyby.push("hra zrus");
-if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,pocitaj,hadaj,sova,hviezdy") chyby.push("nove hry");
+if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,pocitaj,iny,hadaj,tien,sova,hviezdy") chyby.push("nove hry");
 if (!odmenyHtml({ noveHry: noveHry(140, 160) }).includes("Pexeso")) chyby.push("odmena hra");
 st.view = "ja"; render(); st.view = "domov"; render();
 /* TAZKE_TEST */
