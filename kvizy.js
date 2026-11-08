@@ -116,7 +116,7 @@ const KVIZ_SADY = [
     { v: 's', q: "Čo robí Wi-Fi?", a: [['', "Pripája zariadenia na internet bez kábla"], ['', "Nabíja telefón"], ['', "Chladí počítač"], ['', "Čistí obrazovku"]], w: "Wi-Fi používa rádiové vlny." },
     { v: 's', q: "Čo je e-mail?", a: [['', "Elektronická pošta"], ['', "Počítačová hra"], ['', "Mapa"], ['', "Telefón"]], w: "E-mailom sa posielajú správy cez internet." },
     { v: 's', q: "Čo je procesor?", a: [['', "Mozog počítača"], ['', "Obrazovka"], ['', "Klávesnica"], ['', "Reproduktor"]], w: "Procesor počíta a riadi všetko ostatné." },
-    { v: 's', q: "Akou jednotkou meriame veľkosť súboru v počítači?", a: [['', "Bajt"], ['', "Meter"], ['', "Kilogram"], ['', "Watt"]], w: "Bajt je najmenšia bežná jednotka údajov." },
+    { v: 's', q: "Akou jednotkou meriame veľkosť súboru v počítači?", a: [['', "Bajt"], ['', "Meter"], ['', "Kilogram"], ['', "Watt"]], w: "Bajt je základná jednotka údajov v počítači." },
     { v: 's', q: "Čo znamená, že údaje sú v cloude?", a: [['', "Sú uložené na serveroch na internete"], ['', "Sú v mraku na oblohe"], ['', "Sú v pamäti telefónu"], ['', "Sú vymazané"]], w: "Cloud je úložisko na vzdialených počítačoch." },
   ] },
   { id: "ks14", n: "Klíma a odpad", tid: "klima", u: 2, z: [
@@ -152,7 +152,7 @@ const KVIZ_SADY = [
     { q: "Čo je čierna diera?", a: [['', "Miesto s tak silnou gravitáciou, že z neho neunikne ani svetlo"], ['', "Veľký kráter na Mesiaci"], ['', "Hviezda bez svetla"], ['', "Prázdny priestor bez hmoty"]], w: "Čierna diera vzniká zrútením veľkej hviezdy." },
     { q: "V ktorom súhvezdí je Polárka?", a: [['', "Malý voz"], ['', "Orión"], ['', "Lev"], ['', "Škorpión"]], w: "Polárka ukazuje sever." },
     { q: "Aká je približná teplota povrchu Slnka?", a: [['', "Asi 5 500 °C"], ['', "1 000 °C"], ['', "100 000 °C"], ['', "50 °C"]], w: "V jadre Slnka je až 15 miliónov stupňov." },
-    { q: "Ktorá planéta má najviac známych mesiacov?", a: [['', "Saturn"], ['', "Jupiter"], ['', "Mars"], ['', "Zem"]], w: "Saturn má viac než sto mesiacov." },
+    { q: "Ktorá planéta má najviac známych mesiacov?", a: [['', "Saturn"], ['', "Jupiter"], ['', "Mars"], ['', "Zem"]], w: "Saturn má viac než dvesto známych mesiacov." },
     { q: "Čo je kométa?", a: [['', "Teleso z ľadu a prachu s chvostom"], ['', "Veľká planéta"], ['', "Hviezda"], ['', "Družica"]], w: "Chvost kométy vzniká, keď sa ľad pri Slnku vyparuje." },
   ] },
   { id: "ks18", n: "Veľkí objavitelia", tid: "objavitelia", u: 3, z: [

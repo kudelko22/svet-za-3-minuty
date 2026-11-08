@@ -30,7 +30,7 @@ const MISIE = [
   { id: 'd5', t: 'detektiv', u: 3, n: 'Kto klame?', pribeh: 'Doma sa rozbila váza. Kto ju rozbil, klame. Ostatní hovoria pravdu.',
     ind: ['Ema hovorí: „Vázu rozbil Filip.“', 'Filip hovorí: „Ja som to nebol.“', 'Gabo hovorí: „Ema klame.“', 'Pravidlo: klame iba ten, kto vázu rozbil.'],
     q: 'Kto rozbil vázu?', o: ['Ema', 'Filip', 'Gabo'], s: 0,
-    vys: 'Skús Emu: jej slová sú nepravdivé (Filip to nebol), Filip aj Gabo hovoria pravdu. Všetko sedí. Keby to bol Filip, Gabo by klamal, ale on nič nerozbil. Keby to bol Gabo, Ema by hovorila pravdu a vinný by bol aj Filip.',
+    vys: 'Skús Emu: jej slová sú nepravdivé (Filip to nebol), Filip aj Gabo hovoria pravdu. Všetko sedí. Keby to bol Filip, Gabo by klamal, ale on nič nerozbil. Keby to bol Gabo, Ema by klamala, hoci vázu nerozbila. To nejde.',
     fakt: 'Takýmto hádankám sa hovorí logické hlavolamy. Skúšaš pravdivosť každého tvrdenia a hľadáš, kedy to celé sedí.', rodic: 'Skúste: Vyskúšajte spolu každú možnosť po jednej. Čo sa pokazí, keď je vinný Filip?' },
   { id: 'd6', t: 'detektiv', u: 3, n: 'Poradie pri dverách', pribeh: 'Alica, Boris, Cecília a Dano prišli domov jeden po druhom. Zisti ich poradie.',
     ind: ['Alica nebola posledná.', 'Dano prišiel skôr ako Boris.', 'Boris prišiel skôr ako Cecília.', 'Alica prišla skôr ako Dano.'],
@@ -86,7 +86,7 @@ const MISIE = [
     fakt: 'Blesk je päťkrát teplejší ako povrch Slnka.', rodic: 'Opýtajte sa: Prečo si ľudia mýlia také mýty? Ktoré iné „pravidlá“ ste počuli a nikdy ich neoverili?' },
   { id: 'p4', t: 'pravdy', u: 2, n: 'Dejiny a vynálezy',
     v: [{ t: 'Kleopatra žila bližšie k nám ako k stavbe Veľkej pyramídy.', ok: true, e: 'Pravda. Pyramídu stavali asi 2 500 rokov pred Kleopatrou, ale od nej do dneška je to asi 2 000 rokov.' },
-        { t: 'Vikingovia nosili prilby s rohmi.', ok: false, e: 'Lož. Rohaté prilby si vymyslela až dobová divadelná móda 19. storočia.' },
+        { t: 'Kolumbus ako prvý zistil, že Zem je guľatá.', ok: false, e: 'Lož. Že je Zem guľatá, vedeli Gréci už stáročia pred ním.' },
         { t: 'Prvý praktický padák vynašiel Slovák Štefan Banič.', ok: true, e: 'Pravda. Banič svoj padák predviedol v roku 1913 a získal naň patent.' }],
     fakt: 'Banič padák vymyslel, aby zachraňoval životy pilotov.', rodic: 'Opýtajte sa: Ako zistíme, či sa niečo naozaj stalo? Skúste spolu nájsť nejaký dôkaz na internete.' },
   { id: 'p5', t: 'pravdy', u: 3, n: 'Prekvapivá veda',
@@ -271,7 +271,7 @@ const MISIE = [
   { id: 'p12', t: 'pravdy', u: 2, n: 'Počítače a svet', v: [
       { t: 'Prvý program pre stroj napísala žena, Ada Lovelace.', ok: true, e: 'Pravda. Pracovala v 19. storočí s Charlesom Babbagom.' },
       { t: 'Internet a web sú to isté.', ok: false, e: 'Lož. Internet je sieť prepojených počítačov, web je len jedna z vecí, ktoré cez ňu bežia.' },
-      { t: 'Prvé mobilné telefóny vážili skoro kilogram.', ok: true, e: 'Pravda. Prvý prenosný mobil mal necelý kilogram a batériu na polhodinu hovoru.' }],
+      { t: 'Prvé mobilné telefóny vážili asi kilogram.', ok: true, e: 'Pravda. Prvý prenosný mobil vážil okolo kilogramu a mal batériu na asi pol hodiny hovoru.' }],
     fakt: 'Elektronickú poštu používajú ľudia od roku 1971, dávno pred webom.', rodic: 'Opýtajte sa: Aký je rozdiel medzi webom, e-mailom a hrou? Čo všetko beží cez internet?' },
   { id: 'p13', t: 'pravdy', u: 3, n: 'Divné pravdy a mýty', v: [
       { t: 'Banány sú veľmi slabo rádioaktívne.', ok: true, e: 'Pravda. Obsahujú draslík-40, ale množstvo je neškodne malé.' },
@@ -353,7 +353,7 @@ const MISIE = [
   { id: 'v13', t: 'vyzva', u: 3, n: 'Koľko vody minieme', pribeh: 'Zisti, koľko vody sa dá ušetriť pri umývaní zubov.',
     ulohy: ['Podstav pod kohútik nádobu a nechaj tiecť vodu 30 sekúnd. Odmeraj, koľko je jej.', 'Vypočítaj, koľko by sa minulo za 2 minúty.', 'Vymysli, ako ušetriť.'],
     tip: 'Keď zatvoríš kohútik pri čistení zubov, ušetríš až osem litrov za minútu. Za rok z toho vyjde veľa plných vaní.', vysl: ['Ušetril(a) by som veľa vody', 'Zatváram kohútik', 'Prekvapilo ma to číslo'],
-    fakt: 'Priemerný človek na Slovensku spotrebuje denne viac ako sto litrov vody.', rodic: 'Pomôžte s počítaním. Opýtajte sa: Čo ešte doma môžeme urobiť pre šetrenie vody?', von: 'Skúste týždeň zatvárať kohútik a zistiť vodomer.' },
+    fakt: 'Človek na Slovensku spotrebuje doma denne okolo osemdesiat litrov vody.', rodic: 'Pomôžte s počítaním. Opýtajte sa: Čo ešte doma môžeme urobiť pre šetrenie vody?', von: 'Skúste týždeň zatvárať kohútik a zistiť vodomer.' },
   { id: 'v14', t: 'vyzva', u: 3, n: 'Mapa okolia', pribeh: 'Nakresli mapu okolia domu alebo školy.',
     ulohy: ['Prejdi okolie a zapíš si dôležité miesta: obchod, ihrisko, zastávka.', 'Nakresli mapu so značkami a legendou.', 'Pridaj severný smer a zisti, kde je sever.'],
     tip: 'Sever nájdeš pomocou kompasu alebo aplikácie. Tiež ti pomôže poludnie, keď je Slnko na juhu.', vysl: ['Mapa je hotová', 'Objavil(a) som nové miesto', 'Dopísal(a) som legendu'],
@@ -421,7 +421,7 @@ const MISIE = [
     fakt: 'Medúzy žijú v moriach už stovky miliónov rokov, dlhšie než dinosaury.', rodic: 'Opýtajte sa: Aké ďalšie zvieratá žijú vo vode, ale nie sú to ryby?' },
   { id: 'p17', t: 'pravdy', u: 1, n: 'Vtáky okolo nás', v: [
       { t: 'Tučniaky lietajú vysoko nad ľadom.', ok: false, e: 'Lož. Tučniaky nelietajú, ale výborne plávajú.' },
-      { t: 'Sova vie otočiť hlavu o veľmi veľký uhol.', ok: true, e: 'Pravda. Môže ju otočiť až o dve tretiny kruhu a dívať sa takmer za seba.' },
+      { t: 'Sova vie otočiť hlavu o veľmi veľký uhol.', ok: true, e: 'Pravda. Môže ju otočiť až o tri štvrtiny kruhu a dívať sa celkom za seba.' },
       { t: 'Kolibrík vie lietať aj dozadu.', ok: true, e: 'Pravda. Je to jediný vták, ktorý to dokáže.' }],
     fakt: 'Kolibrík mávne krídlami viac ako päťdesiatkrát za sekundu.', rodic: 'Pozrite sa spolu z okna a spočítajte, koľko druhov vtákov uvidíte.' },
   { id: 'p18', t: 'pravdy', u: 1, n: 'Rastlinky', v: [
@@ -430,33 +430,33 @@ const MISIE = [
       { t: 'Zemiaky rastú na vetvách ako jablká.', ok: false, e: 'Lož. Zemiaky sú hľuzy, ktoré rastú pod zemou.' }],
     fakt: 'Zemiak prišiel do Európy z Južnej Ameriky, kde ho pestovali už pred mnohými storočiami.', rodic: 'Opýtajte sa: Ktoré časti rastlín jeme? Korene, listy, plody?' },
   { id: 'p19', t: 'pravdy', u: 2, n: 'Zem a svet', v: [
-      { t: 'Najväčší oceán na Zemi je Tichý oceán.', ok: true, e: 'Pravda. Zaberá viac než tretinu povrchu Zeme.' },
+      { t: 'Najväčší oceán na Zemi je Tichý oceán.', ok: true, e: 'Pravda. Zaberá takmer tretinu povrchu Zeme.' },
       { t: 'Mount Everest sa nachádza v Európe.', ok: false, e: 'Lož. Je v Ázii, v pohorí Himaláje.' },
       { t: 'Sahara je najväčšia horúca púšť sveta.', ok: true, e: 'Pravda. Rozprestiera sa po severe Afriky.' }],
     fakt: 'Najväčšia púšť na svete je vlastne Antarktída, lebo púšť je miesto s veľmi málo zrážkami.', rodic: 'Nájdite si na glóbuse alebo mape všetky tri miesta.' },
   { id: 'p20', t: 'pravdy', u: 2, n: 'Planéty', v: [
-      { t: 'Na Venuši trvá jeden deň dlhšie ako jeden rok.', ok: true, e: 'Pravda. Venuša sa otáča veľmi pomaly, a okolo Slnka obehne rýchlejšie, než sa raz otočí.' },
-      { t: 'Saturn je jediná planéta s prstencami.', ok: false, e: 'Lož. Prstence majú aj Jupiter, Urán a Neptún, len sú slabšie.' },
+      { t: 'Jupiter je väčší ako všetky ostatné planéty dokopy.', ok: true, e: 'Pravda. Je viac ako dvakrát hmotnejší než všetky ostatné planéty spolu.' },
+      { t: 'Slnko je najväčšia planéta.', ok: false, e: 'Lož. Slnko je hviezda, nie planéta.' },
       { t: 'Zem je tretia planéta od Slnka.', ok: true, e: 'Pravda. Pred ňou sú Merkúr a Venuša.' }],
     fakt: 'Zem je jediná známa planéta, na ktorej je na povrchu veľa tekutej vody.', rodic: 'Skúste si vymyslieť riekanku, aby ste si zapamätali poradie planét.' },
   { id: 'p21', t: 'pravdy', u: 2, n: 'Telo v číslach', v: [
       { t: 'Najmenšia kosť v tele je v uchu.', ok: true, e: 'Pravda. Strmienok je veľký len ako zrnko ryže.' },
-      { t: 'Mozog využívame len na desať percent.', ok: false, e: 'Lož. Mozog využívame celý, len v rôznych chvíľach rôzne časti.' },
+      { t: 'Pri spánku sa mozog úplne vypne.', ok: false, e: 'Lož. Počas spánku mozog pracuje a ukladá si, čo sme sa naučili.' },
       { t: 'Srdce bije aj počas spánku.', ok: true, e: 'Pravda. Pri spánku bije pomalšie, ale nikdy sa nezastaví.' }],
     fakt: 'Srdce vykoná za deň okolo sto tisíc úderov.', rodic: 'Spočítajte spolu tep na zápästí za pätnásť sekúnd, potom po drepe a porovnajte.' },
   { id: 'p22', t: 'pravdy', u: 2, n: 'Potraviny', v: [
       { t: 'Mrkva zlepšuje videnie v tme.', ok: false, e: 'Lož. Je zdravá a obsahuje vitamín A, ale videnie v tme nezlepší.' },
       { t: 'Čokoláda sa vyrába z kakaových bôbov.', ok: true, e: 'Pravda. Bôby sa sušia, praží a melú.' },
-      { t: 'Med sa pri správnom uskladnení takmer nepokazí.', ok: true, e: 'Pravda. Je veľmi sladký a baktérie v ňom nerastú.' }],
-    fakt: 'Včela vyrobí za celý život len asi jednu čajovú lyžičku medu.', rodic: 'Pozrite sa na obaly potravín doma a nájdite, z čoho sa vyrábajú.' },
+      { t: 'Kakaové bôby sa kedysi používali ako peniaze.', ok: true, e: 'Pravda. Mayovia a Aztékovia platili kakaovými bôbmi.' }],
+    fakt: 'Včela vyrobí za celý život len asi dvanástinu čajovej lyžičky medu.', rodic: 'Pozrite sa na obaly potravín doma a nájdite, z čoho sa vyrábajú.' },
   { id: 'p23', t: 'pravdy', u: 3, n: 'Fyzika okolo nás', v: [
       { t: 'Zvuk sa šíri aj vo vzduchoprázdne vo vesmíre.', ok: false, e: 'Lož. Zvuk potrebuje látku, napríklad vzduch alebo vodu. Vo vákuu je ticho.' },
-      { t: 'Ľad pláva na vode, lebo je menej hustý než voda.', ok: true, e: 'Pravda. Voda pri zamrznutí zaberie viac miesta.' },
-      { t: 'Blesk je na chvíľu horúcejší než povrch Slnka.', ok: true, e: 'Pravda. Vzduch v kanáli blesku sa zohreje na tisíce stupňov.' }],
-    fakt: 'Vďaka tomu, že ľad pláva, ryby vedia v zamrznutých jazerách prežiť zimu pod ľadom.', rodic: 'Dajte kocku ľadu do pohára s vodou a pozorujte, ako pláva.' },
+      { t: 'Zvuk sa šíri vo vode rýchlejšie ako vo vzduchu.', ok: true, e: 'Pravda. Vo vode letí zvuk asi štyrikrát rýchlejšie.' },
+      { t: 'Svetlo je rýchlejšie ako zvuk.', ok: true, e: 'Pravda. Preto vidíme blesk skôr, než počujeme hrom.' }],
+    fakt: 'Zvuk letí vzduchom asi 340 metrov za sekundu.', rodic: 'Pri búrke spočítajte sekundy medzi bleskom a hromom a vydeľte ich tromi.' },
   { id: 'p24', t: 'pravdy', u: 3, n: 'Zmysly zvierat', v: [
       { t: 'Včely vidia aj ultrafialové svetlo.', ok: true, e: 'Pravda. Vidia v kvetoch vzory, ktoré my nevidíme.' },
-      { t: 'Netopiere sú slepé.', ok: false, e: 'Lož. Vidia, ale v tme sa orientujú aj pomocou zvuku, ktorý sa odráža od okolia.' },
+      { t: 'Mačky vidia aj v úplnej tme.', ok: false, e: 'Lož. V šere vidia oveľa lepšie ako my, ale v úplnej tme nevidia ani ony.' },
       { t: 'Mačacie fúzy pomáhajú mačke vnímať okolie.', ok: true, e: 'Pravda. Fúzy citlivo vnímajú dotyk a pohyb vzduchu.' }],
     fakt: 'Mačka vie podľa fúzov odhadnúť, či sa jej telo pretiahne cez úzku škáru.', rodic: 'Opýtajte sa: Ktorý zmysel by si si vybral(a), keby si mohol(a) mať zmysly ako zviera?' },
   { id: 'p25', t: 'pravdy', u: 3, n: 'Vynálezy a dátumy', v: [
