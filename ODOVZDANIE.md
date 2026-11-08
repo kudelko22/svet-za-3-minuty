@@ -455,3 +455,7 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Test: blok `INE_45` v `test.js` (aspoň 40 sád, 4 rôzne voľby, 1 správna, bez duplicít, všetky kresby existujú a sú vyfarbené, výber podľa veku, bez opakovania v hre, zlá a správna odpoveď, vysvetlenie). Upravený test `NOVE_HRY_41` (zoznam hier podľa veku). `test` OK, build OK.
 - Overené: kontaktný list všetkých kresieb (Edge headless), hra pre mladšie aj starších s chybnou aj správnou odpoveďou (snímka, okno 500 px). Niektoré kresby som po prvom pohľade prekreslil (jašterica, škorpión, ťava, sandál).
 - NEOVERENÉ: emulátor a skutočný účet (worktree nemá `node_modules`, vstavaný prehliadač sa nedal otvoriť), 360 px a tablet očami v reálnom prehliadači, telefón (vibrácie, plynulosť), dostupnosť pre čítačky. Sandál a škorpión prekreslené po pokyne vlastníka.
+
+### 4.5.1 prekreslené obrázky (verzia 61 / 4.5.1, cache svet3-v25; tá istá vetva, nenasadené, čaká na „nasaď 4.5.1“)
+- Prekreslené: sandál (žabka zhora), lopta (farebná plážová), nôž, skrutkovač, jedľa (odlíšená od smreka), tuleň, orol (biela hlava, hákovitý zobák), husle, gitara, uhorka, škorpión. Ostatné skontrolované na kontaktnom liste v 80 px, všetky vyfarbené.
+- NEOVERENÉ: reálne 360 px na telefóne.
