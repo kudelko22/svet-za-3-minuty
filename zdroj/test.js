@@ -158,6 +158,27 @@ for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglicti
   if (ANG_SLOVA.length < 100 || ANG_VETY.length < 40) throw new Error("ang: malo obsahu");
   for (const w of ANG_SLOVA) if (!ANG_SKUPINY[w.g] || !w.en || !w.sk || !w.cit || ![1,2].includes(w.u)) throw new Error("ang: slovo " + w.en);
   for (const v of ANG_VETY) if (!v.en || !v.sk || !ANG_SKUPINY[v.g] || ![1,2].includes(v.u)) throw new Error("ang: veta " + v.en);
+  // rozsirenie 4.6: objem, unikatnost, vety patria k slovu v tej istej skupine, rozlozenie nahodnych otazok
+  if (ANG_SLOVA.length < 590 || ANG_VETY.length < 205) throw new Error("ang: rozsirenie " + ANG_SLOVA.length + "/" + ANG_VETY.length);
+  { const sk = new Map(); for (const w of ANG_SLOVA) { if (sk.has(w.sk)) throw new Error("ang: rovnaky preklad " + w.sk + " " + w.en + "/" + sk.get(w.sk)); sk.set(w.sk, w.en); } }
+  { const ve = new Set(); for (const v of ANG_VETY) { if (ve.has(v.en)) throw new Error("ang: duplicitna veta " + v.en);
+      ve.add(v.en); if (!ANG_SLOVA.some(w => w.en === v.v && w.g === v.g)) throw new Error("ang: veta bez slova v skupine " + v.en);
+      if (!new RegExp("(^|[^A-Za-z])" + v.v + "([^A-Za-z]|$)", "i").test(v.en)) throw new Error("ang: slovo nie je vo vete " + v.en); } }
+  for (const g of Object.keys(ANG_SKUPINY)) { const w = ANG_SLOVA.filter(x => x.g === g);
+    if (w.length < 14 || w.filter(x => x.u === 1).length < 4 || ANG_VETY.filter(x => x.g === g).length < 5) throw new Error("ang: skupina malá " + g); }
+  { const sirka = ANG_SLOVA.filter(w => w.u === 1).length; if (sirka < 280 || ANG_SLOVA.filter(w => w.u === 2).length < 280) throw new Error("ang: obtiaznost nerovnomerna"); }
+  { const novych = ["ovocie","doprava","povolania","hudba","divoke","vesmir","veci","opacne","otazky","predlozky"]; for (const g of novych) if (!ANG_SKUPINY[g]) throw new Error("ang: skupina " + g);
+    for (const vek of ["mladsi", "starsi"]) { st.vek = vek; const videne = new Set(), poz = [0, 0, 0];
+      for (let d = 30000; d < 30400; d++) for (const q of Ang.otazky(d, 0)) { poz[q.s]++; for (const x of ANG_SLOVA) if (q.slovo === x.en || q.slovo === x.sk || q.o.includes(x.en)) videne.add(x.g); }
+      if (novych.some(g => !videne.has(g))) throw new Error("ang: denny kvizik nevybera z novych skupin " + vek);
+      const spolu = poz[0] + poz[1] + poz[2]; if (poz.some(n => n < spolu * .25)) throw new Error("ang: pozicie spravnych odpovedi " + poz); }
+    st.vek = "mladsi"; }
+  { const nove = T.filter(t => t.id.startsWith("en-")); if (nove.length < 10) throw new Error("ang: lekcie 4.6");
+    if (new Set(nove.map(t => t.id)).size !== nove.length || nove.some(t => !ANGT().concat(T.filter(x => x.k === "anglictina")).includes(t))) throw new Error("ang: lekcie id");
+    if (!nove.some(t => t.vek === "mladsi") || !nove.some(t => t.vek === "starsi") || !nove.some(t => !t.vek)) throw new Error("ang: lekcie vek");
+    for (const t of nove) { const kresba = ART[t.id] && ART[t.id](); if (!kresba || kresba.length < 900 || (kresba.match(/<(path|circle|rect|ellipse)/g) || []).length < 12) throw new Error("ang: prazdny obrazok " + t.id);
+      if (!svg(t).includes("<svg")) throw new Error("ang: svg " + t.id);
+      const poz = [0, 0, 0, 0]; t.z.forEach(q => { if (!q.w) throw new Error("ang: lekcia bez vysvetlenia " + t.id); }); } }
   for (const vek of ["mladsi", "starsi"]) {
     st.vek = vek;
     for (let d = 20000; d < 20060; d++) for (const ex of [0, 1]) {
