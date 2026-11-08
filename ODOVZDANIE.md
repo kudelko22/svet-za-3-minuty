@@ -459,3 +459,10 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 ### 4.5.1 prekreslené obrázky (verzia 61 / 4.5.1, cache svet3-v25; tá istá vetva, nenasadené, čaká na „nasaď 4.5.1“)
 - Prekreslené: sandál (žabka zhora), lopta (farebná plážová), nôž, skrutkovač, jedľa (odlíšená od smreka), tuleň, orol (biela hlava, hákovitý zobák), husle, gitara, uhorka, škorpión. Ostatné skontrolované na kontaktnom liste v 80 px, všetky vyfarbené.
 - NEOVERENÉ: reálne 360 px na telefóne.
+
+## 4.6 Živšia séria a strom (verzia 61 / 4.6, cache svet3-v25; vetva `claude/pensive-booth-0a5ab8`, vychádza zo 4.5, NASADENÉ 8. 11. 2026 na svet-za-3-minuty.web.app (len hosting), nepushnuté)
+- Zmena len v `Oslava.ukaz` (oslava po dnešnej téme dňa, pravidlá 4.4 nezmenené: raz za deň, nie precvičovanie): číslo série ide zo starej hodnoty na novú (4 → 5) s poskočením a iskrami, okolo pilulky žiara (`.zap`), strom zažiari (`.zari`), sovička dvakrát poskočí (`.skace`), nový riadok „Učíš sa už N dní“ sa tiež zvýši (`#os-dni`), haptika `Haptika.hraj('hviezdicka')`. Nová funkcia `planSerie(s, pocetDni)`.
+- Séria prerušená a začína od 1 (`pocetDni > 1`): pokojná verzia, číslo je hneď 1, bez zvýšenia, ohňostroja a húkania, veta „Nevadí, začíname odznova“. S prefers-reduced-motion sa čísla nastavia hneď (CSS animácie sú vypnuté globálne).
+- Ostatné miesta (Domov, stromček v lište, Prehľad týždňa, profil) čítajú `seria()` a nemenili sa, takže sedia s uloženou hodnotou.
+- Test: blok `SERIA_46` v `test.js`. `node zdroj/test.js` OK, build OK (`spusti.cmd` v session visel, preto priamo cez node).
+- Overené v prehliadači len logika (4/4 → 5/5, žiara a trieda stromu sa nastavia). NEOVERENÉ: vzhľad očami (snímka bola zlá, dialóg bol za prihlasovacou stránkou), emulátor s účtom, 360 px a tablet, telefón (vibrácie, plynulosť), pokojná verzia očami.
