@@ -1566,7 +1566,7 @@ html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transitio
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 65; const VERZIA_NAZOV = '4.8.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 66; const VERZIA_NAZOV = '4.8.2'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -2029,6 +2029,8 @@ const TV = () => T.filter(t => t.k !== 'anglictina' && preVek(t));
 const ANGT = () => T.filter(t => t.k === 'anglictina' && preVek(t));
 // väčšie deti: namiesto ľahkých nesprávnych odpovedí ťažšie (q.h); pôvodná otázka ostáva v povodna
 const naVek = q => st.vek === 'starsi' && q.h ? { ...q, a: [q.a[0], ...q.h.map(t => ['', t])], povodna: q } : q;
+// 4.8.2: obrázky pri odpovediach len keď ich má každá odpoveď otázky, inak písmená A–D (aby správna odpoveď nebola prázdna)
+const pismenaOdpovedi = q => st.vek === 'starsi' || q.a.some(a => !String(a[0]).trim());
 const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
 /* Precvičovanie (4.3): vynechaný deň sa dá zahrať dodatočne, ale bez hviezdičiek, série, stromu a odmien.
    Jeden príznak `precvic` na aktivite (téma, auto, angličtina); všetky miesta, čo niečo udeľujú, idú cez Precvic.teraz() / pripisBody(). */
@@ -4164,13 +4166,13 @@ function krok(f, k) {
       <div class="talk">${t.o.map((x, i) => `<div class="tb${i % 2 ? ' r' : ''}" style="--c:${TBG[i % 3]}"><span class="tb-q">?</span><p>${x}</p></div>`).join('')}</div></div>`;
   }
   if (k.t === 'q') {
-    const qn = f.kroky.filter(x => x.t === 'q'), odp = f.odp[f.i], q = k.q, zdroj = f.typ === 'kviz' ? byId(k.tid) : null;
+    const qn = f.kroky.filter(x => x.t === 'q'), odp = f.odp[f.i], q = k.q, pism = pismenaOdpovedi(q), zdroj = f.typ === 'kviz' ? byId(k.tid) : null;
     return `<div class="step"><div class="qhead"><div class="qhead-r"><span class="sticker sm">Otázka ${qn.indexOf(k) + 1} z ${qn.length}</span>${f.zivoty != null ? `<span class="zivoty" aria-label="Životy: ${f.zivoty} z ${f.maxZivoty}">${[...Array(f.maxZivoty).keys()].map(i => `<i class="${i < f.zivoty ? 'ma' : 'strata'}${i === f.zivoty && f.prave ? ' prave' : ''}">${i < f.zivoty ? IK.srdce : IK.srdcePrazdne}</i>`).join('')}</span>` : ''}${citaj('q')}</div>
         ${zdroj ? `<span class="chip" style="--c:${KAT[zdroj.k].c}">${ii(ikKat(zdroj.k))} ${zdroj.t}</span>` : ''}
         <h1 class="qt">${q.q}</h1></div>
       <div class="answers">${k.poradie.map((j, pos) => {
         const cls = odp ? (j === 0 ? ' ok' : j === odp.v ? ' bad' : '') : '';
-        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em${st.vek === 'starsi' ? ' pismeno' : ''}" style="--e:${EMBG[pos % 3]}">${st.vek === 'starsi' ? 'ABCD'[pos] : emo(q.a[j][0])}</span><span>${q.a[j][1]}</span></button>`;
+        return `<button class="ans${cls}" data-ans="${j}"${odp ? ' disabled' : ''}><span class="em${pism ? ' pismeno' : ''}" style="--e:${EMBG[pos % 3]}">${pism ? 'ABCD'[pos] : emo(q.a[j][0])}</span><span>${q.a[j][1]}</span></button>`;
       }).join('')}</div>
       ${odp ? `<div class="fbk ${odp.ok ? 'ok' : 'bad'}" aria-live="polite"><span class="fbk-owl">${owl(odp.ok ? 'happy' : 'oops')}</span><div><b>${odp.ok ? odp.p : 'Nevadí, nabudúce!'}</b><p>${odp.ok ? '' : 'Správne je: ' + q.a[0][1] + '. '}${q.w || ''}</p></div></div>` : ''}</div>`;
   }
@@ -4791,6 +4793,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 66, obr: () => IK.mozog, n: 'Verzia 4.8.2: odpovede vždy s obrázkom alebo písmenom', p: 'V niektorých nových témach chýbal obrázok pri odpovedi, často práve pri správnej. Teraz majú všetky odpovede jednej otázky obrázok, alebo všetky písmená A, B, C.' },
   { v: 65, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.8.1: oslava série a ožitie stromu', p: 'Keď dohráš tému dňa, číslo série sa prevalí a zväčší, zažiari plameň a zaznie fanfára. Ak strom zvädol, vietor ho rozkýve, listy sa zatočia a strom múdrosti zasa ožije.' },
   { v: 64, obr: () => IK.mesiac, n: 'Verzia 4.8: Mesačný režim', p: 'V profile Ja v karte Mesačný režim prepneš appku na nočnú oblohu s mesiacom a hviezdičkami. Môžeš si vybrať Svetlý, Mesačný alebo Podľa telefónu. Večer je to príjemnejšie pre oči.' },
   { v: 63, obr: () => IK_KAT.cas, n: 'Verzia 4.7: veľa nového obsahu', p: 'Pribudlo 69 nových tém, vyše sto misií dňa, 24 kvízových sád a stovky anglických slovíčok a viet. Séria a strom sa po dohraní témy dňa pekne rozžiaria, k hre Čo je iné? pribudli krajšie obrázky a na Domove je strom v lište.' },

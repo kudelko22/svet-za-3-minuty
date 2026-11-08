@@ -452,6 +452,16 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (chybaSubor.size) chyby.push("emoji bez obrazka: " + [...chybaSubor].slice(0, 8).join(" "));
   if (emo("🦁") !== '<img class="emo" src="e/1f981.svg" alt="🦁" draggable="false" onerror="this.replaceWith(this.alt)">') chyby.push("emo " + emo("🦁"));
   if (!emo("1️⃣").includes("e/31-20e3.svg") || emo("a<b") !== "a&lt;b") chyby.push("emo klavesa"); }
+/* V482_TEST: pri odpovediach nikdy prázdny obrázok (4.8.2: v 126 otázkach nových tém chýbali emoji, často práve pri správnej odpovedi) */
+{ const st0 = st.vek; st.vek = 'mladsi'; const zle = [];
+  for (const q of [...T.flatMap(t => t.z), ...VYZVA, ...KVIZ_SADY.flatMap(s => s.z)]) {
+    const prazdne = q.a.filter(a => !String(a[0]).trim()).length;
+    if (!!prazdne !== pismenaOdpovedi(q)) zle.push(q.q.slice(0, 30));
+    if (!prazdne && !q.a.every(a => emo(a[0]).includes('<img'))) zle.push('bez img ' + q.q.slice(0, 30));
+  }
+  st.vek = 'starsi'; if (!pismenaOdpovedi(T[0].z[0])) zle.push('starsi bez pismen');
+  st.vek = st0;
+  if (zle.length) chyby.push('odpovede s prazdnym obrazkom bez pismen: ' + zle.slice(0, 5).join(' | ')); }
 /* V24_TEST */
 { const stare = T.filter(t => String(ART[t.id]).includes("ez(")); if (stare.length) chyby.push("temy len z emoji: " + stare.map(t => t.id).join(" "));
   Novinky.ukaz(NOVINKY); localStorage.removeItem("svet3:videl-verziu"); Novinky.bolo = false; st.faza = "appka"; st.flow = null; st.hra = null; Novinky.skontroluj();
