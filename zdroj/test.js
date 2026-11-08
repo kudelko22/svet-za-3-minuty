@@ -7,6 +7,19 @@ const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
 const src = ['temy.js', 'obrazky.js', 'misie.js', 'kvizy.js', 'tyzden.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
+{ // mesačný režim: každá farebná premenná z hlavného :root a každá pastelová --p-XXXXXX má hodnotu aj v mesačnom režime
+  const css = html.slice(0, html.indexOf('</style>'));
+  const svetly = css.match(/^:root \{([\s\S]*?)^\}/m)[1], tmavy = css.match(/^:root\[data-rezim="mesacny"\] \{([\s\S]*?)^\}/m)[1];
+  const def = b => new Map([...b.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/gi)].map(m => [m[1], m[2].trim()]));
+  const dS = def(svetly), dT = def(tmavy), pevne = new Set(['--sun', '--grass', '--grass-d', '--blue', '--coral', '--orange', '--pink', '--spring', '--f-display', '--f-body', '--sh', '--fon', '--b1', '--b2', '--b3', '--b4']);
+  for (const [k, v] of dS) if (!pevne.has(k) && /#|rgb|gradient/.test(v) && !dT.has(k)) throw new Error('mesačný režim: chýba premenná ' + k);
+  for (const k of ['--fon', '--b1', '--b2', '--b3', '--b4', '--ink', '--paper', '--line', '--muted']) if (!dT.has(k)) throw new Error('mesačný režim: chýba ' + k);
+  for (const m of css.matchAll(/var\((--p-[0-9A-F]{6})/g)) if (!dT.has(m[1])) throw new Error('mesačný režim: chýba pastel ' + m[1]);
+  const hex = h => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
+  const kon = (a, b) => { const x = hex(a), y = hex(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+  for (const [t1, p] of [['--ink', '--paper'], ['--muted', '--paper'], ['--ink', '--fon'], ['--muted', '--fon'], ['--ink', '--t-yel'], ['--ink', '--t-grn'], ['--ink', '--t-blu'], ['--ink', '--soft'], ['--ink', '--off']])
+    if (kon(dT.get(t1), dT.get(p)) < 4.5) throw new Error('mesačný režim: slabý kontrast ' + t1 + ' na ' + p + ' ' + kon(dT.get(t1), dT.get(p)).toFixed(2));
+}
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
@@ -522,6 +535,17 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   st.view = "ja"; render(); if (!main.innerHTML.includes("data-plocha")) chyby.push("plocha v profile");
   st.faza = "prihlasenie"; render(); st.faza = "appka"; st.view = "domov"; render(); Uvod.skontroluj(); Uvod.skry();
   if (!NOVINKY.some(n => n.v === VERZIA_APPKY)) chyby.push("novinky " + VERZIA_APPKY); }
+/* REZIM */
+  { const L = Rezim.MOZNE; if (L.join() !== "svetly,mesacny,auto") chyby.push("rezim moznosti");
+    localStorage.removeItem("svet3:rezim"); if (Rezim.vyber() !== "svetly") chyby.push("rezim predvolene svetly");
+    if (Rezim.zvol("mesacny") !== "mesacny" || Rezim.vyber() !== "mesacny" || !Rezim.tmavy()) chyby.push("rezim mesacny sa neulozil");
+    if (localStorage.getItem("svet3:rezim") !== '"mesacny"') chyby.push("rezim ulozenie");
+    Rezim.zvol("auto"); if (Rezim.vyber() !== "auto" || Rezim.tmavy()) chyby.push("rezim auto bez tmavého systému");
+    localStorage.setItem("svet3:rezim", '"cierny"'); if (Rezim.vyber() !== "svetly" || Rezim.tmavy()) chyby.push("neplatny rezim ma byt svetly");
+    localStorage.setItem("svet3:rezim", "{zle"); if (Rezim.vyber() !== "svetly") chyby.push("pokazeny rezim ma byt svetly");
+    if (Rezim.zvol("hocico") !== "svetly") chyby.push("zvol neplatnej hodnoty");
+    st.view = "ja"; render(); if (!main.innerHTML.includes("data-rezim")) chyby.push("karta rezimu v profile");
+    Rezim.zvol("svetly"); }
 /* V31B_TEST */
 { Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi" });
   odomkni();

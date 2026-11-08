@@ -48,6 +48,7 @@ const html = `<!doctype html>
 <title>Svet za 3 minúty</title>
 <meta name="description" content="Krátke témy o svete na rozhovor rodiča s dieťaťom, aj cestou autom.">
 <meta name="theme-color" content="#E3F4FF">
+<script>(function(){try{var v=JSON.parse(localStorage.getItem('svet3:rezim'));if(v==='mesacny'||(v==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.rezim='mesacny';document.querySelector('meta[name=theme-color]').content='#14113A';}}catch(e){}})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="ikony/ikona-192.png" type="image/png">
 <link rel="apple-touch-icon" href="ikony/apple-touch-icon.png">
