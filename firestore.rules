@@ -6,6 +6,9 @@ service cloud.firestore {
     function jeMoj(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
+    // zablokovaný účet (vlastník ho zapíše do blokovani/{uid}) nič nezapisuje, čítať a mazať svoje môže
+    function nieJeBlok() { return !exists(/databases/$(database)/documents/blokovani/$(request.auth.uid)); }
+    function smiePisat(uid) { return jeMoj(uid) && nieJeBlok(); }
 
     // Postavička: len známe kľúče a krátke hodnoty z písmen, číslic a #. Hodnoty sa pri priateľoch vykresľujú do SVG, preto nesmú obsahovať iné znaky.
     function platnyAvatar(a) {
@@ -46,7 +49,7 @@ service cloud.firestore {
 
     match /rodiny/{uid}/deti/{dieta} {
       allow read, delete: if jeMoj(uid);
-      allow create, update: if jeMoj(uid) && dieta.matches('^[a-z0-9]{6,32}$') && platneDieta(request.resource.data);
+      allow create, update: if smiePisat(uid) && dieta.matches('^[a-z0-9]{6,32}$') && platneDieta(request.resource.data);
     }
 
     // ---- Profil rodiča (verzia 3.5): jeden na rodinu, PIN len ako PBKDF2 hash; nikdy sa nezverejňuje (nie je v profily, kody ani správach) ----
@@ -65,7 +68,7 @@ service cloud.firestore {
     }
     match /rodiny/{uid}/rodic/{profil} {
       allow read, delete: if jeMoj(uid);
-      allow create, update: if jeMoj(uid) && profil == 'profil' && platnyRodic(request.resource.data);
+      allow create, update: if smiePisat(uid) && profil == 'profil' && platnyRodic(request.resource.data);
     }
 
     // Pokrok z verzie 5 (jedno dieťa na účet): appka ho pri prvom prihlásení prevedie na profil dieťaťa
@@ -83,7 +86,7 @@ service cloud.firestore {
 
     match /pokrok/{uid} {
       allow read, delete: if jeMoj(uid);
-      allow create, update: if jeMoj(uid) && platnyPokrok(request.resource.data);
+      allow create, update: if smiePisat(uid) && platnyPokrok(request.resource.data);
     }
 
     // ---- Priatelia (verzia 2.0) ----
@@ -112,15 +115,15 @@ service cloud.firestore {
     }
     match /profily/{pid} {
       allow get: if prihlaseny();
-      allow create: if prihlaseny() && pid.matches('^[a-z0-9]{6,32}$')
+      allow create: if prihlaseny() && nieJeBlok() && pid.matches('^[a-z0-9]{6,32}$')
         && exists(/databases/$(database)/documents/rodiny/$(request.auth.uid)/deti/$(pid)) && platnyProfil(request.resource.data);
-      allow update: if prihlaseny() && resource.data.rodina == request.auth.uid && platnyProfil(request.resource.data);
+      allow update: if prihlaseny() && nieJeBlok() && resource.data.rodina == request.auth.uid && platnyProfil(request.resource.data);
       allow delete: if prihlaseny() && resource.data.rodina == request.auth.uid;
 
       // žiadosť o priateľstvo od dieťaťa {od}; nikto nemôže deti hľadať, len zadať kód
       match /ziadosti/{od} {
         allow read: if majitel(pid) || (prihlaseny() && resource.data.rodina == request.auth.uid);
-        allow create: if od != pid && majitel(od) && zapnuty(pid) && zapnuty(od)
+        allow create: if nieJeBlok() && od != pid && majitel(od) && zapnuty(pid) && zapnuty(od)
           && request.resource.data.keys().hasOnly(['meno', 'avatar', 'rodina', 'kedy'])
           && request.resource.data.meno is string && request.resource.data.meno.size() >= 1 && request.resource.data.meno.size() <= 20
           && platnyAvatar(request.resource.data.avatar) && request.resource.data.rodina == request.auth.uid
@@ -141,7 +144,7 @@ service cloud.firestore {
     // kód priateľa (napríklad SOVA-K7M2) → profil dieťaťa; dá sa len prečítať podľa presného kódu
     match /kody/{kod} {
       allow get: if prihlaseny();
-      allow create: if prihlaseny() && kod.matches('^[A-Z]{4}-[A-Z0-9]{4}$')
+      allow create: if prihlaseny() && nieJeBlok() && kod.matches('^[A-Z]{4}-[A-Z0-9]{4}$')
         && request.resource.data.keys().hasOnly(['pid', 'rodina']) && request.resource.data.rodina == request.auth.uid
         && exists(/databases/$(database)/documents/rodiny/$(request.auth.uid)/deti/$(request.resource.data.pid));
       allow delete: if prihlaseny() && resource.data.rodina == request.auth.uid;
@@ -158,7 +161,7 @@ service cloud.firestore {
     }
     match /rozhovory/{rid}/spravy/{sid} {
       allow read: if prihlaseny() && rid.split('_').size() == 2 && (majitel(rid.split('_')[0]) || majitel(rid.split('_')[1]));
-      allow create: if prihlaseny() && rid.split('_').size() == 2 && rid.split('_')[0] < rid.split('_')[1]
+      allow create: if prihlaseny() && nieJeBlok() && rid.split('_').size() == 2 && rid.split('_')[0] < rid.split('_')[1]
         && request.resource.data.od in rid.split('_') && majitel(request.resource.data.od)
         && zapnuty(rid.split('_')[0]) && zapnuty(rid.split('_')[1])
         && exists(/databases/$(database)/documents/profily/$(rid.split('_')[0])/priatelia/$(rid.split('_')[1]))
@@ -177,6 +180,44 @@ service cloud.firestore {
       allow read: if prihlaseny() && rid.split('_').size() == 2 && (majitel(rid.split('_')[0]) || majitel(rid.split('_')[1]));
       allow create, update: if prihlaseny() && rid.split('_').size() == 2 && pid in rid.split('_') && majitel(pid)
         && request.resource.data.keys().hasOnly(['kedy']) && request.resource.data.kedy == request.time;
+    }
+
+    // ---- Anonymné štatistiky pre vlastníka (verzia 4.5): jeden dokument na rodinu, len počty a id tém, nikdy meno, e-mail ani obsah ----
+    // Vlastník = overený Google účet s jeho e-mailom (e-mail nie je tajomstvo; heslo ani kľúč v repozitári nie sú).
+    // Účet s e-mailom a heslom s rovnakým e-mailom neprejde, lebo sa vyžaduje prihlásenie cez Google.
+    function jeVlastnik() {
+      return request.auth != null
+        && request.auth.token.email == 'kudela.alexo@gmail.com'
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+    function den(s) { return s is string && s.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'); }
+    function platnaStat(d) {
+      return d.keys().hasOnly(['od', 'posledne', 'verzia', 'nazov', 'mladsi', 'starsi', 'temy', 'done', 'fav', 'hry', 'ang', 'priatelia', 'dni', 'email', 'upravene'])
+        && den(d.od) && den(d.posledne)
+        && d.verzia is int && d.verzia >= 0 && d.verzia <= 1000
+        && d.nazov is string && d.nazov.size() <= 12
+        && d.mladsi is int && d.mladsi >= 0 && d.mladsi <= 50
+        && d.starsi is int && d.starsi >= 0 && d.starsi <= 50
+        && d.temy is int && d.temy >= 0 && d.temy <= 100000
+        && d.done is list && d.done.size() <= 500
+        && d.fav is list && d.fav.size() <= 500
+        && d.hry is list && d.hry.size() <= 60
+        && d.ang is int && d.ang >= 0 && d.ang <= 5000
+        && d.priatelia is int && d.priatelia >= 0 && d.priatelia <= 500
+        && d.dni is list && d.dni.size() <= 60
+        && d.email is string && d.email.size() <= 120 && (d.email == '' || d.email.matches('^[^@ ]+@[^@ ]+$'))
+        && d.upravene == request.time;
+    }
+    // blokované účty: len vlastník ich zapisuje a číta (zatiaľ bez Cloud Functions blokovanie znamená zákaz zápisu do databázy)
+    match /blokovani/{uid} {
+      allow read, delete: if jeVlastnik();
+      allow create, update: if jeVlastnik() && request.resource.data.keys().hasOnly(['email', 'kedy']) && request.resource.data.email is string && request.resource.data.email.size() <= 120 && request.resource.data.kedy == request.time;
+    }
+    match /statistiky/{uid} {
+      allow read: if jeVlastnik();
+      allow create, update: if smiePisat(uid) && platnaStat(request.resource.data);
+      allow delete: if jeMoj(uid);
     }
 
     match /{dokument=**} {

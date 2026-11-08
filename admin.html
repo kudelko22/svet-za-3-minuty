@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Prehľad pre vlastníka</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap');
+:root { --ink: #2B2240; --paper: #fff; --sky: #E3F4FF; --muted: #5F587A; --soft: #F3EFFF; --sun: #FFD23F; --grass: #2FBF71; --blue: #4C7DFF; --coral: #FF5A5F; --orange: #FF9F1C; --f: "Baloo 2", "Nunito", system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--sky); color: var(--ink); font: 700 16px/1.5 "Nunito", system-ui, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 16px; }
+h1 { font: 800 1.8rem/1.1 var(--f); margin: 8px 0 2px; }
+h2 { font: 700 1.15rem/1.2 var(--f); margin: 0 0 10px; }
+.muted { color: var(--muted); font-size: .9rem; font-weight: 600; }
+.mriezka { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 14px 0; }
+.stlpce { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.karta { background: var(--paper); border: 3px solid var(--ink); border-radius: 22px; padding: 14px 16px; box-shadow: 0 5px 0 var(--ink); min-width: 0; }
+.cislo { font: 800 2.1rem/1.1 var(--f); color: var(--blue); }
+.cislo small { font-size: .9rem; font-weight: 700; color: var(--muted); }
+.stitok { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.riadok { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 4px 0; font-size: .92rem; }
+.riadok .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pas { grid-column: 1 / -1; height: 10px; border-radius: 8px; background: var(--soft); border: 2px solid var(--ink); overflow: hidden; }
+.pas i { display: block; height: 100%; background: var(--grass); }
+.pas.o i { background: var(--orange); }
+.dni { display: flex; align-items: flex-end; gap: 4px; height: 110px; margin: 6px 0 22px; }
+.dni div { flex: 1; background: var(--blue); border: 2px solid var(--ink); border-radius: 6px 6px 0 0; min-height: 3px; position: relative; }
+.dni span { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: .68rem; color: var(--muted); }
+button { font: 700 1rem/1.2 var(--f); border: 3px solid var(--ink); border-radius: 16px; padding: 10px 18px; background: var(--grass); color: #fff; text-shadow: 0 2px 0 var(--ink); box-shadow: 0 4px 0 var(--ink); cursor: pointer; }
+button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+button.druhe { background: var(--paper); color: var(--ink); text-shadow: none; padding: 5px 12px; box-shadow: 0 3px 0 var(--ink); }
+button.blok { background: var(--coral); padding: 4px 10px; font-size: .85rem; box-shadow: 0 3px 0 var(--ink); }
+button.blok.je { background: var(--paper); color: var(--ink); text-shadow: none; }
+.ucty { width: 100%; }
+.ucet { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; padding: 8px 0; border-top: 2px dashed var(--soft); }
+.ucet:first-of-type { border-top: 0; }
+.ucet .m { overflow: hidden; text-overflow: ellipsis; font-size: .95rem; }
+.ucet .d { grid-column: 1; font-size: .8rem; color: var(--muted); font-weight: 600; }
+.ucet .blokovany .m { text-decoration: line-through; }
+.stred { text-align: center; padding: 40px 10px; }
+.chyba { color: var(--coral); }
+.siroka { grid-column: 1 / -1; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Prehľad pre vlastníka</h1>
+  <p class="muted">Svet za 3 minúty: len súhrny a počty. Žiadne mená detí, žiadny obsah. Pri účtoch je len e-mail rodiča.</p>
+
+  <section id="prihlas" class="karta stred">
+    <p>Prístup má len vlastník aplikácie (prihlásenie účtom Google). Údaje sa načítajú, až keď to pravidlá databázy dovolia.</p>
+    <button id="g">Prihlásiť sa cez Google</button>
+    <p id="sprava" class="muted chyba"></p>
+  </section>
+
+  <section id="obsah" hidden>
+    <p class="muted"><span id="kto"></span> <button id="von" class="druhe">Odhlásiť</button> <button id="obnov" class="druhe">Obnoviť</button></p>
+    <div class="mriezka" id="cisla"></div>
+    <div class="stlpce" id="karty"></div>
+    <p class="muted" id="poznamka"></p>
+  </section>
+</main>
+
+<script src="temy.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, connectAuthEmulator, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, connectFirestoreEmulator, collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const lokalne = ['localhost', '127.0.0.1'].includes(location.hostname);
+const app = initializeApp({
+  apiKey: 'AIzaSyA3pvk0D072FJq0-i3Bwz-fo8Cyw7dHzfk',
+  authDomain: 'svet-za-3-minuty.firebaseapp.com',
+  projectId: lokalne ? 'demo-svet-za-3-minuty' : 'svet-za-3-minuty',
+  appId: '1:37427452834:web:9ce1a6941d3e1396d570fb',
+});
+const auth = getAuth(app), db = getFirestore(app);
+if (lokalne) { connectAuthEmulator(auth, 'http://127.0.0.1:9199', { disableWarnings: true }); connectFirestoreEmulator(db, '127.0.0.1', 8180); }
+
+const $ = id => document.getElementById(id);
+const HRY = { pexeso: 'Pexeso', pocitaj: 'Koľko ich je?', iny: 'Ktorý je iný?', hadaj: 'Hádaj tému', tien: 'Nájdi tieň', sova: 'Lietajúca sova', hviezdy: 'Chytaj hviezdičky', poradie: 'Zoraď čísla', krtko: 'Ťukaj krtkov', opakuj: 'Opakuj po mne', bubliny: 'Bubliny s počtami', slovo: 'Poskladaj slovo', skladacka: 'Skladačka' };
+const nazovTemy = id => { try { const t = T.find(x => x.id === id); return t ? t.t : id; } catch (e) { return id; } };
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const dniSpat = n => { const d = new Date(); d.setDate(d.getDate() - n); return iso(d); };
+const el = (t, c, txt) => { const e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
+
+function cislo(n, popis, male) { const k = el('div', 'karta'); const c = el('div', 'cislo', String(n)); if (male) c.append(' ', el('small', '', male)); k.append(c, el('div', 'stitok', popis)); return k; }
+function zoznam(nadpis, riadky, farba, pozn) {
+  const k = el('div', 'karta'); k.append(el('h2', '', nadpis));
+  const max = Math.max(1, ...riadky.map(r => r[1]));
+  if (!riadky.length) k.append(el('div', 'muted', 'Zatiaľ nič.'));
+  for (const [n, v, txt] of riadky) {
+    const r = el('div', 'riadok'); r.append(el('span', 'n', n), el('b', '', txt != null ? txt : String(v)));
+    const p = el('div', 'pas' + (farba ? ' o' : '')), i = el('i'); i.style.width = Math.round(100 * v / max) + '%'; p.append(i); r.append(p); k.append(r);
+  }
+  if (pozn) k.append(el('div', 'muted', pozn));
+  return k;
+}
+const pocty = (rodiny, pole) => { const m = {}; for (const r of rodiny) for (const x of (r[pole] || [])) m[x] = (m[x] || 0) + 1; return m; };
+const zorad = (m, n) => Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, n);
+
+function ucty(rodiny, blok) {
+  const k = el('div', 'karta siroka'); k.append(el('h2', '', 'Účty rodičov (' + rodiny.length + ')'));
+  const zoz = rodiny.slice().sort((x, y) => (y.posledne || '').localeCompare(x.posledne || ''));
+  if (!zoz.length) k.append(el('div', 'muted', 'Zatiaľ nič.'));
+  for (const r of zoz) {
+    const b = blok.has(r.id), j = el('div', 'ucet'), m = el('div', 'm' + (b ? ' blokovany' : ''), r.email || '(e-mail sa ešte nezapísal)');
+    const bt = el('button', 'blok' + (b ? ' je' : ''), b ? 'Odblokovať' : 'Zablokovať'); bt.disabled = r.id === auth.currentUser.uid; bt.title = bt.disabled ? 'Vlastný účet sa nedá zablokovať' : '';
+    bt.onclick = async () => { if (!b && !confirm('Zablokovať účet ' + (r.email || r.id) + '? Prestane si ukladať dáta do databázy.')) return; try { if (b) await deleteDoc(doc(db, 'blokovani', r.id)); else await setDoc(doc(db, 'blokovani', r.id), { email: r.email || '', kedy: serverTimestamp() }); nacitaj(); } catch (e) { alert('Nepodarilo sa: ' + (e.code || e.message)); } };
+    const d = el('div', 'd', (b ? 'ZABLOKOVANÝ · ' : '') + 'od ' + (r.od || '?') + ' · naposledy ' + (r.posledne || '?') + ' · detí ' + (r.mladsi + r.starsi) + ' · tém ' + (r.temy || 0) + ' · verzia ' + (r.nazov || r.verzia));
+    j.append(m, bt, d); k.append(j);
+  }
+  k.append(el('div', 'muted', 'Zablokovaný účet nemôže zapisovať do databázy (deti, štatistiky, priatelia, správy), svoje dáta ešte vidí. Appku v telefóne to nevypne.'));
+  return k;
+}
+function zarobky() {
+  const k = el('div', 'karta siroka'); k.append(el('h2', '', 'Zárobky'), el('div', 'cislo', '0 €'), el('div', 'stitok', 'Zatiaľ žiadne. Appka je bez reklám a bez platieb. Keď pribudnú, ukážu sa tu.'));
+  return k;
+}
+function vykresli(rodiny, blok) {
+  const N = rodiny.length, dnes = iso(new Date()), t7 = dniSpat(6), pr = (a, b) => b ? Math.round(100 * a / b) : 0;
+  const cis = $('cisla'), kar = $('karty'); cis.textContent = ''; kar.textContent = '';
+  const novi7 = rodiny.filter(r => r.od >= t7).length;
+  const aktD = rodiny.filter(r => (r.dni || []).includes(dnes) || r.posledne === dnes).length;
+  const akt7 = rodiny.filter(r => (r.dni || []).some(d => d >= t7) || r.posledne >= t7).length;
+  const det = rodiny.reduce((a, r) => a + r.mladsi + r.starsi, 0), mlad = rodiny.reduce((a, r) => a + r.mladsi, 0), star = det - mlad;
+  const priemTemy = N ? (rodiny.reduce((a, r) => a + (r.temy || 0), 0) / Math.max(1, det)).toFixed(1) : '0';
+  const priatelia = rodiny.filter(r => r.priatelia > 0);
+  cis.append(cislo(N, 'rodín (účtov)'), cislo(novi7, 'nových za 7 dní'), cislo(aktD, 'aktívnych dnes', N ? pr(aktD, N) + ' %' : ''), cislo(akt7, 'aktívnych za 7 dní', N ? pr(akt7, N) + ' %' : ''),
+    cislo(priemTemy, 'priemer dokončených tém na dieťa'), cislo(det, 'detí spolu'), cislo(priatelia.length, 'rodín s priateľmi', rodiny.reduce((a, r) => a + (r.priatelia || 0), 0) + ' priateľstiev'));
+
+  // aktivita za 14 dní
+  const g = el('div', 'karta'); g.append(el('h2', '', 'Aktívne rodiny za posledných 14 dní'));
+  const hod = []; for (let i = 13; i >= 0; i--) { const d = dniSpat(i); hod.push([d, rodiny.filter(r => (r.dni || []).includes(d) || r.posledne === d).length]); }
+  const mx = Math.max(1, ...hod.map(h => h[1])), s = el('div', 'dni');
+  for (const [d, v] of hod) { const b = el('div'); b.style.height = Math.max(2, 100 * v / mx) + '%'; b.title = d + ': ' + v; b.append(el('span', '', d.slice(8))); s.append(b); }
+  g.append(s, el('div', 'muted', 'Dni sú z posledných záznamov aktivity (najviac 60 dní na rodinu).')); kar.append(g);
+
+  // vek
+  kar.append(zoznam('Deti podľa veku', [['5 až 8 rokov', mlad], ['9 až 12 rokov', star]], false, det ? pr(mlad, det) + ' % mladších' : ''));
+
+  // verzie
+  const ver = {}; for (const r of rodiny) { const k = r.nazov || String(r.verzia); ver[k] = (ver[k] || 0) + 1; }
+  kar.append(zoznam('Verzie appky', Object.entries(ver).sort((a, b) => b[0].localeCompare(a[0], 'sk', { numeric: true })).map(([k, v]) => ['Verzia ' + k, v])));
+
+  // kde ľudia prestávajú: rozdelenie podľa počtu hotových tém na rodinu
+  const kose = [['0 tém', 0, 0], ['1 až 2', 1, 2], ['3 až 5', 3, 5], ['6 až 10', 6, 10], ['11 až 20', 11, 20], ['viac ako 20', 21, 1e9]];
+  kar.append(zoznam('Koľko tém rodiny dokončili', kose.map(([n, a, b]) => [n, rodiny.filter(r => (r.done || []).length >= a && (r.done || []).length <= b).length]), true, 'Rodiny podľa počtu rôznych dokončených tém.'));
+
+  const done = pocty(rodiny, 'done'), fav = pocty(rodiny, 'fav'), hry = pocty(rodiny, 'hry');
+  kar.append(zoznam('Najčastejšie dokončené témy', zorad(done, 8).map(([id, v]) => [nazovTemy(id), v])));
+  kar.append(zoznam('Obľúbené témy (srdiečko)', zorad(fav, 8).map(([id, v]) => [nazovTemy(id), v])));
+  // najmenej dokončené: témy, ktoré aspoň raz začali iní, ale tu sú na chvoste (aj nulové)
+  const vsetky = (typeof T !== 'undefined' ? T : []).map(t => [t.t, done[t.id] || 0]).sort((a, b) => a[1] - b[1]).slice(0, 8);
+  kar.append(zoznam('Najmenej dokončené témy', vsetky, true, 'Témy, ktoré rodiny dokončujú najmenej (vrátane nulových).'));
+  kar.append(zoznam('Hry, ktoré deti hrali', zorad(hry, 10).map(([id, v]) => [HRY[id] || id, v]), false, 'Počet rodín, kde dieťa hru aspoň raz dohralo.'));
+  const ang = rodiny.filter(r => r.ang > 0).length;
+  kar.append(zoznam('Angličtina', [['Rodiny, kde sa učia', ang], ['Rodiny bez angličtiny', N - ang]], false, ang ? 'Priemer ' + (rodiny.reduce((a, r) => a + (r.ang || 0), 0) / ang).toFixed(1) + ' dní angličtiny na rodinu, ktorá ju skúsila.' : ''));
+  kar.append(ucty(rodiny, blok), zarobky());
+  $('poznamka').textContent = 'Počty vznikajú zo súhrnov (bez mien detí), ktoré appka zapisuje pri uložení (verzia 4.5 a novšie). Rodiny, ktoré appku ešte neotvorili po aktualizácii, tu nie sú. Hry, angličtina a priatelia sa počítajú za zariadenie, z ktorého rodina hrala.';
+}
+
+async function nacitaj() {
+  $('sprava').textContent = '';
+  try {
+    const sn = await getDocs(collection(db, 'statistiky'));
+    $('prihlas').hidden = true; $('obsah').hidden = false;
+    const bl = await getDocs(collection(db, 'blokovani'));
+    vykresli(sn.docs.map(d => ({ id: d.id, ...d.data() })), new Set(bl.docs.map(d => d.id)));
+  } catch (e) {
+    $('obsah').hidden = true; $('prihlas').hidden = false;
+    $('sprava').textContent = e && e.code === 'permission-denied' ? 'Tento účet nemá prístup. Prihlás sa účtom Google vlastníka.' : 'Nepodarilo sa načítať: ' + (e && (e.code || e.message));
+  }
+}
+$('g').onclick = () => { const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' }); signInWithPopup(auth, p).catch(e => { $('sprava').textContent = 'Prihlásenie sa nepodarilo: ' + (e.code || e.message); }); };
+$('von').onclick = () => signOut(auth);
+$('obnov').onclick = nacitaj;
+onAuthStateChanged(auth, u => {
+  if (!u) { $('obsah').hidden = true; $('prihlas').hidden = false; return; }
+  $('kto').textContent = 'Prihlásený účet: ' + (u.email || 'neznámy') + '. ';
+  nacitaj();
+});
+</script>
+</body>
+</html>

@@ -466,3 +466,19 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Ostatné miesta (Domov, stromček v lište, Prehľad týždňa, profil) čítajú `seria()` a nemenili sa, takže sedia s uloženou hodnotou.
 - Test: blok `SERIA_46` v `test.js`. `node zdroj/test.js` OK, build OK (`spusti.cmd` v session visel, preto priamo cez node).
 - Overené v prehliadači len logika (4/4 → 5/5, žiara a trieda stromu sa nastavia). NEOVERENÉ: vzhľad očami (snímka bola zlá, dialóg bol za prihlasovacou stránkou), emulátor s účtom, 360 px a tablet, telefón (vibrácie, plynulosť), pokojná verzia očami.
+
+## 4.5 Admin pohľad pre vlastníka (vetva `claude/nervous-maxwell-53fcdb`, na základe 4.4, nenasadené, nepushnuté, čaká na „nasaď“)
+- **Stránka** `admin.html` (ide na web, ale sama o sebe neukáže nič): prihlásenie cez Google, potom súhrny: rodiny, nové za 7 dní, aktívne dnes a za 7 dní, graf 14 dní, priemer tém na dieťa, vek detí, verzie appky, rozdelenie podľa počtu hotových tém, najčastejšie a najmenej dokončené témy, obľúbené témy, hry, angličtina, priatelia. Tému berie z `temy.js`. `noindex`.
+- **Dáta:** appka (`zapisStat()` v `appka.html`, volá sa z `ulozAktivne` a pri uložení dieťaťa) zapisuje do `statistiky/{uid}` jeden anonymný dokument na rodinu: dátumy, počty, id hotových tém, id hier, verzia. Nikdy meno, e-mail, avatar ani obsah. Zápis len pri zmene (odtlačok), chyby sa ticho ignorujú.
+- **Pravidlá:** `statistiky/{uid}`: zapisuje len majiteľ uid a len povolené polia (`platnaStat`), nikto okrem vlastníka nečíta (ani rodina sama). Vlastník = `jeVlastnik()`: Google prihlásenie + overený e-mail `kudela.alexo@gmail.com` (e-mail nie je tajomstvo, v repozitári nie je heslo ani kľúč; účet s heslom a rovnakým e-mailom neprejde). Vlastník nezíska prístup k ničomu inému (deti, rodič, profily, správy zostávajú zatvorené, otestované).
+- Test pravidiel `zdroj\spusti.cmd test:rules`: 109 z 109 (nových 23). Pozor: ak beží iný emulátor na 8180, test spadne na „port taken“; ja som ho spustil s dočasnou konfiguráciou na 8190.
+- Verzia 60 / `4.5`, NOVINKY v:60 (krátka veta o anonymných počtoch), cache `svet3-v24`.
+- Kompromisy: bez Cloud Functions sa nedá agregovať na serveri, preto vlastník v prehliadači sčíta dokumenty (pri tisíckach rodín bude treba počítadlá). Hry, angličtina a priatelia sa zbierajú za zariadenie. Rodiny sa v prehľade objavia, až keď po aktualizácii otvoria appku. Po zmazaní všetkých detí ostane starý súhrn. Aktívne dni majú najviac 60 dní.
+- Overené: pravidlá, admin na emulátore na 8190/9299 (vlastník vidí súhrny, cudzí Google účet „nemá prístup“, 375 px bez posuvu, tmavý režim). NEOVERENÉ: skutočné Google prihlásenie v admin.html (v paneli sa okno nedá otvoriť, použitý falošný token emulátora), zápis `zapisStat` z živej appky, nasadené pravidlá. Pred prvým použitím treba `deploy` (pravidlá aj appka) a dieťa musí aspoň raz uložiť pokrok.
+
+### 4.5 doplnok: e-maily, blokovanie, zárobky, vzhľad
+- Štatistický dokument má navyše `email` rodiča (appka ho zapisuje z prihlásenia; mená detí tam stále nie sú). Novinka v:60 to otvorene hovorí.
+- Blokovanie: vlastník zapíše `blokovani/{uid}` (tlačidlo pri účte v `admin.html`, odblokovanie ho zmaže). Pravidlá `nieJeBlok()`/`smiePisat()`: zablokovaný účet nezapíše deti, profil rodiča, pokrok, štatistiky, profil priateľov, žiadosti, kódy ani správy; svoje dáta ešte číta a maže. Appku v telefóne to nevypne (len zákaz zápisu do databázy). Vlastný účet sa zablokovať nedá (tlačidlo je vypnuté).
+- Karta „Zárobky“ je zatiaľ prázdna (0 €); dáta pribudnú, keď budú zdroj príjmov.
+- Vzhľad `admin.html` v štýle appky (Baloo 2/Nunito, tmavý okraj, plastické tiene).
+- Opravené pri skúške: čítanie `blokovani` najprv padalo (podmienka na zápis sa vyhodnotila aj pri čítaní), teraz je rozdelené. `test:rules` 121 z 121.
