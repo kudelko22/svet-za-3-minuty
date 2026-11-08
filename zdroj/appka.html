@@ -869,7 +869,22 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .os-seria b { font-size: 1.9rem; }
 .os-seria b { display: inline-block; }
 .os-seria b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
-.os-seria.zap { animation: osZiara 1s ease-out; }
+.os-seria b.os-roll.bump { animation: none; }
+.os-seria.zap { margin: 16px 0; animation: osZiara 1s ease-out, osVelka 1.5s cubic-bezier(.3, 1.6, .5, 1) forwards; }
+.os-seria.zap .os-ohen { animation: osOhen 1.2s ease-out; }
+.os-roll { position: relative; display: inline-grid !important; overflow: hidden; height: 1.15em; line-height: 1.15; }
+.os-roll > span { grid-area: 1 / 1; text-align: center; }
+.os-roll .nova { transform: translateY(120%); }
+.os-roll.roll .stara { animation: osStara .45s ease-in forwards; }
+.os-roll.roll .nova { animation: osNova .75s cubic-bezier(.2, 1.9, .4, 1) .2s forwards; }
+.os-blesk { position: fixed; inset: 0; z-index: 3; pointer-events: none; background: radial-gradient(circle at 50% 55%, rgba(255, 226, 122, .85), rgba(255, 179, 71, .35) 40%, transparent 70%); animation: osBlesk .9s ease-out forwards; }
+.os-obsah.tras { animation: osTras .5s ease-out; }
+@keyframes osVelka { 0% { transform: scale(1); } 35% { transform: scale(1.7); } 100% { transform: scale(1.35); } }
+@keyframes osOhen { 0% { transform: scale(1); filter: none; } 30% { transform: scale(1.5) rotate(-8deg); filter: drop-shadow(0 0 14px #FF9F1C); } 60% { transform: scale(1.2) rotate(6deg); } 100% { transform: scale(1.1); filter: drop-shadow(0 0 8px #FFB347); } }
+@keyframes osStara { to { transform: translateY(-120%); opacity: 0; } }
+@keyframes osNova { to { transform: none; } }
+@keyframes osBlesk { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes osTras { 0%, 100% { transform: none; } 20% { transform: translate(-5px, 3px); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-3px, 2px); } 80% { transform: translate(2px, -1px); } }
 .os-dni { margin: -4px 0 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
 .os-dni b { display: inline-block; color: var(--ink); font-size: 1.05rem; }
 .os-dni b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
@@ -1623,6 +1638,13 @@ const Zvuk = (() => {
     ton2: c => tone(c, 494, 0, .42, 'triangle', .34), ton3: c => tone(c, 587, 0, .42, 'triangle', .34),
     krid: c => { sum(c, 0, .1, .16, 500, 1500); tone(c, 420, 0, .08, 'sine', .08, 640); },
     cink: c => { [1047, 1319, 1568, 2093].forEach((f, i) => { tone(c, f, i * .07, .32, 'sine', .22); tone(c, f * 2, i * .07, .18, 'triangle', .05); }); tone(c, 2637, .3, .45, 'sine', .1, 3136); },
+    // 4.6: zvuk predĺženia série: nábeh, úder, stúpajúca fanfára a trblietky
+    seria: c => {
+      sum(c, 0, .36, .2, 300, 3200); tone(c, 140, .3, .5, 'sine', .5, 45); sum(c, .33, .3, .28, 3200, 500);
+      [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => { tone(c, f, .4 + i * .07, .3, 'triangle', .26); tone(c, f * 2, .4 + i * .07, .2, 'sine', .06); });
+      [1047, 1319, 1568, 2093].forEach(f => tone(c, f, .9, .9, 'triangle', .14));
+      for (let i = 0; i < 8; i++) tone(c, 2200 + Math.random() * 2400, 1 + i * .06, .1, 'sine', .05);
+    },
     dopad1: c => { tone(c, 1319, 0, .3, 'triangle', .26); tone(c, 2637, 0, .2, 'sine', .08); },
     dopad2: c => { tone(c, 1760, 0, .4, 'triangle', .28); tone(c, 3520, .02, .28, 'sine', .08); tone(c, 880, 0, .35, 'sine', .14); },
   };
@@ -1658,7 +1680,7 @@ const Zvuk = (() => {
   }
 
   // Záloha: zvuky vopred vyrobené ako krátke súbory a prehrávané ako bežné audio
-  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55, ton0: .5, ton1: .5, ton2: .5, ton3: .5, cink: .8, dopad1: .35, dopad2: .45, krid: .15 };
+  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55, ton0: .5, ton1: .5, ton2: .5, ton3: .5, cink: .8, seria: 2, dopad1: .35, dopad2: .45, krid: .15 };
   const urly = {}, banka = {};
   const nahraj = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
   async function priprav() {
@@ -4260,7 +4282,7 @@ const Oslava = {
       ${stromSvg({ stupen: i, plody: naStrome, kos, novy, z: vyrastol ? STROM_STUPNE[iPred].m / S0.m : 0, sova: true, t: { plody: tPlody, novy: tNovy, sova: tSova, rast: tRast } })}
       <h2 class="os-nadpis">${[...nadpis].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
       ${vyrastol ? `<div class="os-novy-stupen" style="--d:${(tRast + .3).toFixed(2)}s">${ii(STAR())} Teraz je to: <b>${S0.n}</b></div>` : ''}
-      <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b id="os-cislo">${rast ? plan.od : plan.do}</b><span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
+      <div class="os-seria"><span class="os-ohen">${IK.ohen}</span>${rast ? `<b id="os-cislo" class="os-roll"><span class="stara">${plan.od}</span><span class="nova">${plan.do}</span></b>` : `<b id="os-cislo">${plan.do}</b>`}<span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
       <p class="os-dni">${plan.pokojne ? 'Nevadí, začíname odznova. Dnes si urobil prvý krok.' : `Učíš sa už <b id="os-dni">${rast ? pocet - 1 : pocet}</b> ${dni(pocet)}`}</p>
       <p class="os-veta">${ozil ? 'Strom je zasa zelený, hviezdičky sú späť a hry sú odomknuté. Vitaj späť! ' : ''}${s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
       <div class="os-tyzden">${tyzdenStromu(dnes).map(x => `<div class="os-den${x.h ? ' h' : ''}${x.dnes ? ' dnes' : ''}" style="--c:${x.c}"><i>${x.dnes ? `<span class="os-padne" style="--d:${tHviezda}s">${STAR()}</span>` : x.h ? STAR() : ''}</i>${x.d}</div>`).join('')}</div>
@@ -4278,16 +4300,19 @@ const Oslava = {
     });
     if (vyrastol && !plan.pokojne) o(tRast, () => { Zvuk.play('win'); vibruj([40, 30, 40]); FX.ohnostroj(3); });
     if (!plan.pokojne) o(tSova + .45, () => Zvuk.play('hoot'));
+    if (rast) o(tHviezda, () => Zvuk.play('seria'));
     if (rast) o(tHviezda + .35, () => {
-      Zvuk.play('dopad1'); Haptika.hraj('hviezdicka');
+      Haptika.hraj('hotovo');
       const c = el.querySelector('#os-cislo'), r = el.querySelector('.os-seria'), d = el.querySelector('#os-dni');
-      if (c) { c.textContent = s; c.classList.add('bump'); const [x, y] = stred(c); FX.burst(x, y, 18, ['star', 'dot'], 6); }
+      if (c) { c.classList.add('roll'); const [x, y] = stred(c); FX.burst(x, y, 34, ['star', 'dot', 'rect'], 9); setTimeout(() => FX.burst(x, y, 22, ['star', 'dot'], 12), 250); }
+      const bl = document.createElement('div'); bl.className = 'os-blesk'; el.appendChild(bl); setTimeout(() => bl.remove(), 1000);
+      const ob = el.querySelector('.os-obsah'); if (ob) { ob.classList.add('tras'); setTimeout(() => ob.classList.remove('tras'), 600); }
       if (r) r.classList.add('zap');
       if (d) { d.textContent = pocet; d.classList.add('bump'); }
       const sv = el.querySelector('.os-strom'); if (sv) sv.classList.add('zari');
       const sova = el.querySelector('.os-sova'); if (sova) sova.classList.add('skace');
     });
-    if (!plan.pokojne) o(tHviezda + .6, () => { Zvuk.play('win'); FX.ohnostroj(vyrastol ? 2 : 3); });
+    if (!plan.pokojne) o(tHviezda + .6, () => { if (!rast) Zvuk.play('win'); FX.ohnostroj(vyrastol ? 2 : 3); });
     el.addEventListener('click', e => { if (tukniNaStrom(el, e)) e.stopPropagation(); });
     const b = el.querySelector('[data-oslava-dalej]');
     if (b) b.addEventListener('click', e => {
