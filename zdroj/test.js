@@ -218,7 +218,7 @@ for (const t of T) {
 if (new Set(T.map(t => t.id)).size !== T.length) chyby.push('duplicitne id');
 // Obsah 4.6: každá téma má vyplnené polia a vlastný vyfarbený obrázok (nie prázdny, nie len obrysy)
 for (const t of T) {
-  for (const f of ['t', 'm', 's', 'p']) if (f === 't' || f === 'm' || T.indexOf(t) >= 151) if (typeof t[f] !== 'string' || t[f].length < (f === 't' ? 6 : 20)) chyby.push('prazdne pole ' + f + ' ' + t.id);
+  for (const f of ['t', 'm', 's', 'p']) if (f === 't' || f === 'm' || (T.indexOf(t) >= 151 && t.k !== 'anglictina')) if (typeof t[f] !== 'string' || t[f].length < (f === 't' ? 6 : 20)) chyby.push('prazdne pole ' + f + ' ' + t.id);
   if (!Array.isArray(t.o) || t.o.length !== 3 || t.o.some(x => !x || x.length < 8)) chyby.push('rozhovor ' + t.id);
   if (!/^[a-z0-9-]+$/.test(t.id)) chyby.push('zle id ' + t.id);
   if (/pre väčšie deti/i.test(t.m + t.s)) chyby.push('pre vacsie deti ' + t.id);

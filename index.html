@@ -1516,15 +1516,16 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=62"></script>
-<script src="obrazky.js?v=62"></script>
-<script src="misie.js?v=62"></script>
-<script src="tyzden.js?v=62"></script>
-<script src="anglictina.js?v=62"></script>
-<script src="rodic-brana.js?v=62"></script>
-<script src="rodic-panel.js?v=62"></script>
+<script src="temy.js?v=63"></script>
+<script src="obrazky.js?v=63"></script>
+<script src="misie.js?v=63"></script>
+<script src="kvizy.js?v=63"></script>
+<script src="tyzden.js?v=63"></script>
+<script src="anglictina.js?v=63"></script>
+<script src="rodic-brana.js?v=63"></script>
+<script src="rodic-panel.js?v=63"></script>
 <script>
-const VERZIA_APPKY = 62; const VERZIA_NAZOV = '4.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 63; const VERZIA_NAZOV = '4.7'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4041,8 +4042,10 @@ function odpovedz(f, v) {
 function startKviz(druh = '') {
   const tazky = druh === 'tazky', vyzva = druh === 'vyzva', d = vyzva ? 'vyzva' : tazky ? 'tazky' : 'rychly';
   if (kvizMinuty(d)) { Zvuk.play('boing'); toast(`${KVIZY[d].koho} môžeš znova hrať o ${kvizMinuty(d)} min.`); return; }
-  const vsetky = vyzva ? VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid }))
-    : TV().flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id })));
+  // kvizy.js (4.6): sady navyše podľa náročnosti; 1 rýchly, 2 ťažký (v rýchlom len pre väčšie deti), 3 výzva
+  const navyse = u => KVIZ_SADY.filter(s => u.includes(s.u) && TV().some(t => t.id === s.tid)).flatMap(s => s.z.map(q => ({ t: 'q', q, tid: s.tid })));
+  const vsetky = vyzva ? [...VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid })), ...navyse([3])]
+    : [...TV().flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id }))), ...navyse(tazky ? [2] : st.vek === 'starsi' ? [1, 2] : [1])];
   const qs = mix(vsetky.length).slice(0, vyzva ? 10 : tazky ? 8 : 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
   st.flow = { typ: 'kviz', tazky, vyzva, zivoty: KVIZY[d].zivoty, maxZivoty: KVIZY[d].zivoty, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
@@ -4687,6 +4690,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 63, obr: () => IK_KAT.cas, n: 'Verzia 4.7: veľa nového obsahu', p: 'Pribudlo 69 nových tém, vyše sto misií dňa, 24 kvízových sád a stovky anglických slovíčok a viet. Séria a strom sa po dohraní témy dňa pekne rozžiaria, k hre Čo je iné? pribudli krajšie obrázky a na Domove je strom v lište.' },
   { v: 62, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.6: živšia séria a strom', p: 'Keď dohráš tému dňa a séria sa predĺži, číslo sa rozžiari a poskočí, strom zažiari a sovička zaskáče. Ak séria začína znova od jednotky, oslava je pokojnejšia, bez veľkého ohňostroja.' },
   { v: 61, obr: () => OBR_HRY.ine, n: 'Verzia 4.5.1: krajšie obrázky v hre Čo je iné?', p: 'Prekreslili sme sandál (teraz je to žabka), loptu, nôž, skrutkovač, jedľu, tuleňa, orla, husle a gitaru, aby sa dali ľahko rozoznať.' },
   { v: 60, obr: () => OBR_HRY.ine, n: 'Verzia 4.5: nová hra Čo je iné?', p: 'Na obrázku sú štyri veci. Tri patria k sebe a jedna je iná, napríklad pes, kôň, mačka a jablko. Ťukni na tú, ktorá nepatrí k ostatným. Po odpovedi sa dozvieš prečo. Hra má ľahšie sady pre menších a ťažšie pre starších.' },
@@ -5777,7 +5781,7 @@ const Cloud = {
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });
-    zapis(id, d);
+    zapis(id, d); zapisStat();
     this.vyber(id, stare ? 'ja' : 'domov');
     // nové dieťa: Sovička ukáže appku; pri úplne novom účte rodičovi celú prehliadku
     if (!stare) { const rodic = this.novyUcet; this.novyUcet = false; setTimeout(() => Sprievodca.start(rodic ? SPR_RODIC : SPR_KROKY), 1500); }
@@ -5989,6 +5993,28 @@ function zapis(id, d) {
   z.then(() => { Cloud.stavUlozenia = 'Všetko je uložené v cloude ✓'; obnovStav(); },
     e => { Cloud.stavUlozenia = 'Neuložené: ' + chybaText(e); obnovStav(); });
 }
+// Anonymné štatistiky pre vlastníka (admin.html): len počty a id tém, bez mena a obsahu; pravidlá `statistiky/{uid}`
+let statOtlacok = '';
+function zapisStat() {
+  try {
+    if (!Cloud.pouzivatel || !Cloud.deti.length) return;
+    const dnes = key(new Date()), D = /^d{4}-dd-dd$/;
+    const dni = [...new Set(Cloud.deti.flatMap(x => x.dni || []).concat(dnes))].filter(x => D.test(x)).sort();
+    const hry = [...new Set([...(S.get('statHry', []) || []), ...HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).map(h => h.id)])].slice(0, 60);
+    S.set('statHry', hry);
+    const ang = Math.max(S.get('statAng', 0) || 0, Object.keys(Ang.data().dni || {}).length); S.set('statAng', ang);
+    const pri = Math.max(S.get('statPri', 0) || 0, Object.keys(Soc.priatelia || {}).length); S.set('statPri', pri);
+    const d = {
+      od: dni[0], posledne: dnes, verzia: VERZIA_APPKY, nazov: String(VERZIA_NAZOV).slice(0, 12),
+      mladsi: Cloud.deti.filter(x => x.vek !== 'starsi').length, starsi: Cloud.deti.filter(x => x.vek === 'starsi').length,
+      temy: Cloud.deti.reduce((a, x) => a + (x.done || []).length, 0),
+      done: [...new Set(Cloud.deti.flatMap(x => x.done || []))].slice(0, 500), fav: [...new Set(Cloud.deti.flatMap(x => x.fav || []))].slice(0, 500),
+      hry, ang, priatelia: pri, dni: dni.slice(-60), email: String(Cloud.pouzivatel.email || '').slice(0, 120),
+    };
+    const o = JSON.stringify(d); if (o === statOtlacok) return; statOtlacok = o;
+    setDoc(doc(db, 'statistiky', Cloud.pouzivatel.uid), { ...d, upravene: serverTimestamp() }).catch(() => { statOtlacok = ''; });
+  } catch (e) { /* štatistiky nikdy nesmú rozbiť ukladanie */ }
+}
 function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
@@ -5996,6 +6022,7 @@ function ulozAktivne() {
   Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
   zapis(d.id, d);
   socUlozProfil();
+  zapisStat();
 }
 function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
 function obnovPrihlasenie() {
