@@ -518,3 +518,11 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Test: blok `REZIM` v `test.js` (uloženie, načítanie, neplatná hodnota, karta v profile) a kontrola v hornej časti `test.js` (každá farebná premenná a každá `--p-` je aj v mesačnom režime, kontrast textu 4,5:1).
 - Overené v prehliadači (375 px): prihlásenie, Domov, Témy, Hry, pexeso, Ja s prepínačom, téma s kvízom (správna ✓ a nesprávna ✗), Odznaky, Angličtina, Misia. Opravené po prvom pohľade: žltý text na žltom (nálepky, štítky Nové, karty Ja), angličtina, červené nadpisy odpovedí.
 - NEOVERENÉ: emulátor s účtom (worktree nemá `node_modules`), tablet, Týždeň a Prehľad týždňa, strom múdrosti, Čo je iné?, režim do auta, okná (Čo je nové, sprievodca), plynulosť na telefóne, výsledok `spusti.cmd test` (visel, nevidel som ho; build prebehol). Možno ostali ďalšie pevné farby v JS (SVG v kartách, `style="--c:#..."`).
+
+## 4.8 Zlúčenie a vydanie (verzia 64 / 4.8, cache svet3-v27; vetva `claude/youthful-chandrasekhar-11d227`, main)
+- Zlúčené do 4.7: `quizzical-sinoussi-995b8f` (Mesačný režim; konflikty verzia, NOVINKY, sw.js, test.js, ODOVZDANIE vyriešené tak, že ostali obe zmeny, `index.html` znova zostavený), `epic-wright-144746` (oprava 23 tém, bez konfliktu).
+- Z druhej alternatívy opráv (`elated-solomon-3e2962`) prevzaté len 4 kresby, ktoré boli jasne lepšie: `cinskymur`, `zrkadlo`, `ladovce`, `cloud`. Texty a kvízy z nej NEprevzaté (epic-wright má presnejšie vety; elated mal napr. „Čo je meniny?“, „pršia mraky“, „sonda pristála“ chybne). `samuraji` a `symboly` ostali z epic-wright.
+- `pensive-booth` po 3d91b1d: ožitie stromu (012b908) a plameň (87c8687) boli už v main cez 4.7, nič ďalšie netreba.
+- Test `node zdroj/test.js`: OK 233 tém. `test:rules` nespúšťaný (firestore.rules sa v tejto práci nemenilo oproti 4.7).
+- Skúška v prehliadači (statický server na 127.0.0.1:5099 + bežiaci emulátor auth/firestore): bez chýb okrem známych (chýba `a/zoznam.json` s hlasom a registrácia service workera v paneli), 360 px bez posuvu, dlhé meno sa skráti, sprievodca, Týždeň a Prehľad týždňa, Mesačný režim (čitateľné), téma dňa a misia až do konca, 6 obrázkov tém. NEOVERENÉ: animácia série a ožitie stromu očami, Čo je iné?, denný kvízik angličtiny, tablet, telefón, iPhone.
+- Nasadené na pokyn vlastníka v tejto session („už to nasaď, otestujem si to sám“).
