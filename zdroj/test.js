@@ -195,6 +195,17 @@ for (const t of T) {
   if (t.z.filter(q => q.v !== 's').length < 3) chyby.push('malo otazok pre mladsich ' + t.id);
 }
 if (new Set(T.map(t => t.id)).size !== T.length) chyby.push('duplicitne id');
+// Obsah 4.6: každá téma má vyplnené polia a vlastný vyfarbený obrázok (nie prázdny, nie len obrysy)
+for (const t of T) {
+  for (const f of ['t', 'm', 's', 'p']) if (f === 't' || f === 'm' || T.indexOf(t) >= 151) if (typeof t[f] !== 'string' || t[f].length < (f === 't' ? 6 : 20)) chyby.push('prazdne pole ' + f + ' ' + t.id);
+  if (!Array.isArray(t.o) || t.o.length !== 3 || t.o.some(x => !x || x.length < 8)) chyby.push('rozhovor ' + t.id);
+  if (!/^[a-z0-9-]+$/.test(t.id)) chyby.push('zle id ' + t.id);
+  if (/pre väčšie deti/i.test(t.m + t.s)) chyby.push('pre vacsie deti ' + t.id);
+  for (const q of t.z) if (!q.q || !q.w || new Set(q.a.map(a => a[1])).size !== q.a.length) chyby.push('otazka ' + t.id);
+  const sv = svg(t), vyfarbene = (sv.match(/fill="#[0-9A-Fa-f]{3,6}"/g) || []).length;
+  if (vyfarbene < 6 || /undefined|NaN|object Object/.test(sv) || sv.length < 900) chyby.push('prazdny obrazok ' + t.id);
+}
+if (T.length < 211) chyby.push('malo tem ' + T.length);
 for (const vek of ['mladsi','starsi']) {
   st.vek = vek;
   for (const t of T) {
