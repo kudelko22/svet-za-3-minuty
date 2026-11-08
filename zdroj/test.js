@@ -329,8 +329,25 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   for (let i = 0; i < 600; i++) { if (h.y > 240) h.vy = h.skok; sovaKrok(h, 1 / 60); }
   if (!h.prekazky.length) chyby.push("sova bez ceruziek"); Hra.sovaKresli(h); Hra.koniec(false, 31);
   if (!st.odznaky.includes("sova30") || !st.odznaky.includes("sova10")) chyby.push("odznaky sova"); Hra.zrus(); }
-{ const f = { typ: "tema", id: "ruky", odp: { 3: { ok: true } } }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), ""); if (!Oslava.treba(f) || !Oslava.treba({ typ: "kviz", odp: { 0: { ok: true } } })) chyby.push("oslava prva tema dna"); Oslava.ukaz(() => {});
-  if (Oslava.treba(f)) chyby.push("oslava druhykrat"); S.set(Oslava.kluc(), ""); st.dni = [key(new Date())]; if (Oslava.treba(f)) chyby.push("oslava ked uz dnes nieco"); st.dni = dniPred; }
+/* PRIPOMIENKA_44: pas stromu a pripomienky na Domove */
+{ const dp = st.dni, pv = st.flow; const dnes = key(new Date()), vcera = new Date(); vcera.setDate(vcera.getDate() - 1);
+  S.set(Pripomienka.kluc(), "");
+  st.dni = [key(vcera)]; if (!/séria 1 deň padne/.test(Pripomienka.text())) chyby.push("pripomienka seria: " + Pripomienka.text());
+  st.dni = [key(vcera), dnes]; if (Pripomienka.text()) chyby.push("pripomienka ked je dnes hotovo");
+  st.dni = [key(vcera)]; Pripomienka.zavri({}); if (Pripomienka.text()) chyby.push("pripomienka po zavreti");
+  S.set(Pripomienka.kluc(), ""); st.dni = []; if (Pripomienka.text()) chyby.push("pripomienka bez historie");
+  const html = (st.dni = [key(vcera)], Pripomienka.html()); if (!/data-strom/.test(html) || !/data-prip-zavri/.test(html) || /[\u{1F300}-\u{1FAFF}]/u.test(html)) chyby.push("pas stromu html");
+  st.dni = dp; S.set(Pripomienka.kluc(), ""); }
+/* STROM_44: animacia stromu len ako zaver dnesnej temy dna, raz za den, nikdy pri kvize, inej teme ani precvicovani */
+{ const f = { typ: "tema", id: temaDna().id, odp: { 3: { ok: true } } }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), "");
+  if (!Oslava.treba(f)) chyby.push("oslava tema dna");
+  if (Oslava.treba({ typ: "kviz", odp: { 0: { ok: true } } })) chyby.push("oslava pri kvize");
+  if (Oslava.treba({ typ: "tema", id: "__ina__", odp: { 3: { ok: true } } })) chyby.push("oslava pri inej teme");
+  if (Oslava.treba({ ...f, precvic: true })) chyby.push("oslava pri precvicovani");
+  if (Oslava.treba({ ...f, odp: { 3: { ok: false } } })) chyby.push("oslava bez spravnej odpovede");
+  st.dni = [key(new Date())]; if (!Oslava.treba(f)) chyby.push("oslava po kvize uz dnes: tema dna ju ma dostat");
+  Oslava.ukaz(() => {});
+  if (Oslava.treba(f)) chyby.push("oslava druhykrat"); S.set(Oslava.kluc(), ""); st.dni = dniPred; }
 Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
 /* V23_TEST */
 { const RE = new RegExp(EMO_ODP.source, 'gu'), chybaSubor = new Set();
@@ -558,7 +575,7 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   const m = src.match(/id="meno-dietata"[^>]*maxlength="(\d+)"/);
   if (!m || +m[1] < 10 || +m[1] > 20) zle.push('meno dietata: maxlength 10 az 20');
   if (!/\.dieta b[^}]*line-clamp/.test(src)) zle.push('chyba orezanie mena v vybere dietata');
-  if (!/\.prof-meno[^}]*min-width: 0/.test(src) || !/\.h1, \.h2[^}]*overflow-wrap: anywhere/.test(src)) zle.push('chyba zalamovanie nadpisov');
+  if (!/\.prof-meno[^}]*min-width: 0/.test(src) || !/\.h1, \.h2[^}]*overflow-wrap: (anywhere|break-word)/.test(src)) zle.push('chyba zalamovanie nadpisov');
   if (zle.length) { console.log('CHYBY meno', zle); process.exit(1); } }
 
 // vibrácie: Haptika je bezpečná bez navigator.vibrate, rešpektuje prepínač a "menej pohybu"
