@@ -6,7 +6,7 @@ const skript = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m)[1];
 const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
 fs.writeFileSync(docasny, modul); execFileSync(process.execPath, ['--check', docasny], { stdio: 'inherit' }); // modul s Firebase sa len skontroluje
-const src = ['temy.js', 'obrazky.js', 'misie.js', 'tyzden.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
+const src = ['temy.js', 'obrazky.js', 'misie.js', 'kvizy.js', 'tyzden.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js'].map(f => fs.readFileSync(path.join(R, f), 'utf8')).join('\n') + '\n' + skript;
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
@@ -374,9 +374,26 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   Oslava.ukaz(() => {});
   if (Oslava.treba(f)) chyby.push("oslava druhykrat"); S.set(Oslava.kluc(), ""); st.dni = dniPred; }
 Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
+/* OBSAH_B_TEST (4.6): misie a kvizove sady */
+{ const nove = MISIE.slice(126);
+  if (nove.length < 100) chyby.push("nove misie " + nove.length);
+  for (const typ of MISIA_PORADIE) for (const u of [1, 2, 3]) if (nove.filter(m => m.t === typ && m.u === u).length < 6) chyby.push("nove misie malo " + typ + u);
+  for (const m of MISIE) { if (!m.n || !m.fakt || !m.rodic || /väčšie deti|väčších detí/.test(JSON.stringify(m))) chyby.push("misia text " + m.id);
+    if (m.t === 'detektiv' || m.t === 'coak') { if (!Number.isInteger(m.s) || m.s < 0 || m.s >= m.o.length || new Set(m.o).size !== m.o.length) chyby.push("misia odpoved " + m.id); }
+    if (m.t === 'pravdy') for (const x of m.v) if (!x.t || !x.e) chyby.push("misia pravdy pole " + m.id); }
+  for (const typ of ['detektiv', 'coak']) for (const u of [1, 2, 3]) { const zoz = nove.filter(m => m.t === typ && m.u === u), poz = [...Array(3).keys()].map(i => zoz.filter(m => m.s === i).length); if (Math.min(...poz) < Math.floor(zoz.length / 3) - 1) chyby.push("rozdelenie " + typ + u + " " + poz); }
+  for (const u of [1, 2, 3]) { const zoz = nove.filter(m => m.t === 'pravdy' && m.u === u), poz = [0, 1, 2].map(i => zoz.filter(m => !m.v[i].ok).length); if (Math.min(...poz) < Math.floor(zoz.length / 3) - 1) chyby.push("rozdelenie pravdy " + u + " " + poz); }
+  if (KVIZ_SADY.length < 20 || KVIZ_SADY.flatMap(s => s.z).length < 150) chyby.push("malo kvizov");
+  if (new Set(KVIZ_SADY.map(s => s.id)).size !== KVIZ_SADY.length) chyby.push("kviz id");
+  for (const s of KVIZ_SADY) { if (!byId(s.tid) || ![1, 2, 3].includes(s.u)) chyby.push("kviz sada " + s.id);
+    for (const q of s.z) { const a = q.a.map(x => x[1]); if (!q.q || !q.w || a.length !== (s.u === 1 ? 3 : 4) || new Set(a).size !== a.length || a.some(x => !x)) chyby.push("kviz otazka " + s.id + " " + q.q); } }
+  for (const [vek, druh, n] of [["mladsi", "", 5], ["starsi", "", 5], ["starsi", "tazky", 8], ["starsi", "vyzva", 10]]) { st.vek = vek; let videl = false;
+    for (let i = 0; i < 40 && !videl; i++) { odomkni(); startKviz(druh); videl = st.flow.kroky.some(k => k.q && KVIZ_SADY.some(s => s.z.includes(k.q))); st.flow = null; }
+    if (!videl) chyby.push("kviz nevidi nove otazky " + vek + druh); }
+  st.vek = "mladsi"; }
 /* V23_TEST */
 { const RE = new RegExp(EMO_ODP.source, 'gu'), chybaSubor = new Set();
-  for (const q of [...T.flatMap(t => t.z), ...VYZVA]) for (const a of q.a) for (const e of String(a[0]).match(RE) || []) if (!EMO_SUBORY.has(emoSubor(e).slice(2))) chybaSubor.add(e);
+  for (const q of [...T.flatMap(t => t.z), ...VYZVA, ...KVIZ_SADY.flatMap(s => s.z)]) for (const a of q.a) for (const e of String(a[0]).match(RE) || []) if (!EMO_SUBORY.has(emoSubor(e).slice(2))) chybaSubor.add(e);
   for (const t of T) { const o = svg(t); for (const e of o.replace(/aria-label="[^"]*"/, '').match(RE) || []) chybaSubor.add(t.id + ' text ' + e);
     for (const m of o.matchAll(/href="(e\\/[^"]+)"/g)) if (!EMO_SUBORY.has(m[1].slice(2))) chybaSubor.add(t.id + ' ' + m[1]); }
   if (chybaSubor.size) chyby.push("emoji bez obrazka: " + [...chybaSubor].slice(0, 8).join(" "));
@@ -394,7 +411,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
       autoPlan(t).kroky.forEach(k => { if (k.typ === "veta") pridaj(k.text); }); }
     for (const druh of ["", "tazky", "vyzva"]) { if (druh && vek !== "starsi") continue; odomkni(); startKviz(druh); const f = st.flow; f.kroky.forEach((k, i) => { f.i = i; pridaj(textKroku(f)); }); st.flow = null; } }
   // otázky a odpovede v inom poradí: každá možnosť zvlášť
-  for (const q of [...T.flatMap(t => t.z), ...VYZVA]) { q.a.forEach(a => pridaj(a[1])); (q.h || []).forEach(pridaj); vetyZ(q.q).forEach(pridaj); }
+  for (const q of [...T.flatMap(t => t.z), ...VYZVA, ...KVIZ_SADY.flatMap(s => s.z)]) { q.a.forEach(a => pridaj(a[1])); (q.h || []).forEach(pridaj); vetyZ(q.q).forEach(pridaj); }
   ["alebo", "Výborne! Téma je prebratá.", "O chvíľu pokračujeme ďalšou témou.", "Ahoj!", "Takto ti budem čítať témy o svete.", ...[...Array(10).keys()].map(i => "Otázka " + (i + 1) + ".")].forEach(pridaj);
   Object.assign(st, zaloha); ULOZ_VETY([...vety].sort());
   if (spojVety(["Čo dáva krava?", "Mlieko", "Vajíčka", "alebo", "Vlnu"]) !== "Čo dáva krava? Mlieko, Vajíčka alebo Vlnu?") chyby.push("spojVety " + spojVety(["Čo dáva krava?", "Mlieko", "Vajíčka", "alebo", "Vlnu"]));

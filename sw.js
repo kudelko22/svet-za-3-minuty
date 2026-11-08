@@ -2,7 +2,7 @@
 // Vlastné súbory: najprv zo siete, aby nová verzia prišla hneď; bez signálu alebo keď sieť
 // mešká viac ako 3 sekundy, z pamäte. Písma, knižnice Firebase a obrázky emoji (e/): z pamäte (nemenia sa).
 const VERZIA = 'svet3-v24';
-const JADRO = ['./', 'index.html', 'temy.js', 'obrazky.js', 'misie.js', 'tyzden.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js', 'manifest.webmanifest', 'ikony/ikona-192.png', 'ikony/ikona-512.png'];
+const JADRO = ['./', 'index.html', 'temy.js', 'obrazky.js', 'misie.js', 'kvizy.js', 'tyzden.js', 'anglictina.js', 'rodic-brana.js', 'rodic-panel.js', 'manifest.webmanifest', 'ikony/ikona-192.png', 'ikony/ikona-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERZIA).then(c => c.addAll(JADRO)).then(() => self.skipWaiting()));

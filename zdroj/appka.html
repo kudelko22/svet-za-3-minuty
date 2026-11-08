@@ -1467,6 +1467,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="temy.js"></script>
 <script src="obrazky.js"></script>
 <script src="misie.js"></script>
+<script src="kvizy.js"></script>
 <script src="tyzden.js"></script>
 <script src="anglictina.js"></script>
 <script src="rodic-brana.js"></script>
@@ -3989,8 +3990,10 @@ function odpovedz(f, v) {
 function startKviz(druh = '') {
   const tazky = druh === 'tazky', vyzva = druh === 'vyzva', d = vyzva ? 'vyzva' : tazky ? 'tazky' : 'rychly';
   if (kvizMinuty(d)) { Zvuk.play('boing'); toast(`${KVIZY[d].koho} môžeš znova hrať o ${kvizMinuty(d)} min.`); return; }
-  const vsetky = vyzva ? VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid }))
-    : TV().flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id })));
+  // kvizy.js (4.6): sady navyše podľa náročnosti; 1 rýchly, 2 ťažký (v rýchlom len pre väčšie deti), 3 výzva
+  const navyse = u => KVIZ_SADY.filter(s => u.includes(s.u) && TV().some(t => t.id === s.tid)).flatMap(s => s.z.map(q => ({ t: 'q', q, tid: s.tid })));
+  const vsetky = vyzva ? [...VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid })), ...navyse([3])]
+    : [...TV().flatMap(t => t.z.filter(q => tazky ? q.v === 's' : pre(q)).map(naVek).map(q => ({ t: 'q', q, tid: t.id }))), ...navyse(tazky ? [2] : st.vek === 'starsi' ? [1, 2] : [1])];
   const qs = mix(vsetky.length).slice(0, vyzva ? 10 : tazky ? 8 : 5).map(i => ({ ...vsetky[i], poradie: mix(vsetky[i].q.a.length) }));
   st.flow = { typ: 'kviz', tazky, vyzva, zivoty: KVIZY[d].zivoty, maxZivoty: KVIZY[d].zivoty, i: 0, odp: {}, from: st.view, kroky: [...qs, { t: 'koniec' }] };
   Zvuk.play('start'); render(); window.scrollTo(0, 0);
@@ -4620,6 +4623,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 61, obr: () => IK_KAT.cas, n: 'Verzia 4.6: viac misií a kvízov', p: 'Pribudlo vyše sto nových misií dňa a dvadsaťštyri kvízových sád. Rýchly kvíz, ťažký kvíz aj výzva majú teraz oveľa viac otázok.' },
   { v: 60, obr: () => OBR_HRY.ine, n: 'Verzia 4.5: nová hra Čo je iné?', p: 'Na obrázku sú štyri veci. Tri patria k sebe a jedna je iná, napríklad pes, kôň, mačka a jablko. Ťukni na tú, ktorá nepatrí k ostatným. Po odpovedi sa dozvieš prečo. Hra má ľahšie sady pre menších a ťažšie pre starších.' },
   { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Stromček hore je teraz väčší polkruh s počtom dní série (1, 2, 3 a ďalej), keď strom schne, zožltne. Raz za deň ti Domov jemne pripomenie sériu alebo lekciu (zavrieš ju krížikom). Pri ťuknutí na strom sa okno týždňa zavrie.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
