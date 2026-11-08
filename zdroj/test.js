@@ -373,6 +373,14 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   st.dni = [key(new Date())]; if (!Oslava.treba(f)) chyby.push("oslava po kvize uz dnes: tema dna ju ma dostat");
   Oslava.ukaz(() => {});
   if (Oslava.treba(f)) chyby.push("oslava druhykrat"); S.set(Oslava.kluc(), ""); st.dni = dniPred; }
+/* SERIA_46: plán čísla série (stará a nová hodnota), raz za deň, precvičovanie bez oslavy */
+{ const a = planSerie(5, 9); if (a.od !== 4 || a.do !== 5 || a.pokojne || !a.zmena) chyby.push("plan serie 4 na 5");
+  const b = planSerie(1, 9); if (!b.pokojne || b.od !== 1 || b.do !== 1 || b.zmena) chyby.push("plan serie po prerusení: pokojne");
+  const c = planSerie(1, 1); if (c.pokojne || c.od !== 0 || c.do !== 1) chyby.push("plan serie prvy den");
+  const f = { typ: "tema", id: temaDna().id, odp: { 3: { ok: true } } }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), "");
+  if (Oslava.treba({ ...f, precvic: true })) chyby.push("seria: oslava pri precvicovani");
+  Oslava.ukaz(() => {}); if (Oslava.treba(f)) chyby.push("seria: oslava druhykrat v den");
+  S.set(Oslava.kluc(), ""); st.dni = dniPred; }
 Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zalohaV22.vek });
 /* V23_TEST */
 { const RE = new RegExp(EMO_ODP.source, 'gu'), chybaSubor = new Set();

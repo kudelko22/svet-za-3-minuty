@@ -867,7 +867,18 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .os-seria { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px 6px 8px; border: 3px solid var(--ink); border-radius: 999px; background: #FFE7C2; box-shadow: 0 4px 0 var(--ink); font: 700 1.1rem/1 var(--f-display); animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) 1.2s both; }
 .os-ohen { width: 46px; height: 46px; margin: -10px 0; }
 .os-seria b { font-size: 1.9rem; }
-.os-seria b.bump { animation: jelly .7s; }
+.os-seria b { display: inline-block; }
+.os-seria b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
+.os-seria.zap { animation: osZiara 1s ease-out; }
+.os-dni { margin: -4px 0 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
+.os-dni b { display: inline-block; color: var(--ink); font-size: 1.05rem; }
+.os-dni b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
+.os-strom.zari { animation: osZari 1.5s ease-out; }
+.os-sova.skace .owl { animation: osSkok .6s ease-out 2; }
+@keyframes osCislo { 0% { transform: translateY(-.7em); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@keyframes osZiara { 0% { box-shadow: 0 4px 0 var(--ink), 0 0 0 0 rgba(255, 210, 63, .9); } 100% { box-shadow: 0 4px 0 var(--ink), 0 0 0 24px rgba(255, 210, 63, 0); } }
+@keyframes osZari { 40% { filter: drop-shadow(0 0 16px #FFD23F) drop-shadow(0 0 30px #FFE27A); } }
+@keyframes osSkok { 40% { transform: translateY(-14px) rotate(-6deg); } }
 .prehlad .pr-ik { flex: none; width: 30px; height: 30px; }
 .os-veta { margin: 0; max-width: 32ch; font-weight: 800; color: var(--ink); animation: osIn .4s ease-out 1.5s both; }
 .os-tyzden { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; width: 100%; font: 600 .85rem/1 var(--f-display); color: var(--muted); animation: osIn .4s ease-out 1.6s both; }
@@ -1472,7 +1483,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 60; const VERZIA_NAZOV = '4.5'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 61; const VERZIA_NAZOV = '4.6'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4224,6 +4235,11 @@ const tyzdenStromu = dnes => {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
   return DNI.map((d, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x); return { d, dnes: k === dnes, h: st.dni.includes(k), c: PASTEL[i] }; });
 };
+/* 4.6: plán čísla série v oslave: od (čo je vidno na začiatku), do (uložená hodnota), pokojne (séria po prerušení začína znova od 1: bez počítania a ohňostroja) */
+const planSerie = (s, pocetDni) => {
+  const pokojne = s <= 1 && pocetDni > 1;
+  return { od: pokojne ? s : Math.max(0, s - 1), do: s, pokojne, zmena: !pokojne };
+};
 const Oslava = {
   kluc: () => 'oslava-' + (st.dietaId || 'x'),
   // 4.4: len záver dnešnej témy dňa (nie iná téma, kvíz, hra ani precvičovanie), raz za deň, pred misiou
@@ -4234,6 +4250,7 @@ const Oslava = {
     const s = Math.max(1, seria()), pocet = Math.max(1, st.dni.length), i = stromStupen(pocet), iPred = stromStupen(pocet - 1), S0 = STROM_STUPNE[i];
     const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), novy = kos ? 'kos' : naStrome - 1, vyrastol = i > iPred, casy = [];
     const ozil = hnPredDnes; hnPredDnes = 0;
+    const plan = planSerie(s, pocet), rast = plan.zmena && !tiche;
     const pocetK = i === 1 ? 3 : i >= 3 ? 9 : 6, tPlody = .6 + pocetK * .08 + (S0.kvety ? .5 : .1), tNovy = tPlody + Math.max(0, naStrome - 1) * .07 + .35;
     const tRast = tNovy + 1.1, tSova = (vyrastol ? tRast + .9 : tNovy + 1) , tHviezda = tSova + .5, tTlacidlo = tHviezda + .5;
     const el = document.createElement('div');
@@ -4243,7 +4260,8 @@ const Oslava = {
       ${stromSvg({ stupen: i, plody: naStrome, kos, novy, z: vyrastol ? STROM_STUPNE[iPred].m / S0.m : 0, sova: true, t: { plody: tPlody, novy: tNovy, sova: tSova, rast: tRast } })}
       <h2 class="os-nadpis">${[...nadpis].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
       ${vyrastol ? `<div class="os-novy-stupen" style="--d:${(tRast + .3).toFixed(2)}s">${ii(STAR())} Teraz je to: <b>${S0.n}</b></div>` : ''}
-      <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b id="os-cislo">${s - 1}</b><span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
+      <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b id="os-cislo">${rast ? plan.od : plan.do}</b><span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
+      <p class="os-dni">${plan.pokojne ? 'Nevadí, začíname odznova. Dnes si urobil prvý krok.' : `Učíš sa už <b id="os-dni">${rast ? pocet - 1 : pocet}</b> ${dni(pocet)}`}</p>
       <p class="os-veta">${ozil ? 'Strom je zasa zelený, hviezdičky sú späť a hry sú odomknuté. Vitaj späť! ' : ''}${s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
       <div class="os-tyzden">${tyzdenStromu(dnes).map(x => `<div class="os-den${x.h ? ' h' : ''}${x.dnes ? ' dnes' : ''}" style="--c:${x.c}"><i>${x.dnes ? `<span class="os-padne" style="--d:${tHviezda}s">${STAR()}</span>` : x.h ? STAR() : ''}</i>${x.d}</div>`).join('')}</div>
       <button class="btn wide cta os-dalej" style="--d:${tTlacidlo}s" data-oslava-dalej>Pokračovať →</button></div>`;
@@ -4258,10 +4276,18 @@ const Oslava = {
       Zvuk.play('dopad1'); setTimeout(() => Zvuk.play('cink'), 120); vibruj(30);
       const p = el.querySelector('.os-novy, .os-kos.novy'); if (p) { const [x, y] = stred(p); FX.burst(x, y, 26, ['star', 'dot'], 7); }
     });
-    if (vyrastol) o(tRast, () => { Zvuk.play('win'); vibruj([40, 30, 40]); FX.ohnostroj(3); });
-    o(tSova + .45, () => Zvuk.play('hoot'));
-    o(tHviezda + .35, () => { Zvuk.play('dopad1'); vibruj(30); const c = el.querySelector('#os-cislo'); if (c) { c.textContent = s; c.classList.add('bump'); } });
-    o(tHviezda + .6, () => { Zvuk.play('win'); FX.ohnostroj(vyrastol ? 2 : 3); });
+    if (vyrastol && !plan.pokojne) o(tRast, () => { Zvuk.play('win'); vibruj([40, 30, 40]); FX.ohnostroj(3); });
+    if (!plan.pokojne) o(tSova + .45, () => Zvuk.play('hoot'));
+    if (rast) o(tHviezda + .35, () => {
+      Zvuk.play('dopad1'); Haptika.hraj('hviezdicka');
+      const c = el.querySelector('#os-cislo'), r = el.querySelector('.os-seria'), d = el.querySelector('#os-dni');
+      if (c) { c.textContent = s; c.classList.add('bump'); const [x, y] = stred(c); FX.burst(x, y, 18, ['star', 'dot'], 6); }
+      if (r) r.classList.add('zap');
+      if (d) { d.textContent = pocet; d.classList.add('bump'); }
+      const sv = el.querySelector('.os-strom'); if (sv) sv.classList.add('zari');
+      const sova = el.querySelector('.os-sova'); if (sova) sova.classList.add('skace');
+    });
+    if (!plan.pokojne) o(tHviezda + .6, () => { Zvuk.play('win'); FX.ohnostroj(vyrastol ? 2 : 3); });
     el.addEventListener('click', e => { if (tukniNaStrom(el, e)) e.stopPropagation(); });
     const b = el.querySelector('[data-oslava-dalej]');
     if (b) b.addEventListener('click', e => {
@@ -4620,6 +4646,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 61, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.6: živšia séria a strom', p: 'Keď dohráš tému dňa a séria sa predĺži, číslo sa rozžiari a poskočí, strom zažiari a sovička zaskáče. Ak séria začína znova od jednotky, oslava je pokojnejšia, bez veľkého ohňostroja.' },
   { v: 60, obr: () => OBR_HRY.ine, n: 'Verzia 4.5: nová hra Čo je iné?', p: 'Na obrázku sú štyri veci. Tri patria k sebe a jedna je iná, napríklad pes, kôň, mačka a jablko. Ťukni na tú, ktorá nepatrí k ostatným. Po odpovedi sa dozvieš prečo. Hra má ľahšie sady pre menších a ťažšie pre starších.' },
   { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Stromček hore je teraz väčší polkruh s počtom dní série (1, 2, 3 a ďalej), keď strom schne, zožltne. Raz za deň ti Domov jemne pripomenie sériu alebo lekciu (zavrieš ju krížikom). Pri ťuknutí na strom sa okno týždňa zavrie.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
