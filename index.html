@@ -1563,28 +1563,16 @@ html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transitio
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<<<<<<< HEAD
-<script src="temy.js?v=63"></script>
-<script src="obrazky.js?v=63"></script>
-<script src="misie.js?v=63"></script>
-<script src="kvizy.js?v=63"></script>
-<script src="tyzden.js?v=63"></script>
-<script src="anglictina.js?v=63"></script>
-<script src="rodic-brana.js?v=63"></script>
-<script src="rodic-panel.js?v=63"></script>
+<script src="temy.js?v=64"></script>
+<script src="obrazky.js?v=64"></script>
+<script src="misie.js?v=64"></script>
+<script src="kvizy.js?v=64"></script>
+<script src="tyzden.js?v=64"></script>
+<script src="anglictina.js?v=64"></script>
+<script src="rodic-brana.js?v=64"></script>
+<script src="rodic-panel.js?v=64"></script>
 <script>
-const VERZIA_APPKY = 63; const VERZIA_NAZOV = '4.7'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
-=======
-<script src="temy.js?v=62"></script>
-<script src="obrazky.js?v=62"></script>
-<script src="misie.js?v=62"></script>
-<script src="tyzden.js?v=62"></script>
-<script src="anglictina.js?v=62"></script>
-<script src="rodic-brana.js?v=62"></script>
-<script src="rodic-panel.js?v=62"></script>
-<script>
-const VERZIA_APPKY = 62; const VERZIA_NAZOV = '4.8'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
->>>>>>> refs/heads/claude/quizzical-sinoussi-995b8f
+const VERZIA_APPKY = 64; const VERZIA_NAZOV = '4.8'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -4780,14 +4768,10 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
-<<<<<<< HEAD
+  { v: 64, obr: () => IK.mesiac, n: 'Verzia 4.8: Mesačný režim', p: 'V profile Ja v karte Mesačný režim prepneš appku na nočnú oblohu s mesiacom a hviezdičkami. Môžeš si vybrať Svetlý, Mesačný alebo Podľa telefónu. Večer je to príjemnejšie pre oči.' },
   { v: 63, obr: () => IK_KAT.cas, n: 'Verzia 4.7: veľa nového obsahu', p: 'Pribudlo 69 nových tém, vyše sto misií dňa, 24 kvízových sád a stovky anglických slovíčok a viet. Séria a strom sa po dohraní témy dňa pekne rozžiaria, k hre Čo je iné? pribudli krajšie obrázky a na Domove je strom v lište.' },
   { v: 62, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.6: živšia séria a strom', p: 'Keď dohráš tému dňa a séria sa predĺži, číslo sa rozžiari a poskočí, strom zažiari a sovička zaskáče. Ak séria začína znova od jednotky, oslava je pokojnejšia, bez veľkého ohňostroja.' },
   { v: 61, obr: () => OBR_HRY.ine, n: 'Verzia 4.5.1: krajšie obrázky v hre Čo je iné?', p: 'Prekreslili sme sandál (teraz je to žabka), loptu, nôž, skrutkovač, jedľu, tuleňa, orla, husle a gitaru, aby sa dali ľahko rozoznať.' },
-=======
-  { v: 62, obr: () => IK.mesiac, n: 'Verzia 4.8: Mesačný režim', p: 'V profile Ja v karte Mesačný režim prepneš appku na nočnú oblohu s mesiacom a hviezdičkami. Môžeš si vybrať Svetlý, Mesačný alebo Podľa telefónu. Večer je to príjemnejšie pre oči.' },
-  { v: 61, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.6: živšia séria a strom', p: 'Keď dohráš tému dňa a séria sa predĺži, číslo sa rozžiari a poskočí, strom zažiari a sovička zaskáče. Ak séria začína znova od jednotky, oslava je pokojnejšia, bez veľkého ohňostroja.' },
->>>>>>> refs/heads/claude/quizzical-sinoussi-995b8f
   { v: 60, obr: () => OBR_HRY.ine, n: 'Verzia 4.5: nová hra Čo je iné?', p: 'Na obrázku sú štyri veci. Tri patria k sebe a jedna je iná, napríklad pes, kôň, mačka a jablko. Ťukni na tú, ktorá nepatrí k ostatným. Po odpovedi sa dozvieš prečo. Hra má ľahšie sady pre menších a ťažšie pre starších.' },
   { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Stromček hore je teraz väčší polkruh s počtom dní série (1, 2, 3 a ďalej), keď strom schne, zožltne. Raz za deň ti Domov jemne pripomenie sériu alebo lekciu (zavrieš ju krížikom). Pri ťuknutí na strom sa okno týždňa zavrie.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
