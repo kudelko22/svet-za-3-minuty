@@ -456,7 +456,7 @@ Hotové vo vetve `claude/verzia-4-0-b-e5fffa`, nenasadené, verzia sa nezvyšova
 - Overené: kontaktný list všetkých kresieb (Edge headless), hra pre mladšie aj starších s chybnou aj správnou odpoveďou (snímka, okno 500 px). Niektoré kresby som po prvom pohľade prekreslil (jašterica, škorpión, ťava, sandál).
 - NEOVERENÉ: emulátor a skutočný účet (worktree nemá `node_modules`, vstavaný prehliadač sa nedal otvoriť), 360 px a tablet očami v reálnom prehliadači, telefón (vibrácie, plynulosť), dostupnosť pre čítačky. Sandál a škorpión prekreslené po pokyne vlastníka.
 
-## 4.6 Živšia séria a strom (verzia 61 / 4.6, cache svet3-v25; vetva `claude/pensive-booth-0a5ab8`, vychádza zo 4.5, nenasadené, nepushnuté, čaká na „nasaď 4.6“)
+## 4.6 Živšia séria a strom (verzia 61 / 4.6, cache svet3-v25; vetva `claude/pensive-booth-0a5ab8`, vychádza zo 4.5, NASADENÉ 8. 11. 2026 na svet-za-3-minuty.web.app (len hosting), nepushnuté)
 - Zmena len v `Oslava.ukaz` (oslava po dnešnej téme dňa, pravidlá 4.4 nezmenené: raz za deň, nie precvičovanie): číslo série ide zo starej hodnoty na novú (4 → 5) s poskočením a iskrami, okolo pilulky žiara (`.zap`), strom zažiari (`.zari`), sovička dvakrát poskočí (`.skace`), nový riadok „Učíš sa už N dní“ sa tiež zvýši (`#os-dni`), haptika `Haptika.hraj('hviezdicka')`. Nová funkcia `planSerie(s, pocetDni)`.
 - Séria prerušená a začína od 1 (`pocetDni > 1`): pokojná verzia, číslo je hneď 1, bez zvýšenia, ohňostroja a húkania, veta „Nevadí, začíname odznova“. S prefers-reduced-motion sa čísla nastavia hneď (CSS animácie sú vypnuté globálne).
 - Ostatné miesta (Domov, stromček v lište, Prehľad týždňa, profil) čítajú `seria()` a nemenili sa, takže sedia s uloženou hodnotou.
