@@ -749,6 +749,12 @@ button.misia-cast:active { transform: translateY(3px); box-shadow: 0 0 0 var(--i
 .kv-moz.kv-4 { grid-template-columns: repeat(2, 1fr); }
 .btn.kv-btn { min-height: 96px; padding: 8px; display: flex; align-items: center; justify-content: center; font: 800 2.4rem/1 var(--f-display); }
 .kv-btn .kv-it { width: 72px; height: 72px; animation: none; }
+.kv-moz.ine .kv-btn { flex-direction: column; gap: 4px; min-height: 128px; }
+.kv-moz.ine .kv-btn .kv-it { width: 84px; height: 84px; }
+.kv-nap { font: 800 .95rem/1.1 var(--f-text, Nunito, sans-serif); color: var(--ink); }
+.kv-nap::first-letter { text-transform: uppercase; }
+.kv-vysv { min-height: 3.2em; margin: 10px 4px 0; text-align: center; font-weight: 800; color: var(--muted); }
+.kv-vysv.vid { color: var(--ink); animation: pop .4s var(--spring) both; }
 .kv-moz.tien .kv-it svg { filter: brightness(0) opacity(.8); transition: filter .4s; }
 .kv-moz.tien .kv-btn.ok .kv-it svg { filter: none; }
 .kv-moz.pismena { display: flex; flex-wrap: wrap; justify-content: center; }
@@ -1466,7 +1472,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 <script src="rodic-brana.js"></script>
 <script src="rodic-panel.js"></script>
 <script>
-const VERZIA_APPKY = 59; const VERZIA_NAZOV = '4.4'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 61; const VERZIA_NAZOV = '4.5.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -2717,6 +2723,7 @@ const HRY = [
   { id: 'hviezdy', n: 'Chytaj hviezdičky', p: 'Za 30 sekúnd chyť čo najviac hviezd. Pozor na búrku!', cena: 400, c: '#FFE27A' },
   { id: 'poradie', n: 'Zoraď čísla', p: 'Ťukaj čísla v správnom poradí, od najmenšieho alebo od najväčšieho.', cena: 450, c: '#C9F0D0' },
   { id: 'krtko', n: 'Ťukaj krtkov', p: 'Krtkovia vykúkajú z dier. Ťukni na nich skôr, než sa schovajú! Zlatý krtko je za tri.', cena: 500, c: '#FFD9B0' },
+  { id: 'ine', n: 'Čo je iné?', p: 'Štyri obrázky: tri patria k sebe a jeden nie. Ťukni na ten, ktorý je iný!', cena: 600, c: '#FFD9A8' },
   { id: 'opakuj', n: 'Opakuj po mne', p: 'Zapamätaj si, ktoré farby zasvietili, a zopakuj ich.', cena: 550, c: '#FFD6A5' },
   { id: 'bubliny', n: 'Bubliny s počtami', p: 'Praskni bublinu so správnym výsledkom. Pozor, zlá bublina zoberie bod!', cena: 700, c: '#BDE9FF', len: 'starsi' },
   { id: 'slovo', n: 'Poskladaj slovo', p: 'Z písmen poskladaj slovo, ktoré patrí k obrázku.', cena: 650, c: '#BDE9FF', len: 'starsi' },
@@ -2737,6 +2744,7 @@ const OBR_HRY = {
   hadaj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="6" y="8" width="52" height="40" rx="6" fill="#fff"/><path d="M8 44 L22 30 L34 40 L42 34 L56 44Z" fill="#4CD07D"/><circle cx="44" cy="20" r="5" fill="#FFD23F"/><circle cx="55" cy="42" r="12" fill="#fff" fill-opacity=".55"/><path d="M64 51l9 9" stroke-width="6" stroke-linecap="round"/></g></svg>`,
   bubliny: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3"><circle cx="24" cy="38" r="16" fill="#9FE8FF"/><circle cx="52" cy="24" r="18" fill="#C8F1FF"/><circle cx="64" cy="52" r="8" fill="#9FE8FF"/></g><text x="24" y="45" font-size="19" ${TXT} fill="${INK}">7</text><text x="52" y="31" font-size="20" ${TXT} fill="${INK}">5</text></svg>`,
   opakuj: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="14" y="6" width="24" height="24" rx="7" fill="#FF5A5F"/><rect x="42" y="6" width="24" height="24" rx="7" fill="#4C7DFF" opacity=".55"/><rect x="14" y="34" width="24" height="24" rx="7" fill="#2FBF71" opacity=".55"/><rect x="42" y="34" width="24" height="24" rx="7" fill="#FFD23F"/></g><path d="M8 4l4 4M72 4l-4 4" stroke="${INK}" stroke-width="3" stroke-linecap="round"/></svg>`,
+  ine: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#FFE9C7"/><g transform="translate(8 8) scale(.52)" stroke-width="5">${INE_OBR['pes']()}</g><g transform="translate(40 8) scale(.52)" stroke-width="5">${INE_OBR['mačka']()}</g><g transform="translate(8 34) scale(.52)" stroke-width="5">${INE_OBR['kôň']()}</g><g transform="translate(40 34) scale(.52)" stroke-width="5">${INE_OBR['jablko']()}</g></g></svg>`,
   iny: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#FFE0EC"/><circle cx="22" cy="21" r="10" fill="#4C7DFF"/><circle cx="58" cy="21" r="10" fill="#4C7DFF"/><circle cx="22" cy="46" r="10" fill="#4C7DFF"/><rect x="48" y="36" width="20" height="20" rx="4" fill="#FF5A5F"/></g></svg>`,
   tien: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#E7E2FF"/><path d="${HVIEZDA}" fill="#FFD23F" transform="translate(8 8) scale(1.7)"/><path d="${HVIEZDA}" fill="#2E2A4A" transform="translate(40 30) scale(1.5)"/></g></svg>`,
   poradie: `<svg viewBox="0 0 80 64" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="4" y="4" width="72" height="56" rx="12" fill="#DDF7E1"/><circle cx="19" cy="38" r="11" fill="#FFD23F"/><circle cx="40" cy="30" r="11" fill="#FF9F1C"/><circle cx="61" cy="22" r="11" fill="#FF5A5F"/></g><text x="19" y="44" font-size="15" ${TXT} fill="${INK}">1</text><text x="40" y="36" font-size="15" ${TXT} fill="${INK}">2</text><text x="61" y="28" font-size="15" ${TXT} fill="${INK}">3</text></svg>`,
@@ -2853,7 +2861,7 @@ const Hra = {
       st.hra = { id, kola: mix(5).map(i => i + 1), druh: mix(4), i: 0, spravne: 0, chyba: false, zle: [], odp: null };
       st.hra.moznosti = moznostiPocitaj(st.hra);
     } else if (KV_HRY[id]) {
-      st.hra = { id, kv: true, kola: KV_HRY[id](mal), i: 0, krok: 0, vzate: [], zle: [], chyba: false, spravne: 0, odp: false };
+      st.hra = { id, kv: true, mal, kola: KV_HRY[id](mal), i: 0, krok: 0, vzate: [], zle: [], chyba: false, spravne: 0, odp: false };
     } else if (id === 'hadaj') {
       st.hra = { id, kola: temyDoHry(8).map(t => t.id), i: 0, spravne: 0, n: mal ? 3 : 4, odp: null };
       st.hra.moznosti = moznostiHadaj(st.hra);
@@ -3176,13 +3184,13 @@ const Hra = {
     h.vzate.push(j); h.krok++;
     if (h.krok < k.sprav.length) { Zvuk.play('pop'); obnovKv(); return; }
     if (!h.chyba) h.spravne++;
-    h.odp = true; Zvuk.play('ok'); obnovStavHry(); obnovKv();
+    h.odp = true; Zvuk.play('ok'); if (!h.chyba) Haptika.hraj('spravne'); obnovStavHry(); obnovKv();
     h.dalsia = setTimeout(() => {
       if (st.hra !== h) return;
       h.i++; h.odp = false; h.krok = 0; h.vzate = []; h.zle = []; h.chyba = false;
       if (h.i >= h.kola.length) { this.koniec(false, h.spravne); return; }
       obnovKv();
-    }, 900);
+    }, k.x ? (h.id === 'ine' && !h.mal ? 3200 : 2400) : 900);
   },
   // Bubliny s počtami: minúta, praskni bublinu so správnym výsledkom
   bublinyStart() {
@@ -3341,6 +3349,18 @@ const KV_HRY = {
       return { prompt: `<span class="kv-it velky">${KV_SIL[idx[0]]()}</span>`, otazka: 'Ktorý tieň patrí k obrázku?', moz, sprav: [idx[0]], tm: 'tien' };
     });
   },
+  ine(mal) {
+    // sady podľa veku, bez opakovania: posledné použité sady si appka pamätá a vyberá z nových
+    const kto = mal ? 'm' : 's', vsetky = INE_SADY.map((x, i) => i).filter(i => INE_SADY[i].v === kto);
+    let bolo = S.get('ine-bolo-' + kto, []); if (!Array.isArray(bolo)) bolo = [];
+    let nove = vsetky.filter(i => !bolo.includes(i)); if (nove.length < KV_KOL) { bolo = []; nove = vsetky; }
+    const vyber = mix(nove.length).slice(0, KV_KOL).map(i => nove[i]);
+    S.set('ine-bolo-' + kto, [...bolo, ...vyber].slice(-(vsetky.length - KV_KOL)));
+    return vyber.map(i => {
+      const x = INE_SADY[i], moz = mix(4).map(p => { const n = [...x.t, x.j][p]; return { z: n, nap: n, html: `<span class="kv-it">${ineSvg(INE_OBR[n]())}</span><small class="kv-nap">${esc(n)}</small>` }; });
+      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
+    });
+  },
   poradie(mal) {
     return Array.from({ length: KV_KOL }, (_, r) => {
       const n = mal ? (r < 3 ? 3 : 4) : (r < 2 ? 5 : 6), max = mal ? 10 : 999, zostupne = r % 3 === 2;
@@ -3364,7 +3384,7 @@ function kvHtml(h) {
   return `<div class="card kv-prompt${k.tr ? ' ' + k.tr : ''}">${k.prompt}</div>
     <p class="hadaj-otazka">${k.otazka}</p>
     ${k.sloty ? `<div class="kv-sloty">${k.sprav.map((z, j) => `<span class="kv-slot${j < h.krok ? ' plny' : ''}">${j < h.krok ? esc(k.moz[h.vzate[j]].sl) : ''}</span>`).join('')}</div>` : ''}
-    <div class="kv-moz kv-${k.moz.length}${k.tm ? ' ' + k.tm : ''}">${k.moz.map((m, j) => `<button class="btn ghost kv-btn${h.vzate.includes(j) ? (k.sloty ? ' vzata' : ' ok') : ''}${h.zle.includes(j) ? ' zle' : ''}" data-kv="${j}"${h.zle.includes(j) || (k.sloty && h.vzate.includes(j)) ? ' disabled' : ''} aria-label="Možnosť ${j + 1}">${m.html}</button>`).join('')}</div>`;
+    <div class="kv-moz kv-${k.moz.length}${k.tm ? ' ' + k.tm : ''}">${k.moz.map((m, j) => `<button class="btn ghost kv-btn${h.vzate.includes(j) ? (k.sloty ? ' vzata' : ' ok') : ''}${h.zle.includes(j) ? ' zle' : ''}" data-kv="${j}"${h.zle.includes(j) || (k.sloty && h.vzate.includes(j)) ? ' disabled' : ''} aria-label="${esc(m.nap || 'Možnosť ' + (j + 1))}">${m.html}</button>`).join('')}</div>${k.x ? `<p class="kv-vysv${h.odp ? ' vid' : ''}">${h.odp ? esc(k.x) : '&nbsp;'}</p>` : ''}`;
 }
 const obnovKv = () => { if (st.hra) obnovKolo(document.getElementById('kv'), st.hra, kvHtml(st.hra)); };
 const simonStav = text => { const el = document.getElementById('simon-stav'); if (el) el.textContent = text; };
@@ -3385,7 +3405,7 @@ function obnovSklad() {
 }
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null;
-  const nadpis = `${['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
+  const nadpis = `${['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) ? 'Super!' : 'Hotovo!'} ${rekordText(h.id, v.hodnota)}`;
   return `<div class="card hra-vysledok"><div class="win-owl">${owl('cheer')}</div>
     <h2 class="h2" style="--hc:#FFC233">${nadpis}</h2>
     ${t ? `<p class="muted">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}
@@ -4600,6 +4620,8 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
+  { v: 61, obr: () => OBR_HRY.ine, n: 'Verzia 4.5.1: krajšie obrázky v hre Čo je iné?', p: 'Prekreslili sme sandál (teraz je to žabka), loptu, nôž, skrutkovač, jedľu, tuleňa, orla, husle a gitaru, aby sa dali ľahko rozoznať.' },
+  { v: 60, obr: () => OBR_HRY.ine, n: 'Verzia 4.5: nová hra Čo je iné?', p: 'Na obrázku sú štyri veci. Tri patria k sebe a jedna je iná, napríklad pes, kôň, mačka a jablko. Ťukni na tú, ktorá nepatrí k ostatným. Po odpovedi sa dozvieš prečo. Hra má ľahšie sady pre menších a ťažšie pre starších.' },
   { v: 59, obr: () => stromSvg({ stupen: 2, plody: 3, kos: 0, novy: -1 }), n: 'Verzia 4.4: viditeľnejší strom', p: 'Strom múdrosti vyrastie na konci dnešnej témy dňa, ešte predtým ako ťa čaká misia. Stromček hore je teraz väčší polkruh s počtom dní série (1, 2, 3 a ďalej), keď strom schne, zožltne. Raz za deň ti Domov jemne pripomenie sériu alebo lekciu (zavrieš ju krížikom). Pri ťuknutí na strom sa okno týždňa zavrie.' },
   { v: 58, obr: () => IK_KAT.cas, n: 'Verzia 4.3: vynechané dni na precvičenie', p: 'Vynechaný deň si môžeš zahrať dodatočne. Ťukni v Týždni na minulý deň a otvorí sa jeho téma, v Prehľade týždňa aj jeho angličtina. Je to len na precvičenie: bez hviezdičiek, série a stromu múdrosti. Takýto deň ostáva vynechaný, ale tému si zopakuješ.' },
   { v: 57, obr: () => OBR_HRY.krtko, n: 'Verzia 4.2: kratší Domov a nová hra', p: 'Týždeň je schovaný v stromčeku hore: ťukni naň a rozvinie sa. Tmavý stromček znamená, že dnešná téma čaká, farebný, že je hotovo. Po téme je obrazovka kratšia, ostatné je zbalené. Nová hra Ťukaj krtkov nahradila Čo bude ďalej?.' },
