@@ -706,3 +706,6 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   if (mk(false, false).hraj('tuk') || volane.length !== 1) zle.push('vypnute vibruje');
   if (mk(true, true).hraj('tuk') || volane.length !== 1) zle.push('reduced-motion vibruje');
   if (zle.length) { console.log('CHYBY vibracie', zle); process.exit(1); } }
+// 4.8.2: výber okruhu sa musí dať otvoriť aj z okna stromu (ochrana pred dvojitým otvorením brala okno stromu za výber okruhu)
+{ const o = html.slice(html.indexOf('const Okruh = {'), html.indexOf('const TyzPrehlad'));
+  if (!o.includes("if (document.querySelector('.okruh-vyber')) return;") || !o.includes("className = 'okruh-okno okruh-vyber'")) { console.log('CHYBA okruh: ochrana pred dvojitým otvorením musí hľadať len .okruh-vyber'); process.exit(1); } }

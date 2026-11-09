@@ -3695,7 +3695,7 @@ const TyzStrom = {
     const kar = el.firstElementChild;
     if (od && od.getBoundingClientRect) { const r = od.getBoundingClientRect(); kar.style.setProperty('--dx', (r.left + r.width / 2 - innerWidth / 2) + 'px'); kar.style.setProperty('--dy', (r.top + r.height / 2 - innerHeight / 2) + 'px'); }
     document.body.appendChild(el);
-    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-okno:not(.tyzs-okno)')) zavri(); };
+    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-vyber, .tyz-okno')) zavri(); };
     const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 300); };
     document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
@@ -3730,9 +3730,9 @@ const Pripomienka = {
 };
 const Okruh = {
   ukaz() {
-    if (document.querySelector('.okruh-okno:not(.tyz-okno)')) return;
+    if (document.querySelector('.okruh-vyber')) return;
     const Ty = TY(), vyb = Ty.vybrany(), el = document.createElement('div');
-    el.className = 'okruh-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Okruh týždňa');
+    el.className = 'okruh-okno okruh-vyber'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Okruh týždňa');
     el.innerHTML = `<div class="okruh-karta"><div class="row-h"><h2 class="h2" style="--hc:#FF9F1C">Okruh týždňa</h2><button class="ib" data-okruh-zavri aria-label="Zavrieť">${IKO.zavriet}</button></div>
       <p class="muted">Vyber, o čom budú témy tento týždeň. Zmiešaný je od všetkého trochu.</p>
       <div class="okruh-mriezka">${Ty.okruhy().map(o => `<button class="okruh-volba" data-okruh-id="${esc(o.id)}" aria-pressed="${o.id === vyb}"><span class="okruh-ik">${okruhIk(o)}</span><b>${esc(o.nazov)}</b></button>`).join('')}</div>
@@ -3806,7 +3806,7 @@ const TyzPrehlad = {
     el.className = 'okruh-okno tyz-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Prehľad týždňa');
     el.innerHTML = `<div class="okruh-karta tyz-karta">${this.html()}</div>`;
     document.body.appendChild(el);
-    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-okno:not(.tyz-okno)')) zavri(); };
+    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-vyber')) zavri(); };
     const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 250); };
     document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
@@ -4793,7 +4793,7 @@ const Ang = {
 };
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
 const NOVINKY = [
-  { v: 66, obr: () => IK.mozog, n: 'Verzia 4.8.2: odpovede vždy s obrázkom alebo písmenom', p: 'V niektorých nových témach chýbal obrázok pri odpovedi, často práve pri správnej. Teraz majú všetky odpovede jednej otázky obrázok, alebo všetky písmená A, B, C.' },
+  { v: 66, obr: () => IK.mozog, n: 'Verzia 4.8.2: opravy', p: 'Okruh týždňa sa dá znova zmeniť aj z okna so stromom. V niektorých nových témach chýbal obrázok pri odpovedi, často práve pri správnej. Teraz majú všetky odpovede jednej otázky obrázok, alebo všetky písmená A, B, C.' },
   { v: 65, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.8.1: oslava série a ožitie stromu', p: 'Keď dohráš tému dňa, číslo série sa prevalí a zväčší, zažiari plameň a zaznie fanfára. Ak strom zvädol, vietor ho rozkýve, listy sa zatočia a strom múdrosti zasa ožije.' },
   { v: 64, obr: () => IK.mesiac, n: 'Verzia 4.8: Mesačný režim', p: 'V profile Ja v karte Mesačný režim prepneš appku na nočnú oblohu s mesiacom a hviezdičkami. Môžeš si vybrať Svetlý, Mesačný alebo Podľa telefónu. Večer je to príjemnejšie pre oči.' },
   { v: 63, obr: () => IK_KAT.cas, n: 'Verzia 4.7: veľa nového obsahu', p: 'Pribudlo 69 nových tém, vyše sto misií dňa, 24 kvízových sád a stovky anglických slovíčok a viet. Séria a strom sa po dohraní témy dňa pekne rozžiaria, k hre Čo je iné? pribudli krajšie obrázky a na Domove je strom v lište.' },
