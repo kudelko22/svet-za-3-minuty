@@ -14,25 +14,42 @@ Kód sa tu nemení: práca ide do session Vývoj alebo do session svojej témy.
 Na otázku „aký je stav“ vypísať krátko a jednoducho: appka a verzia, postup, optimalizácia, otvorené veci, ktoré sessions
 existujú a koľko je minutého limitu (`list_sessions`, `get_usage`). Čítať len to, čo treba, a nič nespúšťať.
 
-Stav 4. 11. 2026:
+Stav 10. 11. 2026 (hlavná session vymenená, lebo bola plná; táto časť je odovzdanie pre novú):
 
-- **Na webe:** verzia 2.8 (`VERZIA_APPKY` 35), nasadená 30. 10. Má 127 tém, 24 kategórií a 47 skúšok pravidiel. Vlastník
-  všetko vyskúšal sám, aj na viacerých účtoch.
-- **Postup:** 1.26 témy v 4 oblastiach; 2.0 Priatelia; 2.1 správy; 2.2 pochvala témou, srdiečko, Videné; 2.3 sprievodca appkou;
-  2.4 úvodná obrazovka a návod na plochu; 2.5 životy a prestávky v kvízoch; 2.6 plynulejšia sova a 8 vecí pre postavičku;
-  2.7 sprievodca pre nový účet rodiča; 2.8 strom múdrosti v 6 stupňoch.
-- **Optimalizácia:** v 2.4 a 2.6 hra Lietajúca sova (bitmapy nakreslené raz, menej práce v každom snímku, počas hier bez
-  pohyblivého pozadia). Offline cez `sw.js`. Veľkosti: `index.html` 376 kB, `temy.js` 248 kB, `obrazky.js` 180 kB,
-  `e/` 1,9 MB (447 obrázkov), `ikony/` 3,4 MB. Meranie rýchlosti otvárania appky v histórii nie je.
-- **Šetrenie limitu:** `.claude/settings.json` má Sonnet, stredné úsilie a vypnutý doplnok ECC. Výmena dlhých sessions
-  podľa CLAUDE.md.
-- **Oddelenie od Metliny:** od 4. 11. má Svet vlastné nástroje, pravidlá a pamäť.
+- **Na webe:** verzia 4.8.2, cache `svet3-v29`, `main` = `origin/main` = `56042db`. Obsah: 233 tém, 231 misií, 778 slov
+  a 325 viet angličtiny. Od 4.0: nový Domov s okruhom týždňa, vibrácie, nové hry pre každý vek, prehľad týždňa, vynechané
+  dni len na precvičenie, strom múdrosti po téme dňa, hra Čo je iné?, `admin.html` pre vlastníka, animácie série a stromu,
+  Mesačný režim (tmavý), odpovede kvízov bez prázdnych obrázkov.
+- **Neoverené:** skutočný telefón, iPhone, zvuk a vibrácie. Skúšalo sa len v prehliadači na počítači a na emulátore.
+- **V hlavnom priečinku necommitnuté:** vlastníkove zmeny `.gitignore` a `firebase.json` (kvôli `video\`), `video\`
+  a `test-out-46.txt`. Nesiahať na ne bez jeho slova.
+- **Sessions:** všetky pracovné sessions 4.x sú hotové a nečinné, dajú sa archivovať. Zostali po nich worktrees a vetvy
+  `claude/*` a veľa starých procesov `node` (blokovali porty emulátora). Upratať až na slovo vlastníka.
+- **Šetrenie limitu:** trvalá priorita. Bežná práca Sonnet a stredné úsilie. Vlastníka neposielať stále testovať.
 
-Otvorené:
+Plán na 11. 11. 2026 (po obnovení limitu), verzia 4.9, veľká opravná vlna. Nič nespúšťať bez slova vlastníka:
 
-1. Zadanie verzie 3.0 dodá vlastník.
-2. Nápady, o ktorých rozhoduje vlastník: reklamné video, prehľad pre rodiča, redakcia tém bez programovania, série tém.
-3. Odložil vlastník: hlas, Google Play. V prehľade len spomenúť, nepripomínať a nenavrhovať.
+1. Veľa bugov: nový audit 4.8 a 13 nálezov z auditu 4.5 (`bugy-45.md` v zdieľanej zložke poznámok) a nálezy vlastníka.
+2. Typografia a fonty (čitateľnosť, veľkosti, zalamovanie; Fredoka nemá č, ť, ľ, ď, ň).
+3. Niektoré obrázky a iné veci (kresby, nevyfarbené časti).
+4. Animácie a plynulosť, hlavne misie (bez blikania a bez prekresľovania celej obrazovky).
+5. Odstrániť hornú zbytočnú lištu.
+6. Intuitívnejšie rozhranie na telefóne (palec, veľké plochy, jasné kroky, 360 px).
+7. Bug: dlhé meno profilu po návrate z inej karty na Domov tečie cez indikátor stromu múdrosti.
+8. Prerobenie menu angličtiny: vlastník ho popíše detailne, až keď sa začne. Bez jeho popisu neprerábať.
+
+Postup pre 4.9: viac súbežných sessions v oddelených súboroch, jedna zlučovacia, nasadenie len po slove vlastníka priamo
+v danej session. Čo sa nasadí z vetvy, musí byť aj v `main`, inak to ďalšie nasadenie prepíše (stalo sa pri 4.6 a 4.8).
+
+Čaká na rozhodnutie vlastníka:
+
+1. Oprava prihlasovania: prihlásenie cez Google s tou istou adresou zruší heslo, keď e-mail nie je potvrdený. Návrh:
+   potvrdzovací e-mail pri registrácii a veta v Čo je nové.
+2. Vibrácie na iPhone: obchádzka cez skrytý prepínač (iOS 17.4 a novší), čaká sa, aký iPhone vlastník má.
+3. Upozornenia mimo appky nejdú (plán Spark nemá Cloud Functions), sú len v appke.
+4. Reklamné video „Svetom“ v `video\` je nedokončené.
+5. Odložil vlastník: hlas, Google Play. V prehľade len spomenúť, nepripomínať a nenavrhovať.
+6. V `56042db` pribudol súbor `AGENTS.md`: overiť, či patrí na web, alebo do `ignore` v `firebase.json`.
 
 ## Vývoj
 
