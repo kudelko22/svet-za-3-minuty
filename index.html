@@ -4535,6 +4535,8 @@ const Misie = {
   data() { const d = S.get(this.kluc(), null); return d && d.hotove ? d : { hotove: {}, bodyDen: '' }; },
   uroven() { return S.get('misie-uroven-' + st.dietaId, st.vek === 'starsi' ? 2 : 1); },
   dnesna(u = this.uroven()) {
+    const dm = this.data();
+    if (u === this.uroven() && dm.bodyDen === key(new Date()) && dm.dnesMisia) { const x = MISIE.find(y => y.id === dm.dnesMisia); if (x) return x; } // splnená dnes: ostáva tá istá misia
     const d = denCislo(), typ = MISIA_PORADIE[d % 5], zoz = MISIE.filter(m => m.t === typ && m.u === u);
     if (!zoz.length) return MISIE[0];
     const hotove = this.data().hotove, z = Math.floor(d / 5);
@@ -5397,7 +5399,6 @@ function paintHead() {
       el.appendChild(g);
     });
   }
-  fitPozdrav();
   const b = document.getElementById('body');
   if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
   const z = document.getElementById('snd'); z.innerHTML = Zvuk.on ? IK.repro : IK.reproVyp; z.setAttribute('aria-pressed', Zvuk.on); z.hidden = st.view === 'domov' && st.faza === 'appka'; // na Domove tlačidlo zvuku nezavadzia
@@ -5408,6 +5409,7 @@ function paintHead() {
   }
   document.getElementById('nav-ja').classList.toggle('novinka', nevybrate() > 0);
   TyzStrom.maluj();
+  fitPozdrav(); // až po stromčeku a tlačidle zvuku: ich šírka (ukázanie, skrytie) rozhoduje, koľko miesta ostane menu
 }
 function ocisluj() {
   [...main.children].forEach((el, i) => el.style.setProperty('--i', i));
@@ -5694,6 +5696,7 @@ document.addEventListener('click', e => {
     f.i = d.znova === 'tema' ? 0 : f.kroky.findIndex(k => k.t === 'q');
     Zvuk.play('start'); renderFlow(); window.scrollTo(0, 0);
   } else if (d.dalej !== undefined && f) {
+    if (document.querySelector('.oslava')) return; // pod oslavou sa „Ďalej“ nesmie spustiť druhýkrát (Enter)
     Hlas.stop(); f.prave = false;
     if (f.prehra) { f.i = f.kroky.length - 1; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
     if (f.kroky[f.i + 1].t === 'koniec' && vsetkoZle(f)) { f.zle = true; f.i++; Zvuk.play('whoosh'); renderFlow(); window.scrollTo(0, 0); return; }
@@ -6187,7 +6190,7 @@ function obnovPrihlasenie() {
 function prevezmi(a) {
   if (casovac || otlacok(a) === otlacok(st)) return; // vlastné neuložené zmeny majú prednosť
   nastavAktivne(a);
-  if (st.flow) paintHead(); else { render(); main.classList.remove('anim'); }
+  if (st.flow || st.hra || st.auto || st.ang || st.misia) paintHead(); else { render(); main.classList.remove('anim'); }
 }
 function zobrazPoNacitani() {
   const a = Cloud.deti.find(x => x.id === S.get('aktivne', null));
