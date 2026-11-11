@@ -20,6 +20,18 @@ const src = ['temy.js', 'obrazky.js', 'misie.js', 'kvizy.js', 'tyzden.js', 'angl
   for (const [t1, p] of [['--ink', '--paper'], ['--muted', '--paper'], ['--ink', '--fon'], ['--muted', '--fon'], ['--ink', '--t-yel'], ['--ink', '--t-grn'], ['--ink', '--t-blu'], ['--ink', '--soft'], ['--ink', '--off']])
     if (kon(dT.get(t1), dT.get(p)) < 4.5) throw new Error('mesačný režim: slabý kontrast ' + t1 + ' na ' + p + ' ' + kon(dT.get(t1), dT.get(p)).toFixed(2));
 }
+{ // kontrola polí úvodu (funkcia je v module, vytiahneme ju z textu)
+  const CHYBY = { 'auth/invalid-email': 'E-mail nie je napísaný správne.', 'auth/weak-password': 'Heslo musí mať aspoň 6 znakov.' };
+  const pokazenePolia = new Function('CHYBY', modul.match(/function pokazenePolia[\s\S]*?\n\}/)[0] + '\nreturn pokazenePolia;')(CHYBY);
+  const eq = (a, b, n) => { if (JSON.stringify(a) !== JSON.stringify(b)) throw new Error('uvod: kontrola polí ' + n + ' ' + JSON.stringify(a)); };
+  eq(pokazenePolia('prihlas', 'a@b.sk', 'x'), {}, 'prihlas ok');
+  eq(Object.keys(pokazenePolia('prihlas', '', '')), ['email', 'heslo'], 'prazdne');
+  eq(Object.keys(pokazenePolia('prihlas', 'nie-email', 'x')), ['email'], 'zly email');
+  eq(Object.keys(pokazenePolia('registruj', 'a@b.sk', '12345', '12345')), ['heslo'], 'kratke heslo');
+  eq(Object.keys(pokazenePolia('registruj', 'a@b.sk', '123456', '1234567')), ['heslo2'], 'rozne hesla');
+  eq(Object.keys(pokazenePolia('registruj', 'a@b.sk', '123456', '')), ['heslo2'], 'chyba opakovanie');
+  eq(pokazenePolia('registruj', 'a@b.sk', '123456', '123456'), {}, 'registruj ok');
+}
 const ctx2d = new Proxy({}, { get: (o, k) => k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : () => {}, set: () => true });
 const el = () => ({ hidden: false, innerHTML: '', textContent: '', value: '', dataset: { n: '2' }, children: [], style: { setProperty() {} },
   classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, addEventListener() {}, appendChild() {}, remove() {}, scrollIntoView() {}, insertAdjacentHTML() {}, replaceWith() {},
@@ -40,7 +52,20 @@ new Function(src + `
 // kvízy majú po dohraní prestávku; testy ju pred každým kvízom zrušia
 const odomkni = () => Object.keys(localStorage.d).filter(k => k.includes("kviz-zamok")).forEach(k => localStorage.removeItem(k));
 /* BRANY */
-for (const fz of ["nacitava", "bezNetu", "prihlasenie"]) { st.faza = fz; render(); }
+for (const fz of ["nacitava", "bezNetu"]) { st.faza = fz; render(); }
+/* ÚVOD: voľba a dve cesty */
+{
+  st.faza = "prihlasenie";
+  const uv = k => { st.uvodKrok = k; render(); return brany.prihlasenie(); };
+  const v = uv("volba"), m = uv("mam"), n = uv("novy");
+  if (!v.includes('data-uvod="mam"') || !v.includes('data-uvod="novy"') || v.includes("<input")) throw new Error("uvod: volba ma mat len dve cesty");
+  if (!m.includes('data-forma="prihlas"') || m.includes('id="heslo2"') || !m.includes('data-ucet="zabudol"') || !m.includes('data-ucet="google"') || !m.includes('data-uvod="volba"')) throw new Error("uvod: cesta Mam ucet");
+  if (!n.includes('data-forma="registruj"') || !n.includes('id="heslo2"') || n.includes('data-ucet="zabudol"') || !n.includes('data-ucet="google"') || !n.includes('data-uvod="volba"')) throw new Error("uvod: cesta Som tu novy");
+  window.Cloud = { chyby: { email: "Zle <b>", heslo: "Slabe" }, chyba: "Vseobecna" };
+  const c = uv("novy");
+  if (!c.includes('id="email-chyba"') || !c.includes('id="heslo-chyba"') || c.includes("Zle <b>") || !c.includes("Vseobecna")) throw new Error("uvod: chyby pri poliach");
+  st.uvodKrok = "volba"; window.Cloud = undefined;
+}
 window.Cloud = { deti: [{ id: "d1", meno: "Emka", vek: "mladsi", avatar: nahodnyAvatar(), body: 10 }, { id: "d2", meno: "Tomi <b>", vek: "starsi", avatar: nahodnyAvatar(), body: 0 }], pouzivatel: { email: "a@b.sk" }, chyba: "", stavUlozenia: "", naplanuj() {}, ulozHned() {}, ulozDieta(u) { this.ulozene = u; }, zmazDieta() {} };
 st.faza = "vyber"; render();
 st.upravuje = noveUpravovanie(true); st.faza = "tvorba"; render();
