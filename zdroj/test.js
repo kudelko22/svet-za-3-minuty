@@ -98,6 +98,16 @@ for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglicti
   const g = SKUPINY.find(x => x.id === 'veda'), dni1 = Tyzden.dni();
   for (const x of dni1) { const t = byId(x.temaId); if (x.datum >= dnes ? !g.kat.includes(t.k) : x.temaId !== dni0.find(y => y.datum === x.datum).temaId) throw new Error('tyzden: okruh/minulost ' + x.datum); }
   if (Tyzden.dni()[0].temaId !== dni1[0].temaId) throw new Error('tyzden: stabilita');
+  { // zmena okruhu v novom týždni nesmie prepísať minulý týždeň
+    const kl = Tyzden._kluc(), d8 = key(new Date(Date.now() - 8 * 864e5)), pom = Tyzden._pondelok(d8);
+    S.set(kl, [{ od: pom, id: 'veda' }]);
+    const pred = Tyzden.okruhNa(pom);
+    Tyzden.nastav('zmiesany');
+    if (Tyzden.okruhNa(pom) !== pred || pred !== 'veda') throw new Error('tyzden: minuly tyzden sa prepisal');
+    S.set(kl, [{ od: '2000-01-03', id: 'veda' }]); Tyzden.nastav('veda');
+    if (S.get(kl, []).some(x => x.od === '2000-01-03')) throw new Error('tyzden: stare zmeny sa nemazu');
+    S.set(kl, []);
+  }
   if (Tyzden.nastav('nic') !== false) throw new Error('tyzden: neplatny');
   Tyzden.nastav('zmiesany'); if (Tyzden.vybrany() !== 'zmiesany') throw new Error('tyzden: spat');
   const buduci = dni0.find(x => x.jeBudúci); if (buduci && Tyzden.otvor(buduci.datum)) throw new Error('tyzden: buduci otvoreny');

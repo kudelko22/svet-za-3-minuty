@@ -24,7 +24,8 @@ const Tyzden = {
   nastav(id, dieta) {
     if (id !== 'zmiesany' && !SKUPINY.some(g => g.id === id)) return false;
     const dnes = this._dnes(), p = this._pondelok(dnes);
-    const z = this._zmeny(dieta).filter(x => this._pondelok(x.od) === p && x.od !== dnes); // staré týždne sa zahodia
+    const h = this._datum(p); h.setDate(h.getDate() - 7 * 14); const hranica = key(h); // minulé týždne ostanú (história Prehľadu), zahodia sa až staršie ako 14 týždňov
+    const z = this._zmeny(dieta).filter(x => x.od !== dnes && x.od >= hranica);
     z.push({ od: dnes, id });
     S.set(this._kluc(dieta), z);
     return true;
