@@ -1505,7 +1505,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 .dieta b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
 .prof-top { min-width: 0; }
 .prof-meno { min-width: 0; flex: 1; }
-.prof-meno .h1 { max-width: 100%; }
+.prof-meno .h1 { max-width: 100%; overflow-wrap: anywhere; }
 .ans > span:not(.em) { min-width: 0; }
 .soc-hlava { min-width: 0; }
 .soc-hlava b { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -5411,6 +5411,8 @@ function paintHead() {
   TyzStrom.maluj();
   fitPozdrav(); // až po stromčeku a tlačidle zvuku: ich šírka (ukázanie, skrytie) rozhoduje, koľko miesta ostane menu
 }
+// koniec rozbehnutej hry, auta, angličtiny či misie predošlého dieťaťa (zmena dieťaťa, odhlásenie, zmena účtu)
+function zrusAktivity() { try { Hlas.stop(); Hra.zrus(); Auto.zrus(); } catch (e) { /* nič sa nezastaví */ } st.auto = st.ang = st.misia = null; st.flow = null; }
 function ocisluj() {
   [...main.children].forEach((el, i) => el.style.setProperty('--i', i));
   main.querySelectorAll('.step').forEach(s => [...s.children].forEach((el, j) => el.style.setProperty('--j', j)));
@@ -5919,6 +5921,7 @@ const Cloud = {
     if (!d) return;
     Rodic.zamkni();
     nastavAktivne(d); noveOdznaky(); S.set('aktivne', id); socStart(id);
+    zrusAktivity();
     Object.assign(st, { flow: null, faza: 'appka', view: pohlad });
     render(); scrollTo(0, 0);
   },
@@ -6228,7 +6231,7 @@ onAuthStateChanged(auth, u => {
   if (odber) { odber(); odber = null; }
   if (odberRodic) { odberRodic(); odberRodic = null; }
   Cloud.rodic = { nacitane: false, profil: null, prepotvrdene: 0 }; Rodic.zamkni();
-  clearTimeout(casovac); casovac = null;
+  clearTimeout(casovac); casovac = null; zrusAktivity();
   if (!u) {
     Object.assign(st, { meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [] }); // nič z predošlého účtu v pamäti
     // po návrate z Googlu sa prihlásenie ešte dokončuje: neukazujeme prihlasovaciu obrazovku, aby sa neťukalo znova
