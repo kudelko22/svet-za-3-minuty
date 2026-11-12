@@ -1,8 +1,8 @@
-// Zo zdroja zdroj/appka.html urobí index.html v koreni repozitára (hlava, manifest, offline).
+// Zo zdroja (kostra zdroj/appka.html + zdroj/styly/*.css + zdroj/kod/*.js, skladá zloz.js) urobí index.html v koreni repozitára (hlava, manifest, offline).
 // Spustenie: node zdroj/zostav.js
 const fs = require('fs'), path = require('path');
-const zdroj = path.join(__dirname, 'appka.html'), ciel = path.join(__dirname, '..', 'index.html');
-let s = fs.readFileSync(zdroj, 'utf8');
+const ciel = path.join(__dirname, '..', 'index.html');
+let s = require('./zloz.js').zloz();
 s = s.replace(/^<title>.*<\/title>\n/, '').replace(/^<meta name="claude:viewport-fit-sides"[^\n]*\n/, '');
 // temy.js a obrazky.js s číslom verzie: telefón tak nikdy nespojí novú appku so starým súborom z pamäte
 const verzia = (s.match(/const VERZIA_APPKY = (\d+);/) || [])[1];

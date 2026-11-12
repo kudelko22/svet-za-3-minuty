@@ -1,0 +1,136 @@
+/* priatelia */
+.nav button { font-size: .8rem; }
+.soc-intro { display: flex; gap: 12px; align-items: flex-start; }
+.soc-intro .owl { flex: none; width: 76px; height: auto; }
+.soc-intro p { margin: 6px 0; font-weight: 700; line-height: 1.4; }
+.soc-kod { display: grid; justify-items: center; gap: 6px; text-align: center; background: var(--grad-warm); }
+.soc-kod .kod { font: 700 2.2rem/1 var(--f-display); letter-spacing: .06em; padding: 8px 16px; border: 3px dashed var(--line); border-radius: 16px; background: var(--paper); }
+.soc-pridaj { display: grid; gap: 8px; }
+.soc-riadok { display: flex; gap: 8px; }
+.kod-vstup { flex: 1; min-width: 0; padding-left: 16px; background-image: none; text-transform: uppercase; font: 700 1.2rem var(--f-display); letter-spacing: .05em; }
+.soc-av { flex: none; display: grid; width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2.5px solid var(--line); background: var(--p-E3F4FF,#E3F4FF); }
+.soc-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
+.soc-av.velky { width: 120px; height: 120px; border-width: 3px; }
+.soc-ziadost { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.soc-ziadost b { flex: 1; min-width: 0; overflow-wrap: anywhere; font: 700 1.1rem var(--f-display); }
+.soc-ziadost .btn, .soc-ziadost .soc-av { flex: none; }
+.soc-zoznam { display: grid; gap: 10px; }
+.soc-priatel { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; }
+.soc-priatel > span:nth-child(2) { flex: 1; display: grid; }
+.soc-priatel b { font: 700 1.15rem var(--f-display); }
+.soc-priatel small { font-weight: 800; color: var(--muted); }
+.soc-nove { padding: 3px 10px; border: 2px solid var(--line); border-radius: 999px; background: var(--coral); color: #fff; font: 700 .85rem var(--f-display); animation: pulse 1.4s ease-in-out infinite; }
+.rebricek { display: grid; gap: 8px; }
+.reb { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 16px; }
+.reb.ja { background: var(--t-yel); }
+.reb b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 1.05rem var(--f-display); }
+.reb-m { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--line); font: 700 1rem var(--f-display); background: var(--off); }
+.reb-m.m1 { background: #FFD23F; } .reb-m.m2 { background: var(--p-D9DCE6,#D9DCE6); } .reb-m.m3 { background: #E8A86A; }
+.reb .soc-av { width: 40px; height: 40px; }
+.reb-s, .reb-b { font-weight: 800; white-space: nowrap; }
+.soc-hlava { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.soc-hlava b { font: 700 1.6rem var(--f-display); }
+.soc-profil { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.soc-staty { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.soc-strom { display: grid; justify-items: center; }
+.strom-mini { width: 170px; height: auto; }
+.chat { display: grid; gap: 8px; max-height: 340px; overflow-y: auto; background: var(--p-F4F8FF,#F4F8FF); }
+.chat-prazdny { text-align: center; }
+.msg { justify-self: start; display: grid; gap: 2px; max-width: 80%; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 18px 18px 18px 4px; background: var(--paper); }
+.msg.moja { justify-self: end; border-radius: 18px 18px 4px 18px; background: var(--p-DFF7E8,#DFF7E8); }
+.msg small { color: var(--muted); font-weight: 800; font-size: .72rem; }
+.msg-t { font: 700 1.1rem/1.25 var(--f-display); }
+.msg-nal { display: block; width: 72px; height: 72px; }
+.msg-nal > svg { width: 100%; height: 100%; }
+.soc-nalepky { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.nal { display: grid; place-items: center; aspect-ratio: 1; padding: 8px; border: 2.5px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: 0 3px 0 var(--shc); }
+.nal > svg { width: 100%; height: 100%; }
+.nal:active { transform: translateY(2px) scale(.95); box-shadow: 0 1px 0 var(--shc); }
+.soc-vety { margin-top: 12px; }
+.soc-odober { margin-top: 18px; }
+/* správy ako na Instagrame */
+body.dm-rezim::before { display: none; }
+.soc-taby { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin-bottom: 14px; border: 2.5px solid var(--line); border-radius: 999px; background: var(--paper); }
+.soc-taby button { padding: 8px 4px; border: 0; border-radius: 999px; background: none; font: 700 1rem var(--f-display); color: var(--muted); }
+.soc-taby button[aria-pressed="true"] { background: var(--taby-on); color: #fff; }
+.soc-taby i { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--coral); color: #fff; font-style: normal; font-size: .8rem; }
+.pribehy { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px; margin-bottom: 6px; scrollbar-width: none; }
+.pribeh { position: relative; flex: none; display: grid; justify-items: center; gap: 4px; width: 70px; border: 0; background: none; font: inherit; }
+.pribeh .soc-av { width: 62px; height: 62px; border-width: 3px; box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px #C9C3D9; }
+.pribeh.hori .soc-av { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px #FF9F1C; }
+.pribeh.plus .soc-av { display: grid; place-items: center; background: var(--paper); padding: 12px; }
+.pribeh small { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
+.pribeh-ohen { position: absolute; top: 40px; right: 2px; width: 24px; height: 24px; }
+.konverzacie { display: grid; }
+.konv { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border: 0; border-bottom: 2px solid rgb(43 34 64 / .08); background: none; text-align: left; font: inherit; color: inherit; }
+.konv .soc-av { width: 56px; height: 56px; }
+.konv-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.konv-t b { font: 600 1.1rem var(--f-display); }
+.konv-t small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-weight: 700; }
+.konv.nova .konv-t b, .konv.nova .konv-t small { color: var(--ink); font-weight: 900; }
+.bodka { flex: none; width: 12px; height: 12px; border-radius: 50%; background: #4C7DFF; }
+.dm { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; background: linear-gradient(var(--p-F7F4FF,#F7F4FF), var(--p-FFF8EE,#FFF8EE)); }
+.dm-hlava { display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px; border-bottom: 2.5px solid var(--line); background: var(--paper); }
+.dm-spat { display: grid; place-items: center; width: 44px; height: 44px; border: 0; background: none; color: var(--ink); }
+.dm-spat svg { width: 28px; height: 28px; }
+.dm-kto { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; border: 0; background: none; text-align: left; font: inherit; color: inherit; }
+.dm-kto .soc-av { width: 44px; height: 44px; }
+.dm-kto b { display: block; font: 700 1.2rem var(--f-display); }
+.dm-kto small { color: var(--muted); font-weight: 800; }
+.dm-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0; padding: 14px 12px; overscroll-behavior: contain; }
+.dm-prazdny { margin: auto; display: grid; justify-items: center; gap: 8px; text-align: center; }
+.dm-prazdny b { font: 700 1.4rem var(--f-display); }
+.dm-cas { align-self: center; margin: 10px 0 4px; color: var(--muted); font: 800 .78rem var(--f-body); }
+.dm .msg { align-self: flex-start; display: flex; align-items: flex-end; gap: 6px; max-width: 78%; padding: 0; border: 0; background: none; }
+.dm .msg.moja { align-self: flex-end; }
+.dm .msg { margin-bottom: 4px; flex: none; }
+.dm-chat > * { flex-shrink: 0; }
+.dm .msg.posl { margin-bottom: 9px; }
+.msg-av { flex: none; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; }
+.msg-av .postavicka { width: 100%; height: auto; }
+.dm .msg-t { display: block; padding: 9px 14px; border-radius: 22px; background: var(--p-EAE4F7,#EAE4F7); font: 600 1.1rem/1.25 var(--f-display); }
+.dm .msg.moja .msg-t { background: linear-gradient(135deg, #8B6CFF, #4C7DFF); color: #fff; }
+.msg-x { font-family: var(--f-body) !important; font-weight: 700 !important; overflow-wrap: anywhere; white-space: pre-wrap; }
+.hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 16px; background: var(--t-yel); font-weight: 700; line-height: 1.35; }
+.dm-text { display: flex; gap: 8px; }
+.dm-text .search { flex: 1; min-width: 0; }
+.dm .msg-nal { width: 96px; height: 96px; animation: pop .5s var(--spring) both; }
+.msg.odosiela { opacity: .6; }
+.dm-pisanie { display: grid; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 2.5px solid var(--line); background: var(--paper); }
+.dm-nalepky, .dm-vety { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+@media (min-width: 600px) { .dm-nalepky, .dm-vety { flex-wrap: wrap; overflow: visible; } }
+/* pri písaní (klávesnica) alebo nízkom okne sa rady nálepiek a viet schovajú, aby ostalo miesto na rozhovor */
+.dm-pisanie:has(#soc-text:focus) .dm-nalepky, .dm-pisanie:has(#soc-text:focus) .dm-vety { display: none; }
+@media (max-height: 460px) { .dm-nalepky, .dm-vety { display: none; } }
+.dm-vety .chip, .chips button.chip { min-height: 44px; }
+.dm-nalepky .nal { flex: none; width: 60px; height: 60px; padding: 6px; border-radius: 16px; }
+.dm-vety .chip { flex: none; padding: 7px 13px; color: var(--dk); text-shadow: none; background: var(--p-F2EEFB,#F2EEFB); font-size: .95rem; }
+/* priatelia 2.2: téma v správe, srdiečko, Videné, upozornenie */
+.msg-obal { position: relative; display: block; }
+.msg-r { position: absolute; right: -6px; bottom: -8px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--line); border-radius: 50%; background: var(--paper); animation: pop .4s var(--spring) both; }
+.dm .msg.srdce { margin-bottom: 18px; }
+.msg-tema { display: grid; gap: 4px; width: 200px; padding: 8px; border: 2.5px solid var(--line); border-radius: 20px; background: var(--paper); box-shadow: 0 3px 0 var(--shc); }
+.msg-tema-obr { display: block; height: 100px; overflow: hidden; border-radius: 14px; border: 2px solid var(--line); }
+.msg-tema-obr > svg { width: 100%; height: 100%; }
+.msg-tema small { color: var(--muted); font-weight: 800; }
+.msg-tema b { font: 700 1rem/1.2 var(--f-display); }
+.msg-hv { display: flex; gap: 2px; }
+.msg-hv svg { width: 20px; height: 20px; }
+.msg-tema .btn { padding: 8px 12px; font-size: .95rem; }
+.dm-videne { align-self: flex-end; margin: -2px 4px 6px; color: var(--muted); font: 800 .78rem var(--f-body); }
+.dm-temy { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.dm-tema { flex: none; display: grid; gap: 3px; width: 108px; padding: 4px; border: 2.5px solid var(--line); border-radius: 14px; background: var(--paper); text-align: left; font: inherit; }
+.dm-tema > span { display: block; height: 56px; overflow: hidden; border-radius: 10px; }
+.dm-tema > span > svg { width: 100%; height: 100%; }
+.dm-tema small { font-weight: 800; font-size: .72rem; line-height: 1.2; }
+.dm-temy-btn { background: var(--p-DCEBFF,#DCEBFF) !important; }
+.dm-temy-btn.on { background: var(--sun) !important; }
+.soc-pochval { margin: 6px 0; }
+.soc-ozn { position: fixed; z-index: 58; top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 auto; padding: 8px 14px 8px 8px;
+  border: 3px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: 0 6px 0 var(--shc); text-align: left; font: inherit; color: inherit; animation: ozn .45s var(--spring) both; }
+.soc-ozn > span:nth-child(2) { flex: 1; min-width: 0; display: grid; }
+.soc-ozn b { font: 700 1.05rem var(--f-display); }
+.soc-ozn small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-weight: 800; }
+.soc-ozn.pryc { animation: oznPryc .4s ease-in both; }
+@keyframes ozn { from { transform: translateY(-140%); } }
+@keyframes oznPryc { to { transform: translateY(-140%); opacity: 0; } }

@@ -1,0 +1,45 @@
+/* Mesačný režim: nočná obloha, hrubé svetlé obrysy ako kriedou na tabuli, teplé žlté žiary. Prepína sa atribútom data-rezim na koreni. */
+:root[data-rezim="mesacny"] {
+  color-scheme: dark;
+  --ink: #F1ECFF; --paper: #272154; --sky: #1E1A4A; --muted: #C3BBEA; --soft: #342C68;
+  --line: #9A91E0; --shc: #0A0724; --dk: #2B2240;
+  --ok-bg: #1B4A3B; --bad-bg: #5A2236;
+  --glass: rgb(32 27 78 / .72); --t-yel: #3E3560; --t-grn: #1F4452; --t-blu: #25396B; --off: #3A3474; --off2: #4C4590;
+  --grad-warm: linear-gradient(135deg, #43386A, #55306A); --taby-on: #6C5CE7;
+  --fon: #14113A; --b1: rgb(124 108 255 / .30); --b2: rgb(255 210 63 / .13); --b3: rgb(255 111 168 / .17); --b4: rgb(60 190 210 / .17);
+  --p-FFF3B0: #FFF3B0; --p-BFE3FF: #214562; --p-BFE7FF: #214962; --p-BFF0D2: #21613A; --p-CFCADF: #362D55; --p-D9DCE6: #303852; --p-D9F2FF: #264A5C; --p-D9F7E3: #295939; --p-D9F8E6: #29593D; --p-DCEBFF: #273D5B; --p-DDEBFF: #273D5B; --p-DDF8E8: #2A583D; --p-DFF7E8: #2C573C; --p-E3F4FF: #2A4658; --p-E4DDFA: #352959; --p-EAE4F7: #3A2E54; --p-ECE8F5: #3A3052; --p-EFEAF7: #3D3052; --p-F1EEF8: #3B3151; --p-F2EEFB: #3A3052; --p-F4F2F9: #3B3250; --p-F4F8FF: #313D51; --p-F7F4FF: #3A3151; --p-FFC2C4: #622123; --p-FFC9C4: #622621; --p-FFD6DE: #5D2530; --p-FFE0EC: #59293C; --p-FFE3BD: #624621; --p-FFE6C2: #624721; --p-FFE7C2: #624821; --p-FFE9F1: #562C3B; --p-FFEDEA: #55332D; --p-FFF7D1: #5F5523; --p-FFF8EC: #54462E; --p-FFF8EE: #54442E;
+}
+html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transition: background-color .35s, color .35s, border-color .35s; }
+.blobs .luna, .blobs .hviezdy { display: none; }
+:root[data-rezim="mesacny"] .blobs .luna { display: block; position: absolute; right: 18px; top: calc(14px + env(safe-area-inset-top, 0px)); width: 64px; height: 64px; filter: drop-shadow(0 0 14px rgb(255 226 122 / .55)); animation: lunaHoupe 7s ease-in-out infinite alternate; }
+:root[data-rezim="mesacny"] .blobs .hviezdy { display: block; position: absolute; inset: 0; }
+.hviezdy i { position: absolute; left: var(--x); top: var(--y); width: var(--r, 3px); height: var(--r, 3px); border-radius: 50%; background: #FFF3B0; box-shadow: 0 0 8px 2px rgb(255 226 122 / .55); animation: miha 3.2s ease-in-out infinite; animation-delay: var(--d, 0s); }
+.hviezdy i:nth-child(3n) { background: #FFC2E0; box-shadow: 0 0 8px 2px rgb(255 140 200 / .5); }
+.hviezdy i:nth-child(4n) { background: #BFE3FF; box-shadow: 0 0 8px 2px rgb(140 200 255 / .5); }
+@keyframes miha { 0%, 100% { opacity: .25; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes lunaHoupe { to { transform: translateY(6px) rotate(-5deg); } }
+:root[data-rezim="mesacny"] .blobs::after { opacity: .2; }
+:root[data-rezim="mesacny"] body.tinted { background-color: color-mix(in srgb, var(--kc) 13%, #14113A); }
+:root[data-rezim="mesacny"] body::before { background: var(--fon); }
+:root[data-rezim="mesacny"] .btn.cta::after { opacity: .6; }
+:root[data-rezim="mesacny"] .poz-vol i, :root[data-rezim="mesacny"] .poz-styl i { border-color: var(--line); }
+.rez-karta { display: grid; gap: 10px; }
+.rez-karta .rez-vol { display: flex; gap: 8px; }
+.rez-karta .poz-vol i { display: grid; place-items: center; }
+.rez-karta .poz-vol svg { width: 100%; height: 100%; display: block; }
+:root[data-rezim="mesacny"] .ang-karta { background: linear-gradient(135deg, #4B2D63, #5B4423); }
+:root[data-rezim="mesacny"] .ang-otazka .ang-slovo, :root[data-rezim="mesacny"] .ang-karta .ang-slovo { color: #FF9EC4; }
+:root[data-rezim="mesacny"] .win-odm > summary { color: #FFC266; }
+:root[data-rezim="mesacny"] .link { color: #9DB8FF; }
+:root[data-rezim="mesacny"] .fbk.ok b { color: #6EE7A0; } :root[data-rezim="mesacny"] .fbk.bad b { color: #FF9096; }
+:root[data-rezim="mesacny"] .chyba { color: #FFB3B8; }
+:root[data-rezim="mesacny"] .odmena-karta b { color: #FFC266; }
+:root[data-rezim="mesacny"] .poz-styl i { background: #E3F4FF; }
+:root[data-rezim="mesacny"] .sticker, :root[data-rezim="mesacny"] .badge.new, :root[data-rezim="mesacny"] .day i, :root[data-rezim="mesacny"] .misia-typ-bunka.ma i { color: var(--dk); }
+:root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--paper)); border-color: color-mix(in srgb, var(--c) 80%, var(--paper)); }
+:root[data-rezim="mesacny"] .dm-vety .chip { color: var(--ink); }
+:root[data-rezim="mesacny"] .chips .chip:not([aria-pressed="true"]).tmavy { color: var(--ink); }
+:root[data-rezim="mesacny"] .oslava { background: radial-gradient(circle at 50% 38%, #4A3A82, #1A1547 72%); }
+:root[data-rezim="mesacny"] .os-lucy { background: repeating-conic-gradient(rgb(255 226 122 / .13) 0 9deg, transparent 9deg 22deg); }
+:root[data-rezim="mesacny"] .burst { opacity: .55; }
+@media (prefers-reduced-motion: reduce) { .hviezdy i, .blobs .luna { animation: none !important; } html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transition: none; } }

@@ -1,0 +1,61 @@
+/* hádaj tému */
+.hadaj { display: grid; gap: 12px; }
+.hadaj-obr svg { display: block; width: 100%; aspect-ratio: 16 / 9; }
+.hadaj-otazka { margin: 0; text-align: center; font: 700 1.25rem/1.2 var(--f-display); }
+.hadaj-moz { display: grid; gap: 10px; }
+.btn.hadaj-btn { font-size: 1.05rem; }
+.btn.hadaj-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
+.btn.hadaj-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+/* Koľko ich je? (hra pre malé deti) */
+.pocitaj { display: grid; gap: 14px; }
+.poc-pole { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 12px; min-height: 190px; background: var(--t-yel); }
+.kolo-nove { animation: kolo-in .3s ease-out both; }
+@keyframes kolo-in { from { opacity: 0; transform: translateY(8px); } }
+.poc-obr { width: 74px; height: 74px; animation: pop .4s var(--spring) both; animation-delay: var(--d, 0s); }
+.poc-obr svg { width: 100%; height: 100%; }
+.poc-moz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.btn.poc-btn { min-height: 96px; font: 800 3rem/1 var(--f-display); }
+.btn.poc-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; }
+.btn.poc-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+/* nové hry 4.1 (Ktorý je iný?, Nájdi tieň, Zoraď čísla, Poskladaj slovo) */
+.kv { display: grid; gap: 14px; }
+.kv-prompt { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 10px; min-height: 150px; background: var(--t-yel); }
+.kv-prompt.skryty { display: none !important; }
+.kv-prompt.text { min-height: 80px; }
+.kv-prompt.obraz { padding: 8px; background: var(--paper); }
+.kv-text { font: 700 1.2rem/1.2 var(--f-display); text-align: center; }
+.kv-it { display: inline-block; width: 60px; height: 60px; animation: pop .4s var(--spring) both; }
+.kv-it.velky { width: 120px; height: 120px; }
+.kv-it svg { width: 100%; height: 100%; display: block; }
+.kv-it.otaznik { display: grid; place-items: center; border: 3px dashed var(--line); border-radius: 14px; font: 800 2.4rem/1 var(--f-display); background: var(--paper); }
+.kv-moz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.kv-moz.kv-4 { grid-template-columns: repeat(2, 1fr); }
+.btn.kv-btn { min-height: 96px; padding: 8px; display: flex; align-items: center; justify-content: center; font: 800 2.4rem/1 var(--f-display); }
+.kv-btn .kv-it { width: 72px; height: 72px; animation: none; }
+.kv-moz.ine .kv-btn { flex-direction: column; gap: 4px; min-height: 128px; }
+.kv-moz.ine .kv-btn .kv-it { width: 84px; height: 84px; }
+.kv-nap { font: 800 .95rem/1.1 var(--f-text, Nunito, sans-serif); color: var(--ink); }
+.kv-nap::first-letter { text-transform: uppercase; }
+.kv-vysv { min-height: 3.2em; margin: 10px 4px 0; text-align: center; font-weight: 800; color: var(--muted); }
+.kv-vysv.vid { color: var(--ink); animation: pop .4s var(--spring) both; }
+.kv-moz.tien .kv-it svg { filter: brightness(0) opacity(.8); transition: filter .4s; }
+.kv-moz.tien .kv-btn.ok .kv-it svg { filter: none; }
+.kv-moz.pismena { display: flex; flex-wrap: wrap; justify-content: center; }
+.kv-moz.pismena .kv-btn { min-width: 62px; min-height: 68px; }
+.btn.kv-btn.ok { background: var(--ok-bg); border-color: var(--grass-d); animation: okPop .5s; opacity: 1; }
+.btn.kv-btn.zle { background: var(--bad-bg); border-color: var(--coral); animation: shake .4s; }
+.btn.kv-btn.vzata { opacity: .25; transform: scale(.9); }
+.kv-sloty { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.kv-slot { min-width: 48px; height: 58px; padding: 0 6px; border: 3px dashed var(--line); border-radius: 12px; display: grid; place-items: center; font: 800 1.6rem/1 var(--f-display); background: var(--paper); }
+.kv-slot.plny { border-style: solid; background: var(--ok-bg); animation: pop .3s var(--spring); }
+/* bubliny s počtami */
+.priklad { text-align: center; font: 700 2.4rem/1.1 var(--f-display); }
+.bub-pole { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--line); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, #8ED6FF); }
+.bublina { position: absolute; display: grid; place-items: center; width: 84px; height: 84px; padding: 0; border: 3px solid var(--line); border-radius: 50%; color: var(--dk); font: 800 1.9rem/1 var(--f-display);
+  background: radial-gradient(circle at 32% 28%, #fff 0 10%, rgb(255 255 255 / .5) 11% 26%, transparent 27%), radial-gradient(circle at 50% 60%, #C8F1FF, #73C6FF); box-shadow: 0 4px 0 rgb(43 34 64 / .3);
+  animation: pop .35s var(--spring) both, tileBob 2.4s ease-in-out var(--d, 0s) infinite; }
+.bub-pole.styri .bublina { width: 74px; height: 74px; font-size: 1.6rem; }
+.bublina.zle { animation: shake .4s; background: var(--p-FFC2C4,#FFC2C4); }
+.bublina.praskla { animation: prask .3s forwards; pointer-events: none; }
+@keyframes prask { to { transform: scale(1.6); opacity: 0; } }
+

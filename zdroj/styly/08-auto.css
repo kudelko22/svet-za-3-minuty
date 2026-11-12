@@ -1,0 +1,45 @@
+/* Režim do auta: tmavšie farby (neoslňujú), veľké písmo a tlačidlá */
+body.auto-rezim { background-color: #1D2557; }
+body.auto-rezim .blobs { opacity: .3; }
+.auto { display: grid; gap: 16px; color: #fff; padding-top: 4px; }
+.auto-top { display: flex; align-items: center; justify-content: space-between; }
+.auto .frame { border-color: #0E1330; box-shadow: 0 6px 0 #0E1330; }
+.auto .ib { color: var(--dk); }
+.auto-scena svg { aspect-ratio: 2 / 1; }
+.auto-t { margin: 0; font: 700 1.9rem/1.1 var(--f-display); text-wrap: balance; }
+.auto-body { display: grid; gap: 12px; justify-items: start; min-height: 10em; align-content: start; }
+.auto-text { margin: 0; font: 700 1.45rem/1.5 var(--f-body); }
+.auto-text .minula { opacity: .6; }
+.auto-text .teraz { scroll-margin: 80px 0 150px; color: #FFE27A; background: rgb(255 210 63 / .16); border-radius: 8px; box-shadow: 0 0 0 4px rgb(255 210 63 / .16); }
+.auto-cas { display: flex; align-items: center; gap: 12px; font: 700 1.25rem/1.2 var(--f-display); color: #FFE27A; }
+.odpocet-kruh { position: relative; width: 64px; height: 64px; display: grid; place-items: center; }
+.odpocet-kruh svg { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.odpocet-kruh circle { fill: none; stroke: rgb(255 255 255 / .2); stroke-width: 7; }
+.odpocet-kruh .ostava { stroke: #FFD23F; stroke-linecap: round; stroke-dasharray: 170; animation: odpocet var(--s) linear forwards; }
+.odpocet-kruh b { position: relative; font-size: 1.4rem; }
+@keyframes odpocet { to { stroke-dashoffset: 170; } }
+.auto-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.auto-dots i { width: 10px; height: 10px; border-radius: 50%; background: rgb(255 255 255 / .22); transition: transform .3s; }
+.auto-dots i.hotovo { background: #2FBF71; }
+.auto-dots i.teraz { background: #FFD23F; transform: scale(1.45); }
+.auto-ovl { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2; display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: center; gap: 14px; }
+.auto-btn { display: grid; place-items: center; align-content: center; gap: 3px; height: 84px; border-radius: 24px; border: 3px solid #0E1330; background: var(--paper); color: var(--dk); font: 700 .95rem/1 var(--f-display); box-shadow: 0 5px 0 #0E1330; }
+.auto-btn svg { width: 34px; height: 34px; fill: #8FD3FF; stroke: var(--dk); stroke-width: 3.5; stroke-linejoin: round; }
+.auto-btn.velke { height: 104px; font-size: 1.05rem; background: var(--sun); }
+.auto-btn.velke svg { width: 46px; height: 46px; fill: #fff; }
+.auto-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #0E1330; }
+.auto-prepinac { display: flex; align-items: center; gap: 10px; font-weight: 800; color: rgb(255 255 255 / .85); }
+.auto-prepinac input { width: 26px; height: 26px; accent-color: #2FBF71; }
+.auto-koniec { justify-items: center; text-align: center; }
+.auto-koniec .auto-top, .auto-koniec .btn, .auto-koniec .nove-odmeny { width: 100%; }
+.auto-koniec .earn, .auto-koniec .nove-odmeny { color: var(--dk); }
+.auto-odpocet { margin: 0; color: #FFE27A; font-weight: 800; }
+.auto-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; text-align: left; border-radius: 24px; border: 3px solid var(--line); background: linear-gradient(135deg, #2E3A87, #4C7DFF); color: #fff; box-shadow: var(--sh); }
+.auto-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--shc); }
+.auto-karta > div { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.auto-karta b { font: 700 1.35rem/1.15 var(--f-display); text-shadow: 0 2px 0 var(--dk); }
+.auto-karta small { font-weight: 800; opacity: .92; }
+.auto-ikona { flex: none; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--line); background: var(--paper); font-size: 2rem; animation: tileBob 2.6s ease-in-out infinite; }
+.auto-play { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--line); background: var(--sun); color: var(--dk); font-size: 1.4rem; animation: pulse 1.6s ease-in-out infinite; }
+.btn.auto-mini { background: #2E3A87; }
+

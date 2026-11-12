@@ -1,0 +1,9 @@
+/* Spodné menu */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--paper); border-top: 3px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.nav .gut { display: grid; grid-template-columns: repeat(5, 1fr); padding-block: 6px; }
+.nav button { display: grid; justify-items: center; gap: 1px; border: 0; background: none; padding: 2px 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
+.ni { display: grid; place-items: center; width: 56px; height: 34px; border-radius: 999px; border: 2.5px solid transparent; }
+.nav svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nav button[aria-current="page"] { color: var(--ink); }
+.nav button[aria-current="page"] .ni { background: var(--nc); border-color: var(--line); animation: jelly .6s; }
+

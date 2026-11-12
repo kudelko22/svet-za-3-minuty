@@ -1,0 +1,16 @@
+/* Kreslené ikony */
+.ib svg { display: block; width: 22px; height: 22px; margin: auto; }
+.iko-x { fill: none; stroke: var(--ink); stroke-width: 7; stroke-linecap: round; }
+.auto-chip svg { width: 26px; height: 18px; margin-right: 4px; vertical-align: -4px; }
+.auto-ikona svg { width: 46px; height: 32px; }
+.auto-play svg { width: 26px; height: 26px; margin-left: 3px; fill: #fff; stroke: var(--dk); stroke-width: 4; stroke-linejoin: round; }
+.btn.auto-mini { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn.auto-mini svg { flex: none; width: 40px; height: 28px; }
+
+/* Výber hlasu v profile */
+.hlasy { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 8px; }
+.hlas { display: grid; gap: 2px; padding: 10px 12px; text-align: left; border: 3px solid var(--line); border-radius: 16px; background: var(--paper); box-shadow: 0 3px 0 var(--shc); }
+.hlas small { color: var(--muted); font-weight: 800; }
+.hlas[aria-pressed="true"] { background: var(--p-D9F8E6,#D9F8E6); animation: jelly .5s; }
+.rada { margin: 8px 0 0; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 14px; background: var(--t-yel); font-weight: 700; }
+

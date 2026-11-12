@@ -1,0 +1,20 @@
+/* Úvodná obrazovka pri spustení (rozmery v px sedia s obrázkami ikony/start z generátora) */
+.uvod { position: fixed; inset: 0; z-index: 80; overflow: hidden; background: var(--p-E3F4FF,#E3F4FF); }
+.uvod.pryc { pointer-events: none; animation: uvodPryc .55s ease-in forwards; }
+.uvod.pryc .uvod-in { transition: transform .55s ease-in; transform: translateY(-26px) scale(1.06); }
+@keyframes uvodPryc { to { opacity: 0; } }
+.uvod-in { position: absolute; left: 50%; top: var(--uy, 44vh); width: 0; height: 0; }
+.uvod-in > * { position: absolute; }
+.uvod-kruh { left: -110px; top: -110px; width: 220px; height: 220px; border-radius: 50%; background: rgb(255 255 255 / .75); }
+.uvod-sova { left: -75px; top: -82.5px; width: 150px; height: 165px; }
+.uvod-sova svg { display: block; width: 100%; height: 100%; animation: hop 1.6s ease-in-out .35s infinite; }
+.uvod-hv { left: calc(var(--x) - 13px); top: calc(var(--y) - 13px); width: 26px; height: 26px; animation: uvodHv 2.4s ease-in-out infinite; animation-delay: calc(.3s + var(--k) * .35s); }
+.uvod-hv svg { display: block; width: 100%; height: 100%; }
+@keyframes uvodHv { 50% { transform: scale(1.3) rotate(24deg); } }
+.uvod-nazov { left: -200px; top: 128px; width: 400px; height: 40px; text-align: center; white-space: nowrap; font: 700 34px/40px 'Baloo 2', system-ui, sans-serif; color: #2B2240; }
+.uvod-pod { left: -200px; top: 170px; width: 400px; height: 24px; text-align: center; font: 800 17px/24px Nunito, system-ui, sans-serif; color: #5F587A; }
+.uvod-bodky { left: -32px; top: 212px; width: 64px; display: flex; justify-content: space-between; animation: osIn .3s .6s both; }
+.uvod-bodky i { width: 13px; height: 13px; border: 2.5px solid #2B2240; border-radius: 50%; background: #FFD23F; animation: uvodBodka 1s ease-in-out infinite; }
+.uvod-bodky i:nth-child(2) { background: #FF6FA8; animation-delay: .15s; }
+.uvod-bodky i:nth-child(3) { background: #4C7DFF; animation-delay: .3s; }
+@keyframes uvodBodka { 40% { transform: translateY(-9px); } }

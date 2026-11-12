@@ -1,0 +1,6 @@
+/* Prehľad pre rodiča */
+.prehlad { display: grid; gap: 8px; }
+.prehlad ul { display: grid; gap: 6px; margin: 0 0 6px; padding: 0; list-style: none; }
+.prehlad li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 14px; background: var(--soft); }
+.prehlad li > span:nth-child(2) { flex: 1; min-width: 0; }
+.prehlad li small { display: block; color: var(--muted); font-weight: 800; }

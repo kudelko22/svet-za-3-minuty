@@ -1,7 +1,7 @@
 // Testy logiky appky bez prehliadača (falošná stránka v Node). Spustenie: node zdroj/test.js
 // Skontroluje témy, obrázky, prihlasovacie obrazovky, postavičku, odmeny, odznaky, hry, režim do auta a prehľad pre rodiča.
 const fs = require('fs'), path = require('path'), os = require('os'), { execFileSync } = require('child_process');
-const R = path.join(__dirname, '..'), html = fs.readFileSync(path.join(__dirname, 'appka.html'), 'utf8');
+const R = path.join(__dirname, '..'), html = require('./zloz.js').zloz(); // kostra appka.html so vloženými štýlmi a kódom
 const skript = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m)[1];
 const modul = html.match(/^<script type="module">\n([\s\S]*?)^<\/script>$/m)[1];
 const docasny = path.join(os.tmpdir(), 'svet3-modul.mjs');
@@ -722,7 +722,7 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   if (!idx.includes('id="uvod"')) zle.push('chyba uvodna obrazovka');
   if (zle.length) { console.log('CHYBY uvod', zle); process.exit(1); } }
 // 4.1 D: limit dĺžky mena a ochrana pred pretekaním
-{ const src = fs.readFileSync(path.join(R, 'zdroj', 'appka.html'), 'utf8'), zle = [];
+{ const src = html, zle = [];
   const m = src.match(/id="meno-dietata"[^>]*maxlength="(\d+)"/);
   if (!m || +m[1] < 10 || +m[1] > 20) zle.push('meno dietata: maxlength 10 az 20');
   if (!/\.dieta b[^}]*line-clamp/.test(src)) zle.push('chyba orezanie mena v vybere dietata');

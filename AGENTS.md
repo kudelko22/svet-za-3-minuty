@@ -16,7 +16,7 @@ Beží na https://svet-za-3-minuty.web.app (Firebase projekt `svet-za-3-minuty`,
 
 ## Postup pri zmene
 
-1. Upravovať `zdroj/appka.html`, `temy.js`, `obrazky.js`. `index.html` neupravovať ručne.
+1. Upravovať zdroj: kostra `zdroj/appka.html`, štýly `zdroj/styly/*.css`, kód `zdroj/kod/*.js` (skladá ich `zdroj/zloz.js`), `temy.js`, `obrazky.js`. `index.html` neupravovať ručne.
 2. `zdroj\spusti.cmd test`, potom `zdroj\spusti.cmd build` (vytvorí `index.html`).
 3. Pri zmene `firestore.rules`: `zdroj\spusti.cmd test:rules` (sám spustí emulátor, maže len jeho dáta).
 4. Zvýšiť `VERZIA_APPKY` a `VERZIA_NAZOV`, doplniť `NOVINKY`.
