@@ -1,9 +1,11 @@
-/* Spodné menu */
-.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--paper); border-top: 3px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
-.nav .gut { display: grid; grid-template-columns: repeat(5, 1fr); padding-block: 6px; }
-.nav button { display: grid; justify-items: center; gap: 1px; border: 0; background: none; padding: 2px 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
-.ni { display: grid; place-items: center; width: 56px; height: 34px; border-radius: 999px; border: 2.5px solid transparent; }
-.nav svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.nav button[aria-current="page"] { color: var(--ink); }
-.nav button[aria-current="page"] .ni { background: var(--nc); border-color: var(--line); animation: jelly .6s; }
+/* Spodné menu 5.0: kreslené ikony jednej rodiny (ikn); aktívna položka vystúpi nad lištu v žltej bubline, ostatné sú vyblednuté */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--card); border-top: var(--obrys); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.nav .gut { display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; padding-block: 7px 6px; }
+.nav button { display: grid; justify-items: center; gap: 3px; border: 0; background: none; padding: 0; font: 700 .74rem/1.1 var(--fb); color: var(--muted); }
+.ni { display: grid; place-items: center; width: 44px; height: 32px; }
+.nav .ikn { width: 28px; height: 28px; }
+.nav button:not([aria-current="page"]) .ikn { --sun: var(--sand); --coral: var(--sand); --teal: var(--sand); --sky: var(--sand); --violet: var(--sand); --sky-l: var(--card); }
+.nav button[aria-current="page"] { color: var(--text); font-weight: 800; }
+.nav button[aria-current="page"] .ni { width: 52px; height: 52px; margin-top: -26px; border-radius: 50%; background: var(--sun-l); border: var(--obrys); box-shadow: inset 0 -5px 0 var(--sand), 0 4px 0 var(--shc); animation: jelly .6s; }
+.nav button[aria-current="page"] .ikn { width: 30px; height: 30px; margin-top: -4px; }
 

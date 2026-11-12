@@ -1,53 +1,79 @@
-/* Kreslený svet: farebné plávajúce škvrny a čmáranice, hrubé tmavé obrysy, šťavnaté farby, tlačidlá ako v hre.
-   Zámerne jeden svetlý vzhľad (ako detská knižka), preto bez tmavého režimu. */
+/* Svetom 5.0, paleta A „Papierový atlas“: papier, atramentový obrys, plný tieň pod prvkami (nálepkový vzhľad).
+   Farby sa berú len cez premenné. Každá farba má tri stupne: základ, -d (tmavší, hrany a text) a -l (svetlý podklad).
+   Mesačný režim dáva tým istým menám nočné hodnoty (29-zaklad-mesacny-rezim.css). */
 /* plynulá zmena pozadia: farby sa dajú prechodom plynule premeniť */
-@property --fon { syntax: "<color>"; inherits: true; initial-value: #E3F4FF; }
-@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 111 168 / .45); }
-@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 210 63 / .55); }
-@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(47 191 113 / .4); }
-@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(124 108 255 / .4); }
+@property --fon { syntax: "<color>"; inherits: true; initial-value: #FFF6E3; }
+@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 106 77 / .2); }
+@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 197 51 / .34); }
+@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(20 184 166 / .2); }
+@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(122 90 248 / .16); }
 :root {
   transition: --fon .7s ease, --b1 .7s ease, --b2 .7s ease, --b3 .7s ease, --b4 .7s ease;
-  --ink: #2B2240; --paper: #FFFFFF; --sky: #E3F4FF; --muted: #5F587A; --soft: #F3EFFF;
-  --sun: #FFD23F; --grass: #2FBF71; --grass-d: #1E9A57; --blue: #4C7DFF; --coral: #FF5A5F; --orange: #FF9F1C; --pink: #FF6FA8;
-  --ok-bg: #D9F8E6; --bad-bg: #FFE1E1;
-  --dk: #2B2240; --line: #2B2240; --shc: #2B2240; --glass: rgb(255 255 255 / .6); --t-yel: #FFF6CC; --t-grn: #E7F9EC; --t-blu: #E8F7FF; --off: #E4E0EE; --off2: #C9C3D9; --grad-warm: linear-gradient(135deg, #FFF6CC, #FFE3EE); --taby-on: #2B2240;
-  --sh: 0 5px 0 var(--shc);
-  --spring: cubic-bezier(.25, 1.55, .5, 1);
-  --f-display: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Nunito", "Segoe UI", system-ui, sans-serif;
-  --fon: #E3F4FF; --b1: rgb(255 111 168 / .45); --b2: rgb(255 210 63 / .55); --b3: rgb(47 191 113 / .4); --b4: rgb(124 108 255 / .4);
+  /* paleta A */
+  --ink: #2A2356; --text: #2A2356; --muted: #655E8C; --bg: #FFF6E3; --card: #FFFDF8; --sand: #F5E6C0;
+  --violet: #7A5AF8; --violet-d: #5536CC; --violet-l: #E6DEFF;
+  --sun: #FFC533; --sun-d: #E79C00; --sun-l: #FFEEB5;
+  --coral: #FF6A4D; --coral-d: #D5432B; --coral-l: #FFDBD0;
+  --teal: #14B8A6; --teal-d: #0B877B; --teal-l: #C9F2EB;
+  --sky: #52B6FF; --sky-d: #1F84D6; --sky-l: #D5EDFF;
+  --leaf: #5BC56B; --leaf-d: #2F9A49; --leaf-l: #DAF5D6;
+  /* úlohy farieb */
+  --cta: var(--sun); --cta-d: var(--sun-d); --cta-t: #2A2356; /* hlavné tlačidlo: žlté s tmavým textom */
+  --iko: #2A2356; /* obrys ikon (v noci svetlý) */
+  --link: #5536CC; --ok-t: #1F7A35; --zle-t: #B5311B; --sun-t: #8A5700; /* farebný text na papieri */
+  --mink: #2A2356; --m1: #7A5AF8; --m2: #5536CC; /* Múdra */
+  /* staré mená (do 4.9), ukazujú na paletu; v novom kóde nepoužívať */
+  --paper: #FFFDF8; --line: #2A2356; --shc: #2A2356; --soft: #F1EBFF;
+  --grass: #5BC56B; --grass-d: #2F9A49; --blue: #7A5AF8; --orange: #E79C00; --pink: #FF6A4D;
+  --ok-bg: #DAF5D6; --bad-bg: #FFDBD0;
+  --glass: rgb(255 253 248 / .86); --t-yel: #FFEEB5; --t-grn: #DAF5D6; --t-blu: #D5EDFF; --off: #ECE4D0; --off2: #CFC5AB; --grad-warm: linear-gradient(#FFEEB5, #FFEEB5); --taby-on: #2A2356;
+  --p-FFF3B0: var(--sun-l); --p-BFE3FF: var(--sky-l); --p-BFE7FF: var(--sky-l); --p-BFF0D2: var(--leaf-l); --p-CFCADF: var(--violet-l); --p-D9DCE6: var(--sky-l); --p-D9F2FF: var(--sky-l); --p-D9F7E3: var(--leaf-l); --p-D9F8E6: var(--leaf-l); --p-DCEBFF: var(--sky-l); --p-DDEBFF: var(--sky-l); --p-DDF8E8: var(--leaf-l); --p-DFF7E8: var(--leaf-l); --p-E3F4FF: var(--sky-l); --p-E4DDFA: var(--violet-l); --p-EAE4F7: var(--violet-l); --p-ECE8F5: var(--violet-l); --p-EFEAF7: var(--violet-l); --p-F1EEF8: var(--violet-l); --p-F2EEFB: var(--violet-l); --p-F4F2F9: var(--violet-l); --p-F4F8FF: var(--sky-l); --p-F7F4FF: var(--violet-l); --p-FFC2C4: var(--coral-l); --p-FFC9C4: var(--coral-l); --p-FFD6DE: var(--coral-l); --p-FFE0EC: var(--coral-l); --p-FFE3BD: var(--sun-l); --p-FFE6C2: var(--sun-l); --p-FFE7C2: var(--sun-l); --p-FFE9F1: var(--coral-l); --p-FFEDEA: var(--coral-l); --p-FFF7D1: var(--sun-l); --p-FFF8EC: var(--sun-l); --p-FFF8EE: var(--sun-l);
+  --fon: #FFF6E3; --b1: rgb(255 106 77 / .2); --b2: rgb(255 197 51 / .34); --b3: rgb(20 184 166 / .2); --b4: rgb(122 90 248 / .16);
   color-scheme: light;
 }
+/* stále hodnoty (rovnaké cez deň aj v noci) */
+:root {
+  --dk: #2A2356; /* tmavý atrament aj v noci: text na žltej, tyrkysovej a na svetlých štítkoch */
+  --noc-bg: #18143F; --noc-card: #27215F; --noc-sand: #352E7A; --noc-text: #F4EFFF; --noc-muted: #B8B0E6; /* vždy tmavé plochy: Režim do auta, javisko kvízu */
+  --sh: 0 5px 0 var(--shc);
+  --spring: cubic-bezier(.25, 1.55, .5, 1);
+  /* písma: Grandstander nadpisy, čísla a hlas Múdrej; Atkinson Hyperlegible Next text (má prečiarknutú nulu, čísla preto vždy --fd) */
+  --fd: "Grandstander", "Baloo 2", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --fb: "Svetom Text", "Atkinson Hyperlegible Next", "Nunito", "Segoe UI", system-ui, sans-serif;
+  --f-display: var(--fd); --f-body: var(--fb);
+  /* rohy sú mierne nerovné, ako vystrihnuté nožnicami */
+  --r-karta: 20px 22px 20px 24px; --r-tlac: 18px 20px 19px 21px; --r-maly: 14px 16px 15px 17px; --r-pole: 15px 17px 16px 18px;
+  --obrys: 3px solid var(--line); --obrys-m: 2.5px solid var(--line);
+}
 * { box-sizing: border-box; }
-body { color: var(--ink); font: 700 16px/1.55 var(--f-body); -webkit-text-size-adjust: 100%; background-color: var(--fon); transition: background-color .5s; }
+body { color: var(--text); font: 500 16px/1.5 var(--fb); -webkit-text-size-adjust: 100%; background-color: var(--fon); transition: background-color .5s; }
 body.tinted { background-color: color-mix(in srgb, var(--kc) 22%, var(--paper)); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .koliesko { display: inline-block; width: 1em; height: 1em; margin-right: 8px; vertical-align: -.15em; border: 3px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
-:focus-visible { outline: 3px dashed var(--blue); outline-offset: 3px; }
+:focus-visible { outline: 3px dashed var(--violet); outline-offset: 3px; }
 .gut { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.h1 { margin: 0; font: 700 clamp(1.9rem, 7.5vw, 2.3rem)/1.08 var(--f-display); text-wrap: balance; }
-.h2 { margin: 0; font: 700 1.4rem/1.3 var(--f-display); text-decoration: underline wavy var(--hc, var(--pink)); text-decoration-thickness: 3px; text-underline-offset: 7px; text-decoration-skip-ink: none; }
+.h1 { margin: 0; font: 900 clamp(1.75rem, 7.2vw, 2.15rem)/1.06 var(--fd); letter-spacing: -.01em; text-wrap: balance; }
+.h2 { margin: 0; font: 800 1.35rem/1.25 var(--fd); text-decoration: underline wavy var(--hc, var(--coral)); text-decoration-thickness: 3px; text-underline-offset: 7px; text-decoration-skip-ink: none; }
 .muted { margin: 0; color: var(--muted); }
-.card { background: var(--paper); border: 3px solid var(--line); border-radius: 24px; padding: 16px; box-shadow: var(--sh); }
+.card { background: var(--card); border: var(--obrys); border-radius: var(--r-karta); padding: 16px; box-shadow: var(--sh); }
 .sec { display: grid; gap: 14px; }
 .owl { display: block; width: 100%; height: auto; overflow: visible; }
 
 /* Pozadie: plávajúce farebné škvrny a čmáranice */
 .blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.blobs > i { position: absolute; width: 75vmax; height: 75vmax; border-radius: 50%; animation: drift 22s ease-in-out infinite alternate; transition: opacity .5s; }
-.blobs > i:nth-child(1) { left: -32vmax; top: -30vmax; background: radial-gradient(circle, var(--b1), transparent 62%); }
-.blobs > i:nth-child(2) { right: -38vmax; top: 8vh; background: radial-gradient(circle, var(--b2), transparent 62%); animation-duration: 26s; animation-delay: -6s; }
-.blobs > i:nth-child(3) { left: -26vmax; bottom: -38vmax; background: radial-gradient(circle, var(--b3), transparent 62%); animation-duration: 30s; }
-.blobs > i:nth-child(4) { right: -30vmax; bottom: -32vmax; background: radial-gradient(circle, var(--b4), transparent 62%); animation-duration: 24s; animation-delay: -12s; }
+.blobs > i { position: absolute; width: 62vmax; height: 62vmax; border-radius: 47% 53% 50% 50% / 52% 48% 52% 48%; animation: drift 22s ease-in-out infinite alternate; transition: opacity .5s; }
+.blobs > i:nth-child(1) { left: -32vmax; top: -30vmax; background: var(--b1); }
+.blobs > i:nth-child(2) { right: -38vmax; top: 8vh; background: var(--b2); animation-duration: 26s; animation-delay: -6s; }
+.blobs > i:nth-child(3) { left: -26vmax; bottom: -38vmax; background: var(--b3); animation-duration: 30s; }
+.blobs > i:nth-child(4) { right: -30vmax; bottom: -32vmax; background: var(--b4); animation-duration: 24s; animation-delay: -12s; }
 .blobs::after { content: ""; position: absolute; inset: -180px 0 0 -180px; animation: doodle 40s linear infinite;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' opacity='.5'%3E%3Cpath d='M18 30l6-6 6 6 6-6' stroke='%23B9A6FF'/%3E%3Ccircle cx='132' cy='28' r='6' stroke='%23FF9EC7'/%3E%3Cpath d='M78 92v14M71 99h14' stroke='%2389B4FF'/%3E%3Cpath d='M140 118l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z' stroke='%23FFC94A'/%3E%3Ccircle cx='32' cy='140' r='3.5' fill='%237FDBA6' stroke='none'/%3E%3Cpath d='M98 164q6-8 12 0t12 0' stroke='%23FFB36B'/%3E%3C/g%3E%3C/svg%3E"); }
 @keyframes drift { to { transform: translate(9vmax, 7vmax) scale(1.2); } }
 @keyframes doodle { to { transform: translate(180px, 180px); } }
 #fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
-.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 61; translate: -50% 0; max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 18px; background: var(--paper); border: 3px solid var(--line); box-shadow: 0 4px 0 var(--shc); font: 600 1rem/1.3 var(--f-display); animation: rise .45s var(--spring) both; }
-.float-pts { position: fixed; z-index: 61; translate: -50% -50%; pointer-events: none; font: 700 2rem/1 var(--f-display); color: #FFD23F; -webkit-text-stroke: 2.5px var(--dk); paint-order: stroke fill; text-shadow: 0 3px 0 var(--dk); animation: ptsUp 1.1s ease-out forwards; }
+.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 61; translate: -50% 0; max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 16px 18px 18px 5px; background: var(--card); border: var(--obrys); box-shadow: 0 4px 0 var(--shc); font: 600 1rem/1.3 var(--fd); animation: rise .45s var(--spring) both; }
+.float-pts { position: fixed; z-index: 61; translate: -50% -50%; pointer-events: none; font: 700 2rem/1 var(--f-display); color: var(--sun); -webkit-text-stroke: 2.5px var(--dk); paint-order: stroke fill; text-shadow: 0 3px 0 var(--dk); animation: ptsUp 1.1s ease-out forwards; }
 @keyframes ptsUp { 0% { transform: scale(.4); opacity: 0; } 25% { transform: scale(1.35); opacity: 1; } 100% { transform: translateY(-80px) scale(1); opacity: 0; } }
 
 /* Hlavička */
@@ -77,19 +103,21 @@ main.gut { display: grid; gap: 24px; padding-block: 10px 120px; }
 .anim .step > * { animation: rise .55s var(--spring) both; animation-delay: calc(var(--j, 0) * 80ms + 80ms); }
 
 /* Tlačidlá a štítky */
-.btn { position: relative; overflow: hidden; border: 3px solid var(--line); border-radius: 18px; padding: 13px 18px; font: 700 1.2rem/1.2 var(--f-display); letter-spacing: .01em; color: #fff; text-shadow: 0 2px 0 var(--dk); background: var(--grass); box-shadow: var(--sh); transition: transform .08s, box-shadow .08s; }
-.btn:active, .act:active, .tile:active, .row:active, .cc:active, .ans:active:not(:disabled), .read:active, .snd:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--shc); }
-.btn.blue { background: var(--blue); }
-.btn.ghost { background: var(--paper); color: var(--ink); text-shadow: none; }
-.btn.cta { animation: pulse 1.7s ease-in-out infinite; }
+.btn { position: relative; overflow: hidden; border: var(--obrys); border-radius: var(--r-tlac); padding: 12px 18px 17px; font: 800 1.15rem/1.2 var(--fd); letter-spacing: .01em; color: var(--cta-t); background: var(--cta); box-shadow: inset 0 -6px 0 var(--cta-d), 0 4px 0 var(--shc); transition: transform .1s, box-shadow .1s; }
+.btn::before { content: ""; position: absolute; left: 12px; top: 7px; width: 16px; height: 6px; border-radius: 6px; background: #fff; opacity: .55; rotate: -10deg; pointer-events: none; }
+.btn:active:not(:disabled) { transform: translateY(4px); box-shadow: inset 0 -2px 0 var(--cta-d), 0 0 0 var(--shc); }
+.act:active, .tile:active, .row:active, .cc:active, .ans:active:not(:disabled), .read:active, .snd:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--shc); }
+.btn.blue { --cta: var(--violet); --cta-d: var(--violet-d); --cta-t: #fff; }
+.btn.ghost { --cta: var(--card); --cta-d: var(--sand); --cta-t: var(--text); }
 .btn.cta::after { content: ""; position: absolute; top: -10%; bottom: -10%; left: 0; width: 35%; background: linear-gradient(100deg, transparent, rgb(255 255 255 / .6), transparent); transform: translateX(-160%) skewX(-20deg); animation: shine 2.6s ease-in-out infinite; }
-.btn:disabled { background: var(--off); color: var(--muted); text-shadow: none; box-shadow: 0 5px 0 #C9C3D9; border-color: var(--off2); transform: none; cursor: default; animation: none; }
+.btn:disabled { --cta: transparent; --cta-d: transparent; --cta-t: var(--muted); border-style: dashed; border-color: var(--muted); box-shadow: none; padding-bottom: 14px; transform: none; cursor: default; animation: none; }
+.btn:disabled::before, .btn:disabled::after { display: none; }
 .wide { width: 100%; }
-.sticker { display: inline-block; background: var(--sun); border: 3px solid var(--line); border-radius: 14px; padding: 3px 12px; font: 700 1rem/1.3 var(--f-display); box-shadow: 0 3px 0 var(--shc); rotate: -4deg; }
+.sticker { display: inline-block; background: var(--sun); color: var(--dk); border: var(--obrys-m); border-radius: 10px 12px 9px 12px; padding: 3px 11px 2px; font: 800 .95rem/1.3 var(--fd); box-shadow: 0 3px 0 var(--shc); rotate: -3deg; }
 .sticker.sm { font-size: .9rem; padding: 2px 10px; }
-.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 2.5px solid var(--line); border-radius: 999px; font: 600 .95rem/1.3 var(--f-display); color: #fff; text-shadow: 0 1.5px 0 var(--dk); background: var(--c, var(--muted)); }
-.read { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 5px 13px; border: 2.5px solid var(--line); border-radius: 999px; background: var(--paper); box-shadow: 0 3px 0 var(--shc); font: 600 .95rem/1.2 var(--f-display); }
-.read.on { background: var(--sun); animation: pulse 1s ease-in-out infinite; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border: var(--obrys-m); border-radius: 999px; font: 700 .9rem/1.35 var(--fb); color: var(--text); background: color-mix(in srgb, var(--c, var(--sand)) 34%, var(--card)); }
+.read { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 5px 13px; border: var(--obrys-m); border-radius: 999px; background: var(--card); box-shadow: 0 3px 0 var(--shc); font: 700 .95rem/1.2 var(--fd); }
+.read.on { background: var(--sun); color: var(--dk); }
 
 /* Obrázky a ich pohyb */
 .scene svg, .frame svg { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }

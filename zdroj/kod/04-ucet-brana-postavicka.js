@@ -34,7 +34,7 @@ const Rodic = {
   },
 };
 const brany = {
-  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
+  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1 logo" aria-label="Svetom">${logo().replace(/^<span class="logo" role="img" aria-label="Svetom">|<\/span>$/g, '')}</h1><p class="podtitul">${PODTITUL}</p><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
   bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
       <p class="muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>Skúsiť znova</button></div>`,
   chybaNacitania: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Nepodarilo sa načítať</h1>
@@ -75,7 +75,7 @@ const brany = {
         <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Pokračovať cez Google', 'Otvára sa Google…')}</button>
         ${vseobecna}
       </div>${spat}</div>`;
-    return `<div class="brana">${sova}<h1 class="h1">Svet za 3 minúty</h1>
+    return `<div class="brana">${sova}<h1 class="h1 logo" aria-label="Svetom">${logo().replace(/^<span class="logo" role="img" aria-label="Svetom">|<\/span>$/g, '')}</h1><p class="podtitul">${PODTITUL}</p>
       <p class="muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
       <button type="button" class="btn blue wide" data-uvod="mam">Mám účet</button>
       <button type="button" class="btn wide" data-uvod="novy">Som tu nový</button>

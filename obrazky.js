@@ -1,7 +1,7 @@
 // Kreslené obrázky Svet za 3 minúty: všetko z jednoduchých tvarov s tmavým obrysom (rám 320 × 180).
 // Pohyb robia triedy (blink, hop, drift, rain, …), štýly sú v hlavnej stránke.
-const INK = '#2B2240', N = 'stroke="none"';
-const TXT = 'font-family="&quot;Baloo 2&quot;, Nunito, sans-serif" font-weight="700" text-anchor="middle" stroke="none"';
+const INK = '#2A2356', N = 'stroke="none"';
+const TXT = 'font-family="Grandstander, &quot;Baloo 2&quot;, Nunito, sans-serif" font-weight="800" text-anchor="middle" stroke="none"';
 const bg = c => `<rect width="320" height="180" fill="${c}" ${N}/>`;
 const dot = (x, y, r = 2.2) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${INK}" ${N}/>`;
 const lica = (x, y, d) => `<circle cx="${x - d}" cy="${y}" r="3.5" fill="#FF8FB1" opacity=".8" ${N}/><circle cx="${x + d}" cy="${y}" r="3.5" fill="#FF8FB1" opacity=".8" ${N}/>`;
@@ -523,27 +523,81 @@ const svg = t => `<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice
 const scene = (t, cls = '') => `<div class="scene ${cls}">${svg(t)}</div>`;
 
 /* Maskot: sovička Múdra (hi = máva, happy = teší sa, cheer = oslavuje, oops = ľutuje) */
-function owl(m = 'hi') {
-  const W = '#7650E6';
-  const L = { dole: `<path d="M16 72 C4 86 8 104 24 110 C26 94 24 80 16 72Z" fill="${W}"/>`, hore: `<path d="M22 76 C4 68 0 44 8 32 C18 46 28 58 26 76Z" fill="${W}"/>` };
-  const P = { dole: `<path d="M104 72 C116 86 112 104 96 110 C94 94 96 80 104 72Z" fill="${W}"/>`, hore: `<path d="M98 76 C116 68 120 44 112 32 C102 46 92 58 94 76Z" fill="${W}"/>` };
-  const lave = m === 'cheer' ? L.hore : L.dole, prave = m === 'cheer' || m === 'hi' ? P.hore : P.dole;
-  const oci = m === 'cheer' || m === 'happy'
-    ? '<path d="M36 56 q8 -10 16 0 M68 56 q8 -10 16 0" fill="none" stroke-width="4"/>'
-    : m === 'oops'
-      ? `${dot(44, 55, 6)}${dot(76, 55, 6)}<circle cx="46" cy="53" r="2" fill="#fff" ${N}/><circle cx="78" cy="53" r="2" fill="#fff" ${N}/><path d="M33 40 l12 -6 M87 40 l-12 -6" stroke-width="4"/>`
-      : `<g class="ow-blink">${dot(47, 54, 7.5)}${dot(79, 54, 7.5)}<circle cx="50" cy="51" r="2.6" fill="#fff" ${N}/><circle cx="82" cy="51" r="2.6" fill="#fff" ${N}/></g>`;
-  return `<svg class="owl" data-m="${m}" viewBox="0 0 120 132" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-    <ellipse cx="46" cy="123" rx="10" ry="5" fill="#FFA62B"/><ellipse cx="74" cy="123" rx="10" ry="5" fill="#FFA62B"/>
-    <path d="M30 36 L22 8 L52 26Z" fill="${W}"/><path d="M90 36 L98 8 L68 26Z" fill="${W}"/>
-    <path d="M60 18 C94 18 106 46 106 78 C106 106 88 122 60 122 C32 122 14 106 14 78 C14 46 26 18 60 18Z" fill="#9B6BFF"/>
-    <path d="M60 66 C80 66 90 84 90 98 C90 112 78 118 60 118 C42 118 30 112 30 98 C30 84 40 66 60 66Z" fill="#EDE5FF"/>
-    <path d="M47 92 q4 5 8 0 q4 5 8 0 q4 5 8 0 M51 104 q4 5 8 0 q4 5 8 0" fill="none" stroke-width="3"/>
-    <g class="ow-wl">${lave}</g><g class="ow-wr">${prave}</g>
-    <circle cx="44" cy="52" r="16" fill="#fff"/><circle cx="76" cy="52" r="16" fill="#fff"/>${oci}
-    <path d="M53 66 H67 L60 77Z" fill="#FFA62B"/><circle cx="27" cy="72" r="5" fill="#FF8FB1" ${N}/><circle cx="93" cy="72" r="5" fill="#FF8FB1" ${N}/></g></svg>`;
+/* Múdra 5.0, variant B „Objaviteľka“: veľká hlava, ohnuté pravé pierko, jantárové oči s hviezdičkou, maska v tvare M, koralová šatka.
+   mudra(vyraz, { extra, tien, m }) kreslí výraz: ahoj, stoji, radost, zvedava, povzbudenie, oslava, premysla.
+   extra: doplnky okolo (iskry, lupa, srdce, konfety, bubliny) presahujú rám, preto len tam, kde je okolo miesto.
+   owl(m) ostáva pre starý kód: hi = ahoj, cheer = oslava, happy = radost, oops = povzbudenie. */
+let mudraUid = 0;
+const mStar4 = (x, y, r, fill = '#fff', extra = 'stroke="none"') => `<path d="M${x} ${y - r}C${x} ${y - r * .3} ${x + r * .3} ${y} ${x + r} ${y}C${x + r * .3} ${y} ${x} ${y + r * .3} ${x} ${y + r}C${x} ${y + r * .3} ${x - r * .3} ${y} ${x - r} ${y}C${x - r * .3} ${y} ${x} ${y - r * .3} ${x} ${y - r}Z" fill="${fill}" ${extra}/>`;
+const mStar5 = (x, y, R, fill, sw = 3) => { let d = ''; for (let i = 0; i < 10; i++) { const r = i % 2 ? R * .46 : R, a = -Math.PI / 2 + i * Math.PI / 5; d += (i ? 'L' : 'M') + (x + r * Math.cos(a)).toFixed(1) + ' ' + (y + r * Math.sin(a)).toFixed(1); } return `<path d="${d}Z" fill="${fill}" stroke-width="${sw}"/>`; };
+/* ---------- Múdra, variant B „Objaviteľka“ s výrazmi ---------- */
+const VYRAZY = {
+  ahoj: { oci: 'otv', look: [1, 1], zobak: 'usmev', wl: 8, wr: 122 },
+  stoji: { oci: 'otv', look: [1, 1], zobak: 'usmev', wl: 8, wr: 8 },
+  radost: { oci: 'smiech', zobak: 'otv', wl: 52, wr: 52, extra: 'iskry' },
+  zvedava: { oci: 'otv', look: [5, -3], zobak: 'maly', wl: 6, wr: 88, tilt: -6, extra: 'lupa' },
+  povzbudenie: { oci: 'zmurk', look: [1, 1], zobak: 'usmev', wl: 8, wr: 126, extra: 'srdce' },
+  oslava: { oci: 'hviezdy', zobak: 'otv', wl: 128, wr: 128, skok: 14, extra: 'konfety' },
+  premysla: { oci: 'otv', look: [-5, -6], viecka: .34, zobak: 'maly', wl: -112, wlF: 1, wr: 6, tilt: 5, extra: 'bubliny' },
+};
+function mudraCasti(e) {
+  const v = Object.assign({ look: [1, 1], tilt: 0, skok: 0 }, VYRAZY[e] || VYRAZY.ahoj);
+  const V = 'var(--m1,#7A5AF8)', VD = 'var(--m2,#5536CC)', VL = '#A893FF', CR = '#FFF3D6', OR = '#FFA928', CO = '#FF6A4D', NK = 'var(--mink,#2A2356)';
+  const kridlo = `<path d="M2 -6C-20 4-28 36-12 60C8 50 14 22 10-2Z" fill="${VD}"/><path d="M-13 44q5 2 9-3" fill="none" stroke-width="3"/>`;
+  /* zdvihnuté krídlo (uhol nad 90) vychádza spoza hlavy, aby nezakrylo tvár */
+  const wL = v.wl > 90 ? `<g transform="translate(46 138) rotate(${v.wl}) scale(1.12)"><g class="ow-wl">${kridlo}</g></g>` : `<g transform="translate(60 146) rotate(${v.wl})"><g class="ow-wl">${kridlo}</g></g>`;
+  const wR = v.wr > 90 ? `<g transform="translate(154 138) scale(-1 1) rotate(${v.wr}) scale(1.12)"><g class="ow-wr">${kridlo}</g></g>` : `<g transform="translate(140 146) scale(-1 1) rotate(${v.wr})"><g class="ow-wr">${kridlo}</g></g>`;
+  const oko = (cx, s) => {
+    const cy = 86, typ = v.oci === 'zmurk' ? (s > 0 ? 'smiech' : 'otv') : v.oci;
+    if (typ === 'smiech') return `<path d="M${cx - 17} ${cy + 7}Q${cx} ${cy - 19} ${cx + 17} ${cy + 7}" fill="none" stroke-width="6"/>`;
+    let t = `<circle cx="${cx}" cy="${cy}" r="23" fill="#fff"/>`;
+    if (typ === 'hviezdy') return t + mStar5(cx, cy + 1, 15, '#FFC533', 3.5);
+    const px = cx + s * 2 + v.look[0], py = cy + 1 + v.look[1];
+    t += `<g class="ow-blink"><circle cx="${px}" cy="${py}" r="14.5" fill="#FFB020" stroke-width="3.5"/><circle cx="${px}" cy="${py}" r="8.5" fill="${NK}" stroke="none"/>${mStar4(px + 5.5, py - 6, 5.5)}<circle cx="${px - 5}" cy="${py + 5}" r="2" fill="#fff" stroke="none"/></g>`;
+    if (v.viecka) { const id = 'mo' + (++mudraUid); t += `<clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="23"/></clipPath><g clip-path="url(#${id})"><rect x="${cx - 26}" y="${cy - 26}" width="52" height="${3 + 46 * v.viecka}" fill="${VL}" stroke="none"/><path d="M${cx - 26} ${cy - 23 + 46 * v.viecka}H${cx + 26}" stroke-width="4"/></g><circle cx="${cx}" cy="${cy}" r="23" fill="none"/>`; }
+    return t;
+  };
+  const zobak = v.zobak === 'otv'
+    ? `<path d="M91 106Q100 131 109 106Z" fill="#D5432B"/><path d="M88 101Q100 92 112 101Q108 110 100 111Q92 110 88 101Z" fill="${OR}"/>`
+    : v.zobak === 'maly' ? `<path d="M92 103Q100 97 108 103Q106 111 100 114Q94 111 92 103Z" fill="${OR}"/>`
+    : `<path d="M89 102Q100 94 111 102Q108 114 100 118Q92 114 89 102Z" fill="${OR}"/>`;
+  const hlava = `<g transform="rotate(${v.tilt} 100 134)">
+    <path d="M40 58C28 42 24 22 30 6C46 14 62 28 72 40Z" fill="${VD}"/>
+    <path d="M128 40C138 26 152 14 166 10C178 7 190 12 194 22C183 21 175 27 171 37C168 46 164 54 160 58Z" fill="${VD}"/>
+    <path d="M100 20C146 20 178 50 178 88C178 122 146 140 100 140C54 140 22 122 22 88C22 50 54 20 100 20Z" fill="${V}"/>
+    <path d="M44 62C52 46 66 36 84 31" fill="none" stroke="${VL}" stroke-width="6"/>
+    <path d="M100 64C112 44 152 40 162 68C171 94 150 120 124 118C112 117 104 110 100 102C96 110 88 117 76 118C50 120 29 94 38 68C48 40 88 44 100 64Z" fill="${CR}"/>
+    <circle cx="41" cy="109" r="8" fill="#FF8FA3" stroke="none" opacity=".9"/><circle cx="159" cy="109" r="8" fill="#FF8FA3" stroke="none" opacity=".9"/>
+    ${oko(70, 1)}${oko(130, -1)}${zobak}</g>`;
+  const telo = `<path d="M52 172q-18 6-24 22q18 2 30-8z" fill="${VD}"/>
+    <path d="M100 116C140 116 152 150 150 176C148 198 128 206 100 206C72 206 52 198 50 176C48 150 60 116 100 116Z" fill="${V}"/>
+    <path d="M100 146C122 146 131 164 129 181C127 196 115 201 100 201C85 201 73 196 71 181C69 164 78 146 100 146Z" fill="${CR}"/>
+    <path d="M86 172q5 6 10 0M104 172q5 6 10 0M95 185q5 6 10 0" fill="none" stroke-width="3"/>
+    <ellipse cx="82" cy="207" rx="14" ry="7.5" fill="${OR}"/><ellipse cx="118" cy="207" rx="14" ry="7.5" fill="${OR}"/>
+    <path d="M54 134C80 152 120 152 146 134L147 149C122 166 78 166 53 149Z" fill="${CO}"/><path d="M126 156l13 20l-15-5zM122 157l-3 21l-9-12z" fill="${CO}"/><circle cx="125" cy="155" r="6.5" fill="${CO}"/>`;
+  const X = {
+    iskry: mStar4(2, 44, 11, '#FFC533', 'stroke-width="3.5"') + mStar4(200, 26, 9, '#FFC533', 'stroke-width="3.5"') + mStar4(214, 122, 7, '#fff', 'stroke-width="3"') + mStar4(-16, 118, 6, '#fff', 'stroke-width="3"'),
+    lupa: `<path d="M207 112L204 144" stroke-width="11"/><path d="M207 113L204 143" stroke="#FFA928" stroke-width="5"/><circle cx="208" cy="92" r="20" fill="#D5EDFF" fill-opacity=".9" stroke-width="5.5"/><path d="M198 88c2-5 6-8 11-9" fill="none" stroke="#fff" stroke-width="4"/>`,
+    srdce: `<path transform="translate(180 20) scale(1.550)" d="M12 20.500C7 17 3.5 13.8 3.5 9.800A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 8.5 1.800c0 4-3.5 7.2-8.5 10.700z" fill="#FF6A4D" stroke-width="2.6"/>`,
+    konfety: `<rect x="-22" y="26" width="16" height="8" rx="2" transform="rotate(28 -14 30)" fill="#14B8A6" stroke-width="3"/><circle cx="216" cy="64" r="6" fill="#FF6A4D" stroke-width="3"/>${mStar4(8, -6, 10, '#FFC533', 'stroke-width="3.5"')}<rect x="186" y="-12" width="16" height="8" rx="2" transform="rotate(-24 194 -8)" fill="#52B6FF" stroke-width="3"/><path d="M-24 150q6-9 12 0t12 0" fill="none" stroke="#FF6A4D" stroke-width="4"/><circle cx="226" cy="150" r="5" fill="#FFC533" stroke-width="3"/><rect x="104" y="-20" width="12" height="7" rx="2" transform="rotate(12 110 -16)" fill="#FF6A4D" stroke-width="3"/>${mStar4(222, 6, 7, '#fff', 'stroke-width="3"')}`,
+    bubliny: `<circle cx="164" cy="20" r="5" fill="#fff" stroke-width="3"/><circle cx="180" cy="4" r="8" fill="#fff" stroke-width="3.5"/><circle cx="206" cy="-8" r="13" fill="#fff" stroke-width="4"/>`,
+  };
+  return { v, wL, wR, hlava, telo, extra: X[v.extra] || '', lupa: v.extra === 'lupa' };
 }
-const STAR = (f = '#FFD23F') => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="${f}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+function mudra(e = 'ahoj', o = {}) {
+  if (!VYRAZY[e]) e = 'ahoj';
+  const c = mudraCasti(e), v = c.v, ex = o.extra ? c.extra : '';
+  return `<svg class="owl mudra" data-m="${o.m || MUDRA_STARE[e] || e}" data-v="${e}" viewBox="8 -2 184 222" aria-hidden="true">${o.tien ? `<ellipse cx="100" cy="214" rx="${52 - v.skok}" ry="6" fill="#2A2356" opacity=".14"/>` : ''}<g stroke="var(--mink,#2A2356)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0 ${-v.skok})">${c.telo}${v.wlF ? '' : c.wL}${v.wrF ? '' : c.wR}${c.lupa ? ex : ''}${c.hlava}${v.wlF ? c.wL : ''}${v.wrF ? c.wR : ''}${c.lupa ? '' : ex}</g></svg>`;
+}
+const MUDRA_NOVE = { hi: 'ahoj', cheer: 'oslava', happy: 'radost', oops: 'povzbudenie' }, MUDRA_STARE = { ahoj: 'hi', oslava: 'cheer', radost: 'happy', povzbudenie: 'oops' };
+function owl(m = 'hi') { return mudra(MUDRA_NOVE[m] || m, { m }); }
+/* Ikona appky 5.0: Múdra nad zemeguľou so žltými lúčmi (rám 120). okraj: voľné miesto dookola pre maskovateľnú ikonu (Android ju oreže). */
+const mLuce = (cx, cy, R, n, f1, f2, od = 0, po = 360) => { let t = ''; const k = (po - od) / n; for (let i = 0; i < n; i++) { const a = (od + i * k) * Math.PI / 180, b = (od + (i + 1) * k) * Math.PI / 180; t += `<path d="M${cx} ${cy}L${(cx + R * Math.cos(a)).toFixed(1)} ${(cy + R * Math.sin(a)).toFixed(1)}L${(cx + R * Math.cos(b)).toFixed(1)} ${(cy + R * Math.sin(b)).toFixed(1)}Z" fill="${i % 2 ? f1 : f2}" stroke="none"/>`; } return t; };
+function ikonaAppky(okraj = 0) {
+  const c = mudraCasti('stoji'), m = 1 - 2 * okraj;
+  return `<svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" fill="#FFC533"/>${mLuce(60, 72, 130, 16, '#FFC533', '#FFD768')}<g transform="translate(${60 * (1 - m)} ${60 * (1 - m)}) scale(${m})"><circle cx="60" cy="158" r="74" fill="#52B6FF" stroke="#2A2356" stroke-width="3.5"/><path d="M14 104c8-6 20-6 26 0 4 5-2 10-8 12s-10 8-18 6z" fill="#5BC56B"/><path d="M78 100c8-4 20-2 28 4v16H82c-6-6-8-14-4-20z" fill="#5BC56B"/><g stroke="#2A2356" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" transform="translate(11 13) scale(.49)">${c.hlava}</g></g></svg>`;
+}
+const STAR = (f = '#FFC533') => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="${f}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/></svg>`;
 
 /* Postavička dieťaťa: skladá sa z dielov, ktoré si dieťa vyberie (rám 120 × 130) */
 const AV = {

@@ -12,7 +12,7 @@ body.ang-rezim main.gut { padding-block: max(14px, env(safe-area-inset-top)) 120
 .poz-karta { display: grid; gap: 10px; }
 .poz-karta .poz-rad { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 8px; margin: 0 -4px; scrollbar-width: none; }
 .poz-karta .poz-rad::-webkit-scrollbar { display: none; }
-.poz-vol { flex: none; display: grid; justify-items: center; gap: 4px; width: 76px; padding: 6px 4px; border: 3px solid transparent; border-radius: 18px; background: none; font: 700 .85rem/1.15 var(--f-display); color: var(--ink); }
+.poz-vol { flex: none; display: grid; justify-items: center; gap: 4px; width: 76px; padding: 6px 4px; border: 3px solid transparent; border-radius: 18px; background: none; font: 700 .85rem/1.15 var(--f-display); color: var(--text); }
 .poz-vol i { display: block; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--line); background: radial-gradient(circle at 28% 30%, var(--p1), transparent 62%), radial-gradient(circle at 72% 70%, var(--p2), transparent 62%), var(--p0); box-shadow: 0 3px 0 var(--shc); }
 .poz-karta .poz-styly { display: flex; gap: 8px; }
 .poz-styl { flex: 1; width: auto; min-width: 0; }

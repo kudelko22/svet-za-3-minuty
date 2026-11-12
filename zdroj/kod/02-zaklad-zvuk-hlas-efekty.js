@@ -296,7 +296,7 @@ const FX = (() => {
     for (const p of P) {
       p.t++; p.vy += p.g; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
       g.save(); g.globalAlpha = Math.min(1, (p.life - p.t) / 20); g.translate(p.x, p.y); g.rotate(p.rot);
-      g.fillStyle = p.c; g.strokeStyle = '#2B2240'; g.lineWidth = 2;
+      g.fillStyle = p.c; g.strokeStyle = '#2A2356'; g.lineWidth = 2;
       if (p.k === 'star') { hviezda(p.s); g.fill(); g.stroke(); }
       else if (p.k === 'heart') { srdce(p.s); g.fill(); g.stroke(); }
       else if (p.k === 'dot') { g.beginPath(); g.arc(0, 0, p.s * .55, 0, 7); g.fill(); g.stroke(); }

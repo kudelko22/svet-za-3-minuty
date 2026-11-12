@@ -45,16 +45,18 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Svet za 3 minúty</title>
-<meta name="description" content="Krátke témy o svete na rozhovor rodiča s dieťaťom, aj cestou autom.">
-<meta name="theme-color" content="#E3F4FF">
-<script>(function(){try{var v=JSON.parse(localStorage.getItem('svet3:rezim'));if(v==='mesacny'||(v==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.rezim='mesacny';document.querySelector('meta[name=theme-color]').content='#14113A';}}catch(e){}})()</script>
+<title>Svetom</title>
+<meta name="description" content="Svetom: každý deň objav niečo nové. Krátke témy o svete pre rodiča a dieťa, aj cestou autom.">
+<meta name="theme-color" content="#FFF6E3">
+<script>(function(){try{var v=JSON.parse(localStorage.getItem('svet3:rezim'));if(v==='mesacny'||(v==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.rezim='mesacny';document.querySelector('meta[name=theme-color]').content='#18143F';}}catch(e){}})()</script>
+<link rel="preload" href="pisma/grandstander-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="pisma/atkinson-next-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="ikony/ikona-192.png" type="image/png">
 <link rel="apple-touch-icon" href="ikony/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Svet za 3 min">
+<meta name="apple-mobile-web-app-title" content="Svetom">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 ${starty}
 ${hlava}

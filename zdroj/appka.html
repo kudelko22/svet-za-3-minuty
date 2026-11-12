@@ -1,9 +1,7 @@
-<title>Svet za 3 minúty</title>
+<title>Svetom</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
 <style>
+/*@vloz styly/00-pisma.css*/
 /*@vloz styly/01-zaklad.css*/
 /*@vloz styly/02-domov-zoznam-tem.css*/
 /*@vloz styly/03-profil.css*/
@@ -33,24 +31,37 @@
 /*@vloz styly/27-ucet-plocha.css*/
 /*@vloz styly/28-zaklad-pretekanie.css*/
 /*@vloz styly/29-zaklad-mesacny-rezim.css*/
+/*@vloz styly/40-system.css*/
+/*@vloz styly/50-domov.css*/
+/*@vloz styly/51-tema-kviz.css*/
+/*@vloz styly/52-hry.css*/
+/*@vloz styly/53-profil.css*/
+/*@vloz styly/54-priatelia.css*/
+/*@vloz styly/55-rodic-ucet.css*/
+/*@vloz styly/56-auto.css*/
+/*@vloz styly/57-oslavy-odznaky.css*/
 </style>
 
 <!-- Úvodná obrazovka pri spustení: rovnaká ako obrázky ikony/start (iPhone ich ukáže ešte pred appkou), potom sa rozplynie -->
-<div id="uvod" class="uvod" aria-hidden="true"><div class="uvod-in"><i class="uvod-kruh"></i><i class="uvod-hv" style="--x:-118px;--y:-70px;--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFD23F" stroke="#2B2240" stroke-width="2" stroke-linejoin="round"/></svg></i><i class="uvod-hv" style="--x:112px;--y:-84px;--k:1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFD23F" stroke="#2B2240" stroke-width="2" stroke-linejoin="round"/></svg></i><i class="uvod-hv" style="--x:-100px;--y:86px;--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFD23F" stroke="#2B2240" stroke-width="2" stroke-linejoin="round"/></svg></i><i class="uvod-hv" style="--x:122px;--y:62px;--k:3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFD23F" stroke="#2B2240" stroke-width="2" stroke-linejoin="round"/></svg></i><div class="uvod-sova"><svg class="owl" data-m="hi" viewBox="0 0 120 132" aria-hidden="true"><g stroke="#2B2240" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-    <ellipse cx="46" cy="123" rx="10" ry="5" fill="#FFA62B"/><ellipse cx="74" cy="123" rx="10" ry="5" fill="#FFA62B"/>
-    <path d="M30 36 L22 8 L52 26Z" fill="#7650E6"/><path d="M90 36 L98 8 L68 26Z" fill="#7650E6"/>
-    <path d="M60 18 C94 18 106 46 106 78 C106 106 88 122 60 122 C32 122 14 106 14 78 C14 46 26 18 60 18Z" fill="#9B6BFF"/>
-    <path d="M60 66 C80 66 90 84 90 98 C90 112 78 118 60 118 C42 118 30 112 30 98 C30 84 40 66 60 66Z" fill="#EDE5FF"/>
-    <path d="M47 92 q4 5 8 0 q4 5 8 0 q4 5 8 0 M51 104 q4 5 8 0 q4 5 8 0" fill="none" stroke-width="3"/>
-    <g class="ow-wl"><path d="M16 72 C4 86 8 104 24 110 C26 94 24 80 16 72Z" fill="#7650E6"/></g><g class="ow-wr"><path d="M98 76 C116 68 120 44 112 32 C102 46 92 58 94 76Z" fill="#7650E6"/></g>
-    <circle cx="44" cy="52" r="16" fill="#fff"/><circle cx="76" cy="52" r="16" fill="#fff"/><g class="ow-blink"><circle cx="47" cy="54" r="7.5" fill="#2B2240" stroke="none"/><circle cx="79" cy="54" r="7.5" fill="#2B2240" stroke="none"/><circle cx="50" cy="51" r="2.6" fill="#fff" stroke="none"/><circle cx="82" cy="51" r="2.6" fill="#fff" stroke="none"/></g>
-    <path d="M53 66 H67 L60 77Z" fill="#FFA62B"/><circle cx="27" cy="72" r="5" fill="#FF8FB1" stroke="none"/><circle cx="93" cy="72" r="5" fill="#FF8FB1" stroke="none"/></g></svg></div><b class="uvod-nazov">Svet za 3 minúty</b><small class="uvod-pod">Krátke témy o svete</small><span class="uvod-bodky"><i></i><i></i><i></i></span></div></div>
+<div id="uvod" class="uvod" aria-hidden="true"><div class="uvod-in"><i class="uvod-kruh"></i><i class="uvod-hv" style="--x:-118px;--y:-70px;--k:0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFC533" stroke="#2A2356" stroke-width="2" stroke-linejoin="round"/></svg></i><i class="uvod-hv" style="--x:112px;--y:-84px;--k:1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFC533" stroke="#2A2356" stroke-width="2" stroke-linejoin="round"/></svg></i><i class="uvod-hv" style="--x:-100px;--y:86px;--k:2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFC533" stroke="#2A2356" stroke-width="2" stroke-linejoin="round"/></svg></i><i class="uvod-hv" style="--x:122px;--y:62px;--k:3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#FFC533" stroke="#2A2356" stroke-width="2" stroke-linejoin="round"/></svg></i><div class="uvod-sova"><svg class="owl mudra" data-m="hi" data-v="ahoj" viewBox="8 -2 184 222" aria-hidden="true"><g stroke="var(--mink,#2A2356)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0 0)"><path d="M52 172q-18 6-24 22q18 2 30-8z" fill="var(--m2,#5536CC)"/>
+    <path d="M100 116C140 116 152 150 150 176C148 198 128 206 100 206C72 206 52 198 50 176C48 150 60 116 100 116Z" fill="var(--m1,#7A5AF8)"/>
+    <path d="M100 146C122 146 131 164 129 181C127 196 115 201 100 201C85 201 73 196 71 181C69 164 78 146 100 146Z" fill="#FFF3D6"/>
+    <path d="M86 172q5 6 10 0M104 172q5 6 10 0M95 185q5 6 10 0" fill="none" stroke-width="3"/>
+    <ellipse cx="82" cy="207" rx="14" ry="7.5" fill="#FFA928"/><ellipse cx="118" cy="207" rx="14" ry="7.5" fill="#FFA928"/>
+    <path d="M54 134C80 152 120 152 146 134L147 149C122 166 78 166 53 149Z" fill="#FF6A4D"/><path d="M126 156l13 20l-15-5zM122 157l-3 21l-9-12z" fill="#FF6A4D"/><circle cx="125" cy="155" r="6.5" fill="#FF6A4D"/><g transform="translate(60 146) rotate(8)"><g class="ow-wl"><path d="M2 -6C-20 4-28 36-12 60C8 50 14 22 10-2Z" fill="var(--m2,#5536CC)"/><path d="M-13 44q5 2 9-3" fill="none" stroke-width="3"/></g></g><g transform="translate(154 138) scale(-1 1) rotate(122) scale(1.12)"><g class="ow-wr"><path d="M2 -6C-20 4-28 36-12 60C8 50 14 22 10-2Z" fill="var(--m2,#5536CC)"/><path d="M-13 44q5 2 9-3" fill="none" stroke-width="3"/></g></g><g transform="rotate(0 100 134)">
+    <path d="M40 58C28 42 24 22 30 6C46 14 62 28 72 40Z" fill="var(--m2,#5536CC)"/>
+    <path d="M128 40C138 26 152 14 166 10C178 7 190 12 194 22C183 21 175 27 171 37C168 46 164 54 160 58Z" fill="var(--m2,#5536CC)"/>
+    <path d="M100 20C146 20 178 50 178 88C178 122 146 140 100 140C54 140 22 122 22 88C22 50 54 20 100 20Z" fill="var(--m1,#7A5AF8)"/>
+    <path d="M44 62C52 46 66 36 84 31" fill="none" stroke="#A893FF" stroke-width="6"/>
+    <path d="M100 64C112 44 152 40 162 68C171 94 150 120 124 118C112 117 104 110 100 102C96 110 88 117 76 118C50 120 29 94 38 68C48 40 88 44 100 64Z" fill="#FFF3D6"/>
+    <circle cx="41" cy="109" r="8" fill="#FF8FA3" stroke="none" opacity=".9"/><circle cx="159" cy="109" r="8" fill="#FF8FA3" stroke="none" opacity=".9"/>
+    <circle cx="70" cy="86" r="23" fill="#fff"/><g class="ow-blink"><circle cx="73" cy="88" r="14.5" fill="#FFB020" stroke-width="3.5"/><circle cx="73" cy="88" r="8.5" fill="var(--mink,#2A2356)" stroke="none"/><path d="M78.5 76.5C78.5 80.35 80.15 82 84 82C80.15 82 78.5 83.65 78.5 87.5C78.5 83.65 76.85 82 73 82C76.85 82 78.5 80.35 78.5 76.5Z" fill="#fff" stroke="none"/><circle cx="68" cy="93" r="2" fill="#fff" stroke="none"/></g><circle cx="130" cy="86" r="23" fill="#fff"/><g class="ow-blink"><circle cx="129" cy="88" r="14.5" fill="#FFB020" stroke-width="3.5"/><circle cx="129" cy="88" r="8.5" fill="var(--mink,#2A2356)" stroke="none"/><path d="M134.5 76.5C134.5 80.35 136.15 82 140 82C136.15 82 134.5 83.65 134.5 87.5C134.5 83.65 132.85 82 129 82C132.85 82 134.5 80.35 134.5 76.5Z" fill="#fff" stroke="none"/><circle cx="124" cy="93" r="2" fill="#fff" stroke="none"/></g><path d="M89 102Q100 94 111 102Q108 114 100 118Q92 114 89 102Z" fill="#FFA928"/></g></g></svg></div><b class="uvod-nazov"><span class="logo" style="--ls:44px" role="img" aria-label="Svetom">Svet<span class="o"><svg viewBox="0 0 48 48" aria-hidden="true"><clipPath id="gl1"><circle cx="24" cy="24" r="19"/></clipPath><g stroke="var(--lo, #2A2356)" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle cx="24" cy="24" r="19" fill="#52B6FF"/><g clip-path="url(#gl1)" stroke="none" fill="#5BC56B"><path d="M4 16c5-6 13-6 17-2 3 3 0 7-4 9-4 2-5 7-10 6-4-1-5-8-3-13z"/><path d="M27 27c4-3 11-3 15 1 2 4 1 12-3 15-5 3-11 0-13-5-1-4-2-8 1-11z"/><path d="M30 6c4 0 8 2 10 5-3 2-7 1-9-1-1-1-2-3-1-4z"/></g><circle cx="24" cy="24" r="19" fill="none"/><path d="M10.5 19c1-4.5 4-7.5 8-8.8" fill="none" stroke="#fff" stroke-width="3" opacity=".85"/><path d="M39 6C45 -13 63 -21 81 -15" fill="none" stroke-width="4" stroke-dasharray=".1 8.5"/></g><path d="M91.0 -21.0L93.4 -15.3L99.6 -14.8L94.9 -10.7L96.3 -4.7L91.0 -7.9L85.7 -4.7L87.1 -10.7L82.4 -14.8L88.6 -15.3Z" fill="#FFC533" stroke="var(--lo, #2A2356)" stroke-width="3.5" stroke-linejoin="round"/></svg></span>m</span></b><small class="uvod-pod">Každý deň objav niečo nové.</small><span class="uvod-bodky"><i></i><i></i><i></i></span></div></div>
 <script>(function(){var u=document.getElementById("uvod"),s=screen.height,h=innerHeight,d=s-h;u.style.setProperty("--uy",(navigator.standalone&&d>=0&&d<90?s*.44-d:h*.44)+"px")})()</script>
 <div class="blobs" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="hviezdy"><i style="--x:0.0%;--y:88.4%;--r:2.9px;--d:-0.67s"></i><i style="--x:71.5%;--y:51.1%;--r:3.0px;--d:-2.41s"></i><i style="--x:74.0%;--y:52.1%;--r:4.1px;--d:-2.03s"></i><i style="--x:80.0%;--y:23.2%;--r:3.1px;--d:-2.27s"></i><i style="--x:68.4%;--y:5.2%;--r:4.1px;--d:-1.50s"></i><i style="--x:90.4%;--y:77.5%;--r:2.4px;--d:-1.64s"></i><i style="--x:90.5%;--y:66.1%;--r:3.9px;--d:-1.85s"></i><i style="--x:89.4%;--y:87.2%;--r:3.1px;--d:-1.07s"></i><i style="--x:82.0%;--y:31.9%;--r:2.5px;--d:-0.95s"></i><i style="--x:42.0%;--y:28.3%;--r:4.8px;--d:-1.78s"></i><i style="--x:71.5%;--y:84.3%;--r:2.2px;--d:-0.88s"></i><i style="--x:54.9%;--y:48.8%;--r:3.3px;--d:-0.62s"></i><i style="--x:89.1%;--y:5.3%;--r:3.1px;--d:-1.10s"></i><i style="--x:65.1%;--y:88.7%;--r:3.5px;--d:-0.53s"></i><i style="--x:39.8%;--y:27.2%;--r:3.1px;--d:-1.36s"></i><i style="--x:32.6%;--y:51.0%;--r:3.8px;--d:-0.75s"></i><i style="--x:88.8%;--y:44.0%;--r:4.6px;--d:-2.03s"></i><i style="--x:62.2%;--y:49.6%;--r:3.5px;--d:-2.20s"></i><i style="--x:92.1%;--y:38.1%;--r:4.1px;--d:-0.80s"></i><i style="--x:57.5%;--y:33.7%;--r:3.0px;--d:-1.25s"></i><i style="--x:77.9%;--y:84.2%;--r:2.3px;--d:-2.62s"></i><i style="--x:7.6%;--y:39.1%;--r:2.5px;--d:-0.25s"></i><i style="--x:97.6%;--y:21.1%;--r:3.9px;--d:-0.46s"></i><i style="--x:44.8%;--y:56.9%;--r:2.4px;--d:-2.95s"></i><i style="--x:86.7%;--y:85.5%;--r:4.7px;--d:-2.90s"></i><i style="--x:74.6%;--y:26.4%;--r:2.0px;--d:-0.79s"></i></span><svg class="luna" viewBox="0 0 64 64"><path d="M40 6C24 8 12 21 12 36c0 15 12 26 27 26 8 0 14-3 18-8-18 3-33-9-33-25 0-9 5-17 16-23z" fill="#FFE27A" stroke="#FFF3B0" stroke-width="3" stroke-linejoin="round"/><circle cx="26" cy="38" r="3.2" fill="#F2C94C"/><circle cx="34" cy="50" r="2.4" fill="#F2C94C"/><circle cx="22" cy="26" r="2" fill="#F2C94C"/></svg></div>
 
 <header class="top" id="top">
   <div class="gut">
-    <div class="hi"><button class="av" id="av" data-deti aria-label="Zmeniť dieťa"></button><div><small>Svet za 3 minúty</small><b id="pozdrav">Ahoj!</b></div></div>
+    <div class="hi"><button class="av" id="av" data-deti aria-label="Zmeniť dieťa"></button><div><small>Svetom</small><b id="pozdrav">Ahoj!</b></div></div>
     <div class="top-r"><button class="tyz-strom spi" id="tyz-strom" data-tyz-strom hidden aria-haspopup="dialog" aria-label="Tento týždeň"></button><button class="snd" id="snd" aria-label="Zvuky" aria-pressed="true"></button><span class="stars" id="stars" aria-label="Body"><span id="star-ico"></span><span id="body">0</span></span></div>
   </div>
 </header>
@@ -59,11 +70,11 @@
 
 <nav class="nav" id="nav" aria-label="Menu">
   <div class="gut">
-    <button id="nav-domov" data-go="domov" style="--nc:#FFD23F"><span class="ni"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8.5a1 1 0 0 1-1 1h-4.5V15h-5v5.5H5a1 1 0 0 1-1-1z"/></svg></span>Domov</button>
-    <button id="nav-temy" data-go="temy" style="--nc:#8FD3FF"><span class="ni"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg></span>Témy</button>
-    <button id="nav-hry" data-go="hry" style="--nc:#B6F0C8"><span class="ni"><svg viewBox="0 0 24 24"><path d="M7 8h10a5 5 0 0 1 4.8 6.3l-1 3.8a2.6 2.6 0 0 1-4.4 1.1L14 17h-4l-2.4 2.2a2.6 2.6 0 0 1-4.4-1.1l-1-3.8A5 5 0 0 1 7 8z"/><path d="M7.5 11v4M5.5 13h4"/><path d="M15.5 12h.01M17.5 14h.01"/></svg></span>Hry</button>
-    <button id="nav-priatelia" data-go="priatelia" style="--nc:#FFE27A"><span class="ni"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="8.5" r="3.2"/><circle cx="16" cy="9.5" r="2.6"/><path d="M2.8 19.5c.8-3.4 3-5 5.7-5s4.9 1.6 5.7 5M14 14.6c.6-.3 1.3-.4 2-.4 2.3 0 4.2 1.4 4.9 4.6"/></svg></span>Priatelia</button>
-    <button id="nav-ja" data-go="ja" style="--nc:#FFB3D1"><span class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg></span>Ja</button>
+    <button id="nav-domov" data-go="domov"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 11v8a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5v-8z" fill="var(--sun)"/><path d="M10 20.5V16a2 2 0 0 1 4 0v4.500z" fill="var(--violet)"/><path d="M2.8 11.8 12 3.800l9.2 8z" fill="var(--coral)"/></g></svg></span>Domov</button>
+    <button id="nav-temy" data-go="temy"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.800C10 5.3 7 4.8 3.5 5.300v13c3.5-.5 6.5 0 8.5 1.500z" fill="var(--sky)"/><path d="M12 6.800c2-1.5 5-2 8.5-1.500v13c-3.5-.5-6.5 0-8.5 1.500z" fill="var(--sky-l)"/><path d="M14.8 10.200c1.2-.4 2.3-.6 3.4-.6M14.8 13.400c1.2-.4 2.3-.6 3.4-.6"/></g></svg></span>Témy</button>
+    <button id="nav-hry" data-go="hry"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a5 5 0 0 1 4.8 6.300l-1 3.800a2.6 2.6 0 0 1-4.4 1.100L14 17h-4l-2.4 2.200a2.6 2.6 0 0 1-4.4-1.100l-1-3.800A5 5 0 0 1 7 8z" fill="var(--teal)"/><path d="M7.5 11v3.600M5.7 12.800h3.6"/><circle cx="15.4" cy="11.7" r="1.1" fill="var(--sun)"/><circle cx="17.8" cy="13.9" r="1.1" fill="var(--sun)"/></g></svg></span>Hry</button>
+    <button id="nav-priatelia" data-go="priatelia"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16.2" cy="9" r="2.8" fill="var(--sky)"/><path d="M13.5 19.500c.3-3.2 1.5-5.2 3.8-5.2 2.3 0 3.8 1.8 4.2 5.200z" fill="var(--sky)"/><circle cx="8.5" cy="8.3" r="3.3" fill="var(--coral)"/><path d="M2.5 19.500c.5-3.8 2.8-6 6-6s5.5 2.2 6 6z" fill="var(--coral)"/></g></svg></span>Priatelia</button>
+    <button id="nav-ja" data-go="ja"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 20.500c.8-4.3 3.7-6.5 7.5-6.500s6.7 2.2 7.5 6.500z" fill="var(--violet)"/><circle cx="12" cy="8.3" r="4.2" fill="var(--sun)"/></g></svg></span>Ja</button>
   </div>
 </nav>
 
@@ -86,6 +97,7 @@
 //@vloz kod/05-oslavy-odznaky-odmeny.js
 //@vloz kod/06-auto.js
 //@vloz kod/07-zaklad-ikony.js
+//@vloz kod/07b-zaklad-ikony-50.js
 //@vloz kod/08-profil-hlas.js
 //@vloz kod/09-hry.js
 //@vloz kod/10-rodic-prehlad.js

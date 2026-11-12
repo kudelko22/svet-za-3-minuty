@@ -35,17 +35,17 @@ const RodicBrana = (() => {
 .rodic-kruh .ik { width: 62%; height: auto; }
 .dieta .rodic-kruh { width: min(118px, 100%); aspect-ratio: 1; animation: tileBob 3s ease-in-out infinite; }
 .rodic-ikony { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-.rodic-ikony button { aspect-ratio: 1; border: 3px solid var(--ink); border-radius: 22px; background: var(--paper); display: grid; place-items: center; padding: 8px; box-shadow: var(--sh); transition: transform .1s; }
+.rodic-ikony button { aspect-ratio: 1; border: 3px solid var(--text); border-radius: 22px; background: var(--paper); display: grid; place-items: center; padding: 8px; box-shadow: var(--sh); transition: transform .1s; }
 .rodic-ikony button[aria-pressed="true"] { background: var(--sun); transform: translateY(-3px) rotate(-3deg); }
 .rodic-ikony button .ik { width: 100%; height: auto; }
 .pin-bodky { display: flex; gap: 14px; justify-content: center; padding: 6px 0; }
-.pin-bodky i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--ink); background: var(--paper); transition: transform .12s, background .12s; }
+.pin-bodky i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--text); background: var(--paper); transition: transform .12s, background .12s; }
 .pin-bodky i.plna { background: var(--blue); transform: scale(1.15); }
 .pin-bodky.trasie { animation: shake .45s; }
 .pin-bodky.trasie i { background: var(--bad-bg); border-color: var(--coral); }
 .pin-klavesnica { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(300px, 100%); margin: 0 auto; }
-.pin-klavesnica button { aspect-ratio: 1.25; border: 3px solid var(--ink); border-radius: 20px; background: var(--paper); box-shadow: var(--sh); font: 700 1.9rem/1 var(--f-display); color: var(--ink); display: grid; place-items: center; }
-.pin-klavesnica button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); background: var(--sun); }
+.pin-klavesnica button { aspect-ratio: 1.25; border: 3px solid var(--text); border-radius: 20px; background: var(--paper); box-shadow: var(--sh); font: 700 1.9rem/1 var(--f-display); color: var(--text); display: grid; place-items: center; }
+.pin-klavesnica button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--text); background: var(--sun); }
 .pin-klavesnica button:disabled { opacity: .45; }
 .pin-klavesnica button .ik { width: 34px; height: 34px; }
 .pin-klavesnica .prazdne { visibility: hidden; }

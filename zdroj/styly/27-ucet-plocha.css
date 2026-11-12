@@ -6,9 +6,9 @@
 .plocha-t b { font: 700 1.15rem/1.2 var(--f-display); }
 .plocha-t small { color: var(--muted); font-weight: 700; line-height: 1.35; }
 .plocha-tl { display: flex; flex-wrap: wrap; gap: 8px; }
-.plocha-tip { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 2.5px dashed var(--line); border-radius: 18px; background: var(--t-yel); color: var(--ink); font: 700 .95rem/1.35 var(--f-body); text-align: left; }
+.plocha-tip { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 2.5px dashed var(--line); border-radius: 18px; background: var(--t-yel); color: var(--text); font: 700 .95rem/1.35 var(--f-body); text-align: left; }
 .plocha-tip .ii { flex: none; }
-.plocha-tip u { color: var(--blue); }
+.plocha-tip u { color: var(--link); }
 .pl-karta { gap: 10px; }
 .pl-hlava { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .pl-hlava small { display: block; color: var(--muted); font-weight: 800; }

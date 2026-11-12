@@ -9,7 +9,7 @@
 .os-plod { transform-box: fill-box; transform-origin: center; animation: osPlod .5s cubic-bezier(.3, 1.8, .5, 1) var(--d) both; }
 .os-sova { transform-box: fill-box; transform-origin: center; animation: osPrilet 1s cubic-bezier(.25, 1.2, .5, 1) var(--d) both; }
 .os-sova .owl { overflow: visible; }
-.os-nadpis { margin: 0; font: 700 clamp(1.7rem, 7vw, 2.3rem)/1.1 var(--f-display); color: var(--ink); }
+.os-nadpis { margin: 0; font: 700 clamp(1.7rem, 7vw, 2.3rem)/1.1 var(--f-display); color: var(--text); }
 .os-nadpis span { display: inline-block; animation: osPismeno .5s cubic-bezier(.3, 1.8, .5, 1) calc(.9s + var(--k) * .04s) both; }
 .os-seria { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px 6px 8px; border: 3px solid var(--line); border-radius: 999px; background: var(--p-FFE7C2,#FFE7C2); box-shadow: 0 4px 0 var(--shc); font: 700 1.1rem/1 var(--f-display); animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) 1.2s both; }
 .os-ohen { width: 46px; height: 46px; margin: -10px 0; }
@@ -31,27 +31,27 @@
 .os-blesk { position: fixed; inset: 0; z-index: 3; pointer-events: none; background: radial-gradient(circle at 50% 55%, rgba(255, 226, 122, .85), rgba(255, 179, 71, .35) 40%, transparent 70%); animation: osBlesk .9s ease-out forwards; }
 .os-obsah.tras { animation: osTras .5s ease-out; }
 @keyframes osVelka { 0% { transform: scale(1); } 35% { transform: scale(1.18); } 100% { transform: scale(1); } }
-@keyframes osOhen { 0% { transform: scale(1); filter: none; } 30% { transform: scale(1.5) rotate(-8deg); filter: drop-shadow(0 0 14px #FF9F1C); } 60% { transform: scale(1.2) rotate(6deg); } 100% { transform: scale(1.1); filter: drop-shadow(0 0 8px #FFB347); } }
+@keyframes osOhen { 0% { transform: scale(1); filter: none; } 30% { transform: scale(1.5) rotate(-8deg); filter: drop-shadow(0 0 14px var(--sun-d)); } 60% { transform: scale(1.2) rotate(6deg); } 100% { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--sun-d)); } }
 @keyframes osStara { to { transform: translateY(-120%); opacity: 0; } }
 @keyframes osNova { to { transform: none; } }
 @keyframes osBlesk { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes osTras { 0%, 100% { transform: none; } 20% { transform: translate(-5px, 3px); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-3px, 2px); } 80% { transform: translate(2px, -1px); } }
 .os-dni { margin: -4px 0 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
-.os-dni b { display: inline-block; color: var(--ink); font-size: 1.05rem; }
+.os-dni b { display: inline-block; color: var(--text); font-size: 1.05rem; }
 .os-dni b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
 .os-strom.zari { animation: osZari 1.5s ease-out; }
 .os-sova.skace .owl { animation: osSkok .6s ease-out 2; }
 @keyframes osCislo { 0% { transform: translateY(-.7em); opacity: 0; } 100% { transform: none; opacity: 1; } }
 @keyframes osZiara { 0% { box-shadow: 0 4px 0 var(--shc), 0 0 0 0 rgba(255, 210, 63, .9); } 100% { box-shadow: 0 4px 0 var(--shc), 0 0 0 24px rgba(255, 210, 63, 0); } }
-@keyframes osZari { 40% { filter: drop-shadow(0 0 16px #FFD23F) drop-shadow(0 0 30px #FFE27A); } }
+@keyframes osZari { 40% { filter: drop-shadow(0 0 16px var(--sun)) drop-shadow(0 0 30px #FFE27A); } }
 @keyframes osSkok { 40% { transform: translateY(-14px) rotate(-6deg); } }
 .prehlad .pr-ik { flex: none; width: 30px; height: 30px; }
-.os-veta { margin: 0; max-width: 32ch; font-weight: 800; color: var(--ink); animation: osIn .4s ease-out 1.5s both; }
+.os-veta { margin: 0; max-width: 32ch; font-weight: 800; color: var(--text); animation: osIn .4s ease-out 1.5s both; }
 .os-tyzden { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; width: 100%; font: 600 .85rem/1 var(--f-display); color: var(--muted); animation: osIn .4s ease-out 1.6s both; }
 .os-den { display: grid; justify-items: center; gap: 4px; }
 .os-den i { position: relative; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--c); border: 2.5px solid var(--line); }
 .os-den.h i { background: var(--sun); }
-.os-den.dnes { color: var(--blue); }
+.os-den.dnes { color: var(--link); }
 .os-den.dnes i { outline: 3px solid var(--blue); outline-offset: 2px; }
 .os-den i svg { width: 24px; height: 24px; }
 .os-padne { display: grid; animation: osPadne .7s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }

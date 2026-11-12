@@ -38,7 +38,7 @@
 .os-dvojstrom .vyschnuty.ustup { opacity: 0; }
 .os-strom.fuka { transform-origin: 50% 85%; animation: osFuka 2.2s ease-in-out; }
 .vl { position: absolute; left: 50%; top: 40%; width: 0; height: 0; pointer-events: none; animation: vlKrut 1.9s linear var(--d) both; }
-.vl b { position: absolute; display: block; width: 24px; height: 15px; margin: -8px -12px; border: 2px solid var(--ink); border-radius: 0 90% 0 90%; background: var(--c); animation: vlDnu 1.9s cubic-bezier(.4, 0, .7, 1) var(--d) both; }
+.vl b { position: absolute; display: block; width: 24px; height: 15px; margin: -8px -12px; border: 2px solid var(--text); border-radius: 0 90% 0 90%; background: var(--c); animation: vlDnu 1.9s cubic-bezier(.4, 0, .7, 1) var(--d) both; }
 .vs { position: absolute; left: -10%; width: 60%; height: 28px; border-top: 4px solid rgba(255, 255, 255, .9); border-radius: 50% 50% 0 0 / 100% 100% 0 0; pointer-events: none; opacity: 0; animation: vsFuk 1.2s ease-in var(--d) both; }
 .oslava.ozil .os-nadpis span { animation-delay: calc(var(--w) + .9s + var(--k) * .04s); }
 .oslava.ozil .os-seria { animation-delay: calc(var(--w) + 1.2s); }

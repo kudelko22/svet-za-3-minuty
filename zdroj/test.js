@@ -13,12 +13,21 @@ const src = ['temy.js', 'obrazky.js', 'misie.js', 'kvizy.js', 'tyzden.js', 'angl
   const def = b => new Map([...b.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/gi)].map(m => [m[1], m[2].trim()]));
   const dS = def(svetly), dT = def(tmavy), pevne = new Set(['--sun', '--grass', '--grass-d', '--blue', '--coral', '--orange', '--pink', '--spring', '--f-display', '--f-body', '--sh', '--fon', '--b1', '--b2', '--b3', '--b4']);
   for (const [k, v] of dS) if (!pevne.has(k) && /#|rgb|gradient/.test(v) && !dT.has(k)) throw new Error('mesačný režim: chýba premenná ' + k);
-  for (const k of ['--fon', '--b1', '--b2', '--b3', '--b4', '--ink', '--paper', '--line', '--muted']) if (!dT.has(k)) throw new Error('mesačný režim: chýba ' + k);
+  for (const k of ['--fon', '--b1', '--b2', '--b3', '--b4', '--ink', '--text', '--paper', '--line', '--muted']) if (!dT.has(k)) throw new Error('mesačný režim: chýba ' + k);
   for (const m of css.matchAll(/var\((--p-[0-9A-F]{6})/g)) if (!dT.has(m[1])) throw new Error('mesačný režim: chýba pastel ' + m[1]);
   const hex = h => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
   const kon = (a, b) => { const x = hex(a), y = hex(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
-  for (const [t1, p] of [['--ink', '--paper'], ['--muted', '--paper'], ['--ink', '--fon'], ['--muted', '--fon'], ['--ink', '--t-yel'], ['--ink', '--t-grn'], ['--ink', '--t-blu'], ['--ink', '--soft'], ['--ink', '--off']])
-    if (kon(dT.get(t1), dT.get(p)) < 4.5) throw new Error('mesačný režim: slabý kontrast ' + t1 + ' na ' + p + ' ' + kon(dT.get(t1), dT.get(p)).toFixed(2));
+  // 5.0: text je --text, --ink je obrys. Kontrast sa kontroluje v noci aj cez deň, aj pre hlavné tlačidlo a farebný text.
+  const PARY = [['--text', '--paper'], ['--muted', '--paper'], ['--text', '--fon'], ['--muted', '--fon'], ['--text', '--t-yel'], ['--text', '--t-grn'], ['--text', '--t-blu'], ['--text', '--soft'], ['--text', '--off'],
+    ['--text', '--card'], ['--muted', '--card'], ['--text', '--bg'], ['--muted', '--bg'], ['--text', '--sand'], ['--cta-t', '--sun'], ['--link', '--card'], ['--ok-t', '--card'], ['--zle-t', '--card'], ['--sun-t', '--card'],
+    ['--text', '--sun-l'], ['--text', '--coral-l'], ['--text', '--teal-l'], ['--text', '--sky-l'], ['--text', '--leaf-l'], ['--text', '--violet-l']];
+  for (const [rezim, d] of [['mesačný', new Map([...dS, ...dT])], ['svetlý', dS]]) for (const [t1, p] of PARY)
+    if (kon(d.get(t1), d.get(p)) < 4.5) throw new Error(rezim + ' režim: slabý kontrast ' + t1 + ' na ' + p + ' ' + kon(d.get(t1), d.get(p)).toFixed(2));
+  if (/fonts.googleapis|fonts.gstatic/.test(html)) throw new Error('písma musia byť pribalené, nie z Google Fonts');
+  for (const f of ['grandstander-latin', 'grandstander-latin-ext', 'atkinson-next-latin', 'atkinson-next-latin-ext']) {
+    if (!fs.existsSync(path.join(R, 'pisma', f + '.woff2'))) throw new Error('chýba písmo ' + f);
+    if (!fs.readFileSync(path.join(R, 'sw.js'), 'utf8').includes('pisma/' + f + '.woff2')) throw new Error('písmo nie je v zozname pre offline: ' + f);
+  }
 }
 { // kontrola polí úvodu (funkcia je v module, vytiahneme ju z textu)
   const CHYBY = { 'auth/invalid-email': 'E-mail nie je napísaný správne.', 'auth/weak-password': 'Heslo musí mať aspoň 6 znakov.' };
@@ -697,7 +706,7 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
 /* BEZPECNOST 3.8 */
 { const zly = postavicka({ vlasy: "kratke", farbaVlasov: '"/><img src=x onerror=alert(1)>', koza: 'red', tricko: '#12', pozadie: '"><b>' }, true);
   if (/onerror|<img|<b>/.test(zly)) chyby.push("xss: postavicka pusti nebezpecnu farbu");
-  if (!postavicka({ farbaVlasov: "#2B2240" }).includes("#2B2240")) chyby.push("xss: platna farba sa stratila");
+  if (!postavicka({ vlasy: "kratke", farbaVlasov: "#F2C14E" }).includes("#F2C14E")) chyby.push("xss: platna farba sa stratila");
   for (const t of ["si kokot", "s.p.r.o.s.t.e debiil", "kuuurva", "j3b"]) if (socKontrola(t) !== "slova") chyby.push("filter nezachytil: " + t);
   for (const t of ["zavolaj 0911 222 333", "mail@a.sk", "www.x.sk"]) if (socKontrola(t) !== "udaje") chyby.push("filter nezachytil udaj: " + t);
   for (const t of ["Ahoj, ako sa mas?", "hovädzie mäso", "ahoj naživo", "To je sranda"]) if (socKontrola(t)) chyby.push("filter blokuje bezny text: " + t); }

@@ -1,7 +1,7 @@
 /* Pridať na plochu (verzia 2.4): kreslený návod pre iPhone, iPad, Mac aj Android; kde to prehliadač vie, rovno systémové okno inštalácie */
 const PL_RUKA = SPR_RUKA.replace(/^<svg[^>]*>|<\/svg>$/g, '');
 const plRuka = (x, y, s = .6) => `<g transform="translate(${x - 25 * s} ${y - 2 * s}) scale(${s})"><g class="pl-ruka">${PL_RUKA}</g></g>`;
-const plText = (x, y, t, o = {}) => `<text x="${x}" y="${y}" font-family="Nunito, sans-serif" font-weight="${o.w || 800}" font-size="${o.s || 7.5}" fill="${o.c || INK}" stroke="none"${o.a ? ` text-anchor="${o.a}"` : ''}>${t}</text>`;
+const plText = (x, y, t, o = {}) => `<text x="${x}" y="${y}" font-family="Grandstander, Nunito, sans-serif" font-weight="${o.w || 800}" font-size="${o.s || 7.5}" fill="${o.c || INK}" stroke="none"${o.a ? ` text-anchor="${o.a}"` : ''}>${t}</text>`;
 const plSvit = (x, y, w, h, r = 8) => `<rect class="pl-svit" x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="none" stroke="#FFD23F" stroke-width="4"/>`;
 const plSova = (x, y, w) => owl('hi').replace('<svg ', `<svg x="${x}" y="${y}" width="${w}" height="${w * 1.1}" `);
 const plObal = obsah => `<svg viewBox="0 0 220 260" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">${obsah}</g></svg>`;
@@ -22,7 +22,7 @@ const plHviezdy = poz => poz.map(([x, y], i) => `<path class="pl-hv" style="--k:
 const plPlocha = () => plTelefon(`${[0, 1, 2].flatMap(r => [0, 1, 2].map(c => `<rect x="${70 + c * 30}" y="${34 + r * 34}" width="22" height="22" rx="6" fill="${['#FFD23F', '#4C7DFF', '#2FBF71', '#FF6FA8', '#FF9F1C', '#8FD3FF', '#B6F0C8', '#FFB3D1', '#7C6CFF'][r * 3 + c]}" stroke-width="2"/>`)).join('')}
   <rect x="66" y="198" width="88" height="20" rx="9" fill="#fff" opacity=".55" stroke="none"/>${[0, 1, 2].map(c => `<rect x="${76 + c * 26}" y="201" width="16" height="14" rx="4" fill="${['#2FBF71', '#4C7DFF', '#FF9F1C'][c]}" stroke-width="1.8"/>`).join('')}
   <g class="pl-pop"><rect x="93" y="134" width="34" height="34" rx="9" fill="#E3F4FF" stroke-width="2.5"/>${plSova(97.5, 136, 25)}</g>
-  <rect x="80" y="173" width="60" height="12" rx="6" fill="#fff" stroke="none" opacity=".8"/>${plText(110, 182, 'Svet za 3 min', { s: 7, w: 900, a: 'middle' })}
+  <rect x="80" y="173" width="60" height="12" rx="6" fill="#fff" stroke="none" opacity=".8"/>${plText(110, 182, 'Svetom', { s: 7, w: 900, a: 'middle' })}
   ${plHviezdy([[84, 136], [138, 134], [86, 166], [136, 164]])}`, '', '#C9B8FF');
 const plTablet = (obsah, nad = '') => plObal(`<rect x="10" y="40" width="200" height="150" rx="16" fill="#fff" stroke-width="4"/><rect x="18" y="48" width="184" height="134" rx="8" fill="#E3F4FF"/>
   <path d="M18 56 Q18 48 26 48 H194 Q202 48 202 56 V68 H18Z" fill="#F4F1FA"/><rect x="62" y="52" width="96" height="12" rx="6" fill="#fff" stroke-width="1.8"/>${plText(110, 60.5, 'svet-za-3-minuty.web.app', { s: 5.4, a: 'middle', c: '#5F587A' })}
@@ -47,7 +47,7 @@ const PL_IPHONE = [
   { obr: () => plTelefon(`<rect x="60" y="16" width="100" height="208" fill="#F4F1FA" stroke="none"/>
       ${plText(66, 42, 'Zrušiť', { s: 7, c: '#4C7DFF' })}${plText(108, 42, 'Na plochu', { s: 6.5, a: 'middle' })}<rect x="133" y="33" width="24" height="13" rx="6" fill="#FFD23F" stroke-width="2"/>${plText(145, 42.5, 'Pridať', { s: 6.8, w: 900, a: 'middle' })}
       <rect x="66" y="54" width="88" height="44" rx="10" fill="#fff"/><rect x="72" y="60" width="32" height="32" rx="8" fill="#E3F4FF" stroke-width="2"/>${plSova(76, 62, 24)}
-      ${plText(110, 74, 'Svet za 3 min', { s: 7 })}${plText(110, 86, 'web.app', { s: 6, c: '#8A84A3' })}
+      ${plText(110, 74, 'Svetom', { s: 7 })}${plText(110, 86, 'web.app', { s: 6, c: '#8A84A3' })}
       <rect x="66" y="106" width="88" height="22" rx="8" fill="#fff"/>${plText(71, 120, 'Otvoriť ako web. appku', { s: 5.6 })}
       <rect x="136" y="111" width="16" height="11" rx="5.5" fill="#2FBF71" stroke-width="1.8"/><circle cx="146.5" cy="116.5" r="3.6" fill="#fff" stroke-width="1.5"/>`, `${plSvit(130, 30, 30, 19, 9)}${plRuka(146, 44)}`),
     n: 'Ťuknite na „Pridať“', p: 'Je vpravo hore. Ak vidíte prepínač „Otvoriť ako webovú aplikáciu“, nechajte ho zapnutý.' },
@@ -68,7 +68,7 @@ const PLOCHA = {
       n: 'Vyberte „Pridať do Docku“', p: 'Potom ťuknite na Pridať. Funguje to na macOS Sonoma (14) a novšom.' },
     { obr: () => plMonitor(plMacLista(), `<rect x="44" y="144" width="132" height="18" rx="7" fill="#fff" opacity=".9" stroke-width="2"/>${[0, 1, 2, 3, 4, 5].map(i => `<rect x="${50 + i * 16}" y="147" width="12" height="12" rx="3" fill="${['#4C7DFF', '#2FBF71', '#FF9F1C', '#FF6FA8', '#7C6CFF', '#FFD23F'][i]}" stroke-width="1.5"/>`).join('')}
         <g class="pl-pop"><rect x="148" y="141" width="22" height="22" rx="6" fill="#E3F4FF" stroke-width="2"/>${plSova(151, 142.5, 16)}</g>
-        <rect x="128" y="125" width="62" height="12" rx="6" fill="#fff" stroke-width="1.5"/>${plText(159, 133.5, 'Svet za 3 min', { s: 6.5, w: 900, a: 'middle' })}${plHviezdy([[142, 146], [176, 144]])}`),
+        <rect x="128" y="125" width="62" height="12" rx="6" fill="#fff" stroke-width="1.5"/>${plText(159, 133.5, 'Svetom', { s: 6.5, w: 900, a: 'middle' })}${plHviezdy([[142, 146], [176, 144]])}`),
       hotovo: true, n: 'Hotovo!', p: 'Appka je v Docku dole a otvára sa vo vlastnom okne. Ak bude chcieť prihlásenie, prihláste sa rovnako ako tu.' },
   ],
   android: [

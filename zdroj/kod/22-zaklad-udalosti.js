@@ -106,7 +106,7 @@ document.addEventListener('click', e => {
   else if (d.hnitiePrepni !== undefined) { S.set('hnitie-' + (st.dietaId || 'x'), !hnitieZapnute()); Zvuk.play('tap'); toast(hnitieZapnute() ? 'Vädnutie stromu je zapnuté.' : 'Vädnutie stromu je vypnuté.'); render(); }
   else if (d.socPisanie !== undefined) { const C = window.Cloud, zap = d.socPisanie === '1'; if (C && C.soc && (!zap || confirm('Zapnúť voľné písanie pre ' + st.meno + '? Dieťa bude môcť priateľom písať ľubovoľný text. Uvidia ho len priatelia, ktorým to rodič tiež zapol, a vy ho uvidíte v Posledných správach.'))) socAkcia(C.soc.pisanie(zap), () => { toast(zap ? 'Voľné písanie je zapnuté.' : 'Voľné písanie je vypnuté.'); render(); }); }
   else if (d.socZdielaj !== undefined) {
-    const So = socC(), text = 'Pridaj si ma v appke Svet za 3 minúty (svet-za-3-minuty.web.app). Môj kód priateľa: ' + So.profil.kod;
+    const So = socC(), text = 'Pridaj si ma v appke Svetom (svet-za-3-minuty.web.app). Môj kód priateľa: ' + So.profil.kod;
     if (navigator.share) navigator.share({ text }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => toast('Kód je skopírovaný.'), () => toast(So.profil.kod));
   }
   else if (d.socPridaj !== undefined) {

@@ -1,0 +1,2 @@
+/* 5.0: Rodičovská časť, prihlásenie, vytváranie účtu, pridanie na plochu. Sem patria nové štýly tejto sekcie (smer: pokojné: obrys 2 px, bez nakrivo položených prvkov, prepínače).
+   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */

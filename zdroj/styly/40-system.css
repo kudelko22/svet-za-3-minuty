@@ -1,0 +1,97 @@
+/* ===== Dizajnový systém 5.0: spoločné komponenty =====
+   Pravidlá: atramentový obrys 3 px (malé prvky 2,5 px), plný tieň dole (žiadne rozmazané tiene), rohy mierne nerovné,
+   text na farebnej ploche bez tieňa (na žltej a tyrkysovej tmavý --dk, na fialovej biely), žiadne prechody farieb.
+   Farby len cez premenné z 01-zaklad.css. Nové štýly obrazoviek patria do súborov 50 až 57. */
+
+/* Typografia: nadpis obrazovky, nadpis časti, podnadpis, text, doplnok. Čísla vždy Grandstanderom (trieda .cis alebo var(--fd)). */
+.n0 { margin: 0; font: 900 1.875rem/1.06 var(--fd); letter-spacing: -.01em; text-wrap: balance; }
+.n1 { margin: 0; font: 800 1.5rem/1.1 var(--fd); text-wrap: balance; }
+.n2 { margin: 0; font: 800 1.19rem/1.15 var(--fd); }
+.tx { margin: 0; font: 400 1rem/1.5 var(--fb); }
+.dop { margin: 0; font: 700 .75rem/1.2 var(--fb); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.cis { font-family: var(--fd); font-variant-numeric: tabular-nums; }
+.muted { font-weight: 500; }
+
+/* Ikony novej rodiny */
+.ikn { display: block; flex: none; width: 24px; height: 24px; overflow: visible; }
+
+/* Tlačidlá: .btn je hlavné (žlté). Druhy: .dve druhé v poradí (papierové), .mud fialové, .ok tyrkysové, .zle koralové.
+   Veľkosti: .maly, .kruh (len ikona), .wide na celú šírku. Stavy: :active stlačené, :disabled prerušovaný obrys. */
+.btn.dve { --cta: var(--card); --cta-d: var(--sand); --cta-t: var(--text); }
+.btn.mud { --cta: var(--violet); --cta-d: var(--violet-d); --cta-t: #fff; }
+.btn.ok { --cta: var(--teal); --cta-d: var(--teal-d); --cta-t: #06302B; }
+.btn.zle { --cta: var(--coral); --cta-d: var(--coral-d); --cta-t: #3A0E05; }
+.btn.maly { padding: 8px 14px 12px; font-size: .94rem; border-width: 2.5px; border-radius: var(--r-maly); box-shadow: inset 0 -5px 0 var(--cta-d), 0 3px 0 var(--shc); }
+.btn.kruh { display: grid; place-items: center; width: 46px; height: 46px; padding: 0 0 4px; border-radius: 50%; box-shadow: inset 0 -4px 0 var(--cta-d), 0 3px 0 var(--shc); }
+.btn.kruh::before { left: 9px; top: 6px; width: 10px; height: 5px; }
+.btn > .ikn { display: inline-block; width: 22px; height: 22px; margin: -4px 6px -5px 0; }
+.btn.kruh > .ikn { margin: 0; }
+.btn:focus-visible { outline-offset: 4px; }
+
+/* Karty. .card je obyčajná karta. .karta so záložkou .zal (názov časti), .listok s odtrhávacou čiarou .perf (dnešná téma, kód priateľa),
+   .nalepka farebná dlaždica s ikonou .ikb (farba cez --c), .odkaz bublina od Múdrej. */
+.karta { position: relative; background: var(--card); border: var(--obrys); border-radius: var(--r-karta); box-shadow: 0 5px 0 var(--shc); padding: 16px; }
+.karta:has(> .zal) { margin-top: 16px; padding-top: 22px; }
+.zal { position: absolute; left: 16px; top: -16px; height: 28px; padding: 1px 12px 0; display: inline-flex; align-items: center; gap: 6px; border: var(--obrys-m); border-radius: 10px 12px 5px 5px; background: var(--c, var(--sun)); font: 800 .84rem/1 var(--fd); color: var(--dk); rotate: -2deg; white-space: nowrap; }
+.listok { position: relative; background: var(--card); border: var(--obrys); border-radius: 22px 24px 22px 26px; box-shadow: 0 6px 0 var(--shc); }
+.perf { position: relative; border-top: 3px dashed var(--line); margin: 0 14px; }
+.perf::before, .perf::after { content: ""; position: absolute; top: -13.5px; width: 12px; height: 24px; background: var(--fon); border: var(--obrys); }
+.perf::before { left: -17px; border-left: 0; border-radius: 0 14px 14px 0; }
+.perf::after { right: -17px; border-right: 0; border-radius: 14px 0 0 14px; }
+.nalepka { position: relative; display: grid; gap: 3px; align-content: start; justify-items: start; text-align: left; padding: 12px 12px 14px; border: var(--obrys); border-radius: 18px 20px 24px 18px; background: var(--c, var(--sun-l)); box-shadow: 0 4px 0 var(--shc); color: var(--text); text-decoration: none; }
+.nalepka b { font: 800 1.06rem/1.15 var(--fd); }
+.nalepka small { font: 500 .81rem/1.3 var(--fb); }
+button.nalepka:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shc); }
+.ikb { display: grid; place-items: center; width: 42px; height: 42px; background: var(--card); border: var(--obrys-m); border-radius: 13px 15px 12px 16px; rotate: -5deg; margin-bottom: 5px; }
+.ikb .ikn { width: 27px; height: 27px; }
+.odkaz { position: relative; background: var(--card); border: var(--obrys-m); border-radius: 16px 18px 18px 5px; padding: 9px 12px 8px; font: 600 .94rem/1.35 var(--fd); color: var(--text); }
+
+/* Štítky: .st (ikona a slovo, farba cez --c), .st.cis počítadlo, .pec pečiatka stavu, .cena hviezda a číslo. .chip a .sticker ostávajú zo 4.9. */
+.st { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px 0 7px; border: var(--obrys-m); border-radius: 999px; background: var(--c, var(--sand)); font: 700 .81rem/1 var(--fb); color: var(--text); white-space: nowrap; }
+.st .ikn { width: 17px; height: 17px; }
+.st.cis { height: 32px; padding-right: 11px; background: var(--card); font: 800 .94rem/1 var(--fd); }
+.st.cis .ikn { width: 20px; height: 20px; }
+.pec { display: inline-block; padding: 5px 9px 3px; border: 2.5px dashed var(--pc, var(--coral-d)); border-radius: 8px; color: var(--pc, var(--coral-d)); font: 800 .75rem/1 var(--fd); letter-spacing: .08em; text-transform: uppercase; rotate: -4deg; white-space: nowrap; }
+.cena { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 26px; padding: 1px 9px 0 6px; border: var(--obrys-m); border-radius: 8px 13px 13px 8px; background: var(--sun-l); font: 800 .875rem/1 var(--fd); color: var(--text); white-space: nowrap; }
+.cena .ikn { width: 16px; height: 16px; margin-top: -2px; }
+
+/* Pásik postupu */
+.pruh { height: 16px; border: var(--obrys-m); border-radius: 999px; background: var(--sand); overflow: hidden; }
+.pruh i { display: block; height: 100%; background: var(--sun); border-right: var(--obrys-m); border-radius: 0 999px 999px 0; box-shadow: inset 0 -4px 0 var(--sun-d); transition: width .5s var(--spring); }
+
+/* Modálne okno: <div class="zavoj"><div class="okno" role="dialog" aria-modal="true">…</div></div>, krížik .okno-x (tlačidlo .btn.kruh.dve) */
+.zavoj { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgb(24 20 63 / .6); animation: zavojIn .25s ease-out both; }
+.okno { position: relative; display: grid; gap: 12px; width: min(100%, 420px); max-height: calc(100dvh - 32px); overflow: auto; background: var(--card); border: var(--obrys); border-radius: 24px 26px 24px 28px; box-shadow: 0 6px 0 var(--shc); padding: 20px 16px 16px; animation: oknoIn .35s var(--spring) both; }
+.okno-x { position: absolute; right: 10px; top: 10px; }
+@keyframes zavojIn { from { opacity: 0; } }
+@keyframes oknoIn { from { opacity: 0; transform: translateY(18px) scale(.94); } }
+
+/* Logo a podtitul */
+.logo { --lo: var(--iko); display: inline-flex; align-items: baseline; font: 900 var(--ls, 2.75rem)/1 var(--fd); letter-spacing: -.015em; color: var(--text); white-space: nowrap; }
+.logo .o { display: inline-block; width: .62em; height: .62em; margin: 0 .035em 0 .02em; translate: 0 .055em; }
+.logo .o svg { display: block; width: 100%; height: 100%; overflow: visible; }
+h1.logo { margin: .35em 0 0; }
+.podtitul { margin: 0; font: 700 1rem/1.3 var(--fd); color: var(--muted); }
+
+/* Múdra 5.0 (obrazky.js, mudra() a owl()): krídla mávajú okolo ramena, doplnky môžu presahovať rám */
+.mudra .ow-wl, .mudra .ow-wr { transform-box: fill-box; transform-origin: 78% 4%; }
+.owl.mudra[data-m="hi"] .ow-wr { animation: mudraMav 1.3s ease-in-out infinite; }
+.owl.mudra[data-m="cheer"] .ow-wl, .owl.mudra[data-m="cheer"] .ow-wr { animation: mudraTles .32s ease-in-out infinite alternate; }
+@keyframes mudraMav { 50% { transform: rotate(16deg); } }
+@keyframes mudraTles { to { transform: rotate(-14deg); } }
+
+/* Prechod zo 4.9: staré farebné plochy mali biely text s tmavým tieňom (slabý kontrast). Kým obrazovky nedostanú nové rozloženie,
+   majú svetlejší podklad z farby kategórie a text bez tieňa. Pri prerábaní obrazovky tieto pravidlá nahradiť vlastnými a tu zmazať. */
+.act, .tile { background: color-mix(in srgb, var(--c) 38%, var(--card)); color: var(--text); text-shadow: none; border-radius: var(--r-karta); }
+.cc b { color: var(--text); text-shadow: none; }
+.chips .chip[aria-pressed="true"] { background: var(--sun); color: var(--dk); text-shadow: none; }
+.badge.ok, .hero-art .sticker.done { color: var(--dk); text-shadow: none; }
+.seg2 button[aria-pressed="true"], .misia-cast.hotova i { text-shadow: none; }
+.row { border-radius: var(--r-karta); }
+.input, .search { border-radius: var(--r-pole); font-family: var(--fb); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .pruh i { transition: none; }
+  .btn.cta::after { display: none; }
+  .zavoj, .okno, .owl.mudra .ow-wl, .owl.mudra .ow-wr { animation: none !important; }
+}

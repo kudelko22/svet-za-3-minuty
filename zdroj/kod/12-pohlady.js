@@ -71,7 +71,7 @@ const views = {
       <button class="btn wide" data-upravit>${ii(IK.ceruzka)} Upraviť postavičku, meno a vek</button>
       <section class="stats">
         <div class="card ringc">
-          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--ink)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${vsetky}</b></div>
+          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--text)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${vsetky}</b></div>
           <div><b class="lbl" style="font-size:1.3rem">Prebraté témy</b><br><small>${h === vsetky ? 'Všetky! Si skvelý.' : 'Každá téma pridá body a kúsok kruhu.'}</small></div>
         </div>
         <div class="card mini" style="--c:#FFF0B3"><b>${ii(STAR())} ${st.body}</b><small>bodov</small></div>

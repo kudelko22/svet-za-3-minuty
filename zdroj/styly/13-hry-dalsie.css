@@ -34,10 +34,10 @@
 .kv-btn .kv-it { width: 72px; height: 72px; animation: none; }
 .kv-moz.ine .kv-btn { flex-direction: column; gap: 4px; min-height: 128px; }
 .kv-moz.ine .kv-btn .kv-it { width: 84px; height: 84px; }
-.kv-nap { font: 800 .95rem/1.1 var(--f-text, Nunito, sans-serif); color: var(--ink); }
+.kv-nap { font: 800 .95rem/1.1 var(--f-text, Nunito, sans-serif); color: var(--text); }
 .kv-nap::first-letter { text-transform: uppercase; }
 .kv-vysv { min-height: 3.2em; margin: 10px 4px 0; text-align: center; font-weight: 800; color: var(--muted); }
-.kv-vysv.vid { color: var(--ink); animation: pop .4s var(--spring) both; }
+.kv-vysv.vid { color: var(--text); animation: pop .4s var(--spring) both; }
 .kv-moz.tien .kv-it svg { filter: brightness(0) opacity(.8); transition: filter .4s; }
 .kv-moz.tien .kv-btn.ok .kv-it svg { filter: none; }
 .kv-moz.pismena { display: flex; flex-wrap: wrap; justify-content: center; }
@@ -50,9 +50,9 @@
 .kv-slot.plny { border-style: solid; background: var(--ok-bg); animation: pop .3s var(--spring); }
 /* bubliny s počtami */
 .priklad { text-align: center; font: 700 2.4rem/1.1 var(--f-display); }
-.bub-pole { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--line); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, #8ED6FF); }
+.bub-pole { position: relative; height: min(52vh, 420px); overflow: hidden; border: 3px solid var(--line); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#D7F3FF, var(--sky)); }
 .bublina { position: absolute; display: grid; place-items: center; width: 84px; height: 84px; padding: 0; border: 3px solid var(--line); border-radius: 50%; color: var(--dk); font: 800 1.9rem/1 var(--f-display);
-  background: radial-gradient(circle at 32% 28%, #fff 0 10%, rgb(255 255 255 / .5) 11% 26%, transparent 27%), radial-gradient(circle at 50% 60%, #C8F1FF, #73C6FF); box-shadow: 0 4px 0 rgb(43 34 64 / .3);
+  background: radial-gradient(circle at 32% 28%, #fff 0 10%, rgb(255 255 255 / .5) 11% 26%, transparent 27%), radial-gradient(circle at 50% 60%, #C8F1FF, var(--sky)); box-shadow: 0 4px 0 rgb(43 34 64 / .3);
   animation: pop .35s var(--spring) both, tileBob 2.4s ease-in-out var(--d, 0s) infinite; }
 .bub-pole.styri .bublina { width: 74px; height: 74px; font-size: 1.6rem; }
 .bublina.zle { animation: shake .4s; background: var(--p-FFC2C4,#FFC2C4); }

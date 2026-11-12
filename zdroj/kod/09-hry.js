@@ -296,7 +296,7 @@ const Hra = {
       if (!h.skoreObr || h.skoreObr.n !== h.skore) {
         const n = String(h.skore);
         h.skoreObr = { n: h.skore, c: sovaSprite(null, 140, 64, dpr, c => {
-          c.font = '700 40px "Baloo 2", Nunito, sans-serif'; c.textAlign = 'center'; c.lineWidth = 7; c.lineJoin = 'round'; c.strokeStyle = INK;
+          c.font = '800 40px Grandstander, "Baloo 2", Nunito, sans-serif'; c.textAlign = 'center'; c.lineWidth = 7; c.lineJoin = 'round'; c.strokeStyle = INK;
           c.strokeText(n, 70, 50); c.fillStyle = '#fff'; c.fillText(n, 70, 50);
         }) };
       }

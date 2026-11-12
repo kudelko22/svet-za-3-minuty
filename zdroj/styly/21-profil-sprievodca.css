@@ -1,9 +1,9 @@
 /* Sprievodca appkou: svietiaci kruh na skutočnom tlačidle, bublina so Sovičkou a ruka, ktorá ukazuje, kam ťuknúť */
 .spr { position: fixed; inset: 0; z-index: 57; touch-action: manipulation; animation: osIn .35s ease-out both; }
 .spr.pryc { animation: osOut .35s ease-in both; }
-.spr-diera { position: fixed; left: 50%; top: 45%; width: 0; height: 0; border-radius: 24px; pointer-events: none; box-shadow: 0 0 0 4px #FFD23F, 0 0 0 200vmax rgb(43 34 64 / .62); transition: left .5s var(--spring), top .5s var(--spring), width .5s var(--spring), height .5s var(--spring), border-radius .5s; }
-.spr.velka .spr-diera { box-shadow: 0 0 0 0 #FFD23F, 0 0 0 200vmax rgb(43 34 64 / .7); }
-.spr-diera::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 4px solid #FFD23F; animation: sprPuls 1.5s ease-out infinite; }
+.spr-diera { position: fixed; left: 50%; top: 45%; width: 0; height: 0; border-radius: 24px; pointer-events: none; box-shadow: 0 0 0 4px var(--sun), 0 0 0 200vmax rgb(43 34 64 / .62); transition: left .5s var(--spring), top .5s var(--spring), width .5s var(--spring), height .5s var(--spring), border-radius .5s; }
+.spr.velka .spr-diera { box-shadow: 0 0 0 0 var(--sun), 0 0 0 200vmax rgb(43 34 64 / .7); }
+.spr-diera::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 4px solid var(--sun); animation: sprPuls 1.5s ease-out infinite; }
 .spr.velka .spr-diera::after { display: none; }
 @keyframes sprPuls { from { transform: scale(1); opacity: .9; } to { transform: scale(1.18); opacity: 0; } }
 .spr-ruka { position: fixed; z-index: 2; width: 52px; height: 58px; pointer-events: none; opacity: 0; transition: left .5s var(--spring), top .5s var(--spring), opacity .3s; }
@@ -27,7 +27,7 @@
 .spr-nadpis b { display: block; font: 700 1.35rem/1.15 var(--f-display); }
 .spr-hlava .ib { width: 40px; height: 40px; border-radius: 12px; padding: 7px; }
 .spr-hlava .ib svg { width: 100%; height: 100%; }
-.spr-citaj.on { background: #FFD23F; }
+.spr-citaj.on { background: var(--sun); }
 .spr-text { margin: 0; font-weight: 700; font-size: 1.08rem; line-height: 1.4; }
 .spr-text span { display: inline-block; animation: sprSlovo .4s ease-out both; animation-delay: calc(.12s + var(--k) * 40ms); }
 @keyframes sprSlovo { from { transform: translateY(8px); opacity: 0; } }
@@ -35,7 +35,7 @@
 .spr-tip-ruka { flex: none; width: 24px; height: 27px; } .spr-tip-ruka svg { display: block; width: 100%; height: 100%; }
 .spr-tlacidla { display: flex; gap: 10px; justify-content: flex-end; }
 .spr-pruh { height: 10px; border: 2.5px solid var(--line); border-radius: 999px; background: var(--p-EFEAF7,#EFEAF7); overflow: hidden; }
-.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #FFD23F, #FF9F1C); transition: width .6s var(--spring); }
+.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun), var(--sun-d)); transition: width .6s var(--spring); }
 .spr.velka .spr-pruh { display: none; }
 .spr.velka .spr-bublina { gap: 14px; padding: 22px 18px 18px; text-align: center; }
 .spr.velka .spr-hlava { flex-direction: column; gap: 6px; }

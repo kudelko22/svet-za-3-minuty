@@ -1,6 +1,6 @@
 /* Kreslené ikony */
 .ib svg { display: block; width: 22px; height: 22px; margin: auto; }
-.iko-x { fill: none; stroke: var(--ink); stroke-width: 7; stroke-linecap: round; }
+.iko-x { fill: none; stroke: var(--text); stroke-width: 7; stroke-linecap: round; }
 .auto-chip svg { width: 26px; height: 18px; margin-right: 4px; vertical-align: -4px; }
 .auto-ikona svg { width: 46px; height: 32px; }
 .auto-play svg { width: 26px; height: 26px; margin-left: 3px; fill: #fff; stroke: var(--dk); stroke-width: 4; stroke-linejoin: round; }

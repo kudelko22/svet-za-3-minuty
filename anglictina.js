@@ -1258,7 +1258,7 @@ Object.assign(ART, (() => {
       ${pine(246, 128, 1.1)}${tree(30, 134, .9)}${kvet(88, 26, '#FF6FA8')}${kvet(116, 20, '#FFD23F')}${kvet(284, 22, '#B36BFF')}`,
     'en-povolania': () => `${bg('#E9F7FF')}<rect y="138" width="320" height="42" fill="#CBD6E6"/><path d="M0 138 H320"/>
       ${kid(70, 158, '#FFFFFF', { s: 1.2, extra: '<circle cx="0" cy="-62" r="6" fill="#C9CED8"/><path d="M-9 -58 H9" stroke-width="3"/><path d="M0 -30 V-14 M-8 -22 H8" stroke="#FF5A5F" stroke-width="4"/>' })}
-      ${kid(160, 158, '#FFFFFF', { s: 1.2, hair: '#2B2240', d: .3, extra: '<path d="M-13 -60 Q-22 -72 -9 -75 Q0 -84 10 -75 Q22 -72 13 -60Z" fill="#fff"/>' })}
+      ${kid(160, 158, '#FFFFFF', { s: 1.2, hair: '#2A2356', d: .3, extra: '<path d="M-13 -60 Q-22 -72 -9 -75 Q0 -84 10 -75 Q22 -72 13 -60Z" fill="#fff"/>' })}
       ${kid(250, 158, '#FF5A5F', { s: 1.2, d: .6, extra: '<path d="M-16 -58 Q-16 -77 0 -77 Q16 -77 16 -58Z" fill="#FF5A5F"/><rect x="-19" y="-61" width="38" height="6" rx="3" fill="#FF5A5F"/><circle cx="0" cy="-70" r="3" fill="#FFD23F" stroke-width="2"/>' })}
       <text x="70" y="24" font-size="18" ${TXT} fill="${INK}">doctor</text><text x="160" y="24" font-size="18" ${TXT} fill="${INK}">chef</text><text x="250" y="24" font-size="18" ${TXT} fill="${INK}">firefighter</text>`,
     'en-cas': () => `${bg('#FFF4DE')}${hodiny(160, 92, 62)}
@@ -1267,7 +1267,7 @@ Object.assign(ART, (() => {
       <rect x="22" y="128" width="76" height="40" rx="6" fill="#fff"/><path d="M22 134 A6 6 0 0 1 28 128 H92 A6 6 0 0 1 98 134 V142 H22Z" fill="#FF5A5F"/><text x="60" y="162" font-size="14" ${TXT} fill="${INK}">Monday</text>
       <text x="262" y="156" font-size="16" ${TXT} fill="${INK}">now</text>`,
     'en-otazky': () => `${bg('#FFF1DC')}${trava(140, '#8EE07A')}
-      ${kid(64, 160, '#FF6FA8', { s: 1.2, arm: -50 })}${kid(256, 160, '#4C7DFF', { s: 1.2, flip: true, hair: '#2B2240', d: .5 })}
+      ${kid(64, 160, '#FF6FA8', { s: 1.2, arm: -50 })}${kid(256, 160, '#4C7DFF', { s: 1.2, flip: true, hair: '#2A2356', d: .5 })}
       <rect x="22" y="14" width="124" height="50" rx="14" fill="#fff"/><path d="M50 64 L56 82 L72 64Z" fill="#fff" stroke="none"/><path d="M50 64 L56 82 L72 64" fill="none"/><text x="84" y="46" font-size="22" ${TXT} fill="${INK}">Hello!</text>
       <rect x="168" y="14" width="136" height="50" rx="14" fill="#fff"/><path d="M262 64 L268 82 L284 64Z" fill="#fff" stroke="none"/><path d="M262 64 L268 82 L284 64" fill="none"/><text x="236" y="46" font-size="19" ${TXT} fill="${INK}">Your name?</text>`,
     'en-predlozky': () => `${bg('#E9F7FF')}<rect y="140" width="320" height="40" fill="#E8B67A"/><path d="M0 140 H320"/>
