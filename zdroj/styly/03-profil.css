@@ -3,7 +3,7 @@
 .prof-top .owlw { flex: none; width: 82px; padding: 0; border: 0; background: none; }
 .prof { display: grid; gap: 10px; }
 .lbl { font: 600 1rem/1.2 var(--f-display); }
-.input { width: 100%; padding: 12px 14px; border-radius: 16px; border: 3px solid var(--line); background: var(--sky); color: var(--text); font: 700 1.15rem var(--f-display); }
+.input { width: 100%; padding: 12px 14px; border-radius: 16px; border: 3px solid var(--line); background: var(--bg); color: var(--text); font: 700 1.15rem var(--f-display); }
 .seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .seg2 button { padding: 10px; border-radius: 16px; border: 3px solid var(--line); background: var(--paper); font: 600 1.05rem/1.2 var(--f-display); box-shadow: 0 4px 0 var(--shc); }
 .seg2 button[aria-pressed="true"] { background: var(--blue); color: #fff; text-shadow: 0 2px 0 var(--dk); animation: jelly .5s; }

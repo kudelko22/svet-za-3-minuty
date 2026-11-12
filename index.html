@@ -58,10 +58,10 @@ img { max-width: 100%; }
    Mesačný režim dáva tým istým menám nočné hodnoty (29-zaklad-mesacny-rezim.css). */
 /* plynulá zmena pozadia: farby sa dajú prechodom plynule premeniť */
 @property --fon { syntax: "<color>"; inherits: true; initial-value: #FFF6E3; }
-@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 106 77 / .2); }
-@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 197 51 / .34); }
-@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(20 184 166 / .2); }
-@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(122 90 248 / .16); }
+@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 106 77 / .11); }
+@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 197 51 / .2); }
+@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(20 184 166 / .11); }
+@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(122 90 248 / .09); }
 :root {
   transition: --fon .7s ease, --b1 .7s ease, --b2 .7s ease, --b3 .7s ease, --b4 .7s ease;
   /* paleta A */
@@ -83,7 +83,7 @@ img { max-width: 100%; }
   --ok-bg: #DAF5D6; --bad-bg: #FFDBD0;
   --glass: rgb(255 253 248 / .86); --t-yel: #FFEEB5; --t-grn: #DAF5D6; --t-blu: #D5EDFF; --off: #ECE4D0; --off2: #CFC5AB; --grad-warm: linear-gradient(#FFEEB5, #FFEEB5); --taby-on: #2A2356;
   --p-FFF3B0: var(--sun-l); --p-BFE3FF: var(--sky-l); --p-BFE7FF: var(--sky-l); --p-BFF0D2: var(--leaf-l); --p-CFCADF: var(--violet-l); --p-D9DCE6: var(--sky-l); --p-D9F2FF: var(--sky-l); --p-D9F7E3: var(--leaf-l); --p-D9F8E6: var(--leaf-l); --p-DCEBFF: var(--sky-l); --p-DDEBFF: var(--sky-l); --p-DDF8E8: var(--leaf-l); --p-DFF7E8: var(--leaf-l); --p-E3F4FF: var(--sky-l); --p-E4DDFA: var(--violet-l); --p-EAE4F7: var(--violet-l); --p-ECE8F5: var(--violet-l); --p-EFEAF7: var(--violet-l); --p-F1EEF8: var(--violet-l); --p-F2EEFB: var(--violet-l); --p-F4F2F9: var(--violet-l); --p-F4F8FF: var(--sky-l); --p-F7F4FF: var(--violet-l); --p-FFC2C4: var(--coral-l); --p-FFC9C4: var(--coral-l); --p-FFD6DE: var(--coral-l); --p-FFE0EC: var(--coral-l); --p-FFE3BD: var(--sun-l); --p-FFE6C2: var(--sun-l); --p-FFE7C2: var(--sun-l); --p-FFE9F1: var(--coral-l); --p-FFEDEA: var(--coral-l); --p-FFF7D1: var(--sun-l); --p-FFF8EC: var(--sun-l); --p-FFF8EE: var(--sun-l);
-  --fon: #FFF6E3; --b1: rgb(255 106 77 / .2); --b2: rgb(255 197 51 / .34); --b3: rgb(20 184 166 / .2); --b4: rgb(122 90 248 / .16);
+  --fon: #FFF6E3; --b1: rgb(255 106 77 / .11); --b2: rgb(255 197 51 / .2); --b3: rgb(20 184 166 / .11); --b4: rgb(122 90 248 / .09);
   color-scheme: light;
 }
 /* stále hodnoty (rovnaké cez deň aj v noci) */
@@ -363,7 +363,7 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .prof-top .owlw { flex: none; width: 82px; padding: 0; border: 0; background: none; }
 .prof { display: grid; gap: 10px; }
 .lbl { font: 600 1rem/1.2 var(--f-display); }
-.input { width: 100%; padding: 12px 14px; border-radius: 16px; border: 3px solid var(--line); background: var(--sky); color: var(--text); font: 700 1.15rem var(--f-display); }
+.input { width: 100%; padding: 12px 14px; border-radius: 16px; border: 3px solid var(--line); background: var(--bg); color: var(--text); font: 700 1.15rem var(--f-display); }
 .seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .seg2 button { padding: 10px; border-radius: 16px; border: 3px solid var(--line); background: var(--paper); font: 600 1.05rem/1.2 var(--f-display); box-shadow: 0 4px 0 var(--shc); }
 .seg2 button[aria-pressed="true"] { background: var(--blue); color: #fff; text-shadow: 0 2px 0 var(--dk); animation: jelly .5s; }
@@ -1793,7 +1793,7 @@ const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby', 'vybrate'];
 /* Pozadie appky: výber v profile, pamätá sa zvlášť pre každé dieťa na tomto zariadení */
 const POZADIA = [
-  { id: 'nebo', n: 'Papier', fon: '#FFF6E3', b: ['rgb(255 106 77 / .2)', 'rgb(255 197 51 / .34)', 'rgb(20 184 166 / .2)', 'rgb(122 90 248 / .16)'] },
+  { id: 'nebo', n: 'Papier', fon: '#FFF6E3', b: ['rgb(255 106 77 / .11)', 'rgb(255 197 51 / .2)', 'rgb(20 184 166 / .11)', 'rgb(122 90 248 / .09)'] },
   { id: 'ruzova', n: 'Ružová', fon: '#FFE6F0', b: ['rgb(255 111 168 / .5)', 'rgb(255 180 120 / .5)', 'rgb(255 210 63 / .4)', 'rgb(190 120 255 / .4)'] },
   { id: 'luka', n: 'Lúka', fon: '#E4F8E8', b: ['rgb(47 191 113 / .45)', 'rgb(255 226 90 / .5)', 'rgb(90 200 230 / .4)', 'rgb(160 220 90 / .45)'] },
   { id: 'slnko', n: 'Slnko', fon: '#FFF4D6', b: ['rgb(255 190 60 / .55)', 'rgb(255 140 90 / .45)', 'rgb(255 111 168 / .35)', 'rgb(255 226 90 / .55)'] },

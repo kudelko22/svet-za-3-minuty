@@ -3,10 +3,10 @@
    Mesačný režim dáva tým istým menám nočné hodnoty (29-zaklad-mesacny-rezim.css). */
 /* plynulá zmena pozadia: farby sa dajú prechodom plynule premeniť */
 @property --fon { syntax: "<color>"; inherits: true; initial-value: #FFF6E3; }
-@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 106 77 / .2); }
-@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 197 51 / .34); }
-@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(20 184 166 / .2); }
-@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(122 90 248 / .16); }
+@property --b1 { syntax: "<color>"; inherits: true; initial-value: rgb(255 106 77 / .11); }
+@property --b2 { syntax: "<color>"; inherits: true; initial-value: rgb(255 197 51 / .2); }
+@property --b3 { syntax: "<color>"; inherits: true; initial-value: rgb(20 184 166 / .11); }
+@property --b4 { syntax: "<color>"; inherits: true; initial-value: rgb(122 90 248 / .09); }
 :root {
   transition: --fon .7s ease, --b1 .7s ease, --b2 .7s ease, --b3 .7s ease, --b4 .7s ease;
   /* paleta A */
@@ -28,7 +28,7 @@
   --ok-bg: #DAF5D6; --bad-bg: #FFDBD0;
   --glass: rgb(255 253 248 / .86); --t-yel: #FFEEB5; --t-grn: #DAF5D6; --t-blu: #D5EDFF; --off: #ECE4D0; --off2: #CFC5AB; --grad-warm: linear-gradient(#FFEEB5, #FFEEB5); --taby-on: #2A2356;
   --p-FFF3B0: var(--sun-l); --p-BFE3FF: var(--sky-l); --p-BFE7FF: var(--sky-l); --p-BFF0D2: var(--leaf-l); --p-CFCADF: var(--violet-l); --p-D9DCE6: var(--sky-l); --p-D9F2FF: var(--sky-l); --p-D9F7E3: var(--leaf-l); --p-D9F8E6: var(--leaf-l); --p-DCEBFF: var(--sky-l); --p-DDEBFF: var(--sky-l); --p-DDF8E8: var(--leaf-l); --p-DFF7E8: var(--leaf-l); --p-E3F4FF: var(--sky-l); --p-E4DDFA: var(--violet-l); --p-EAE4F7: var(--violet-l); --p-ECE8F5: var(--violet-l); --p-EFEAF7: var(--violet-l); --p-F1EEF8: var(--violet-l); --p-F2EEFB: var(--violet-l); --p-F4F2F9: var(--violet-l); --p-F4F8FF: var(--sky-l); --p-F7F4FF: var(--violet-l); --p-FFC2C4: var(--coral-l); --p-FFC9C4: var(--coral-l); --p-FFD6DE: var(--coral-l); --p-FFE0EC: var(--coral-l); --p-FFE3BD: var(--sun-l); --p-FFE6C2: var(--sun-l); --p-FFE7C2: var(--sun-l); --p-FFE9F1: var(--coral-l); --p-FFEDEA: var(--coral-l); --p-FFF7D1: var(--sun-l); --p-FFF8EC: var(--sun-l); --p-FFF8EE: var(--sun-l);
-  --fon: #FFF6E3; --b1: rgb(255 106 77 / .2); --b2: rgb(255 197 51 / .34); --b3: rgb(20 184 166 / .2); --b4: rgb(122 90 248 / .16);
+  --fon: #FFF6E3; --b1: rgb(255 106 77 / .11); --b2: rgb(255 197 51 / .2); --b3: rgb(20 184 166 / .11); --b4: rgb(122 90 248 / .09);
   color-scheme: light;
 }
 /* stále hodnoty (rovnaké cez deň aj v noci) */

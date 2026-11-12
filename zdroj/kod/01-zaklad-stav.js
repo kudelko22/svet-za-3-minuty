@@ -15,7 +15,7 @@ const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SYNC = ['meno', 'vek', 'body', 'done', 'fav', 'dni', 'odznaky', 'kedy', 'chyby', 'vybrate'];
 /* Pozadie appky: výber v profile, pamätá sa zvlášť pre každé dieťa na tomto zariadení */
 const POZADIA = [
-  { id: 'nebo', n: 'Papier', fon: '#FFF6E3', b: ['rgb(255 106 77 / .2)', 'rgb(255 197 51 / .34)', 'rgb(20 184 166 / .2)', 'rgb(122 90 248 / .16)'] },
+  { id: 'nebo', n: 'Papier', fon: '#FFF6E3', b: ['rgb(255 106 77 / .11)', 'rgb(255 197 51 / .2)', 'rgb(20 184 166 / .11)', 'rgb(122 90 248 / .09)'] },
   { id: 'ruzova', n: 'Ružová', fon: '#FFE6F0', b: ['rgb(255 111 168 / .5)', 'rgb(255 180 120 / .5)', 'rgb(255 210 63 / .4)', 'rgb(190 120 255 / .4)'] },
   { id: 'luka', n: 'Lúka', fon: '#E4F8E8', b: ['rgb(47 191 113 / .45)', 'rgb(255 226 90 / .5)', 'rgb(90 200 230 / .4)', 'rgb(160 220 90 / .45)'] },
   { id: 'slnko', n: 'Slnko', fon: '#FFF4D6', b: ['rgb(255 190 60 / .55)', 'rgb(255 140 90 / .45)', 'rgb(255 111 168 / .35)', 'rgb(255 226 90 / .55)'] },
