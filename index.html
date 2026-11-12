@@ -338,6 +338,9 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .btn.google .g { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(#EA4335 0 25%, #FBBC05 0 50%, #34A853 0 75%, #4285F4 0); color: #fff; font: 800 1rem/1 var(--f-body); text-shadow: 0 1px 0 rgb(0 0 0 / .3); }
 .alebo { display: flex; align-items: center; gap: 10px; color: var(--muted); font: 600 .9rem/1 var(--f-display); }
 .alebo::before, .alebo::after { content: ""; flex: 1; height: 2px; background: var(--soft); }
+.pole { display: grid; gap: 6px; }
+.input.zle { border-color: #E0434B; }
+.brana > .btn.wide { padding-block: 18px; font-size: 1.15rem; }
 .link { justify-self: start; border: 0; background: none; padding: 2px 0; color: var(--blue); font: 700 .95rem/1.3 var(--f-body); text-decoration: underline; }
 .chyba { margin: 0; padding: 8px 12px; border-radius: 12px; background: var(--bad-bg); color: #B4232A; font-weight: 800; }
 .presun { display: block; padding: 12px 16px; border-radius: 18px; border: 3px solid var(--line); background: var(--sun); box-shadow: 0 4px 0 var(--shc); color: var(--dk); text-decoration: none; font-weight: 800; }
@@ -2146,21 +2149,44 @@ const brany = {
       <button class="btn wide" data-reload>Skúsiť znova</button><button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa</button></div>`,
   prihlasenie: () => {
     // počas prihlasovania sa na tlačidle točí koliesko a tlačidlá sú zablokované (žiadne dvojité ťuknutie)
-    const C = window.Cloud || {}, p = C.pracuje || '', zam = p ? ' disabled' : '';
+    // úvod má tri kroky: voľba (Mám účet / Som tu nový), potom vlastná obrazovka pre každú cestu
+    const C = window.Cloud || {}, p = C.pracuje || '', zam = p ? ' disabled' : '', krok = st.uvodKrok || 'volba', ch = C.chyby || {};
     const napis = (co, text, cakaj = 'Chvíľku…') => p === co ? `<span class="koliesko"></span>${cakaj}` : text;
-    return `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1">Svet za 3 minúty</h1>
-      <p class="muted">Krátke témy o svete na rozhovor s deťmi. Prihláste sa, aby sa pokrok každého dieťaťa ukladal.</p>
+    const pole = (id, typ, ph, ac, enter, kl) => `<div class="pole"><input id="${id}" class="input${ch[kl] ? ' zle' : ''}" type="${typ}" placeholder="${ph}" autocomplete="${ac}" autocapitalize="none" spellcheck="false" enterkeyhint="${enter}" aria-invalid="${ch[kl] ? 'true' : 'false'}"${ch[kl] ? ` aria-describedby="${id}-chyba"` : ''}>${ch[kl] ? `<p class="chyba" id="${id}-chyba" role="alert">${esc(ch[kl])}</p>` : ''}</div>`;
+    const vseobecna = C.chyba ? `<p class="chyba" role="alert">${esc(C.chyba)}</p>` : '';
+    const spat = `<button type="button" class="btn ghost" data-uvod="volba"${zam}>Späť</button>`;
+    const sova = `<div class="brana-owl">${owl('hi')}</div>`;
+    if (krok === 'mam') return `<div class="brana">${sova}<h1 class="h1">Vitajte späť</h1>
+      <p class="muted">Prihláste sa a nájdete svoje deti aj ich body.</p>
       <div class="card prof">
-        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Prihlásiť sa cez Google', 'Otvára sa Google…')}</button>
-        <div class="alebo"><span>alebo e-mailom</span></div>
-        <form id="prihlas-form" class="prof" novalidate>
-          <input id="email" class="input" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="next">
-          <input id="heslo" class="input" type="password" placeholder="Heslo (aspoň 6 znakov)" autocomplete="current-password" enterkeyhint="go">
-          <div class="tests"><button type="submit" class="btn blue"${zam}>${napis('prihlas', 'Prihlásiť sa', 'Prihlasujem…')}</button><button type="button" class="btn ghost" data-ucet="registruj"${zam}>${napis('registruj', 'Nový účet')}</button></div>
+        <form id="prihlas-form" class="prof" data-forma="prihlas" novalidate>
+          ${pole('email', 'email', 'E-mail', 'email', 'next', 'email')}
+          ${pole('heslo', 'password', 'Heslo', 'current-password', 'go', 'heslo')}
+          <button type="submit" class="btn blue"${zam}>${napis('prihlas', 'Prihlásiť sa', 'Prihlasujem…')}</button>
         </form>
         <button type="button" class="link" data-ucet="zabudol"${zam}>Zabudli ste heslo?</button>
-        ${C.chyba ? `<p class="chyba">${esc(C.chyba)}</p>` : ''}
-      </div>${Plocha.tip()}</div>`;
+        <div class="alebo"><span>alebo</span></div>
+        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Prihlásiť sa cez Google', 'Otvára sa Google…')}</button>
+        ${vseobecna}
+      </div>${spat}</div>`;
+    if (krok === 'novy') return `<div class="brana">${sova}<h1 class="h1">Vytvoríme váš účet</h1>
+      <p class="muted">Účet je pre rodiča. Deti si pridáte potom a každé má svoje body.</p>
+      <div class="card prof">
+        <form id="prihlas-form" class="prof" data-forma="registruj" novalidate>
+          ${pole('email', 'email', 'E-mail', 'email', 'next', 'email')}
+          ${pole('heslo', 'password', 'Heslo (aspoň 6 znakov)', 'new-password', 'next', 'heslo')}
+          ${pole('heslo2', 'password', 'Heslo ešte raz', 'new-password', 'go', 'heslo2')}
+          <button type="submit" class="btn blue"${zam}>${napis('registruj', 'Vytvoriť účet', 'Vytváram…')}</button>
+        </form>
+        <div class="alebo"><span>alebo</span></div>
+        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Pokračovať cez Google', 'Otvára sa Google…')}</button>
+        ${vseobecna}
+      </div>${spat}</div>`;
+    return `<div class="brana">${sova}<h1 class="h1">Svet za 3 minúty</h1>
+      <p class="muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
+      <button type="button" class="btn blue wide" data-uvod="mam">Mám účet</button>
+      <button type="button" class="btn wide" data-uvod="novy">Som tu nový</button>
+      ${Plocha.tip()}</div>`;
   },
   vyber: () => RodicBrana.vyber(brany.vyberPovodny),
   vyberPovodny: () => {
@@ -2210,13 +2236,14 @@ function renderBrana() {
   main.innerHTML = brany[st.faza]();
   main.dataset.faza = st.faza;
   ocisluj();
-  if (st.faza === 'prihlasenie') {
-    // tlačidlo „Prihlásiť“ na klávesnici odošle formulár; z e-mailu sa skočí na heslo
-    const form = document.getElementById('prihlas-form'), em = document.getElementById('email'), he = document.getElementById('heslo');
-    em.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); he.focus(); } });
+  if (st.faza === 'prihlasenie' && document.getElementById('prihlas-form')) {
+    // Enter na klávesnici skočí na ďalšie pole, z posledného odošle formulár
+    const form = document.getElementById('prihlas-form'), polia = ['email', 'heslo', 'heslo2'].map(i => document.getElementById(i)).filter(Boolean);
+    polia.forEach((el, i) => el.addEventListener('keydown', e => { if (e.key === 'Enter' && polia[i + 1]) { e.preventDefault(); polia[i + 1].focus(); } }));
     form.addEventListener('submit', e => {
-      e.preventDefault(); he.blur();
-      if (window.Cloud) window.Cloud.akcia('prihlas', em.value.trim(), he.value); else toast('Prihlásenie sa ešte načítava, skúste o chvíľu.');
+      e.preventDefault(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      const v = id => (document.getElementById(id) || {}).value || '';
+      if (window.Cloud) window.Cloud.akcia(form.dataset.forma, v('email').trim(), v('heslo'), v('heslo2')); else toast('Prihlásenie sa ešte načítava, skúste o chvíľu.');
     });
   }
   if (st.faza === 'tvorba') {
@@ -5587,6 +5614,13 @@ document.addEventListener('click', e => {
   }
   if (d.plocha !== undefined) { Plocha.navod(); return; }
   if (d.plochaNeskor !== undefined) { S.set('plocha-neskor', Date.now() + 14 * 864e5); Zvuk.play('pop'); render(); return; }
+  if (d.uvod) {
+    const em0 = document.getElementById('email'); if (em0) st.uvodEmail = em0.value; // e-mail ostane aj pri návrate na voľbu a prepnutí medzi cestami
+    st.uvodKrok = d.uvod; if (window.Cloud) { window.Cloud.chyba = ''; window.Cloud.chyby = {}; }
+    Zvuk.play('pop'); render(); scrollTo(0, 0);
+    const em = document.getElementById('email'); if (em && st.uvodEmail) em.value = st.uvodEmail;
+    return;
+  }
   if (d.ucet) {
     if (!window.Cloud) { toast('Prihlásenie sa ešte načítava, skúste o chvíľu.'); return; }
     const email = (document.getElementById('email') || {}).value || '', heslo = (document.getElementById('heslo') || {}).value || '';
@@ -5758,11 +5792,11 @@ const CHYBY = {
   'auth/invalid-credential': 'Nesprávny e-mail alebo heslo.',
   'auth/invalid-login-credentials': 'Nesprávny e-mail alebo heslo.',
   'auth/wrong-password': 'Nesprávne heslo.',
-  'auth/user-not-found': 'Účet s týmto e-mailom neexistuje. Ťuknite na Nový účet.',
+  'auth/user-not-found': 'Účet s týmto e-mailom neexistuje. Vráťte sa a ťuknite na Som tu nový.',
   'auth/invalid-email': 'E-mail nie je napísaný správne.',
   'auth/missing-email': 'Najprv napíšte e-mail.',
   'auth/missing-password': 'Napíšte heslo.',
-  'auth/email-already-in-use': 'Tento e-mail už účet má. Ťuknite na Prihlásiť sa.',
+  'auth/email-already-in-use': 'Tento e-mail už účet má. Vráťte sa a ťuknite na Mám účet.',
   'auth/weak-password': 'Heslo musí mať aspoň 6 znakov.',
   'auth/too-many-requests': 'Priveľa pokusov. Skúste to o chvíľu.',
   'auth/network-request-failed': 'Chýba internet. Skúste to, keď bude signál.',
@@ -5778,6 +5812,12 @@ const CHYBY = {
   'auth/requires-recent-login': 'Najprv potvrďte heslo účtu.',
   'permission-denied': 'Cloud uloženie odmietol.',
   'unavailable': 'Cloud je teraz nedostupný, uloží sa neskôr.',
+};
+// ktorému poľu úvodu chyba patrí (ostatné idú pod formulár)
+const POLE_CHYBY = {
+  'auth/invalid-email': 'email', 'auth/missing-email': 'email', 'auth/user-not-found': 'email', 'auth/email-already-in-use': 'email',
+  'auth/invalid-credential': 'heslo', 'auth/invalid-login-credentials': 'heslo', 'auth/wrong-password': 'heslo',
+  'auth/missing-password': 'heslo', 'auth/weak-password': 'heslo',
 };
 const chybaText = e => CHYBY[e && e.code] || 'Niečo sa nepodarilo' + (e && e.code ? ' (' + e.code + ')' : '') + '.';
 const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -5876,11 +5916,16 @@ const Cloud = {
     casovac = setTimeout(ulozAktivne, 800);
   },
   ulozHned() { if (casovac) { clearTimeout(casovac); ulozAktivne(); } },
-  async akcia(co, email, heslo) {
+  async akcia(co, email, heslo, heslo2) {
     const prihlasuje = ['google', 'prihlas', 'registruj'].includes(co);
     if (this.pracuje) return; // už sa prihlasuje, ďalšie ťuknutie ignorujeme
-    this.chyba = '';
-    if (prihlasuje) { this.pracuje = co; if (st.faza === 'prihlasenie') obnovPrihlasenie(); }
+    this.chyba = ''; this.chyby = {};
+    // pred odoslaním skontrolujeme polia a chybu ukážeme pri tom poli, ktorého sa týka
+    if (co === 'prihlas' || co === 'registruj') {
+      const z = pokazenePolia(co, email, heslo, heslo2);
+      if (Object.keys(z).length) { this.chyby = z; Zvuk.play('bad'); obnovPrihlasenie(Object.keys(z)[0]); return; }
+    }
+    if (prihlasuje) { this.pracuje = co; if (st.faza === 'prihlasenie') obnovPrihlasenie(''); }
     try {
       if (co === 'google') {
         const p = new GoogleAuthProvider();
@@ -5910,9 +5955,12 @@ const Cloud = {
       }
       Zvuk.play('ok');
     } catch (e) {
-      this.chyba = chybaText(e); Zvuk.play('bad');
+      const pole = POLE_CHYBY[e && e.code];
+      if (pole && st.faza === 'prihlasenie') this.chyby = { [pole]: chybaText(e) }; else this.chyba = chybaText(e);
+      Zvuk.play('bad');
     } finally {
-      if (prihlasuje) { this.pracuje = ''; if (st.faza === 'prihlasenie') obnovPrihlasenie(); }
+      if (prihlasuje) this.pracuje = '';
+      if (st.faza === 'prihlasenie') obnovPrihlasenie(Object.keys(this.chyby)[0]); // aj chyba zo „Zabudli ste heslo“ sa hneď ukáže
     }
   },
   vyber(id, pohlad = 'domov') {
@@ -6183,11 +6231,23 @@ function ulozAktivne() {
   zapisStat();
 }
 function obnovStav() { const el = document.getElementById('cloud-stav'); if (el) el.textContent = Cloud.stavUlozenia; }
-function obnovPrihlasenie() {
-  const em = (document.getElementById('email') || {}).value, he = (document.getElementById('heslo') || {}).value;
+// prekreslí úvod a zachová rozpísané polia; pole s chybou dostane kurzor (okrem počas prihlasovania)
+function obnovPrihlasenie(naPole) {
+  const ids = ['email', 'heslo', 'heslo2'], v = ids.map(i => (document.getElementById(i) || {}).value);
   render(); main.classList.remove('anim');
-  if (em) document.getElementById('email').value = em;
-  if (he) document.getElementById('heslo').value = he;
+  ids.forEach((i, k) => { const el = document.getElementById(i); if (el && v[k]) el.value = v[k]; });
+  const f = naPole && document.getElementById(naPole); if (f) f.focus();
+}
+// kontrola polí pred odoslaním: { pole: text chyby }
+function pokazenePolia(co, email, heslo, heslo2) {
+  const z = {};
+  if (!email) z.email = 'Napíšte e-mail.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) z.email = CHYBY['auth/invalid-email'];
+  if (!heslo) z.heslo = 'Napíšte heslo.';
+  else if (co === 'registruj' && heslo.length < 6) z.heslo = CHYBY['auth/weak-password'];
+  else if (co === 'registruj' && heslo2 !== heslo) z.heslo2 = 'Heslá sa nezhodujú.';
+  if (co === 'registruj' && !z.heslo && !heslo2) z.heslo2 = 'Napíšte heslo ešte raz.';
+  return z;
 }
 // zmena aktívneho dieťaťa z iného telefónu
 function prevezmi(a) {
@@ -6228,6 +6288,7 @@ async function prevodStareho(u) {
 
 onAuthStateChanged(auth, u => {
   Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = ''; socZastav();
+  Sprievodca.zavri(true); // sprievodca nového účtu nesmie ostať visieť nad úvodom po odhlásení
   if (odber) { odber(); odber = null; }
   if (odberRodic) { odberRodic(); odberRodic = null; }
   Cloud.rodic = { nacitane: false, profil: null, prepotvrdene: 0 }; Rodic.zamkni();
@@ -6235,6 +6296,7 @@ onAuthStateChanged(auth, u => {
   if (!u) {
     Object.assign(st, { meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [] }); // nič z predošlého účtu v pamäti
     // po návrate z Googlu sa prihlásenie ešte dokončuje: neukazujeme prihlasovaciu obrazovku, aby sa neťukalo znova
+    st.uvodKrok = 'volba'; st.uvodEmail = ''; Cloud.chyby = {};
     Object.assign(st, { dietaId: null, avatar: null, flow: null, faza: dokoncujeGoogle ? 'nacitava' : 'prihlasenie', sprava: dokoncujeGoogle ? 'Dokončuje sa prihlásenie cez Google…' : '' });
     render(); return;
   }
