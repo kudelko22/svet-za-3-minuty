@@ -2,6 +2,8 @@
 .hra-mini { flex: none; display: grid; place-items: center; width: 58px; height: 50px; border: 3px solid var(--line); border-radius: 14px; background: var(--c); }
 .hra-mini svg { width: 50px; height: 40px; }
 .hra { display: grid; gap: 14px; padding-top: 4px; }
+.hra-top { display: flex; align-items: center; gap: 10px; } /* lišta misie, angličtiny, Objavuj a Pasu; lišta hry je v 52-hry.css */
+.hra-nazov { flex: 1; min-width: 0; font: 700 1.35rem/1.1 var(--f-display); }
 .hra-pomoc { text-align: center; font-size: .92rem; }
 .hra-pomoc svg { width: 18px; height: 18px; vertical-align: -3px; }
 /* pexeso */

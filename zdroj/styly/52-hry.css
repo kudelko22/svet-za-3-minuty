@@ -78,9 +78,9 @@ body:has(main > .ihrisko) .blobs { display: none; }
 
 /* ---------- Obal hry: lišta, Múdra, stav ---------- */
 .hra { gap: 16px; padding-top: 6px; }
-.hra-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: grid; grid-template-columns: 46px minmax(0, 1fr) 46px auto; align-items: center; gap: 8px; padding-block: 10px 8px; background: var(--ihr); box-shadow: 0 0 0 100vmax var(--ihr); clip-path: inset(0 -100vmax); }
-.hra-top .btn.kruh .ikn { width: 22px; height: 22px; }
-.hra-nazov { font: 900 1.3rem/1.1 var(--fd); overflow-wrap: anywhere; }
+.hra > .hra-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: grid; grid-template-columns: 46px minmax(0, 1fr) 46px auto; align-items: center; gap: 8px; padding-block: 10px 8px; background: var(--ihr); box-shadow: 0 0 0 100vmax var(--ihr); clip-path: inset(0 -100vmax); }
+.hra > .hra-top .btn.kruh .ikn { width: 22px; height: 22px; }
+.hra .hra-nazov { font: 900 1.3rem/1.1 var(--fd); overflow-wrap: anywhere; }
 .hra-mud { display: block; width: 46px; height: 52px; margin: -6px 0 -4px; }
 .hra-mud .owl { display: block; width: 100%; height: 100%; overflow: visible; }
 .hra-mud.reaguje { animation: mudraHop .55s var(--spring); }
