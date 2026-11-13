@@ -105,7 +105,7 @@ const Plocha = {
     if (this.naPloche() || S.get('plocha-neskor', 0) > Date.now() || (z === 'pocitac' && !this.udalost)) return '';
     return `<div class="plocha-karta"><span class="plocha-obr">${plPlocha()}</span><div class="plocha-t"><b>Pridajte si appku na plochu</b>
       <small>Bude sa otvárať ako naozajstná aplikácia: s ikonkou a cez celú obrazovku.</small>
-      <div class="plocha-tl"><button class="btn mud" data-plocha>${this.priamo() ? 'Pridať' : 'Ukázať ako'}</button><button class="btn dve" data-plocha-neskor>Neskôr</button></div></div></div>`;
+      <div class="plocha-tl"><button class="btn maly mud" data-plocha>${this.priamo() ? 'Pridať' : 'Ukázať ako'}</button><button class="btn maly dve" data-plocha-neskor>Neskôr</button></div></div></div>`;
   },
   // na iPhone má appka na ploche vlastné prihlásenie, preto radíme pridať ju ešte pred prihlásením
   tip() {

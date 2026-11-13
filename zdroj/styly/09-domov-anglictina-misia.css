@@ -24,7 +24,7 @@
 .misia-pas { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; text-align: left; border: 3px solid var(--ink); border-radius: 20px; background: var(--c); color: #fff; box-shadow: 0 4px 0 var(--ink); }
 .misia-pas:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .misia-pas.hotova { opacity: .85; }
-.misia-pas-t { display: grid; gap: 1px; flex: 1; min-width: 0; text-shadow: 0 1.5px 0 var(--dk); }
+.misia-pas-t { display: grid; gap: 1px; flex: 1; min-width: 0; }
 .misia-pas-t b { font: 700 1.15rem/1.1 var(--fd); }
 .misia-pas-t small { font-weight: 800; }
 .misia-sip { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 3px solid var(--ink); background: var(--sun); color: var(--dk); }

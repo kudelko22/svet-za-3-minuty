@@ -25,9 +25,9 @@
 .spr-nadpis { flex: 1; min-width: 0; }
 .spr-nadpis small { display: block; color: var(--muted); font-weight: 800; }
 .spr-nadpis b { display: block; font: 700 1.35rem/1.15 var(--fd); }
-.spr-hlava .ib { width: 40px; height: 40px; border-radius: 12px; padding: 7px; }
-.spr-hlava .ib svg { width: 100%; height: 100%; }
-.spr-citaj.on { background: var(--sun); }
+.spr-hlava .btn.kruh { flex: none; width: 42px; height: 42px; }
+.spr-citaj.on { --cta: var(--sun); --cta-d: var(--sun-d); }
+
 .spr-text { margin: 0; font-weight: 700; font-size: 1.08rem; line-height: 1.4; }
 .spr-text span { display: inline-block; animation: sprSlovo .4s ease-out both; animation-delay: calc(.12s + var(--k) * 40ms); }
 @keyframes sprSlovo { from { transform: translateY(8px); opacity: 0; } }
@@ -35,7 +35,7 @@
 .spr-tip-ruka { flex: none; width: 24px; height: 27px; } .spr-tip-ruka svg { display: block; width: 100%; height: 100%; }
 .spr-tlacidla { display: flex; gap: 10px; justify-content: flex-end; }
 .spr-pruh { height: 10px; border: 2.5px solid var(--ink); border-radius: 999px; background: var(--violet-l); overflow: hidden; }
-.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun), var(--sun-d)); transition: width .6s var(--spring); }
+.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: var(--sun); box-shadow: inset 0 -3px 0 var(--sun-d); transition: width .6s var(--spring); }
 .spr.velka .spr-pruh { display: none; }
 .spr.velka .spr-bublina { gap: 14px; padding: 22px 18px 18px; text-align: center; }
 .spr.velka .spr-hlava { flex-direction: column; gap: 6px; }
@@ -43,7 +43,7 @@
 .spr.velka .spr-sova .owl { animation: hop 1.8s ease-in-out infinite; }
 .spr.velka .spr-nadpis b { font-size: 2.1rem; }
 .spr.velka .spr-nadpis b span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
-.spr.velka .spr-hlava .ib { position: absolute; top: 12px; right: 12px; }
+.spr.velka .spr-hlava .btn.kruh { position: absolute; top: 12px; right: 12px; }
 .spr.velka .spr-citaj { left: 12px; right: auto !important; }
 .spr.velka .spr-tlacidla { flex-direction: column; }
 .spr-hviezdy { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 23px; }
