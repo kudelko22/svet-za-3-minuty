@@ -358,8 +358,6 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .empty .owl { width: 80px; }
 
 /* Profil */
-.prof-top { display: flex; align-items: center; gap: 14px; }
-.prof-top .owlw { flex: none; width: 82px; padding: 0; border: 0; background: none; }
 .prof { display: grid; gap: 10px; }
 .lbl { font: 600 1rem/1.2 var(--f-display); }
 .input { width: 100%; padding: 12px 14px; border-radius: 16px; border: 3px solid var(--line); background: var(--bg); color: var(--text); font: 700 1.15rem var(--f-display); }
@@ -379,17 +377,11 @@ svg .krid2 { animation: krid2 .5s ease-in-out infinite alternate; transform-box:
 .link { justify-self: start; border: 0; background: none; padding: 2px 0; color: var(--link); font: 700 .95rem/1.3 var(--f-body); text-decoration: underline; }
 .chyba { margin: 0; padding: 8px 12px; border-radius: 12px; background: var(--bad-bg); color: var(--zle-t); font-weight: 800; }
 .presun { display: block; padding: 12px 16px; border-radius: 18px; border: 3px solid var(--line); background: var(--sun); box-shadow: 0 4px 0 var(--shc); color: var(--dk); text-decoration: none; font-weight: 800; }
-.ringc { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; }
 .ring { position: relative; flex: none; width: 116px; height: 116px; }
 .ring svg { width: 100%; height: 100%; rotate: -90deg; }
 .ring b { position: absolute; inset: 0; display: grid; place-items: center; font: 700 1.7rem/1 var(--f-display); }
 .mini { display: grid; gap: 2px; background: var(--c); }
 .mini b { font: 700 1.8rem/1.1 var(--f-display); }
-.mini small, .ringc small { font-weight: 800; color: var(--muted); }
-.prog { display: grid; gap: 14px; }
-.prog-r { display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: 10px; row-gap: 6px; font-weight: 800; }
-.prog-r .ico { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 1.05rem; background: var(--c); border: 2.5px solid var(--line); }
-.prog-r span { min-width: 0; }
 .bar { grid-column: 2 / -1; height: 14px; border-radius: 99px; background: var(--soft); border: 2.5px solid var(--line); overflow: hidden; }
 .bar i { display: block; height: 100%; background: var(--c); }
 
@@ -477,22 +469,9 @@ main.ang-mizne { opacity: 0; transform: translateY(-6px); transition: opacity .1
 .dieta .plus { width: min(118px, 100%); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; border: 3px dashed var(--line); background: var(--soft); font: 700 3.6rem/1 var(--f-display); }
 .tvorba { justify-items: stretch; text-align: left; }
 .tvorba > .h1 { text-align: center; }
-.av-wrap { position: relative; justify-self: center; }
-.av-nahlad { width: 210px; aspect-ratio: 1; border-width: 4px; box-shadow: 0 6px 0 var(--shc); transition: background-color .3s; }
-.av-nahlad.hopni #av-velky { animation: jelly .5s; }
-.kocka { position: absolute; right: -10px; top: 6px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--line); background: var(--sun); box-shadow: 0 4px 0 var(--shc); font-size: 1.7rem; padding: 0; }
-.kocka:active { transform: translateY(3px) rotate(90deg); box-shadow: 0 1px 0 var(--shc); }
-.av-tabs { justify-content: center; }
-.av-moznosti { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.av-opt { aspect-ratio: 1; padding: 0; box-shadow: 0 3px 0 var(--shc); }
-.av-opt.farba { border-radius: 50%; border: 3px solid var(--line); background: var(--f); display: grid; place-items: center; }
-.av-opt[aria-pressed="true"] { outline: 4px solid var(--blue); outline-offset: 3px; }
-.av-opt.farba[aria-pressed="true"]::after { content: "✓"; color: #fff; font: 700 1.5rem/1 var(--f-display); text-shadow: 0 2px 0 var(--dk); }
 .btn.red { background: var(--coral); }
 .link.center { justify-self: center; }
 .potvrd { border-color: var(--coral); }
-.prof-meno { display: grid; gap: 6px; justify-items: start; }
-.av-ja { flex: none; width: 104px; aspect-ratio: 1; padding: 0; box-shadow: 0 4px 0 var(--shc); }
 .av.kruh-av { border-width: 2.5px; height: 58px; }
 
 /* Odznaky a odmeny */
@@ -527,51 +506,7 @@ main.ang-mizne { opacity: 0; transform: translateY(-6px); transition: opacity .1
 .av-opt.farba.zamknute::after { inset: auto 0 22% 0; }
 .av-opt.trasie { animation: shake .4s; }
 
-/* Režim do auta: tmavšie farby (neoslňujú), veľké písmo a tlačidlá */
-body.auto-rezim { background-color: var(--noc-card); }
-body.auto-rezim .blobs { opacity: .3; }
-.auto { display: grid; gap: 16px; color: #fff; padding-top: 4px; }
-.auto-top { display: flex; align-items: center; justify-content: space-between; }
-.auto .frame { border-color: var(--noc-bg); box-shadow: 0 6px 0 var(--noc-bg); }
-.auto .ib { color: var(--dk); }
-.auto-scena svg { aspect-ratio: 2 / 1; }
-.auto-t { margin: 0; font: 700 1.9rem/1.1 var(--f-display); text-wrap: balance; }
-.auto-body { display: grid; gap: 12px; justify-items: start; min-height: 10em; align-content: start; }
-.auto-text { margin: 0; font: 700 1.45rem/1.5 var(--f-body); }
-.auto-text .minula { opacity: .6; }
-.auto-text .teraz { scroll-margin: 80px 0 150px; color: #FFE27A; background: rgb(255 210 63 / .16); border-radius: 8px; box-shadow: 0 0 0 4px rgb(255 210 63 / .16); }
-.auto-cas { display: flex; align-items: center; gap: 12px; font: 700 1.25rem/1.2 var(--f-display); color: #FFE27A; }
-.odpocet-kruh { position: relative; width: 64px; height: 64px; display: grid; place-items: center; }
-.odpocet-kruh svg { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
-.odpocet-kruh circle { fill: none; stroke: rgb(255 255 255 / .2); stroke-width: 7; }
-.odpocet-kruh .ostava { stroke: var(--sun); stroke-linecap: round; stroke-dasharray: 170; animation: odpocet var(--s) linear forwards; }
-.odpocet-kruh b { position: relative; font-size: 1.4rem; }
-@keyframes odpocet { to { stroke-dashoffset: 170; } }
-.auto-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
-.auto-dots i { width: 10px; height: 10px; border-radius: 50%; background: rgb(255 255 255 / .22); transition: transform .3s; }
-.auto-dots i.hotovo { background: var(--leaf); }
-.auto-dots i.teraz { background: var(--sun); transform: scale(1.45); }
-.auto-ovl { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 2; display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: center; gap: 14px; }
-.auto-btn { display: grid; place-items: center; align-content: center; gap: 3px; height: 84px; border-radius: 24px; border: 3px solid var(--noc-bg); background: var(--paper); color: var(--dk); font: 700 .95rem/1 var(--f-display); box-shadow: 0 5px 0 var(--noc-bg); }
-.auto-btn svg { width: 34px; height: 34px; fill: var(--sky); stroke: var(--dk); stroke-width: 3.5; stroke-linejoin: round; }
-.auto-btn.velke { height: 104px; font-size: 1.05rem; background: var(--sun); }
-.auto-btn.velke svg { width: 46px; height: 46px; fill: #fff; }
-.auto-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--noc-bg); }
-.auto-prepinac { display: flex; align-items: center; gap: 10px; font-weight: 800; color: rgb(255 255 255 / .85); }
-.auto-prepinac input { width: 26px; height: 26px; accent-color: var(--leaf); }
-.auto-koniec { justify-items: center; text-align: center; }
-.auto-koniec .auto-top, .auto-koniec .btn, .auto-koniec .nove-odmeny { width: 100%; }
-.auto-koniec .earn, .auto-koniec .nove-odmeny { color: var(--dk); }
-.auto-odpocet { margin: 0; color: #FFE27A; font-weight: 800; }
-.auto-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; text-align: left; border-radius: 24px; border: 3px solid var(--line); background: linear-gradient(135deg, var(--noc-sand), var(--violet)); color: #fff; box-shadow: var(--sh); }
-.auto-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--shc); }
-.auto-karta > div { display: grid; gap: 2px; min-width: 0; flex: 1; }
-.auto-karta b { font: 700 1.35rem/1.15 var(--f-display); text-shadow: 0 2px 0 var(--dk); }
-.auto-karta small { font-weight: 800; opacity: .92; }
-.auto-ikona { flex: none; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--line); background: var(--paper); font-size: 2rem; animation: tileBob 2.6s ease-in-out infinite; }
-.auto-play { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--line); background: var(--sun); color: var(--dk); font-size: 1.4rem; animation: pulse 1.6s ease-in-out infinite; }
-.btn.auto-mini { background: var(--noc-sand); }
-
+/* Režim do auta: štýly 5.0 sú v 56-auto.css (tmavá plocha, cesta s autíčkom, tri veľké tlačidlá). */
 /* Angličtina: bonus na každý deň */
 @keyframes angHoj { 0%, 100% { rotate: 0deg; scale: 1; } 25% { rotate: -.6deg; } 50% { scale: 1.02; } 75% { rotate: .6deg; } }
 .ang-kvizy { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
@@ -2012,6 +1947,124 @@ body:has(main > .ihrisko) .blobs { display: none; }
 }
 /* 5.0: Profil (Ja), postavička, sprievodca. Sem patria nové štýly tejto sekcie (smer: preukaz objaviteľa, ceny pri veciach v jednom pásiku).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+
+/* ===== Šatník: busta v kruhu na javisku, kategórie, veci s rovnako vysokým pásikom dole ===== */
+.up-hl { display: flex; align-items: center; gap: 10px; }
+.up-hl .n1 { margin-right: auto; }
+.up-hl .btn.kruh .ikn { width: 22px; height: 22px; }
+.up-javisko { position: relative; display: grid; place-items: center; height: 184px; border: var(--obrys); border-radius: var(--r-karta); background: var(--sun); overflow: hidden; }
+.up-luce { position: absolute; inset: 0; width: 100%; height: 100%; fill: var(--sun-l); opacity: .55; animation: upLuce 40s linear infinite; transform-origin: center; }
+@keyframes upLuce { to { transform: rotate(360deg); } }
+.up-javisko .av-nahlad { position: relative; width: 148px; aspect-ratio: 1; border: var(--obrys); box-shadow: 0 0 0 5px var(--card), 0 0 0 8px var(--ink); transition: background-color .3s; }
+.av-nahlad.hopni #av-velky { animation: jelly .5s; }
+.up-javisko .kocka { position: absolute; right: 12px; bottom: 12px; }
+.up-javisko .kocka .ikn { width: 24px; height: 24px; }
+.up-javisko .kocka:active .ikn { rotate: 90deg; transition: rotate .2s; }
+.up-taby { display: flex; gap: 8px; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 2px max(16px, env(safe-area-inset-left, 0px)) 6px; overflow-x: auto; scrollbar-width: none; scroll-padding-inline: 16px; }
+.up-taby::-webkit-scrollbar { display: none; }
+.up-tab { flex: none; display: inline-flex; align-items: center; height: 38px; padding: 2px 14px 0; border: var(--obrys-m); border-radius: 999px; background: var(--card); font: 800 .9rem/1 var(--fd); color: var(--text); }
+.up-tab[aria-pressed="true"] { background: var(--violet); color: #fff; box-shadow: 0 3px 0 var(--ink); }
+.veci { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 10px; }
+.vec { position: relative; display: grid; grid-template-rows: 1fr 34px; justify-items: center; padding: 0; border: var(--obrys-m); border-radius: 16px 18px 16px 19px; background: var(--card); overflow: hidden; color: var(--text); }
+.vec-obr { display: grid; place-items: center; width: 100%; padding: 8px 0 7px; }
+.vec-obr .kruh-av { width: min(78px, 82%); aspect-ratio: 1; border-width: 2.5px; }
+.vec-farba { display: block; width: min(58px, 64%); aspect-ratio: 1; margin: 10px 0; border: var(--obrys-m); border-radius: 50%; background: var(--f); }
+.vec .dolu { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 34px; padding-top: 1px; border-top: var(--obrys-m); background: var(--sand); font: 800 .78rem/1 var(--fd); color: var(--muted); white-space: nowrap; }
+.vec .dolu .ikn { width: 16px; height: 16px; }
+.vec .dolu .cena { height: auto; padding: 0; border: 0; background: none; font-size: .94rem; color: var(--text); }
+.vec .dolu .cena .ikn { width: 17px; height: 17px; margin-top: -2px; }
+.vec.na { border-width: 3px; box-shadow: 0 0 0 3px var(--sun), 0 4px 0 3px var(--ink); }
+.vec.na .dolu { background: var(--teal); color: var(--dk); }
+.vec.zam { border-style: dashed; background: var(--bg); }
+.vec.zam .vec-obr { filter: grayscale(1); opacity: .5; }
+.vec.zam .dolu { border-top-style: dashed; background: var(--sun-l); }
+.vec .zmk { position: absolute; right: 5px; top: 5px; z-index: 1; display: grid; place-items: center; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.vec .zmk .ikn { width: 15px; height: 15px; }
+.vec:active { transform: translateY(2px); }
+.vec.trasie { animation: shake .4s; }
+.vec.trasie .dolu { animation: vecBlik .4s 2; }
+@keyframes vecBlik { 50% { background: var(--sun); } }
+.vec.viac { grid-template-rows: none; align-content: center; gap: 6px; padding: 10px 6px; border-style: dashed; background: var(--sun-l); font: 700 .75rem/1.25 var(--fb); text-align: center; }
+.vec.viac .ikn { width: 26px; height: 26px; }
+.up-najblizsia { display: grid; gap: 8px; }
+.up-najblizsia .tx { font-size: .9rem; }
+.up-najblizsia .pruh { height: 12px; }
+.up-zakl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; }
+.up-zakl .pole { display: grid; gap: 6px; }
+.up .input { min-height: 50px; padding: 11px 14px; border: var(--obrys-m); border-radius: var(--r-pole); background: var(--card); font: 500 1.06rem/1.2 var(--fb); color: var(--text); }
+.up .input:focus { outline: none; box-shadow: 0 0 0 3px var(--sun); }
+.up .input.zle { border-color: var(--coral-d); background: var(--coral-l); }
+.up-uprava { gap: 18px; padding-bottom: 8px; }
+.up-spodok { position: sticky; bottom: 0; z-index: 3; display: grid; gap: 10px; justify-items: center; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: var(--obrys); background: var(--card); }
+.up-spodok .btn.wide { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.up-spodok .link { font: 700 .84rem/1 var(--fb); color: var(--muted); }
+.up-potvrd { display: grid; gap: 8px; width: 100%; padding: 12px; border: 2px solid var(--coral-d); border-radius: 14px; background: var(--coral-l); }
+.up-potvrd .tx { font-size: .9rem; }
+@media (min-width: 480px) { .veci { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 600px) { .up-spodok { margin-inline: 0; border: var(--obrys); border-bottom: 0; border-radius: var(--r-karta); border-bottom-left-radius: 0; border-bottom-right-radius: 0; } .up-taby { margin-inline: 0; padding-inline: 0; } }
+
+/* ===== Ja: preukaz objaviteľa ===== */
+.ja-preukaz { position: relative; display: grid; grid-template-columns: 112px 1fr; gap: 14px 14px; align-items: center; padding: 48px 14px 14px; border: var(--obrys); border-radius: 22px 24px 22px 26px; background: var(--card); box-shadow: 0 6px 0 var(--shc); }
+.ja-preukaz-hl { position: absolute; left: 0; right: 0; top: 0; height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: var(--obrys); border-radius: 19px 21px 0 0; background: var(--violet); font: 800 .78rem/1 var(--fd); letter-spacing: .09em; text-transform: uppercase; color: #fff; }
+.ja-preukaz-hl .logo { --ls: 1.05rem; --lo: #fff; color: #fff; letter-spacing: 0; text-transform: none; }
+.ja-foto { position: relative; width: 112px; aspect-ratio: 1; padding: 0; border: var(--obrys); rotate: -3deg; overflow: visible; }
+.ja-foto svg { border-radius: 0 0 999px 999px; }
+.ja-foto::after { content: ""; position: absolute; left: 50%; top: -10px; width: 46px; height: 17px; translate: -50% 0; rotate: 4deg; border: var(--obrys-m); border-radius: 4px; background: var(--sun); }
+.ja-foto:active { scale: .97; }
+.ja-udaje { display: grid; gap: 8px; justify-items: start; min-width: 0; }
+.ja-udaje .n0 { overflow-wrap: anywhere; }
+.ja-rad { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.ja-uprav { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; }
+.ja-kruh { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: center; padding: 14px; border: var(--obrys); border-radius: 20px 22px 24px 20px; background: var(--leaf-l); box-shadow: 0 4px 0 var(--shc); }
+.ja-ring { position: relative; width: 92px; height: 92px; }
+.ja-ring svg { display: block; width: 100%; height: 100%; }
+.ja-ring b { position: absolute; inset: 0; display: grid; place-items: center; padding-top: 3px; font: 900 1.4rem/1 var(--fd); }
+.ja-kruh .tx { margin-top: 4px; font-size: .9rem; }
+/* Mesačný režim a Pozadie vedľa seba ako dve nálepky (na úzkom displeji pod sebou) */
+.ja-vzhlad { display: grid; gap: 14px; }
+.ja-vzhlad .card { padding: 14px; border-radius: var(--r-karta); box-shadow: 0 4px 0 var(--shc); }
+.ja-vzhlad .rez-karta { background: var(--sky-l); }
+.ja-vzhlad .poz-karta { background: var(--sun-l); }
+.ja-vzhlad .lbl { font: 800 1.06rem/1.15 var(--fd); }
+.ja-vzhlad .muted { font: 400 .84rem/1.35 var(--fb); }
+.ja-vzhlad .poz-vol { border-width: 2.5px; font: 700 .78rem/1.15 var(--fb); }
+.ja-vzhlad .poz-vol[aria-pressed="true"] { background: var(--card); }
+@media (min-width: 520px) { .ja-vzhlad { grid-template-columns: 1fr 1fr; align-items: start; } }
+/* sprievodca: Múdra a bublina */
+.ja-spr.spr-karta { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; align-items: center; padding: 0; border: 0; background: none; box-shadow: none; text-align: left; color: var(--text); }
+.ja-spr-sova svg { display: block; width: 100%; height: auto; }
+.ja-spr .odkaz { font: 500 .84rem/1.35 var(--fb); }
+.ja-spr .odkaz b { display: block; font: 800 1rem/1.2 var(--fd); }
+.ja-spr .btn.kruh .ikn { width: 22px; height: 22px; }
+.ja-spr:active .odkaz { background: var(--sand); }
+/* kategórie */
+.ja-kat { display: grid; gap: 12px; padding: 24px 14px 14px; }
+.ja-kat-r { display: grid; grid-template-columns: 1fr auto; gap: 5px 8px; align-items: center; font: 700 .9rem/1.2 var(--fb); }
+.ja-kat-r b { font: 800 .875rem/1 var(--fd); }
+.ja-kat-r .pruh { grid-column: 1 / -1; height: 12px; }
+.ja-kat-r .pruh i { background: var(--pc, var(--teal)); box-shadow: inset 0 -3px 0 rgb(0 0 0 / .14); }
+.ja-viac { display: grid; gap: 12px; }
+.ja-viac[open] { gap: 12px; }
+.ja-viac > summary { display: inline-flex; align-items: center; gap: 4px; list-style: none; cursor: pointer; font: 800 .9rem/1 var(--fd); color: var(--link); }
+.ja-viac > summary::-webkit-details-marker { display: none; }
+.ja-viac > summary .ikn { width: 18px; height: 18px; transition: rotate .2s; }
+.ja-viac[open] > summary { margin-bottom: 12px; }
+.ja-viac[open] > summary .ikn { rotate: 180deg; }
+.ja-viac > .ja-kat-r + .ja-kat-r { margin-top: 12px; }
+.ja-nh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ja-nh small { font: 800 .81rem/1 var(--fd); color: var(--muted); }
+/* rodina */
+.ja-rodina { display: grid; gap: 10px; padding: 14px; border: 2.5px dashed var(--ink); border-radius: 18px; }
+.ja-rodina .tx { font-size: .875rem; color: var(--muted); overflow-wrap: anywhere; }
+.ja-rodina .btn.maly { display: inline-flex; align-items: center; justify-content: center; }
+.ja-pata { margin: 0; font: 400 .78rem/1.45 var(--fb); color: var(--muted); }
+.ja-pata a { color: var(--link); }
+
+@media (prefers-reduced-motion: reduce) {
+  .up-luce, .av-nahlad.hopni #av-velky, .vec.trasie, .vec.trasie .dolu { animation: none !important; }
+}
+/* Mesačný režim: javisko ostáva žlté, lúče sú svetlé (nie tmavý -l podklad) */
+:root[data-rezim="mesacny"] .up-luce { fill: #FFE08A; opacity: .6; }
 /* 5.0: Priatelia, správy, rebríček. Smer z druhého kola: teplý koralový pás s tvárami priateľov, správy ako bubliny,
    stupne víťazov (koruna len pre prvé miesto), lístok s kódom. Rozhovor a profil priateľa sú v tom istom štýle. */
 
@@ -2268,8 +2321,280 @@ body:has(main > .ihrisko) .blobs { display: none; }
 }
 /* 5.0: Rodičovská časť, prihlásenie, vytváranie účtu, pridanie na plochu. Sem patria nové štýly tejto sekcie (smer: pokojné: obrys 2 px, bez nakrivo položených prvkov, prepínače).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+
+/* ===== Vstup: jedna cesta. Hore krajina s cestou a zastávkami, pod ňou nadpis, polia a hlavné tlačidlo vždy na tom istom mieste ===== */
+.brana.vstup { gap: 0; justify-items: stretch; text-align: left; padding-top: 0; }
+.vs-sc { position: relative; height: 158px; margin-top: -10px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-top: env(safe-area-inset-top, 0px); border-bottom: var(--obrys); overflow: hidden; background: var(--sc-sky); }
+.vs-sc > svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.vs-spat { position: absolute; left: 14px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 1; }
+.vs-spat .ikn { width: 22px; height: 22px; }
+.vs-zast { transform-box: fill-box; transform-origin: center; animation: vsZast .5s var(--spring) both .15s; }
+@keyframes vsZast { from { transform: scale(.4); } }
+.vs-telo { display: grid; gap: 16px; align-content: start; padding: 20px 0 8px; animation: vsTelo .35s ease-out both; }
+@keyframes vsTelo { from { opacity: 0; transform: translateY(8px); } }
+.vs-nadp { display: grid; gap: 7px; }
+.vs-nadp .tx, .vs-muted { color: var(--muted); }
+.vs-form { display: grid; gap: 16px; }
+.vstup .pole { gap: 6px; }
+.vs-lbl { font: 700 .875rem/1.2 var(--fb); color: var(--text); }
+.vstup .input, .rd .input { min-height: 52px; padding: 12px 14px; border: var(--obrys-m); border-radius: var(--r-pole); background: var(--card); font: 500 1.06rem/1.2 var(--fb); color: var(--text); }
+.vstup .input::placeholder, .rd .input::placeholder { color: var(--muted); opacity: .75; }
+.vstup .input:focus, .rd .input:focus { outline: none; box-shadow: 0 0 0 3px var(--sun); }
+.vstup .input.zle, .rd .input.zle { border-color: var(--coral-d); background: var(--coral-l); }
+.vstup .chyba, .rd .chyba { padding: 0; background: none; font: 700 .84rem/1.3 var(--fb); color: var(--zle-t); }
+.vstup .chyba.vs-chyba { padding: 10px 12px; border: 2px solid var(--coral-d); border-radius: 12px; background: var(--coral-l); }
+.vs-vstup { position: relative; display: block; }
+.vs-vstup .input[type="password"], .vs-vstup .input[type="text"] { padding-right: 52px; }
+.vs-oko { position: absolute; right: 4px; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 12px; background: none; }
+.vs-oko .ikn { width: 22px; height: 22px; }
+.vs-oko[aria-pressed="true"] { background: var(--sun-l); }
+.vstup .link { font: 700 .9rem/1.3 var(--fb); }
+.vs-form .link { justify-self: end; margin-top: -8px; }
+.vstup .btn.wide { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn > .ikn.ikn-po { margin: -4px 0 -5px 2px; }
+.vs-alebo { display: flex; align-items: center; gap: 10px; margin: -4px 0; font: 700 .81rem/1 var(--fb); color: var(--muted); }
+.vs-alebo::before, .vs-alebo::after { content: ""; flex: 1; border-top: 2.5px dashed var(--sand); }
+.vstup .btn.google .g { width: 26px; height: 26px; border: var(--obrys-m); background: var(--card); color: var(--text); font: 800 .875rem/1 var(--fb); text-shadow: none; }
+.vs-info { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 12px; border: 2.5px dashed var(--ink); border-radius: 14px; }
+.vs-info p { margin: 0; font: 400 .875rem/1.4 var(--fb); }
+.vs-info .ikn { width: 22px; height: 22px; }
+.vstup .link.center { margin-top: 2px; }
+/* vek: jeden spojený prepínač s dvoma polovicami */
+.vstup .seg2, .up .seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: var(--obrys-m); border-radius: var(--r-pole); overflow: hidden; background: var(--card); }
+.vstup .seg2 button, .up .seg2 button { min-height: 50px; padding: 4px 6px 0; border: 0; border-radius: 0; background: none; box-shadow: none; font: 800 .94rem/1.1 var(--fd); color: var(--muted); }
+.vstup .seg2 button + button, .up .seg2 button + button { border-left: var(--obrys-m); }
+.vstup .seg2 button[aria-pressed="true"], .up .seg2 button[aria-pressed="true"] { background: var(--sun); color: var(--dk); box-shadow: inset 0 -4px 0 var(--sun-d); animation: none; }
+
+/* privítanie */
+.vs-sc.vs-sc-vitaj { height: 300px; }
+.vs-mudra { position: absolute; left: 6px; bottom: 6px; width: 128px; }
+.vs-mudra svg { display: block; width: 100%; height: auto; }
+.vs-rec { position: absolute; left: 14px; top: calc(46px + env(safe-area-inset-top, 0px)); max-width: 178px; margin: 0; animation: vsRec .5s var(--spring) both .4s; }
+@keyframes vsRec { from { opacity: 0; transform: scale(.85) translateY(6px); } }
+.vs-stred { justify-items: center; text-align: center; gap: 12px; }
+.vs-stred .logo { --ls: 3.4rem; margin-top: 6px; }
+.vs-stred .podtitul { margin-top: -6px; font-size: 1.1rem; color: var(--text); }
+.vs-stred .tx { max-width: 34ch; margin-bottom: 4px; }
+.vs-stred .btn.wide { width: 100%; }
+.vs-mala { margin: 0; font: 600 .81rem/1.3 var(--fb); color: var(--muted); }
+.brana.vs-stred { gap: 14px; justify-items: center; text-align: center; padding-top: 40px; }
+.brana.vs-stred .btn { width: 100%; }
+
+/* Kto sa dnes učí? */
+.vs-vyber .deti { gap: 12px; }
+.vs-vyber .dieta { gap: 4px; padding: 14px 8px 12px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.vs-vyber .dieta b { margin-top: 4px; font: 800 1.25rem/1.1 var(--fd); }
+.vs-vyber .dieta small { font: 600 .81rem/1.2 var(--fb); color: var(--muted); }
+.vs-vyber .dieta .st.cis { margin-top: 4px; }
+.vs-vyber .dieta.nove { border-style: dashed; background: var(--bg); box-shadow: none; }
+.vs-vyber .dieta-plus { width: min(118px, 100%); aspect-ratio: 1; border-radius: 50%;  display: grid; place-items: center; border: 3px dashed var(--muted); background: var(--card); }
+.vs-vyber .dieta-plus .ikn { width: 40%; height: 40%; }
+.vs-rodic { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); text-align: left; color: var(--text); }
+.vs-rodic .rodic-kruh, .vs-rodic-plus { width: 44px; aspect-ratio: 1; border-width: 2px; }
+.vs-rodic-plus { display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 50%; background: var(--sun-l); }
+.vs-rodic b { display: block; font: 700 1rem/1.2 var(--fb); }
+.vs-rodic small { display: block; font: 400 .81rem/1.3 var(--fb); color: var(--muted); }
+.vs-rodic > .ikn { width: 20px; height: 20px; }
+.vs-rodic:active { background: var(--sand); }
+.vs-ucet { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding-top: 4px; }
+.vs-ucet .tx { font-size: .875rem; overflow-wrap: anywhere; }
+
+/* ===== Rodičovská časť: pokojne, prehľadne, dospelo. Obrys 2 px, žiadne nakrivo položené prvky ani spodné tiene,
+   nadpisy Atkinson 700, čísla Grandstander, prepínače namiesto tlačidiel Zapnuté a Vypnuté ===== */
+.brana.rd { gap: 0; justify-items: stretch; text-align: left; padding-top: 0; font-family: var(--fb); }
+.rd-hl { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 10px; min-height: 60px; margin-top: -10px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; border-bottom: 2px solid var(--ink); background: var(--card); }
+.rd-hl .logo { --ls: 1.4rem; }
+.rd-kde { margin-right: auto; font: 700 .75rem/1 var(--fb); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rd-tl { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px 0 9px; border: 2px solid var(--ink); border-radius: 10px; background: var(--card); font: 700 .875rem/1 var(--fb); color: var(--text); }
+.rd-tl .ikn { width: 18px; height: 18px; }
+.rd-tl.rd-stv { width: 38px; padding: 0; justify-content: center; }
+.rd-tl:active { background: var(--sand); }
+.rd-telo { display: grid; gap: 18px; align-content: start; padding: 20px 0 8px; }
+.rd-stred { justify-items: center; text-align: center; }
+.rd-n { margin: 0; font: 700 1.56rem/1.15 var(--fb); letter-spacing: -.01em; text-wrap: balance; }
+.rd-p { margin: 4px 0 0; font: 400 .94rem/1.45 var(--fb); color: var(--muted); }
+.rd-blok { display: block; width: 100%; padding: 0; overflow: hidden; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); color: var(--text); text-align: left; font: inherit; }
+.rd-h { margin: 0; padding: 13px 14px 9px; font: 700 .75rem/1.2 var(--fb); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rd-h.rd-h2 { padding-top: 14px; border-top: 1.5px solid var(--sand); }
+.rd-riadok { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 52px; padding: 10px 14px; border: 0; border-top: 1.5px solid var(--sand); background: none; color: var(--text); text-align: left; font: inherit; }
+.rd-blok > .rd-riadok:first-child, .rd-h + .rd-riadok { border-top: 0; }
+button.rd-riadok:active, button.rd-dieta:active { background: var(--bg); }
+.rd-riadok > .ikn { width: 22px; height: 22px; }
+.rd-riadok > .kruh-av { flex: none; width: 38px; aspect-ratio: 1; border-width: 2px; }
+.rd-riadok .pr-ik { flex: none; display: grid; place-items: center; width: 30px; height: 30px; }
+.rd-riadok .pr-ik svg { width: 24px; height: 24px; }
+.rd-t { flex: 1; min-width: 0; font: 400 .94rem/1.35 var(--fb); }
+.rd-t b { display: block; font-weight: 700; overflow-wrap: anywhere; }
+.rd-t small { display: block; font: 400 .81rem/1.35 var(--fb); color: var(--muted); overflow-wrap: anywhere; }
+.rd-sip { width: 20px; height: 20px; color: var(--muted); }
+.rd-akc { flex: none; padding: 8px 2px; border: 0; background: none; font: 700 .875rem/1 var(--fb); color: var(--link); white-space: nowrap; }
+.rd-akc + .rd-akc { margin-left: 8px; }
+.rd-akc.cerv { color: var(--zle-t); }
+.rd-den { flex: none; font: 700 .78rem/1 var(--fb); color: var(--muted); }
+.rd-pozn { margin: 0; padding: 2px 14px 13px; font: 400 .81rem/1.45 var(--fb); color: var(--muted); }
+.rd-h + .rd-pozn { padding-top: 0; }
+.rd-riadok + .rd-pozn { padding-top: 8px; border-top: 1.5px solid var(--sand); }
+.rd-vnutri { padding: 4px 14px 14px; }
+.rd-vpravo { display: flex; justify-content: flex-end; }
+.rd-form { display: grid; gap: 14px; padding: 14px; }
+.rd-blok.rd-form .btn, .rd-vnutri .btn { justify-self: start; }
+.rd-potvrd { padding: 0 14px 14px; }
+.rd-potvrd .rd-p { margin: 0 0 10px; color: var(--text); }
+.rd-ano { display: flex; flex-wrap: wrap; gap: 10px; }
+.rd-nebez { border-color: var(--coral-d); }
+.rd-nebez .rd-h { color: var(--zle-t); }
+.rd-verzia { margin: 0; font: 400 .81rem/1 var(--fb); color: var(--muted); text-align: center; }
+/* tlačidlá v rodičovskej časti: rovné, bez spodného tieňa */
+.rd .btn { min-height: 46px; padding: 10px 18px 12px; border-width: 2px; border-radius: 12px; box-shadow: inset 0 -4px 0 var(--cta-d); font-size: 1rem; }
+.rd .btn::before { display: none; }
+.rd .btn:active { transform: translateY(2px); box-shadow: inset 0 -2px 0 var(--cta-d); }
+/* prepínač */
+.rd-prep { flex: none; position: relative; width: 54px; height: 32px; padding: 0; border: 2px solid var(--ink); border-radius: 999px; background: var(--sand); transition: background-color .2s; }
+.rd-prep i { position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); transition: left .2s var(--spring); }
+.rd-prep[aria-pressed="true"] { background: var(--teal); }
+.rd-prep[aria-pressed="true"] i { left: 25px; }
+.rd-prep:focus-visible { outline-offset: 3px; }
+/* panel: karty detí s rovnakou tabuľkou štyroch čísel */
+.rd-dieta { cursor: pointer; }
+.rd-dieta-h { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.rd-dieta-h > .kruh-av { flex: none; width: 52px; aspect-ratio: 1; border-width: 2px; }
+.rd-dieta-h .rd-t b { font-size: 1.19rem; line-height: 1.15; }
+.rd-dieta-h.rd-vel { padding: 0; }
+.rd-dieta-h.rd-vel > .kruh-av { width: 64px; }
+.rd-cisla { display: grid; grid-template-columns: 1fr 1fr; border-top: 1.5px solid var(--sand); }
+.rd-cisla > span { padding: 10px 14px 9px; border-bottom: 1.5px solid var(--sand); }
+.rd-cisla > span:nth-child(odd) { border-right: 1.5px solid var(--sand); }
+.rd-cisla b { display: block; font: 800 1.31rem/1.1 var(--fd); }
+.rd-cisla small { display: block; font: 400 .81rem/1.3 var(--fb); color: var(--muted); }
+.rd-tyzd { display: flex; align-items: center; gap: 6px; padding: 10px 14px 11px; font: 400 .81rem/1 var(--fb); color: var(--muted); }
+.rd-tyzd > span { margin-right: 4px; }
+.rd-tyzd i { width: 15px; height: 15px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.rd-tyzd i.h { background: var(--teal); }
+.rd-tyzd i.dn { box-shadow: 0 0 0 2.5px var(--sun); }
+/* prehľad (aj v karte Ja, keď ešte nie je účet rodiča) */
+.rd-prehlad { gap: 14px; }
+.rd-prehlad .rd-blok .btn { justify-self: start; }
+.rd-hlasy { padding: 0 14px 12px; }
+.rd-hlasy .hlasy { margin: 0; }
+.rd-hlasy .hlas { border-width: 2px; box-shadow: none; }
+/* panel pre rodiča: meno a obrázok na zamknutý panel */
+.rodic-kruh { display: grid; place-items: center; align-items: center; }
+.rodic-kruh .ik { width: 62%; height: auto; }
+.rodic-ikony { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; width: 100%; }
+.rodic-ikony button { aspect-ratio: 1; padding: 6px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 12px; background: var(--card); }
+.rodic-ikony button[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 0 0 3px var(--sun); }
+.rodic-ikony button .ik { width: 100%; height: auto; }
+@media (max-width: 380px) { .rodic-ikony { grid-template-columns: repeat(3, 1fr); } .rodic-ikony button { aspect-ratio: auto; height: 64px; } .rodic-ikony button .ik { width: 44px; } }
+/* PIN rodiča */
+.rd-pin-hl { display: grid; justify-items: center; gap: 4px; }
+.rd-pin-hl .rd-p { margin: 0; min-height: 1.45em; }
+.rodic-brana-kruh { width: 84px; margin-bottom: 6px; }
+.rodic-brana-kruh .rodic-kruh { width: 100%; aspect-ratio: 1; border-width: 2px; }
+.pin-bodky { display: flex; gap: 16px; justify-content: center; padding: 6px 0; }
+.pin-bodky i { width: 20px; height: 20px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); transition: transform .12s, background-color .12s; }
+.pin-bodky i.plna { background: var(--violet); transform: scale(1.12); }
+.pin-bodky.trasie { animation: shake .45s; }
+.pin-bodky.trasie i { background: var(--coral-l); border-color: var(--coral-d); }
+.rd-pin .chyba { text-align: center; }
+.pin-klavesnica { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(300px, 100%); margin: 0 auto; }
+.pin-klavesnica button { aspect-ratio: 1.45; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); font: 700 1.75rem/1 var(--fd); color: var(--text); }
+.pin-klavesnica button:active { background: var(--sun-l); transform: scale(.96); }
+.pin-klavesnica button:disabled { opacity: .45; }
+.pin-klavesnica button .ik { width: 32px; height: 32px; }
+.pin-klavesnica .prazdne { visibility: hidden; }
+.rodic-pauza { margin: 0; font: 700 .94rem/1.3 var(--fb); color: var(--zle-t); }
+
+/* širší displej: krajina vstupu ako ilustrácia s rohmi, panel rodiča v strede */
+@media (min-width: 600px) {
+  .vs-sc { margin-inline: 0; margin-top: 12px; border: var(--obrys); border-radius: var(--r-karta); }
+  .vs-telo { padding-top: 24px; }
+  .rd-hl { margin-inline: 0; margin-top: 0; border: 2px solid var(--ink); border-radius: 0 0 14px 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vs-zast, .vs-telo, .vs-rec, .rd-prep, .rd-prep i, .pin-bodky i { animation: none !important; transition: none !important; }
+}
+/* vstup a rodičovská časť: pozadie je pokojný papier bez čmáraníc (vzor si dieťa vyberá až v appke) */
+body:has(.brana.vstup, .brana.rd) .blobs { visibility: hidden; }
+.rd-hlasy .hlas { border: 2px solid var(--ink); border-radius: 12px; background: var(--card); box-shadow: none; }
+.rd-hlasy .hlas[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 0 0 3px var(--sun); }
+.rd-hlasy .hlas b { font: 700 .94rem/1.2 var(--fb); }
+.rd-hlasy .hlas small { font: 400 .78rem/1.3 var(--fb); }
+.rd-hlasy .muted, .rd-hlasy .rada { margin: 8px 0 0; font: 400 .81rem/1.45 var(--fb); color: var(--muted); }
 /* 5.0: Režim do auta. Sem patria nové štýly tejto sekcie (smer: tmavá plocha (--noc-*), postup ako cesta s autíčkom).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+
+/* Tmavá plocha cez deň aj v noci: neoslňuje pri jazde večer, text je čitateľný aj na slnku. Ovládanie len tri veľké tlačidlá. */
+body.auto-rezim { background-color: var(--noc-bg); }
+body.auto-rezim .blobs { visibility: hidden; }
+.auto { --au-hrana: #3B3291; --au-cesta: #0E0B2E; --au-ciara: #6F68B8; display: grid; gap: 18px; color: var(--noc-text); padding-top: 4px; }
+.au-hl { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: env(safe-area-inset-top, 0px); }
+.au-st { height: 40px; padding: 0 14px 0 10px; border: var(--obrys-m); background: var(--sun); font: 800 .94rem/1 var(--fd); color: var(--dk); }
+.au-st .ikn { width: 24px; height: 24px; }
+.au-x.btn.kruh { width: 56px; height: 56px; --cta: var(--noc-card); --cta-d: var(--noc-bg); --cta-t: var(--noc-text); box-shadow: inset 0 -4px 0 var(--cta-d), 0 0 0 2px var(--au-hrana); }
+.au-x .ikn { width: 26px; height: 26px; color: var(--noc-text); --iko: var(--noc-text); }
+.au-obr { border: var(--obrys); border-radius: var(--r-karta); overflow: hidden; box-shadow: 0 0 0 2px var(--au-hrana); }
+.au-obr svg { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; }
+.au-t { margin: 0; font: 900 1.875rem/1.08 var(--fd); text-wrap: balance; color: var(--noc-text); }
+.au-veta { display: grid; gap: 10px; align-content: start; min-height: 168px; padding: 16px 16px 18px; border: var(--obrys); border-radius: var(--r-karta); background: var(--noc-card); box-shadow: 0 0 0 2px var(--au-hrana); }
+.au-veta .dop { color: var(--sun); }
+.au-veta .auto-text { margin: 0; font: 500 1.44rem/1.38 var(--fb); color: var(--noc-text); }
+.au-veta .auto-text .minula { opacity: .55; }
+.au-veta .auto-text .teraz { scroll-margin: 80px 0 170px; color: var(--noc-text); background: rgb(255 197 51 / .2); border-radius: 6px; box-shadow: 0 0 0 3px rgb(255 197 51 / .2); }
+.auto-cas { display: flex; align-items: center; gap: 12px; font: 700 1.15rem/1.2 var(--fd); color: var(--sun); }
+.auto-cas:empty { display: none; }
+.odpocet-kruh { position: relative; width: 60px; height: 60px; display: grid; place-items: center; }
+.odpocet-kruh svg { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.odpocet-kruh circle { fill: none; stroke: var(--noc-sand); stroke-width: 7; }
+.odpocet-kruh .ostava { stroke: var(--sun); stroke-linecap: round; stroke-dasharray: 170; animation: odpocet var(--s) linear forwards; }
+.odpocet-kruh b { position: relative; font-size: 1.3rem; }
+@keyframes odpocet { to { stroke-dashoffset: 170; } }
+/* cesta so štyrmi úsekmi a autíčkom */
+.au-cesta-a { display: grid; gap: 9px; }
+.au-cesta { --p: 0; position: relative; height: 48px; border-radius: 999px; background: var(--au-cesta); box-shadow: 0 0 0 2px var(--au-hrana); }
+.au-cesta::before { content: ""; position: absolute; left: 22px; right: 22px; top: 50%; margin-top: -2px; border-top: 4px dashed var(--au-ciara); }
+.au-za { position: absolute; left: 22px; top: 50%; width: calc((100% - 44px) * var(--p)); margin-top: -2px; border-top: 4px dashed var(--sun); transition: width .8s ease; }
+.au-auto { position: absolute; left: calc(22px + (100% - 44px) * var(--p)); top: 50%; display: grid; place-items: center; width: 50px; height: 50px; translate: -50% -50%; transition: left .8s ease; }
+.au-auto .ikn { width: 46px; height: 46px; --iko: var(--au-cesta); }
+.au-useky { display: grid; grid-template-columns: repeat(4, 1fr); font: 700 .81rem/1 var(--fb); color: var(--noc-muted); text-align: center; }
+.au-useky .h { color: var(--noc-text); }
+.au-useky .tu { color: var(--sun); font-weight: 800; }
+/* tri veľké tlačidlá: Pauza v strede, Znova a Ďalej po stranách (trafí ich aj palec naslepo) */
+.auto-ovl { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 2; display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 12px; align-items: center; }
+.au-btn { display: grid; justify-items: center; align-content: center; gap: 6px; min-height: 92px; padding: 0 8px 6px; border: var(--obrys); border-radius: 22px 24px 22px 26px; background: var(--noc-sand); box-shadow: inset 0 -7px 0 var(--noc-card), 0 0 0 2px #5A51B8; font: 800 1rem/1 var(--fd); color: var(--noc-text); text-align: center; }
+.au-btn .ikn { width: 36px; height: 36px; color: var(--noc-text); --iko: var(--noc-text); --sun: var(--noc-text); }
+.au-btn:active { transform: translateY(3px); box-shadow: inset 0 -3px 0 var(--noc-card), 0 0 0 2px #5A51B8; }
+.au-btn.au-vel { min-height: 118px; background: var(--sun); color: var(--dk); box-shadow: inset 0 -8px 0 var(--sun-d), 0 0 0 2px #FFE9A6; font-size: 1.19rem; }
+.au-btn.au-vel .ikn { width: 50px; height: 50px; color: var(--dk); --iko: var(--dk); --sun: #fff; }
+.au-btn.au-vel:active { box-shadow: inset 0 -3px 0 var(--sun-d), 0 0 0 2px #FFE9A6; }
+/* prepínač „Potom automaticky ďalšia téma“ */
+.au-prepinac { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border: 2.5px dashed var(--au-ciara); border-radius: 18px; font: 700 1rem/1.25 var(--fb); color: var(--noc-text); cursor: pointer; }
+.au-prepinac input { flex: none; appearance: none; position: relative; width: 62px; height: 36px; margin: 0; border: var(--obrys-m); border-radius: 999px; background: var(--noc-card); box-shadow: 0 0 0 2px var(--au-hrana); cursor: pointer; transition: background-color .2s; }
+.au-prepinac input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 25px; height: 25px; border: var(--obrys-m); border-radius: 50%; background: var(--noc-text); transition: left .2s var(--spring); }
+.au-prepinac input:checked { background: var(--teal); }
+.au-prepinac input:checked::after { left: 28px; }
+.au-prepinac input:focus-visible { outline: 3px dashed var(--sun); outline-offset: 4px; }
+/* koniec témy */
+.auto-koniec { justify-items: center; text-align: center; gap: 14px; }
+.auto-koniec .au-hl { width: 100%; }
+.au-vyhra { position: relative; width: 100%; height: 230px; border-radius: 24px; overflow: hidden; background: var(--noc-card); }
+.au-luce { position: absolute; inset: 0; width: 100%; height: 100%; fill: var(--noc-sand); }
+.au-mudra { position: absolute; left: 50%; bottom: -6px; width: 180px; translate: -50% 0; }
+.au-mudra svg { display: block; width: 100%; height: auto; overflow: visible; }
+.au-pod { margin: 0; font: 500 1.19rem/1.4 var(--fb); color: var(--noc-muted); text-wrap: balance; }
+.au-zisk { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px 6px 10px; border: var(--obrys); border-radius: 14px 16px 15px 17px; background: var(--sun); font: 900 1.25rem/1 var(--fd); color: var(--dk); rotate: -2deg; }
+.au-zisk .ikn { width: 24px; height: 24px; margin-top: -3px; --sun: #fff; }
+.auto-koniec .nove-odmeny { width: 100%; color: var(--dk); }
+.au-btn.au-dalsia { width: 100%; gap: 7px; padding: 16px 12px 20px; margin-top: 6px; background: var(--sun); color: var(--dk); box-shadow: inset 0 -8px 0 var(--sun-d), 0 0 0 2px #FFE9A6; }
+.au-dalsia .dop { color: #5A4500; }
+.au-dalsia > b { font: 800 1.375rem/1.15 var(--fd); text-wrap: balance; }
+.au-dalsia small { font: 700 .875rem/1 var(--fb); color: #5A4500; }
+.au-dalsia small b { font: 900 1rem/1 var(--fd); }
+.au-btn.au-nizke { width: 100%; min-height: 64px; grid-auto-flow: column; justify-content: center; align-items: center; gap: 10px; font-size: 1.125rem; }
+.au-btn.au-nizke .ikn { width: 28px; height: 28px; }
+@media (min-width: 600px) { .au-t { font-size: 2.2rem; } .au-veta .auto-text { font-size: 1.6rem; } }
+@media (prefers-reduced-motion: reduce) {
+  .au-za, .au-auto, .au-prepinac input, .au-prepinac input::after { transition: none; }
+}
 /* 5.0: Oslavy, odznaky, odmeny. Pečiatky do Pasu objaviteľa, tri veľkosti osláv (malá do počítadla, stredná s pečiatkou, veľká v krajine stromu v 16-).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. */
 
@@ -2914,9 +3239,10 @@ function row(t) {
 setInterval(() => { if (Rodic.odomknute && Date.now() > Rodic.do && /^rodic(Dieta|Nastavenia)?$/.test(st.faza)) render(); }, 15000);
 /* Brána pred appkou: prihlásenie rodiča, výber dieťaťa a tvorba postavičky */
 const vekText = v => v === 'starsi' ? '9–12 rokov' : '5–8 rokov';
+// krok: nové dieťa sa vytvára v dvoch krokoch (1 meno a vek, 2 postavička); úprava existujúceho je jedna stránka
 function noveUpravovanie(prve) {
   const stary = prve && staryOk(), body = stary ? STARY.body || 0 : 0;
-  return { id: null, meno: stary ? STARY.meno : '', vek: stary ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(body), body, kat: 'vlasy', novy: true, prve, potvrd: false };
+  return { id: null, meno: stary ? STARY.meno : '', vek: stary ? STARY.vek : 'mladsi', avatar: nahodnyAvatar(body), body, kat: 'vlasy', novy: true, prve, potvrd: false, krok: 1 };
 }
 // Účet rodiča (3.5): odomknutie PIN-om je len v pamäti, samo sa zamkne po 5 minútach nečinnosti, pri zmene dieťaťa a pri odhlásení
 const Rodic = {
@@ -2947,94 +3273,171 @@ const Rodic = {
     return true;
   },
 };
+
+/* 5.0 Vstup: všetky kroky drží pokope tá istá krajina s cestou. Hotová zastávka má fajku, práve otvorená je žltá s číslom.
+   k = index otvorenej zastávky, n = počet zastávok (0 = krajina bez zastávok). Farby krajiny sú --sc-* (deň aj noc v 50-domov.css). */
+function kresbaVstup(k = 0, n = 0) {
+  const X = n === 3 ? [70, 180, 290] : n === 2 ? [110, 250] : [], Y = x => x < 120 ? 112 - (x - 70) * .1 : x < 200 ? 98 + Math.abs(x - 180) * .12 : 104 + (x - 250) * .1;
+  const t = (x, y, s, c, txt) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="${s}" fill="${c}">${txt}</text>`;
+  const zn = X.map((x, i) => { const y = +Y(x).toFixed(1);
+    return i < k ? `<circle cx="${x}" cy="${y}" r="13" fill="var(--teal)" stroke="var(--ink)" stroke-width="2.5"/><path d="M${x - 5.5} ${y}l4 4l7-8" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`
+      : i === k ? `<g class="vs-zast"><circle cx="${x}" cy="${y}" r="17" fill="var(--sun)" stroke="var(--ink)" stroke-width="3"/>${t(x, y + 6, 17, 'var(--dk)', i + 1)}</g>`
+      : `<circle cx="${x}" cy="${y}" r="13" fill="var(--sc-path)" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="4 4"/>${t(x, y + 4.5, 12.5, 'var(--muted)', i + 1)}`; }).join('');
+  const cesta = 'M-10 120C20 114 40 114 70 112S140 98 180 98S250 110 290 108S340 100 372 92';
+  return `<svg viewBox="0 0 360 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="360" height="150" fill="var(--sc-sky)"/>
+    <circle cx="296" cy="50" r="15" fill="var(--sc-sun)"/><circle cx="296" cy="50" r="24" fill="none" stroke="var(--sc-sun)" stroke-width="4" stroke-dasharray=".1 9" stroke-linecap="round"/>
+    <g fill="var(--sc-cloud)"><ellipse cx="206" cy="52" rx="22" ry="8"/><circle cx="198" cy="46" r="9"/><circle cx="212" cy="43" r="11"/></g>
+    <g fill="var(--sc-cloud)" opacity=".8"><ellipse cx="74" cy="34" rx="16" ry="6"/><circle cx="70" cy="30" r="7"/></g>
+    <path d="M0 92C50 68 110 74 160 88C210 70 300 66 360 84V150H0Z" fill="var(--sc-far)"/>
+    <path d="M0 118C70 96 150 100 210 112C270 122 320 108 360 102V150H0Z" fill="var(--sc-mid)"/>
+    <path d="${cesta}" fill="none" stroke="var(--sc-path)" stroke-width="17" stroke-linecap="round"/><path d="${cesta}" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
+    ${zn}</svg>`;
+}
+// privítanie: vyššia krajina s horou, vlajkou na vrchole a cestou, ktorá k nej vedie
+function kresbaVitaj() {
+  const strom = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-3" y="-4" width="6" height="16" rx="2" fill="#8A5A3B" stroke="var(--ink)" stroke-width="2.5"/><circle cx="0" cy="-14" r="14" fill="var(--sc-tree)" stroke="var(--ink)" stroke-width="2.5"/></g>`;
+  return `<svg viewBox="0 0 360 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="360" height="260" fill="var(--sc-sky)"/>
+    <circle cx="300" cy="64" r="26" fill="var(--sc-sun)"/><circle cx="300" cy="64" r="38" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 11" stroke-linecap="round"/>
+    <g fill="var(--sc-cloud)"><ellipse cx="226" cy="110" rx="26" ry="9"/><circle cx="216" cy="103" r="11"/><circle cx="233" cy="100" r="13"/></g>
+    <path d="M118 196L196 92Q202 84 208 92L292 196Z" fill="var(--sc-far2)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M186 106L196 92Q202 84 208 92L218 106Q210 112 202 104Q194 112 186 106Z" fill="var(--sc-snih)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M202 86V62" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><path d="M203 62L222 68L203 75Z" fill="var(--coral)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M0 176C60 150 120 158 170 176C230 156 300 152 360 168V260H0Z" fill="var(--sc-far)"/>
+    <path d="M0 214C80 186 170 190 230 206C290 220 330 204 360 198V260H0Z" fill="var(--sc-mid)"/>
+    <path d="M170 262C176 240 196 230 214 214S226 186 206 168" fill="none" stroke="var(--sc-path)" stroke-width="15" stroke-linecap="round"/>
+    <path d="M170 262C176 240 196 230 214 214S226 186 206 168" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
+    ${strom(300, 214)}${strom(326, 206, .75)}${strom(268, 222, .6)}
+    <path d="M0 240C90 226 210 232 360 238V260H0Z" fill="var(--sc-front)"/></svg>`;
+}
+const vstupHlava = (k, n, spat) => `<div class="vs-sc">${kresbaVstup(k, n)}${spat ? `<button type="button" class="btn kruh dve vs-spat" ${spat} aria-label="Späť">${ikn('spat')}</button>` : ''}</div>`;
+const vstupNadpis = (dop, h, p) => `<div class="vs-nadp">${dop ? `<span class="dop">${dop}</span>` : ''}<h1 class="n0">${h}</h1>${p ? `<p class="tx">${p}</p>` : ''}</div>`;
+const sipkaTl = text => `${text}${ikn('sipka', 'ikn-po')}`;
+
 const brany = {
-  nacitava: () => `<div class="brana"><div class="brana-owl">${owl('hi')}</div><h1 class="h1 logo" aria-label="Svetom">${logo().replace(/^<span class="logo" role="img" aria-label="Svetom">|<\/span>$/g, '')}</h1><p class="podtitul">${PODTITUL}</p><p class="muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
-  bezNetu: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Treba internet</h1>
-      <p class="muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>Skúsiť znova</button></div>`,
-  chybaNacitania: () => `<div class="brana"><div class="brana-owl">${owl('oops')}</div><h1 class="h1">Nepodarilo sa načítať</h1>
-      <p class="muted">${esc((window.Cloud && window.Cloud.chybaNacitania) || 'Chýba internet alebo je spojenie pomalé.')}</p>
-      <button class="btn wide" data-reload>Skúsiť znova</button><button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa</button></div>`,
+  nacitava: () => `<div class="brana vstup vs-stred"><div class="brana-owl">${owl('hi')}</div>${logo()}<p class="podtitul">${PODTITUL}</p><p class="tx vs-muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
+  bezNetu: () => `<div class="brana vstup vs-stred"><div class="brana-owl">${owl('oops')}</div><h1 class="n0">Treba internet</h1>
+      <p class="tx vs-muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>${ikn('znova')}Skúsiť znova</button></div>`,
+  chybaNacitania: () => `<div class="brana vstup vs-stred"><div class="brana-owl">${owl('oops')}</div><h1 class="n0">Nepodarilo sa načítať</h1>
+      <p class="tx vs-muted">${esc((window.Cloud && window.Cloud.chybaNacitania) || 'Chýba internet alebo je spojenie pomalé.')}</p>
+      <button class="btn wide" data-reload>${ikn('znova')}Skúsiť znova</button><button class="btn dve wide" data-ucet="odhlas">Odhlásiť sa</button></div>`,
   prihlasenie: () => {
     // počas prihlasovania sa na tlačidle točí koliesko a tlačidlá sú zablokované (žiadne dvojité ťuknutie)
     // úvod má tri kroky: voľba (Mám účet / Som tu nový), potom vlastná obrazovka pre každú cestu
     const C = window.Cloud || {}, p = C.pracuje || '', zam = p ? ' disabled' : '', krok = st.uvodKrok || 'volba', ch = C.chyby || {};
     const napis = (co, text, cakaj = 'Chvíľku…') => p === co ? `<span class="koliesko"></span>${cakaj}` : text;
-    const pole = (id, typ, ph, ac, enter, kl) => `<div class="pole"><input id="${id}" class="input${ch[kl] ? ' zle' : ''}" type="${typ}" placeholder="${ph}" autocomplete="${ac}" autocapitalize="none" spellcheck="false" enterkeyhint="${enter}" aria-invalid="${ch[kl] ? 'true' : 'false'}"${ch[kl] ? ` aria-describedby="${id}-chyba"` : ''}>${ch[kl] ? `<p class="chyba" id="${id}-chyba" role="alert">${esc(ch[kl])}</p>` : ''}</div>`;
-    const vseobecna = C.chyba ? `<p class="chyba" role="alert">${esc(C.chyba)}</p>` : '';
-    const spat = `<button type="button" class="btn ghost" data-uvod="volba"${zam}>Späť</button>`;
-    const sova = `<div class="brana-owl">${owl('hi')}</div>`;
-    if (krok === 'mam') return `<div class="brana">${sova}<h1 class="h1">Vitajte späť</h1>
-      <p class="muted">Prihláste sa a nájdete svoje deti aj ich body.</p>
-      <div class="card prof">
-        <form id="prihlas-form" class="prof" data-forma="prihlas" novalidate>
-          ${pole('email', 'email', 'E-mail', 'email', 'next', 'email')}
-          ${pole('heslo', 'password', 'Heslo', 'current-password', 'go', 'heslo')}
-          <button type="submit" class="btn blue"${zam}>${napis('prihlas', 'Prihlásiť sa', 'Prihlasujem…')}</button>
-        </form>
+    const oko = id => `<button type="button" class="vs-oko" data-ukaz-heslo="${id}" aria-label="Ukázať heslo" aria-pressed="false">${ikn('oko')}</button>`;
+    const pole = (id, typ, nazov, ph, ac, enter, kl) => `<div class="pole${ch[kl] ? ' zle' : ''}"><label class="vs-lbl" for="${id}">${nazov}</label>
+      <span class="vs-vstup"><input id="${id}" class="input${ch[kl] ? ' zle' : ''}" type="${typ}" placeholder="${ph}" autocomplete="${ac}" autocapitalize="none" spellcheck="false" enterkeyhint="${enter}" aria-invalid="${ch[kl] ? 'true' : 'false'}"${ch[kl] ? ` aria-describedby="${id}-chyba"` : ''}>${typ === 'password' ? oko(id) : ''}</span>
+      ${ch[kl] ? `<p class="chyba" id="${id}-chyba" role="alert">${esc(ch[kl])}</p>` : ''}</div>`;
+    const vseobecna = C.chyba ? `<p class="chyba vs-chyba" role="alert">${esc(C.chyba)}</p>` : '';
+    const spat = `data-uvod="volba"${zam}`;
+    const google = text => `<div class="vs-alebo"><span>alebo</span></div>
+        <button type="button" class="btn dve wide google" data-ucet="google"${zam}>${napis('google', `<span class="g">G</span>${text}`, 'Otvára sa Google…')}</button>`;
+    if (krok === 'mam') return `<div class="brana vstup">${vstupHlava(-1, 0, spat)}<div class="vs-telo">
+      ${vstupNadpis('Prihlásenie', 'Vitajte späť', 'Prihláste sa a nájdete svoje deti aj ich body.')}
+      <form id="prihlas-form" class="vs-form" data-forma="prihlas" novalidate>
+        ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
+        ${pole('heslo', 'password', 'Heslo', '', 'current-password', 'go', 'heslo')}
         <button type="button" class="link" data-ucet="zabudol"${zam}>Zabudli ste heslo?</button>
-        <div class="alebo"><span>alebo</span></div>
-        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Prihlásiť sa cez Google', 'Otvára sa Google…')}</button>
-        ${vseobecna}
-      </div>${spat}</div>`;
-    if (krok === 'novy') return `<div class="brana">${sova}<h1 class="h1">Vytvoríme váš účet</h1>
-      <p class="muted">Účet je pre rodiča. Deti si pridáte potom a každé má svoje body.</p>
-      <div class="card prof">
-        <form id="prihlas-form" class="prof" data-forma="registruj" novalidate>
-          ${pole('email', 'email', 'E-mail', 'email', 'next', 'email')}
-          ${pole('heslo', 'password', 'Heslo (aspoň 6 znakov)', 'new-password', 'next', 'heslo')}
-          ${pole('heslo2', 'password', 'Heslo ešte raz', 'new-password', 'go', 'heslo2')}
-          <button type="submit" class="btn blue"${zam}>${napis('registruj', 'Vytvoriť účet', 'Vytváram…')}</button>
-        </form>
-        <div class="alebo"><span>alebo</span></div>
-        <button type="button" class="btn google" data-ucet="google"${zam}>${napis('google', '<span class="g">G</span>Pokračovať cez Google', 'Otvára sa Google…')}</button>
-        ${vseobecna}
-      </div>${spat}</div>`;
-    return `<div class="brana">${sova}<h1 class="h1 logo" aria-label="Svetom">${logo().replace(/^<span class="logo" role="img" aria-label="Svetom">|<\/span>$/g, '')}</h1><p class="podtitul">${PODTITUL}</p>
-      <p class="muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
-      <button type="button" class="btn blue wide" data-uvod="mam">Mám účet</button>
-      <button type="button" class="btn wide" data-uvod="novy">Som tu nový</button>
-      ${Plocha.tip()}</div>`;
+        <button type="submit" class="btn wide"${zam}>${napis('prihlas', sipkaTl('Prihlásiť sa'), 'Prihlasujem…')}</button>
+      </form>
+      ${google('Prihlásiť sa cez Google')}
+      ${vseobecna}</div></div>`;
+    if (krok === 'novy') return `<div class="brana vstup">${vstupHlava(0, 3, spat)}<div class="vs-telo">
+      ${vstupNadpis('Krok 1 z 3 · pre rodiča', 'Vytvoríme váš účet', 'Účet je pre rodiča. Deti pridáte v ďalšom kroku a každé má svoje body.')}
+      <form id="prihlas-form" class="vs-form" data-forma="registruj" novalidate>
+        ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
+        ${pole('heslo', 'password', 'Heslo (aspoň 6 znakov)', '', 'new-password', 'next', 'heslo')}
+        ${pole('heslo2', 'password', 'Heslo ešte raz', '', 'new-password', 'go', 'heslo2')}
+        <button type="submit" class="btn wide"${zam}>${napis('registruj', sipkaTl('Vytvoriť účet'), 'Vytváram…')}</button>
+      </form>
+      ${google('Pokračovať cez Google')}
+      ${vseobecna}</div></div>`;
+    return `<div class="brana vstup vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div><p class="odkaz vs-rec">Ahoj! Poďme spolu objavovať svet.</p></div>
+      <div class="vs-telo vs-stred">${logo()}<p class="podtitul">${PODTITUL}</p>
+      <p class="tx vs-muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
+      <button type="button" class="btn wide" data-uvod="novy">${sipkaTl('Som tu nový')}</button>
+      <button type="button" class="btn dve wide" data-uvod="mam">Mám účet</button>
+      <p class="vs-mala">Predtým Svet za 3 minúty</p>
+      ${Plocha.tip()}</div></div>`;
   },
   vyber: () => RodicBrana.vyber(brany.vyberPovodny),
+  // <!--rodic--> nahradí RodicBrana.vyber kartou pre rodiča (PIN a prehľad)
   vyberPovodny: () => {
     const C = window.Cloud, deti = C ? C.deti : [];
-    return `<div class="brana"><h1 class="h1">Kto sa dnes učí?</h1>
+    return `<div class="brana vstup vs-vyber">${vstupHlava(-1, 0, '')}<div class="vs-telo">
+      ${vstupNadpis('', 'Kto sa dnes učí?', 'Ťukni na svoju postavičku.')}
       <div class="deti">${deti.map(d => `<button class="dieta" data-dieta="${d.id}"><span class="kruh-av" style="--bg:${d.avatar.pozadie}">${postavicka(d.avatar)}</span>
-          <b>${esc(d.meno)}</b><small>${vekText(d.vek)} · ${ii(STAR())} ${d.body || 0}</small></button>`).join('')}
-        ${deti.length < 4 ? '<button class="dieta nove" data-nove-dieta><span class="plus">+</span><b>Pridať dieťa</b><small>najviac 4 deti</small></button>' : ''}</div>
-      <p class="muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b></p>
-      <button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa</button></div>`;
+          <b>${esc(d.meno)}</b><small>${vekText(d.vek)}</small><span class="st cis">${ikn('hviezda')}${d.body || 0}</span></button>`).join('')}
+        ${deti.length < 4 ? `<button class="dieta nove" data-nove-dieta><span class="dieta-plus">${ikn('plus')}</span><b>Pridať dieťa</b><small>najviac 4 deti</small></button>` : ''}</div>
+      <!--rodic-->
+      <div class="vs-ucet"><p class="tx vs-muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b></p>
+      <button class="btn dve maly" data-ucet="odhlas">${ikn('odhlas')}Odhlásiť sa</button></div></div></div>`;
   },
   tvorba: () => {
     const u = st.upravuje, maDeti = window.Cloud && window.Cloud.deti.length;
-    return `<div class="brana tvorba"><h1 class="h1">${u.novy ? 'Nové dieťa' : 'Moja postavička'}</h1>
-      <div class="av-wrap"><div class="av-nahlad kruh-av" id="av-nahlad" style="--bg:${u.avatar.pozadie}"><div id="av-velky">${postavicka(u.avatar)}</div></div>
-        <button class="kocka" data-nahodne aria-label="Náhodná postavička">${IK.kocka}</button></div>
-      <div class="card prof">
-        <label class="lbl" for="meno-dietata">Meno</label>
-        <input id="meno-dietata" class="input" maxlength="20" placeholder="Napríklad Emka" autocomplete="off">
-        <span class="lbl">Vek</span>
-        <div class="seg2"><button data-uvek="mladsi" aria-pressed="${u.vek === 'mladsi'}">5–8 rokov</button><button data-uvek="starsi" aria-pressed="${u.vek === 'starsi'}">9–12 rokov</button></div>
-      </div>
-      <div class="chips av-tabs" id="av-tabs">${avTaby()}</div>
-      <div class="av-moznosti" id="av-moznosti">${avMoznosti()}</div>
-      <button class="btn wide cta" data-ulozit-dieta>Uložiť ✓</button>
-      ${u.novy || (maRodica() && !Rodic.jeOdomknute()) ? '' : u.potvrd
-        ? `<div class="card prof potvrd"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="muted">Body a prebraté témy tohto dieťaťa sa stratia.</p>
-            <div class="tests"><button class="btn red" data-zmazat-ano>Áno, odstrániť</button><button class="btn ghost" data-zmazat-nie>Nie</button></div></div>`
-        : '<button class="link center" data-zmazat>Odstrániť tento profil</button>'}
-      ${maDeti ? '<button class="btn ghost wide" data-spat>Späť</button>' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>'}</div>`;
+    const n = u.novy ? (u.prve ? 3 : 2) : 0, z = n === 3 ? 1 : 0, krok = u.novy ? (u.krok || 1) : 0;
+    const zmaz = u.novy || (maRodica() && !Rodic.jeOdomknute()) ? '' : u.potvrd
+      ? `<div class="up-potvrd" role="alert"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="tx">Body a prebraté témy tohto dieťaťa sa stratia.</p>
+          <div class="tests"><button class="btn zle" data-zmazat-ano>Áno, odstrániť</button><button class="btn dve" data-zmazat-nie>Nie</button></div></div>`
+      : '<button class="link center" data-zmazat>Odstrániť tento profil</button>';
+    const odhlas = maDeti ? '' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>';
+    const vek = (r = ' rokov') => `<div class="seg2" role="group" aria-label="Vek"><button data-uvek="mladsi" aria-pressed="${u.vek === 'mladsi'}" aria-label="5 až 8 rokov">5–8${r}</button><button data-uvek="starsi" aria-pressed="${u.vek === 'starsi'}" aria-label="9 až 12 rokov">9–12${r}</button></div>`;
+    const meno = `<input id="meno-dietata" class="input" maxlength="20" placeholder="Napríklad Emka" autocomplete="off" enterkeyhint="done">`;
+    if (krok === 1) return `<div class="brana vstup tvorba">${vstupHlava(z, n, maDeti ? 'data-spat' : '')}<div class="vs-telo">
+      ${vstupNadpis(`Krok ${z + 1} z ${n}`, u.prve ? 'Kto sa bude učiť?' : 'Nové dieťa', 'Podľa veku vyberieme témy a hry. Ďalšie deti pridáte neskôr, najviac štyri.')}
+      <div class="pole"><label class="vs-lbl" for="meno-dietata">Meno dieťaťa</label>${meno}</div>
+      <div class="pole"><span class="vs-lbl">Vek</span>${vek()}</div>
+      <div class="vs-info">${ikn('stit')}<p>Meno uvidia len priatelia, a to iba vtedy, keď ich neskôr zapnete. E-mail nevidí nikto.</p></div>
+      <button class="btn wide" data-tvorba-dalej>${sipkaTl('Ďalej: postavička')}</button>
+      ${odhlas}</div></div>`;
+    if (krok === 2) return `<div class="brana vstup tvorba up">${vstupHlava(z + 1, n, 'data-tvorba-spat')}<div class="vs-telo">
+      ${vstupNadpis(`Krok ${z + 2} z ${n} · ${esc(u.meno)}`, 'Postavička', 'Vyberte spolu účes, oči a farby. Kto sa nechce hrať, ťukne na kocku.')}
+      ${satnik()}
+      <button class="btn wide" data-ulozit-dieta>${ikn('check')}Hotovo, poďme na to!</button>
+      ${odhlas}</div></div>`;
+    // úprava postavičky dieťaťa, ktoré už existuje: šatník
+    return `<div class="brana tvorba up up-uprava">
+      <div class="up-hl"><button class="btn kruh dve" data-spat aria-label="Späť">${ikn('spat')}</button><h1 class="n1">Moja postavička</h1><span class="st cis">${ikn('hviezda')}${u.body || 0}</span></div>
+      ${satnik(true, `<div class="up-zakl"><div class="pole"><label class="vs-lbl" for="meno-dietata">Meno</label>${meno}</div><div class="pole"><span class="vs-lbl">Vek</span>${vek('')}</div></div>`)}
+      <div class="up-spodok"><button class="btn wide" data-ulozit-dieta>${ikn('check')}Uložiť</button>${zmaz}</div>
+      ${maDeti ? '' : odhlas}</div>`;
   },
 };
-function avTaby() { return AV_KAT.map(([k, n]) => `<button class="chip" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}" style="--c:#4C7DFF">${n}</button>`).join(''); }
+// šatník: busta v kruhu na žltom javisku, kategórie, veci s rovnako vysokým pásikom dole (cena, Mám, Na sebe), najbližšia odmena
+function satnik(uprava, vlozka = '') {
+  const u = st.upravuje;
+  return `<div class="up-javisko"><svg class="up-luce" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<path d="M100 100L${(100 + 160 * Math.cos((i * 30 - 6) * Math.PI / 180)).toFixed(1)} ${(100 + 160 * Math.sin((i * 30 - 6) * Math.PI / 180)).toFixed(1)}L${(100 + 160 * Math.cos((i * 30 + 6) * Math.PI / 180)).toFixed(1)} ${(100 + 160 * Math.sin((i * 30 + 6) * Math.PI / 180)).toFixed(1)}Z"/>`).join('')}</svg>
+      <div class="av-nahlad kruh-av" id="av-nahlad" style="--bg:${u.avatar.pozadie}"><div id="av-velky">${postavicka(u.avatar)}</div></div>
+      <button class="btn kruh dve kocka" data-nahodne aria-label="Náhodná postavička">${ikn('kocka')}</button></div>
+    ${vlozka}
+    <div class="up-taby" id="av-tabs">${avTaby()}</div>
+    <div class="veci" id="av-moznosti">${avMoznosti()}</div>
+    ${uprava ? `<div id="up-najblizsia">${najblizsiaVec()}</div>` : ''}`;
+}
+function najblizsiaVec() {
+  const u = st.upravuje, b = u.body || 0, o = ODMENY.find(x => x.cena > b);
+  if (!o) return '';
+  const pred = ODMENY.filter(x => x.cena <= b).pop(), od = pred ? pred.cena : 0;
+  return `<div class="up-najblizsia"><p class="tx">Najbližšie odomkneš <b>${esc(NAZVY_ODMIEN[o.kluc] || 'novú vec')}</b>. Chýba ešte <b class="cis">${o.cena - b}</b> bodov.</p>
+    <div class="pruh" aria-hidden="true"><i style="width:${Math.max(4, Math.round((b - od) / (o.cena - od) * 100))}%"></i></div></div>`;
+}
+function avTaby() { return AV_KAT.map(([k, n]) => `<button class="up-tab" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}">${n}</button>`).join(''); }
 // zamknutý diel: dieťa ešte nemá dosť bodov (diel, ktorý už má na sebe, ostáva voľný)
 const zamok = (k, v) => cenaDielu(k, v) > (st.upravuje.body || 0) && st.upravuje.avatar[k] !== v ? ' zamknute' : '';
 function avMoznosti() {
   const u = st.upravuje, k = u.kat, farba = AV_FARBY.includes(k);
-  return AV[k].map(v => farba
-    ? `<button class="av-opt farba${zamok(k, v)}" data-cena="${cenaDielu(k, v)}" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--f:${v}" aria-label="farba"></button>`
+  const veci = AV[k].map(v => {
+    const c = cenaDielu(k, v), na = u.avatar[k] === v, zam = !!zamok(k, v), meno = NAZVY_ODMIEN[k + ':' + v] || (farba ? 'farba' : v);
+    const dolu = na ? 'Na sebe' : zam ? `<span class="cena">${ikn('hviezda')}${c}</span>` : c ? `${ikn('check')}Mám` : 'Zadarmo';
     // pri účese bez čiapky, inak by pod ňou všetky účesy vyzerali rovnako
-    : `<button class="av-opt kruh-av${zamok(k, v)}" data-cena="${cenaDielu(k, v)}" data-avvol="${v}" aria-pressed="${u.avatar[k] === v}" style="--bg:${u.avatar.pozadie}" aria-label="${v}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</button>`).join('');
+    const obr = farba ? `<i class="vec-farba" style="--f:${v}"></i>`
+      : `<span class="kruh-av" style="--bg:${u.avatar.pozadie}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</span>`;
+    return `<button class="vec${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} bodoch` : ''}">
+      ${zam ? `<span class="zmk">${ikn('zamok')}</span>` : ''}<span class="vec-obr">${obr}</span><span class="dolu">${dolu}</span></button>`;
+  }).join('');
+  const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za body z tém.</span></div>` : '';
+  return veci + viac;
 }
 Object.assign(brany, RodicBrana.brany, RodicPanel.views); // obrazky rodiča z rodic-brana.js a rodic-panel.js
 function renderBrana() {
@@ -3052,11 +3455,22 @@ function renderBrana() {
       const v = id => (document.getElementById(id) || {}).value || '';
       if (window.Cloud) window.Cloud.akcia(form.dataset.forma, v('email').trim(), v('heslo'), v('heslo2')); else toast('Prihlásenie sa ešte načítava, skúste o chvíľu.');
     });
+    // oko pri hesle: ukáže alebo skryje napísané heslo (len vzhľad poľa, nič sa neodosiela)
+    form.querySelectorAll('[data-ukaz-heslo]').forEach(b => b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      const i = document.getElementById(b.dataset.ukazHeslo), ukaz = i.type === 'password';
+      i.type = ukaz ? 'text' : 'password'; b.setAttribute('aria-pressed', ukaz); b.setAttribute('aria-label', ukaz ? 'Skryť heslo' : 'Ukázať heslo');
+    }));
   }
   if (st.faza === 'tvorba') {
     const inp = document.getElementById('meno-dietata');
-    inp.value = st.upravuje.meno;
-    inp.addEventListener('input', () => { st.upravuje.meno = inp.value; });
+    if (inp) {
+      inp.value = st.upravuje.meno;
+      inp.addEventListener('input', () => { st.upravuje.meno = inp.value; });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } });
+    }
+    const t = document.querySelector('#av-tabs [aria-pressed="true"]');
+    if (t && t.scrollIntoView) t.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
   RodicBrana.po();
 }
@@ -3071,15 +3485,17 @@ function renderTicho() {
 // po zmene dielu prekreslíme len náhľad a možnosti, stránka neskáče
 function obnovTvorbu() {
   const u = st.upravuje, n = document.getElementById('av-nahlad');
+  if (!n) return;
   document.getElementById('av-velky').innerHTML = postavicka(u.avatar);
   n.style.setProperty('--bg', u.avatar.pozadie);
   document.getElementById('av-moznosti').innerHTML = avMoznosti();
   document.getElementById('av-tabs').innerHTML = avTaby();
+  const nb = document.getElementById('up-najblizsia'); if (nb) nb.innerHTML = najblizsiaVec();
   n.classList.remove('hopni'); void n.offsetWidth; n.classList.add('hopni');
 }
 function tvorbaKlik(b, d) {
   const u = st.upravuje;
-  if (d.avkat) { u.kat = d.avkat; Zvuk.play('tap'); obnovTvorbu(); return true; }
+  if (d.avkat) { u.kat = d.avkat; Zvuk.play('tap'); obnovTvorbu(); b = document.querySelector(`#av-tabs [data-avkat="${d.avkat}"]`); if (b && b.scrollIntoView) b.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); return true; }
   if (d.avvol) {
     const cena = cenaDielu(u.kat, d.avvol);
     if (cena > (u.body || 0) && u.avatar[u.kat] !== d.avvol) {
@@ -3092,9 +3508,20 @@ function tvorbaKlik(b, d) {
   if (d.uvek) {
     if (window.Cloud && maRodica() && !u.novy && d.uvek !== u.vek && !Rodic.jeOdomknute()) { Zvuk.play('bad'); toast('Vek dieťaťa mení rodič v paneli rodiča.'); return true; }
     u.vek = d.uvek; Zvuk.play('pop'); document.querySelectorAll('[data-uvek]').forEach(x => x.setAttribute('aria-pressed', x.dataset.uvek === u.vek)); return true; }
+  // nové dieťa: z mena a veku na postavičku a späť
+  if (d.tvorbaDalej !== undefined) {
+    u.meno = u.meno.trim();
+    if (!u.meno) { Zvuk.play('bad'); toast('Napíšte meno dieťaťa.'); const i = document.getElementById('meno-dietata'); if (i) { i.classList.add('zle'); i.focus(); } return true; }
+    u.krok = 2; Zvuk.play('whoosh'); render(); scrollTo(0, 0); return true;
+  }
+  if (d.tvorbaSpat !== undefined) { u.krok = 1; Zvuk.play('whoosh'); render(); scrollTo(0, 0); return true; }
   if (d.ulozitDieta !== undefined) {
     u.meno = u.meno.trim();
-    if (!u.meno) { Zvuk.play('bad'); toast('Napíšte meno dieťaťa.'); document.getElementById('meno-dietata').focus(); return true; }
+    if (!u.meno) {
+      Zvuk.play('bad'); toast('Napíšte meno dieťaťa.');
+      const i = document.getElementById('meno-dietata'); if (i) i.focus(); else { u.krok = 1; render(); scrollTo(0, 0); }
+      return true;
+    }
     if (!window.Cloud) { toast('Ešte sa pripája, skúste o chvíľu.'); return true; }
     const [x, y] = stred(document.getElementById('av-nahlad'));
     Zvuk.play('win'); FX.burst(x, y, 30); FX.rain(60);
@@ -3579,6 +4006,16 @@ const Auto = {
   },
 };
 
+// 5.0: postup témy je cesta so štyrmi úsekmi (téma, príklad, otázky, kvíz), autíčko ide po nej plynulo
+const AUTO_USEKY = ['Téma', 'Príklad', 'Otázky', 'Kvíz'];
+const autoUsek = s => ({ ziarovka: 1, bublina: 2, otaznik: 3, vlajka: 4 })[s.e] ?? 0;
+function autoPostup(a) {
+  const krok = a.kroky[a.k] || {}, seg = a.segs[krok.seg ?? a.segs.length - 1], u = autoUsek(seg);
+  if (u >= 4 || a.stav === 'koniec') return { u: 4, p: 1 };
+  const vUseku = a.segs.filter(s => autoUsek(s) === u), j = vUseku.indexOf(seg);
+  const vSeg = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg.i), f = vSeg.length ? Math.max(0, vSeg.findIndex(k => k.i === a.k)) / vSeg.length : 0;
+  return { u, p: Math.min(1, (u + (j + f) / vUseku.length) / 4) };
+}
 function textAuto(a) {
   const krok = a.kroky[a.k] || {}, seg = krok.seg ?? a.segs.length - 1;
   const vety = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg && k.typ === 'veta');
@@ -3589,16 +4026,19 @@ function obnovAuto() {
   const a = st.auto, el = id => document.getElementById(id);
   if (!a || a.stav === 'koniec' || !el('auto-text')) return;
   const krok = a.kroky[a.k] || {}, seg = a.segs[krok.seg ?? a.segs.length - 1];
-  el('auto-stitok').innerHTML = `${ii(ik(seg.e))} ${esc(seg.label)}`;
+  el('auto-stitok').textContent = seg.label;
   el('auto-text').innerHTML = textAuto(a);
   const teraz = el('auto-text').querySelector('.teraz'); // dlhý text: aktuálna veta ostane nad tlačidlami
   if (teraz) teraz.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   el('auto-cas').innerHTML = a.stav === 'caka'
-    ? `<span class="odpocet-kruh"><svg viewBox="0 0 64 64" style="--s:${krok.s}s"><circle cx="32" cy="32" r="27"/><circle class="ostava" cx="32" cy="32" r="27"/></svg><b id="auto-sek">${a.zostava}</b></span><span>${krok.co}</span>`
+    ? `<span class="odpocet-kruh"><svg viewBox="0 0 64 64" style="--s:${krok.s}s"><circle cx="32" cy="32" r="27"/><circle class="ostava" cx="32" cy="32" r="27"/></svg><b id="auto-sek" class="cis">${a.zostava}</b></span><span>${krok.co}</span>`
     : a.stav === 'pauza' ? '<span>Pozastavené. Ťuknite na Pokračovať.</span>' : '';
-  el('auto-dots').innerHTML = a.segs.map((s, i) => `<i class="${i < seg.i ? 'hotovo' : i === seg.i ? 'teraz' : ''}"></i>`).join('');
-  const p = el('auto-pauza'), stoji = a.stav === 'pauza';
-  if (p.dataset.stoji !== String(stoji)) { p.dataset.stoji = stoji; p.innerHTML = stoji ? IKO.play + '<span>Pokračovať</span>' : IKO.pauza + '<span>Pauza</span>'; }
+  const { u, p } = autoPostup(a), cesta = el('auto-cesta');
+  cesta.style.setProperty('--p', p.toFixed(3));
+  cesta.setAttribute('aria-valuenow', Math.round(p * 100)); cesta.setAttribute('aria-valuetext', AUTO_USEKY[Math.min(u, 3)]);
+  el('auto-useky').querySelectorAll('span').forEach((s, i) => { s.classList.toggle('h', i < u); s.classList.toggle('tu', i === u); });
+  const pz = el('auto-pauza'), stoji = a.stav === 'pauza';
+  if (pz.dataset.stoji !== String(stoji)) { pz.dataset.stoji = stoji; pz.innerHTML = stoji ? ikn('hraj') + '<span>Pokračovať</span>' : ikn('pauza') + '<span>Pauza</span>'; }
 }
 function obnovKoniecAuto() {
   const a = st.auto, el = document.getElementById('auto-dalsia-sek'), r = document.getElementById('auto-odpocet');
@@ -3607,33 +4047,33 @@ function obnovKoniecAuto() {
 }
 function renderAuto() {
   const a = st.auto, t = byId(a.tid);
-  const hore = `<div class="auto-top"><span class="chip auto-chip" style="--c:#FF9F1C">${IKO.auto}Režim do auta</span>${a.precvic ? Precvic.stitok() : ''}<button class="ib" data-auto="stop" aria-label="Ukončiť">${IKO.zavriet}</button></div>`;
+  const hore = `<div class="au-hl"><span class="st au-st">${ikn('auto')}Režim do auta</span>${a.precvic ? Precvic.stitok() : ''}<button class="btn kruh dve au-x" data-auto="stop" aria-label="Ukončiť Režim do auta">${ikn('zavriet')}</button></div>`;
   main.classList.add('anim');
   if (a.stav === 'koniec') {
     const v = a.vysledok, d = a.dalsia && byId(a.dalsia);
     main.innerHTML = `<div class="auto auto-koniec">${hore}
-      <div class="win-hero"><div class="burst"></div><div class="win-owl">${owl('cheer')}</div></div>
-      ${a.precvic ? Precvic.stitok() : ''}
-      <h1 class="auto-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
-      <p class="auto-text">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
-      ${v.zisk ? `<div class="earn">${STAR()} +${v.zisk} bodov</div>` : ''}
+      <div class="au-vyhra"><svg class="au-luce" viewBox="0 0 200 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${Array.from({ length: 14 }, (_, i) => { const u1 = (180 + i * 13) * Math.PI / 180, u2 = u1 + 6.5 * Math.PI / 180; return `<path d="M100 130L${(100 + 260 * Math.cos(u1)).toFixed(1)} ${(130 + 260 * Math.sin(u1)).toFixed(1)}L${(100 + 260 * Math.cos(u2)).toFixed(1)} ${(130 + 260 * Math.sin(u2)).toFixed(1)}Z"/>`; }).join('')}</svg>
+        <div class="au-mudra">${mudra('oslava', { extra: true, tien: false })}</div></div>
+      <h1 class="au-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
+      <p class="au-pod">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
+      ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> bodov</div>` : ''}
       ${odmenyHtml(v)}
-      ${d && !a.precvic ? `<button class="btn wide cta" data-auto="dalsia">Ďalšia téma: ${esc(d.t)} →</button>
-        <p class="auto-odpocet" id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek">10</b> s</p>` : ''}
-      <button class="btn ghost wide" data-auto="stop">Domov</button></div>`;
+      ${d && !a.precvic ? `<button class="au-btn au-dalsia" data-auto="dalsia"><span class="dop">Ďalšia téma</span><b>${esc(d.t)}</b>
+        <small id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek" class="cis">10</b> s</small></button>` : ''}
+      <button class="au-btn au-nizke" data-auto="stop">${ikn('domov')}Domov</button></div>`;
     ocisluj(); return;
   }
   main.innerHTML = `<div class="auto">${hore}
-    <div class="frame auto-scena">${svg(t)}</div>
-    <h1 class="auto-t">${t.t}</h1>
-    <div class="auto-body"><span class="sticker sm" id="auto-stitok"></span><p class="auto-text" id="auto-text"></p><div class="auto-cas" id="auto-cas"></div></div>
-    <div class="auto-dots" id="auto-dots"></div>
-    <div class="auto-ovl"><button class="auto-btn" data-auto="znova">${IKO.znova}<span>Znova</span></button><button class="auto-btn velke" id="auto-pauza" data-auto="pauza"></button><button class="auto-btn" data-auto="dalej">${IKO.dalej}<span>Ďalej</span></button></div>
-    <label class="auto-prepinac"><input type="checkbox" id="auto-dalsia"${a.pokracovat ? ' checked' : ''}> Potom automaticky ďalšia téma</label>
+    <div class="au-obr">${svg(t)}</div>
+    <h1 class="au-t">${t.t}</h1>
+    <div class="au-veta"><span class="dop" id="auto-stitok"></span><p class="auto-text" id="auto-text" aria-live="polite"></p><div class="auto-cas" id="auto-cas"></div></div>
+    <div class="au-cesta-a"><div class="au-cesta" id="auto-cesta" role="progressbar" aria-label="Postup témy" aria-valuemin="0" aria-valuemax="100" style="--p:0"><i class="au-za"></i><span class="au-auto">${ikn('auto')}</span></div>
+      <div class="au-useky" id="auto-useky">${AUTO_USEKY.map(x => `<span>${x}</span>`).join('')}</div></div>
+    <div class="auto-ovl"><button class="au-btn" data-auto="znova">${ikn('znova')}<span>Znova</span></button><button class="au-btn au-vel" id="auto-pauza" data-auto="pauza"></button><button class="au-btn" data-auto="dalej">${ikn('preskoc')}<span>Ďalej</span></button></div>
+    <label class="au-prepinac"><span>Potom automaticky ďalšia téma</span><input type="checkbox" role="switch" id="auto-dalsia"${a.pokracovat ? ' checked' : ''}></label>
   </div>`;
   ocisluj(); obnovAuto();
 }
-
 /* Kreslené ikony ovládania (emoji kreslí každý telefón inak a v aute sú nečitateľné) */
 // (ikony sú tu, nie v obrazky.js: nová appka so starým obrazky.js z pamäte telefónu by inak spadla)
 // Kreslené ikony namiesto emoji: emoji vyzerajú na každom telefóne inak, tieto všade rovnako
@@ -4725,46 +5165,54 @@ function zapisChybu(k, ok) {
   S.set('chyby', st.chyby);
 }
 function zapisPrebrate(id) { st.kedy = { ...st.kedy, [id]: key(new Date()) }; S.set('kedy', st.kedy); }
+// 5.0: prehľad je v pokojných blokoch rodičovskej časti (.rd-blok), prepínače namiesto tlačidiel Zapnúť a Vypnúť
+const rdPrep = (zap, attr, popis) => `<button type="button" class="rd-prep" aria-pressed="${zap}" aria-label="${popis}" ${attr}><i></i></button>`;
 function prehladHnitia(d = st) {
   const id = d.id || d.dietaId, zap = hnitieZapnute(id), cloud = !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
   // koľko dní dieťa vynechalo (po dvoch sa strom začne vädnúť), rovnako ako hnitieDni a bodyUbudlo pre aktívne dieťa
   const body = d.body || 0, posl = [...(d.dni || [])].sort().pop();
   const vyn = !posl ? 0 : (() => { const [y, m, dd] = posl.split('-').map(Number), n = new Date(); return Math.max(0, Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(y, m - 1, dd)) / 864e5)); })();
   const nn = zap ? Math.max(0, vyn - 2) : 0, hn = nn >= 6 ? 3 : nn >= 3 ? 2 : nn >= 1 ? 1 : 0, u = nn ? Math.min(Math.floor(body * .4), nn * Math.max(3, Math.ceil(body * .02))) : 0;
-  return `<b>Vädnutie stromu</b><p class="muted">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí ${cloud ? 'na všetkých zariadeniach' : 'na tomto zariadení'}.</p>
-    <p class="muted">${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} ${u === 1 ? 'hviezdička spí' : u >= 2 && u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}.` : 'Teraz je strom v poriadku.'}</p>
-    <button class="btn ghost" ${cloud ? `data-rp-hnitie="${esc(id)}"` : 'data-hnitie-prepni'}>${zap ? 'Vypnúť vädnutie stromu' : 'Zapnúť vädnutie stromu'}</button>`;
+  return `<section class="rd-blok"><h2 class="rd-h">Strom múdrosti</h2>
+    <div class="rd-riadok">${ikn('strom')}<span class="rd-t"><b>Vädnutie stromu</b><small>${!zap ? 'Teraz je to vypnuté, strom nevädne.' : hn ? `Teraz: ${HN_TEXT[hn].n.toLowerCase()}, ${u} ${u === 1 ? 'hviezdička spí' : u >= 2 && u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}.` : 'Teraz je strom v poriadku.'}</small></span>
+      ${rdPrep(zap, cloud ? `data-rp-hnitie="${esc(id)}"` : 'data-hnitie-prepni', 'Vädnutie stromu')}</div>
+    <p class="rd-pozn">Ak dieťa nehrá, strom múdrosti po dvoch vynechaných dňoch pomaly vädne, hviezdičky na odomykanie hier trochu ubúdajú (najviac o 40 %) a najdrahšie hry sa dočasne zamknú. Prvý vynechaný deň sa nestane nič. Nič sa nestráca natrvalo: po prvej téme strom hneď ožije a všetko sa vráti. Platí ${cloud ? 'na všetkých zariadeniach' : 'na tomto zariadení'}.</p></section>`;
 }
 function prehladPriatelov(d = st) {
   const So = socC(), id = d.id || d.dietaId, meno = d.meno || '', cloud = !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
   if (!So || !So.nacitane || (id && So.pid !== id)) return '';
-  if (!So.zapnute) return cloud
-    ? '<b>Priatelia</b><p class="muted">Vypnutí. Zapnúť ich môžete tu.</p><button class="btn blue" data-rp-soczapni>Zapnúť priateľov</button>'
-    : '<b>Priatelia</b><p class="muted">Vypnutí. Priateľov zapína rodič, najprv si vytvorte účet rodiča.</p><button class="btn blue" data-rodic-novy>Vytvoriť účet rodiča</button>';
+  const blok = obsah => `<section class="rd-blok"><h2 class="rd-h">Priatelia</h2>${obsah}</section>`;
+  if (!So.zapnute) return blok(cloud
+    ? `<div class="rd-riadok">${ikn('priatelia')}<span class="rd-t"><b>Priatelia vypnutí</b><small>Zapnúť ich môžete tu</small></span>${rdPrep(false, 'data-rp-soczapni', 'Priatelia')}</div>`
+    : `<p class="rd-pozn">Vypnutí. Priateľov zapína rodič, najprv si vytvorte účet rodiča.</p><div class="rd-vnutri"><button class="btn" data-rodic-novy>Vytvoriť účet rodiča</button></div>`);
   const mena = Object.keys(So.priatelia).map(f => So.profily[f] && So.profily[f].meno).filter(Boolean);
   const spravy = Object.keys(So.spravy).flatMap(f => (So.spravy[f] || []).map(m => ({ ...m, f }))).sort((a, b) => b.kedy - a.kedy).slice(0, 6);
   const kto = m => m.od === So.pid ? esc(meno) : esc((So.profily[m.f] || {}).meno || 'priateľ');
-  return `<b>Priatelia (kód ${esc(So.profil.kod)})</b><p class="muted">${mena.length ? mena.map(esc).join(', ') : 'Zatiaľ žiadni.'}</p>
-    ${spravy.length ? `<b>Posledné správy</b><ul>${spravy.map(m => `<li><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(meno)}<small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></li>`).join('')}</ul>` : ''}
-    <b>Voľné písanie</b><p class="muted">Vlastný text (najviac 200 znakov) môže dieťa písať len vtedy, keď ho zapnete vy aj rodič priateľa. Nevhodné slová, telefónne čísla a odkazy appka nepustí. Ak nechcete, aby si písali, vypnite priateľov.</p>
-    ${(z => z.length ? `<b>Zablokované správy</b><ul>${z.slice().reverse().map(m => `<li><span class="pr-ik">${ik('bublina')}</span><span>${esc(m.t)}</span></li>`).join('')}</ul>` : '')(S.get('soc-zablok-' + So.pid, []))}
-    ${cloud ? '<button class="btn ghost" data-rp-socvypni>Vypnúť priateľov</button>' : '<p class="muted">Zapnúť alebo vypnúť priateľov môže len rodič s účtom rodiča.</p><button class="btn blue" data-rodic-novy>Vytvoriť účet rodiča</button>'}`;
+  const zabl = S.get('soc-zablok-' + So.pid, []);
+  return blok(`<div class="rd-riadok">${ikn('priatelia')}<span class="rd-t"><b>Priatelia zapnutí</b><small>Kód dieťaťa: <span class="cis">${esc(So.profil.kod)}</span></small></span>
+      ${cloud ? rdPrep(true, 'data-rp-socvypni', 'Priatelia') : ''}</div>
+    <div class="rd-riadok"><span class="rd-t"><b>${mena.length ? `${mena.length} ${mena.length === 1 ? 'priateľ' : mena.length < 5 ? 'priatelia' : 'priateľov'}` : 'Zatiaľ žiadni priatelia'}</b>${mena.length ? `<small>${mena.map(esc).join(', ')}</small>` : ''}</span></div>
+    ${spravy.length ? `<h3 class="rd-h rd-h2">Posledné správy</h3>${spravy.map(m => `<div class="rd-riadok"><span class="pr-ik">${m.n ? (NALEPKY[m.n] ? NALEPKY[m.n]() : '') : ik('bublina')}</span><span class="rd-t"><b>${kto(m)} → ${m.od === So.pid ? esc((So.profily[m.f] || {}).meno || '') : esc(meno)}</b><small>${m.x ? esc(m.x) : m.k ? esc(VETY[m.k] || '') : 'nálepka'} · ${casSpravy(m.kedy)}</small></span></div>`).join('')}` : ''}
+    <p class="rd-pozn"><b>Voľné písanie.</b> Vlastný text (najviac 200 znakov) môže dieťa písať len vtedy, keď ho zapnete vy aj rodič priateľa. Nevhodné slová, telefónne čísla a odkazy appka nepustí. Ak nechcete, aby si písali, vypnite priateľov.</p>
+    ${zabl.length ? `<h3 class="rd-h rd-h2">Zablokované správy</h3>${zabl.slice().reverse().map(m => `<div class="rd-riadok"><span class="pr-ik">${ik('bublina')}</span><span class="rd-t"><small>${esc(m.t)}</small></span></div>`).join('')}` : ''}
+    ${cloud ? '' : '<p class="rd-pozn">Zapnúť alebo vypnúť priateľov môže len rodič s účtom rodiča.</p><div class="rd-vnutri"><button class="btn" data-rodic-novy>Vytvoriť účet rodiča</button></div>'}`);
 }
 const maRodica = () => !!(window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil);
+// d === st: prehľad v karte Ja (bez účtu rodiča) má nadpis Pre rodiča; v paneli rodiča je nadpis v lište
 function prehladRodica(d = st) {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
   const od = key(pon), dnes = key(new Date());
   const den = k => k === dnes ? 'dnes' : DNI[(new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8)).getDay() + 6) % 7];
   const tyzden = Object.entries(d.kedy || {}).filter(([id, k]) => k >= od && byId(id)).sort((a, b) => a[1] < b[1] ? -1 : 1);
   const chyby = (d.chyby || []).map(x => { const [id, i] = x.split(':'), t = byId(id), q = t && t.z[+i]; return q && { t, q }; }).filter(Boolean).slice(-6).reverse();
-  return `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Pre rodiča</h2>
-    <div class="card prehlad"><b>Tento týždeň prebraté</b>
-      ${tyzden.length ? `<ul>${tyzden.map(([id, k]) => `<li><span class="pr-ik">${ikKat(byId(id).k)}</span><span>${esc(byId(id).t)}</span><small>${den(k)}</small></li>`).join('')}</ul>` : '<p class="muted">Tento týždeň zatiaľ nič.</p>'}
-      <b>Na čo sa ešte pozrieť</b>
-      ${chyby.length ? `<ul>${chyby.map(c => `<li><span class="pr-ik">${ikKat(c.t.k)}</span><span>${esc(c.q.q)}<small>Správne: ${esc(c.q.a[0][1])}</small></span></li>`).join('')}</ul>` : '<p class="muted">Žiadne chyby v kvízoch. Výborne!</p>'}
-      ${prehladHnitia(d)}
-      ${prehladPriatelov(d)}
-    </div></section>`;
+  return `<section class="sec rd-prehlad">${d === st ? '<h2 class="h2" style="--hc:var(--sky)">Pre rodiča</h2>' : ''}
+    <section class="rd-blok"><h2 class="rd-h">Tento týždeň prebraté</h2>
+      ${tyzden.length ? tyzden.map(([id, k]) => `<div class="rd-riadok"><span class="pr-ik">${ikKat(byId(id).k)}</span><span class="rd-t"><b>${esc(byId(id).t)}</b></span><span class="rd-den">${den(k)}</span></div>`).join('') : '<p class="rd-pozn">Tento týždeň zatiaľ nič.</p>'}</section>
+    <section class="rd-blok"><h2 class="rd-h">Na čo sa ešte pozrieť</h2>
+      ${chyby.length ? chyby.map(c => `<div class="rd-riadok">${ikn('lupa')}<span class="rd-t"><b>${esc(c.q.q)}</b><small>Správne: ${esc(c.q.a[0][1])}</small></span></div>`).join('') : '<p class="rd-pozn">Žiadne chyby v kvízoch. Výborne!</p>'}</section>
+    ${prehladHnitia(d)}
+    ${prehladPriatelov(d)}
+  </section>`;
 }
 /* Týždeň a okruh (verzia 4.0): dáta a logiku dodáva objekt Tyzden (tyzden.js). */
 const TY = () => Tyzden;
@@ -5082,45 +5530,46 @@ const views = {
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
   anglictina: () => Ang.render(),
+  // 5.0 Ja: preukaz objaviteľa s fotkou postavičky, kruh prebratých tém, zbierka (kartaOdznakov robí sekcia odznakov), nastavenia vzhľadu,
+  // sprievodca, kategórie, uložené témy a rodina
   ja() {
-    const vsetky = TV().length, h = TV().filter(t => st.done.includes(t.id)).length, s = seria(), obvod = 326.7;
-    const f = st.fav.map(byId).filter(Boolean), C = window.Cloud;
-    return `<div class="prof-top"><button class="av-ja kruh-av" data-upravit aria-label="Upraviť postavičku" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</button>
-        <div class="prof-meno"><h1 class="h1">${esc(st.meno)}</h1><span class="chip" style="--c:#4C7DFF">${vekText(st.vek)}</span></div></div>
-      <button class="btn wide" data-upravit>${ii(IK.ceruzka)} Upraviť postavičku, meno a vek</button>
-      <section class="stats">
-        <div class="card ringc">
-          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--text)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${vsetky}</b></div>
-          <div><b class="lbl" style="font-size:1.3rem">Prebraté témy</b><br><small>${h === vsetky ? 'Všetky! Si skvelý.' : 'Každá téma pridá body a kúsok kruhu.'}</small></div>
-        </div>
-        <div class="card mini" style="--c:#FFF0B3"><b>${ii(STAR())} ${st.body}</b><small>bodov</small></div>
-        <div class="card mini" style="--c:#FFE3C7"><b>${ii(IK.ohen)} ${s}</b><small>${dni(s)} po sebe</small></div>
+    const vsetky = TV().length, h = TV().filter(t => st.done.includes(t.id)).length, s = seria(), obvod = 263.9;
+    const f = st.fav.map(byId).filter(Boolean), C = window.Cloud, k = kats().sort((a, b) => b.hotovo / b.n - a.hotovo / a.n);
+    const katRiadok = x => `<div class="ja-kat-r" style="--pc:${x.c}"><span>${x.nazov}</span><b class="cis">${x.hotovo}/${x.n}</b><div class="pruh"><i style="width:${Math.round(x.hotovo / x.n * 100)}%"></i></div></div>`;
+    return `<section class="ja-preukaz prof-top"><div class="ja-preukaz-hl"><span>Preukaz objaviteľa</span>${logo()}</div>
+        <button class="ja-foto kruh-av" data-upravit aria-label="Upraviť postavičku" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</button>
+        <div class="ja-udaje"><h1 class="n0">${esc(st.meno)}</h1><span class="st">${vekText(st.vek)}</span>
+          <span class="ja-rad"><span class="st cis">${ikn('hviezda')}${st.body}</span><span class="st cis">${ikn('plamen')}${s} ${dni(s)}</span></span></div>
+        <button class="btn dve maly wide ja-uprav" data-upravit>${ikn('ceruzka')}Upraviť postavičku, meno a vek</button></section>
+      <section class="ja-kruh">
+        <div class="ja-ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--sand)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--leaf)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}" transform="rotate(-90 50 50)"/></svg><b class="cis">${h}</b></div>
+        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá body a kúsok kruhu.`}</p></div>
       </section>
       ${kartaOdznakov()}
-      ${Rezim.karta()}
-      ${Pozadie.karta()}
-      <button class="card spr-karta" data-sprievodca>${owl('hi')}<span><b>Sprievodca appkou</b><small>Sovička ti znova ukáže, čo kde je.</small></span><span class="auto-play">${IKO.play}</span></button>
+      <div class="ja-vzhlad">${Rezim.karta()}${Pozadie.karta()}</div>
+      <button class="ja-spr spr-karta" data-sprievodca><span class="ja-spr-sova">${mudra('ahoj', { tien: false })}</span><span class="odkaz"><b>Sprievodca appkou</b>Znova ti ukážem, čo kde je.</span><span class="btn kruh mud" aria-hidden="true">${ikn('hraj')}</span></button>
       ${maRodica() ? '' : prehladRodica()}
-      <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
-        <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${ikKat(k.id)}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
+      <section class="karta ja-kat"><span class="zal" style="--c:var(--sky-l)">Podľa kategórií</span>
+        ${k.slice(0, 4).map(katRiadok).join('')}
+        ${k.length > 4 ? `<details class="ja-viac"><summary>Všetkých ${k.length} kategórií${ikn('dole')}</summary>${k.slice(4).map(katRiadok).join('')}</details>` : ''}
       </section>
-      <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
+      <section class="sec"><div class="ja-nh"><h2 class="n1">Uložené témy</h2><small class="cis">${f.length || ''}</small></div>
         ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ${ii(IK.srdcePrazdne)} a nájdeš ju tu.</span></div>`}
       </section>
       ${Zvuk.ios ? `<section class="card prof">
         <span class="lbl">Zvuky</span>
-        <div class="tests"><button class="btn blue" data-test-zvuk="web">${ii(IK.repro)} Test 1</button><button class="btn" data-test-zvuk="subor">${ii(IK.repro)} Test 2</button></div>
+        <div class="tests"><button class="btn mud" data-test-zvuk="web">${ikn('zvuk')}Test 1</button><button class="btn" data-test-zvuk="subor">${ikn('zvuk')}Test 2</button></div>
         <p class="muted">Ťuknite na oba testy a vyberte ten, ktorý počujete:</p>
         <div class="seg2"><button data-sposob="web" aria-pressed="${Zvuk.sposob === 'web'}">Počujem Test 1</button><button data-sposob="subor" aria-pressed="${Zvuk.sposob === 'subor'}">Počujem Test 2</button></div>
         <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
       </section>` : ''}
-      <section class="card prof"><span class="lbl">${ii(IK.rodina)} Rodina</span>
-        ${maRodica() ? `<div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button></div>` : `<p class="muted">Účet: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
-        <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
-        <button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button>
-        ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}`}
+      <section class="ja-rodina"><span class="dop">Rodina</span>
+        ${maRodica() ? `<div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button></div>` : `<p class="tx">Účet rodiča: ${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}<br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
+        <div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button><button class="btn dve maly" data-ucet="odhlas">${ikn('odhlas')}Odhlásiť sa</button></div>
+        <button class="btn dve maly wide" data-rodic-novy>${ikn('kluc')}Vytvoriť účet rodiča</button>
+        ${Plocha.naPloche() ? '' : `<button class="btn dve maly wide" data-plocha>${ikn('domov')}Pridať appku na plochu</button>`}`}
       </section>
-      <p class="muted" style="font-size:.85rem">${maRodica() ? '' : `Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>`}Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
+      <p class="ja-pata">${maRodica() ? '' : `Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>`}Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
   },
 };
 
@@ -6342,11 +6791,8 @@ const SPR_UCET = [
   { id: 'ucet', n: 'Ako funguje účet', nalada: 'happy', p: 'Pod jedným účtom rodiča môžu byť profily viacerých detí. Každé dieťa má vlastnú postavičku, body a pokrok. Všetko sa ukladá do cloudu, takže sa nič nestratí ani pri výmene telefónu a prihlásiť sa dá aj na ďalšom zariadení.' },
   { cil: '#meno-dietata', n: 'Meno dieťaťa', p: 'Sem napíšte meno alebo prezývku. Appka ním dieťa oslovuje a uvidia ho aj priatelia, ak ich neskôr zapnete.' },
   { cil: '.tvorba .seg2', n: 'Vek', p: '5 – 8 rokov: jednoduchšie otázky s obrázkami. 9 – 12 rokov: ťažšie otázky, časť Do hĺbky a navyše ťažký kvíz a výzva. Vek sa dá kedykoľvek zmeniť.' },
-  { cil: '#av-nahlad', n: 'Postavička', nalada: 'cheer', p: 'Toto je postavička dieťaťa. Bude hore v appke, v profile aj u priateľov.' },
-  { cil: '#av-tabs', n: 'Účes, oblečenie, doplnky', p: 'Tu si dieťa vyberá účes, oči, tričko, okuliare, doplnky aj zvieratko. Veci so zámkom sa odomknú za body z tém.' },
-  { cil: '[data-nahodne]', n: 'Náhodná postavička', p: 'Ťuknutím na kocku appka vymyslí postavičku sama. Ťukať sa dá, koľkokrát chcete.' },
-  { cil: '[data-ulozit-dieta]', n: 'Uložiť profil', p: 'Keď je meno vyplnené, ťuknite na Uložiť. Potom vám ukážem celú appku.' },
-  { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Vyplňte meno, vyberte vek a postavičku a profil uložte. Hneď potom pokračujeme prehliadkou appky.' },
+  { cil: '[data-tvorba-dalej]', n: 'Potom postavička', nalada: 'cheer', p: 'V ďalšom kroku si dieťa vyberie postavičku: účes, oči, tričko aj doplnky. Kto sa nechce hrať, ťukne na kocku. Veci so zámkom sa odomknú za body z tém.' },
+  { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Napíšte meno, vyberte vek a ťuknite na Ďalej. Postavičku si potom vyberiete spolu s dieťaťom. Hneď po nej pokračujeme prehliadkou appky.' },
 ];
 const SPR_RODIC = [
   { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko →', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },

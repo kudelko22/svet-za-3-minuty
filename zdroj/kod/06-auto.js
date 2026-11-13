@@ -165,6 +165,16 @@ const Auto = {
   },
 };
 
+// 5.0: postup témy je cesta so štyrmi úsekmi (téma, príklad, otázky, kvíz), autíčko ide po nej plynulo
+const AUTO_USEKY = ['Téma', 'Príklad', 'Otázky', 'Kvíz'];
+const autoUsek = s => ({ ziarovka: 1, bublina: 2, otaznik: 3, vlajka: 4 })[s.e] ?? 0;
+function autoPostup(a) {
+  const krok = a.kroky[a.k] || {}, seg = a.segs[krok.seg ?? a.segs.length - 1], u = autoUsek(seg);
+  if (u >= 4 || a.stav === 'koniec') return { u: 4, p: 1 };
+  const vUseku = a.segs.filter(s => autoUsek(s) === u), j = vUseku.indexOf(seg);
+  const vSeg = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg.i), f = vSeg.length ? Math.max(0, vSeg.findIndex(k => k.i === a.k)) / vSeg.length : 0;
+  return { u, p: Math.min(1, (u + (j + f) / vUseku.length) / 4) };
+}
 function textAuto(a) {
   const krok = a.kroky[a.k] || {}, seg = krok.seg ?? a.segs.length - 1;
   const vety = a.kroky.map((k, i) => ({ ...k, i })).filter(k => k.seg === seg && k.typ === 'veta');
@@ -175,16 +185,19 @@ function obnovAuto() {
   const a = st.auto, el = id => document.getElementById(id);
   if (!a || a.stav === 'koniec' || !el('auto-text')) return;
   const krok = a.kroky[a.k] || {}, seg = a.segs[krok.seg ?? a.segs.length - 1];
-  el('auto-stitok').innerHTML = `${ii(ik(seg.e))} ${esc(seg.label)}`;
+  el('auto-stitok').textContent = seg.label;
   el('auto-text').innerHTML = textAuto(a);
   const teraz = el('auto-text').querySelector('.teraz'); // dlhý text: aktuálna veta ostane nad tlačidlami
   if (teraz) teraz.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   el('auto-cas').innerHTML = a.stav === 'caka'
-    ? `<span class="odpocet-kruh"><svg viewBox="0 0 64 64" style="--s:${krok.s}s"><circle cx="32" cy="32" r="27"/><circle class="ostava" cx="32" cy="32" r="27"/></svg><b id="auto-sek">${a.zostava}</b></span><span>${krok.co}</span>`
+    ? `<span class="odpocet-kruh"><svg viewBox="0 0 64 64" style="--s:${krok.s}s"><circle cx="32" cy="32" r="27"/><circle class="ostava" cx="32" cy="32" r="27"/></svg><b id="auto-sek" class="cis">${a.zostava}</b></span><span>${krok.co}</span>`
     : a.stav === 'pauza' ? '<span>Pozastavené. Ťuknite na Pokračovať.</span>' : '';
-  el('auto-dots').innerHTML = a.segs.map((s, i) => `<i class="${i < seg.i ? 'hotovo' : i === seg.i ? 'teraz' : ''}"></i>`).join('');
-  const p = el('auto-pauza'), stoji = a.stav === 'pauza';
-  if (p.dataset.stoji !== String(stoji)) { p.dataset.stoji = stoji; p.innerHTML = stoji ? IKO.play + '<span>Pokračovať</span>' : IKO.pauza + '<span>Pauza</span>'; }
+  const { u, p } = autoPostup(a), cesta = el('auto-cesta');
+  cesta.style.setProperty('--p', p.toFixed(3));
+  cesta.setAttribute('aria-valuenow', Math.round(p * 100)); cesta.setAttribute('aria-valuetext', AUTO_USEKY[Math.min(u, 3)]);
+  el('auto-useky').querySelectorAll('span').forEach((s, i) => { s.classList.toggle('h', i < u); s.classList.toggle('tu', i === u); });
+  const pz = el('auto-pauza'), stoji = a.stav === 'pauza';
+  if (pz.dataset.stoji !== String(stoji)) { pz.dataset.stoji = stoji; pz.innerHTML = stoji ? ikn('hraj') + '<span>Pokračovať</span>' : ikn('pauza') + '<span>Pauza</span>'; }
 }
 function obnovKoniecAuto() {
   const a = st.auto, el = document.getElementById('auto-dalsia-sek'), r = document.getElementById('auto-odpocet');
@@ -193,30 +206,30 @@ function obnovKoniecAuto() {
 }
 function renderAuto() {
   const a = st.auto, t = byId(a.tid);
-  const hore = `<div class="auto-top"><span class="chip auto-chip" style="--c:#FF9F1C">${IKO.auto}Režim do auta</span>${a.precvic ? Precvic.stitok() : ''}<button class="ib" data-auto="stop" aria-label="Ukončiť">${IKO.zavriet}</button></div>`;
+  const hore = `<div class="au-hl"><span class="st au-st">${ikn('auto')}Režim do auta</span>${a.precvic ? Precvic.stitok() : ''}<button class="btn kruh dve au-x" data-auto="stop" aria-label="Ukončiť Režim do auta">${ikn('zavriet')}</button></div>`;
   main.classList.add('anim');
   if (a.stav === 'koniec') {
     const v = a.vysledok, d = a.dalsia && byId(a.dalsia);
     main.innerHTML = `<div class="auto auto-koniec">${hore}
-      <div class="win-hero"><div class="burst"></div><div class="win-owl">${owl('cheer')}</div></div>
-      ${a.precvic ? Precvic.stitok() : ''}
-      <h1 class="auto-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
-      <p class="auto-text">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
-      ${v.zisk ? `<div class="earn">${STAR()} +${v.zisk} bodov</div>` : ''}
+      <div class="au-vyhra"><svg class="au-luce" viewBox="0 0 200 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${Array.from({ length: 14 }, (_, i) => { const u1 = (180 + i * 13) * Math.PI / 180, u2 = u1 + 6.5 * Math.PI / 180; return `<path d="M100 130L${(100 + 260 * Math.cos(u1)).toFixed(1)} ${(130 + 260 * Math.sin(u1)).toFixed(1)}L${(100 + 260 * Math.cos(u2)).toFixed(1)} ${(130 + 260 * Math.sin(u2)).toFixed(1)}Z"/>`; }).join('')}</svg>
+        <div class="au-mudra">${mudra('oslava', { extra: true, tien: false })}</div></div>
+      <h1 class="au-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
+      <p class="au-pod">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
+      ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> bodov</div>` : ''}
       ${odmenyHtml(v)}
-      ${d && !a.precvic ? `<button class="btn wide cta" data-auto="dalsia">Ďalšia téma: ${esc(d.t)} →</button>
-        <p class="auto-odpocet" id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek">10</b> s</p>` : ''}
-      <button class="btn ghost wide" data-auto="stop">Domov</button></div>`;
+      ${d && !a.precvic ? `<button class="au-btn au-dalsia" data-auto="dalsia"><span class="dop">Ďalšia téma</span><b>${esc(d.t)}</b>
+        <small id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek" class="cis">10</b> s</small></button>` : ''}
+      <button class="au-btn au-nizke" data-auto="stop">${ikn('domov')}Domov</button></div>`;
     ocisluj(); return;
   }
   main.innerHTML = `<div class="auto">${hore}
-    <div class="frame auto-scena">${svg(t)}</div>
-    <h1 class="auto-t">${t.t}</h1>
-    <div class="auto-body"><span class="sticker sm" id="auto-stitok"></span><p class="auto-text" id="auto-text"></p><div class="auto-cas" id="auto-cas"></div></div>
-    <div class="auto-dots" id="auto-dots"></div>
-    <div class="auto-ovl"><button class="auto-btn" data-auto="znova">${IKO.znova}<span>Znova</span></button><button class="auto-btn velke" id="auto-pauza" data-auto="pauza"></button><button class="auto-btn" data-auto="dalej">${IKO.dalej}<span>Ďalej</span></button></div>
-    <label class="auto-prepinac"><input type="checkbox" id="auto-dalsia"${a.pokracovat ? ' checked' : ''}> Potom automaticky ďalšia téma</label>
+    <div class="au-obr">${svg(t)}</div>
+    <h1 class="au-t">${t.t}</h1>
+    <div class="au-veta"><span class="dop" id="auto-stitok"></span><p class="auto-text" id="auto-text" aria-live="polite"></p><div class="auto-cas" id="auto-cas"></div></div>
+    <div class="au-cesta-a"><div class="au-cesta" id="auto-cesta" role="progressbar" aria-label="Postup témy" aria-valuemin="0" aria-valuemax="100" style="--p:0"><i class="au-za"></i><span class="au-auto">${ikn('auto')}</span></div>
+      <div class="au-useky" id="auto-useky">${AUTO_USEKY.map(x => `<span>${x}</span>`).join('')}</div></div>
+    <div class="auto-ovl"><button class="au-btn" data-auto="znova">${ikn('znova')}<span>Znova</span></button><button class="au-btn au-vel" id="auto-pauza" data-auto="pauza"></button><button class="au-btn" data-auto="dalej">${ikn('preskoc')}<span>Ďalej</span></button></div>
+    <label class="au-prepinac"><span>Potom automaticky ďalšia téma</span><input type="checkbox" role="switch" id="auto-dalsia"${a.pokracovat ? ' checked' : ''}></label>
   </div>`;
   ocisluj(); obnovAuto();
 }
-

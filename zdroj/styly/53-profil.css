@@ -1,2 +1,120 @@
 /* 5.0: Profil (Ja), postavička, sprievodca. Sem patria nové štýly tejto sekcie (smer: preukaz objaviteľa, ceny pri veciach v jednom pásiku).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+
+/* ===== Šatník: busta v kruhu na javisku, kategórie, veci s rovnako vysokým pásikom dole ===== */
+.up-hl { display: flex; align-items: center; gap: 10px; }
+.up-hl .n1 { margin-right: auto; }
+.up-hl .btn.kruh .ikn { width: 22px; height: 22px; }
+.up-javisko { position: relative; display: grid; place-items: center; height: 184px; border: var(--obrys); border-radius: var(--r-karta); background: var(--sun); overflow: hidden; }
+.up-luce { position: absolute; inset: 0; width: 100%; height: 100%; fill: var(--sun-l); opacity: .55; animation: upLuce 40s linear infinite; transform-origin: center; }
+@keyframes upLuce { to { transform: rotate(360deg); } }
+.up-javisko .av-nahlad { position: relative; width: 148px; aspect-ratio: 1; border: var(--obrys); box-shadow: 0 0 0 5px var(--card), 0 0 0 8px var(--ink); transition: background-color .3s; }
+.av-nahlad.hopni #av-velky { animation: jelly .5s; }
+.up-javisko .kocka { position: absolute; right: 12px; bottom: 12px; }
+.up-javisko .kocka .ikn { width: 24px; height: 24px; }
+.up-javisko .kocka:active .ikn { rotate: 90deg; transition: rotate .2s; }
+.up-taby { display: flex; gap: 8px; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 2px max(16px, env(safe-area-inset-left, 0px)) 6px; overflow-x: auto; scrollbar-width: none; scroll-padding-inline: 16px; }
+.up-taby::-webkit-scrollbar { display: none; }
+.up-tab { flex: none; display: inline-flex; align-items: center; height: 38px; padding: 2px 14px 0; border: var(--obrys-m); border-radius: 999px; background: var(--card); font: 800 .9rem/1 var(--fd); color: var(--text); }
+.up-tab[aria-pressed="true"] { background: var(--violet); color: #fff; box-shadow: 0 3px 0 var(--ink); }
+.veci { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 10px; }
+.vec { position: relative; display: grid; grid-template-rows: 1fr 34px; justify-items: center; padding: 0; border: var(--obrys-m); border-radius: 16px 18px 16px 19px; background: var(--card); overflow: hidden; color: var(--text); }
+.vec-obr { display: grid; place-items: center; width: 100%; padding: 8px 0 7px; }
+.vec-obr .kruh-av { width: min(78px, 82%); aspect-ratio: 1; border-width: 2.5px; }
+.vec-farba { display: block; width: min(58px, 64%); aspect-ratio: 1; margin: 10px 0; border: var(--obrys-m); border-radius: 50%; background: var(--f); }
+.vec .dolu { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 34px; padding-top: 1px; border-top: var(--obrys-m); background: var(--sand); font: 800 .78rem/1 var(--fd); color: var(--muted); white-space: nowrap; }
+.vec .dolu .ikn { width: 16px; height: 16px; }
+.vec .dolu .cena { height: auto; padding: 0; border: 0; background: none; font-size: .94rem; color: var(--text); }
+.vec .dolu .cena .ikn { width: 17px; height: 17px; margin-top: -2px; }
+.vec.na { border-width: 3px; box-shadow: 0 0 0 3px var(--sun), 0 4px 0 3px var(--ink); }
+.vec.na .dolu { background: var(--teal); color: var(--dk); }
+.vec.zam { border-style: dashed; background: var(--bg); }
+.vec.zam .vec-obr { filter: grayscale(1); opacity: .5; }
+.vec.zam .dolu { border-top-style: dashed; background: var(--sun-l); }
+.vec .zmk { position: absolute; right: 5px; top: 5px; z-index: 1; display: grid; place-items: center; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.vec .zmk .ikn { width: 15px; height: 15px; }
+.vec:active { transform: translateY(2px); }
+.vec.trasie { animation: shake .4s; }
+.vec.trasie .dolu { animation: vecBlik .4s 2; }
+@keyframes vecBlik { 50% { background: var(--sun); } }
+.vec.viac { grid-template-rows: none; align-content: center; gap: 6px; padding: 10px 6px; border-style: dashed; background: var(--sun-l); font: 700 .75rem/1.25 var(--fb); text-align: center; }
+.vec.viac .ikn { width: 26px; height: 26px; }
+.up-najblizsia { display: grid; gap: 8px; }
+.up-najblizsia .tx { font-size: .9rem; }
+.up-najblizsia .pruh { height: 12px; }
+.up-zakl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; }
+.up-zakl .pole { display: grid; gap: 6px; }
+.up .input { min-height: 50px; padding: 11px 14px; border: var(--obrys-m); border-radius: var(--r-pole); background: var(--card); font: 500 1.06rem/1.2 var(--fb); color: var(--text); }
+.up .input:focus { outline: none; box-shadow: 0 0 0 3px var(--sun); }
+.up .input.zle { border-color: var(--coral-d); background: var(--coral-l); }
+.up-uprava { gap: 18px; padding-bottom: 8px; }
+.up-spodok { position: sticky; bottom: 0; z-index: 3; display: grid; gap: 10px; justify-items: center; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: var(--obrys); background: var(--card); }
+.up-spodok .btn.wide { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.up-spodok .link { font: 700 .84rem/1 var(--fb); color: var(--muted); }
+.up-potvrd { display: grid; gap: 8px; width: 100%; padding: 12px; border: 2px solid var(--coral-d); border-radius: 14px; background: var(--coral-l); }
+.up-potvrd .tx { font-size: .9rem; }
+@media (min-width: 480px) { .veci { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 600px) { .up-spodok { margin-inline: 0; border: var(--obrys); border-bottom: 0; border-radius: var(--r-karta); border-bottom-left-radius: 0; border-bottom-right-radius: 0; } .up-taby { margin-inline: 0; padding-inline: 0; } }
+
+/* ===== Ja: preukaz objaviteľa ===== */
+.ja-preukaz { position: relative; display: grid; grid-template-columns: 112px 1fr; gap: 14px 14px; align-items: center; padding: 48px 14px 14px; border: var(--obrys); border-radius: 22px 24px 22px 26px; background: var(--card); box-shadow: 0 6px 0 var(--shc); }
+.ja-preukaz-hl { position: absolute; left: 0; right: 0; top: 0; height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: var(--obrys); border-radius: 19px 21px 0 0; background: var(--violet); font: 800 .78rem/1 var(--fd); letter-spacing: .09em; text-transform: uppercase; color: #fff; }
+.ja-preukaz-hl .logo { --ls: 1.05rem; --lo: #fff; color: #fff; letter-spacing: 0; text-transform: none; }
+.ja-foto { position: relative; width: 112px; aspect-ratio: 1; padding: 0; border: var(--obrys); rotate: -3deg; overflow: visible; }
+.ja-foto svg { border-radius: 0 0 999px 999px; }
+.ja-foto::after { content: ""; position: absolute; left: 50%; top: -10px; width: 46px; height: 17px; translate: -50% 0; rotate: 4deg; border: var(--obrys-m); border-radius: 4px; background: var(--sun); }
+.ja-foto:active { scale: .97; }
+.ja-udaje { display: grid; gap: 8px; justify-items: start; min-width: 0; }
+.ja-udaje .n0 { overflow-wrap: anywhere; }
+.ja-rad { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.ja-uprav { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; }
+.ja-kruh { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: center; padding: 14px; border: var(--obrys); border-radius: 20px 22px 24px 20px; background: var(--leaf-l); box-shadow: 0 4px 0 var(--shc); }
+.ja-ring { position: relative; width: 92px; height: 92px; }
+.ja-ring svg { display: block; width: 100%; height: 100%; }
+.ja-ring b { position: absolute; inset: 0; display: grid; place-items: center; padding-top: 3px; font: 900 1.4rem/1 var(--fd); }
+.ja-kruh .tx { margin-top: 4px; font-size: .9rem; }
+/* Mesačný režim a Pozadie vedľa seba ako dve nálepky (na úzkom displeji pod sebou) */
+.ja-vzhlad { display: grid; gap: 14px; }
+.ja-vzhlad .card { padding: 14px; border-radius: var(--r-karta); box-shadow: 0 4px 0 var(--shc); }
+.ja-vzhlad .rez-karta { background: var(--sky-l); }
+.ja-vzhlad .poz-karta { background: var(--sun-l); }
+.ja-vzhlad .lbl { font: 800 1.06rem/1.15 var(--fd); }
+.ja-vzhlad .muted { font: 400 .84rem/1.35 var(--fb); }
+.ja-vzhlad .poz-vol { border-width: 2.5px; font: 700 .78rem/1.15 var(--fb); }
+.ja-vzhlad .poz-vol[aria-pressed="true"] { background: var(--card); }
+@media (min-width: 520px) { .ja-vzhlad { grid-template-columns: 1fr 1fr; align-items: start; } }
+/* sprievodca: Múdra a bublina */
+.ja-spr.spr-karta { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; align-items: center; padding: 0; border: 0; background: none; box-shadow: none; text-align: left; color: var(--text); }
+.ja-spr-sova svg { display: block; width: 100%; height: auto; }
+.ja-spr .odkaz { font: 500 .84rem/1.35 var(--fb); }
+.ja-spr .odkaz b { display: block; font: 800 1rem/1.2 var(--fd); }
+.ja-spr .btn.kruh .ikn { width: 22px; height: 22px; }
+.ja-spr:active .odkaz { background: var(--sand); }
+/* kategórie */
+.ja-kat { display: grid; gap: 12px; padding: 24px 14px 14px; }
+.ja-kat-r { display: grid; grid-template-columns: 1fr auto; gap: 5px 8px; align-items: center; font: 700 .9rem/1.2 var(--fb); }
+.ja-kat-r b { font: 800 .875rem/1 var(--fd); }
+.ja-kat-r .pruh { grid-column: 1 / -1; height: 12px; }
+.ja-kat-r .pruh i { background: var(--pc, var(--teal)); box-shadow: inset 0 -3px 0 rgb(0 0 0 / .14); }
+.ja-viac { display: grid; gap: 12px; }
+.ja-viac[open] { gap: 12px; }
+.ja-viac > summary { display: inline-flex; align-items: center; gap: 4px; list-style: none; cursor: pointer; font: 800 .9rem/1 var(--fd); color: var(--link); }
+.ja-viac > summary::-webkit-details-marker { display: none; }
+.ja-viac > summary .ikn { width: 18px; height: 18px; transition: rotate .2s; }
+.ja-viac[open] > summary { margin-bottom: 12px; }
+.ja-viac[open] > summary .ikn { rotate: 180deg; }
+.ja-viac > .ja-kat-r + .ja-kat-r { margin-top: 12px; }
+.ja-nh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ja-nh small { font: 800 .81rem/1 var(--fd); color: var(--muted); }
+/* rodina */
+.ja-rodina { display: grid; gap: 10px; padding: 14px; border: 2.5px dashed var(--ink); border-radius: 18px; }
+.ja-rodina .tx { font-size: .875rem; color: var(--muted); overflow-wrap: anywhere; }
+.ja-rodina .btn.maly { display: inline-flex; align-items: center; justify-content: center; }
+.ja-pata { margin: 0; font: 400 .78rem/1.45 var(--fb); color: var(--muted); }
+.ja-pata a { color: var(--link); }
+
+@media (prefers-reduced-motion: reduce) {
+  .up-luce, .av-nahlad.hopni #av-velky, .vec.trasie, .vec.trasie .dolu { animation: none !important; }
+}
+/* Mesačný režim: javisko ostáva žlté, lúče sú svetlé (nie tmavý -l podklad) */
+:root[data-rezim="mesacny"] .up-luce { fill: #FFE08A; opacity: .6; }

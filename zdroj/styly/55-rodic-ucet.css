@@ -1,2 +1,201 @@
 /* 5.0: Rodičovská časť, prihlásenie, vytváranie účtu, pridanie na plochu. Sem patria nové štýly tejto sekcie (smer: pokojné: obrys 2 px, bez nakrivo položených prvkov, prepínače).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+
+/* ===== Vstup: jedna cesta. Hore krajina s cestou a zastávkami, pod ňou nadpis, polia a hlavné tlačidlo vždy na tom istom mieste ===== */
+.brana.vstup { gap: 0; justify-items: stretch; text-align: left; padding-top: 0; }
+.vs-sc { position: relative; height: 158px; margin-top: -10px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-top: env(safe-area-inset-top, 0px); border-bottom: var(--obrys); overflow: hidden; background: var(--sc-sky); }
+.vs-sc > svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.vs-spat { position: absolute; left: 14px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 1; }
+.vs-spat .ikn { width: 22px; height: 22px; }
+.vs-zast { transform-box: fill-box; transform-origin: center; animation: vsZast .5s var(--spring) both .15s; }
+@keyframes vsZast { from { transform: scale(.4); } }
+.vs-telo { display: grid; gap: 16px; align-content: start; padding: 20px 0 8px; animation: vsTelo .35s ease-out both; }
+@keyframes vsTelo { from { opacity: 0; transform: translateY(8px); } }
+.vs-nadp { display: grid; gap: 7px; }
+.vs-nadp .tx, .vs-muted { color: var(--muted); }
+.vs-form { display: grid; gap: 16px; }
+.vstup .pole { gap: 6px; }
+.vs-lbl { font: 700 .875rem/1.2 var(--fb); color: var(--text); }
+.vstup .input, .rd .input { min-height: 52px; padding: 12px 14px; border: var(--obrys-m); border-radius: var(--r-pole); background: var(--card); font: 500 1.06rem/1.2 var(--fb); color: var(--text); }
+.vstup .input::placeholder, .rd .input::placeholder { color: var(--muted); opacity: .75; }
+.vstup .input:focus, .rd .input:focus { outline: none; box-shadow: 0 0 0 3px var(--sun); }
+.vstup .input.zle, .rd .input.zle { border-color: var(--coral-d); background: var(--coral-l); }
+.vstup .chyba, .rd .chyba { padding: 0; background: none; font: 700 .84rem/1.3 var(--fb); color: var(--zle-t); }
+.vstup .chyba.vs-chyba { padding: 10px 12px; border: 2px solid var(--coral-d); border-radius: 12px; background: var(--coral-l); }
+.vs-vstup { position: relative; display: block; }
+.vs-vstup .input[type="password"], .vs-vstup .input[type="text"] { padding-right: 52px; }
+.vs-oko { position: absolute; right: 4px; top: 50%; translate: 0 -50%; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 12px; background: none; }
+.vs-oko .ikn { width: 22px; height: 22px; }
+.vs-oko[aria-pressed="true"] { background: var(--sun-l); }
+.vstup .link { font: 700 .9rem/1.3 var(--fb); }
+.vs-form .link { justify-self: end; margin-top: -8px; }
+.vstup .btn.wide { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn > .ikn.ikn-po { margin: -4px 0 -5px 2px; }
+.vs-alebo { display: flex; align-items: center; gap: 10px; margin: -4px 0; font: 700 .81rem/1 var(--fb); color: var(--muted); }
+.vs-alebo::before, .vs-alebo::after { content: ""; flex: 1; border-top: 2.5px dashed var(--sand); }
+.vstup .btn.google .g { width: 26px; height: 26px; border: var(--obrys-m); background: var(--card); color: var(--text); font: 800 .875rem/1 var(--fb); text-shadow: none; }
+.vs-info { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 12px; border: 2.5px dashed var(--ink); border-radius: 14px; }
+.vs-info p { margin: 0; font: 400 .875rem/1.4 var(--fb); }
+.vs-info .ikn { width: 22px; height: 22px; }
+.vstup .link.center { margin-top: 2px; }
+/* vek: jeden spojený prepínač s dvoma polovicami */
+.vstup .seg2, .up .seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: var(--obrys-m); border-radius: var(--r-pole); overflow: hidden; background: var(--card); }
+.vstup .seg2 button, .up .seg2 button { min-height: 50px; padding: 4px 6px 0; border: 0; border-radius: 0; background: none; box-shadow: none; font: 800 .94rem/1.1 var(--fd); color: var(--muted); }
+.vstup .seg2 button + button, .up .seg2 button + button { border-left: var(--obrys-m); }
+.vstup .seg2 button[aria-pressed="true"], .up .seg2 button[aria-pressed="true"] { background: var(--sun); color: var(--dk); box-shadow: inset 0 -4px 0 var(--sun-d); animation: none; }
+
+/* privítanie */
+.vs-sc.vs-sc-vitaj { height: 300px; }
+.vs-mudra { position: absolute; left: 6px; bottom: 6px; width: 128px; }
+.vs-mudra svg { display: block; width: 100%; height: auto; }
+.vs-rec { position: absolute; left: 14px; top: calc(46px + env(safe-area-inset-top, 0px)); max-width: 178px; margin: 0; animation: vsRec .5s var(--spring) both .4s; }
+@keyframes vsRec { from { opacity: 0; transform: scale(.85) translateY(6px); } }
+.vs-stred { justify-items: center; text-align: center; gap: 12px; }
+.vs-stred .logo { --ls: 3.4rem; margin-top: 6px; }
+.vs-stred .podtitul { margin-top: -6px; font-size: 1.1rem; color: var(--text); }
+.vs-stred .tx { max-width: 34ch; margin-bottom: 4px; }
+.vs-stred .btn.wide { width: 100%; }
+.vs-mala { margin: 0; font: 600 .81rem/1.3 var(--fb); color: var(--muted); }
+.brana.vs-stred { gap: 14px; justify-items: center; text-align: center; padding-top: 40px; }
+.brana.vs-stred .btn { width: 100%; }
+
+/* Kto sa dnes učí? */
+.vs-vyber .deti { gap: 12px; }
+.vs-vyber .dieta { gap: 4px; padding: 14px 8px 12px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.vs-vyber .dieta b { margin-top: 4px; font: 800 1.25rem/1.1 var(--fd); }
+.vs-vyber .dieta small { font: 600 .81rem/1.2 var(--fb); color: var(--muted); }
+.vs-vyber .dieta .st.cis { margin-top: 4px; }
+.vs-vyber .dieta.nove { border-style: dashed; background: var(--bg); box-shadow: none; }
+.vs-vyber .dieta-plus { width: min(118px, 100%); aspect-ratio: 1; border-radius: 50%;  display: grid; place-items: center; border: 3px dashed var(--muted); background: var(--card); }
+.vs-vyber .dieta-plus .ikn { width: 40%; height: 40%; }
+.vs-rodic { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); text-align: left; color: var(--text); }
+.vs-rodic .rodic-kruh, .vs-rodic-plus { width: 44px; aspect-ratio: 1; border-width: 2px; }
+.vs-rodic-plus { display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 50%; background: var(--sun-l); }
+.vs-rodic b { display: block; font: 700 1rem/1.2 var(--fb); }
+.vs-rodic small { display: block; font: 400 .81rem/1.3 var(--fb); color: var(--muted); }
+.vs-rodic > .ikn { width: 20px; height: 20px; }
+.vs-rodic:active { background: var(--sand); }
+.vs-ucet { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding-top: 4px; }
+.vs-ucet .tx { font-size: .875rem; overflow-wrap: anywhere; }
+
+/* ===== Rodičovská časť: pokojne, prehľadne, dospelo. Obrys 2 px, žiadne nakrivo položené prvky ani spodné tiene,
+   nadpisy Atkinson 700, čísla Grandstander, prepínače namiesto tlačidiel Zapnuté a Vypnuté ===== */
+.brana.rd { gap: 0; justify-items: stretch; text-align: left; padding-top: 0; font-family: var(--fb); }
+.rd-hl { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 10px; min-height: 60px; margin-top: -10px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; border-bottom: 2px solid var(--ink); background: var(--card); }
+.rd-hl .logo { --ls: 1.4rem; }
+.rd-kde { margin-right: auto; font: 700 .75rem/1 var(--fb); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rd-tl { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 12px 0 9px; border: 2px solid var(--ink); border-radius: 10px; background: var(--card); font: 700 .875rem/1 var(--fb); color: var(--text); }
+.rd-tl .ikn { width: 18px; height: 18px; }
+.rd-tl.rd-stv { width: 38px; padding: 0; justify-content: center; }
+.rd-tl:active { background: var(--sand); }
+.rd-telo { display: grid; gap: 18px; align-content: start; padding: 20px 0 8px; }
+.rd-stred { justify-items: center; text-align: center; }
+.rd-n { margin: 0; font: 700 1.56rem/1.15 var(--fb); letter-spacing: -.01em; text-wrap: balance; }
+.rd-p { margin: 4px 0 0; font: 400 .94rem/1.45 var(--fb); color: var(--muted); }
+.rd-blok { display: block; width: 100%; padding: 0; overflow: hidden; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); color: var(--text); text-align: left; font: inherit; }
+.rd-h { margin: 0; padding: 13px 14px 9px; font: 700 .75rem/1.2 var(--fb); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.rd-h.rd-h2 { padding-top: 14px; border-top: 1.5px solid var(--sand); }
+.rd-riadok { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 52px; padding: 10px 14px; border: 0; border-top: 1.5px solid var(--sand); background: none; color: var(--text); text-align: left; font: inherit; }
+.rd-blok > .rd-riadok:first-child, .rd-h + .rd-riadok { border-top: 0; }
+button.rd-riadok:active, button.rd-dieta:active { background: var(--bg); }
+.rd-riadok > .ikn { width: 22px; height: 22px; }
+.rd-riadok > .kruh-av { flex: none; width: 38px; aspect-ratio: 1; border-width: 2px; }
+.rd-riadok .pr-ik { flex: none; display: grid; place-items: center; width: 30px; height: 30px; }
+.rd-riadok .pr-ik svg { width: 24px; height: 24px; }
+.rd-t { flex: 1; min-width: 0; font: 400 .94rem/1.35 var(--fb); }
+.rd-t b { display: block; font-weight: 700; overflow-wrap: anywhere; }
+.rd-t small { display: block; font: 400 .81rem/1.35 var(--fb); color: var(--muted); overflow-wrap: anywhere; }
+.rd-sip { width: 20px; height: 20px; color: var(--muted); }
+.rd-akc { flex: none; padding: 8px 2px; border: 0; background: none; font: 700 .875rem/1 var(--fb); color: var(--link); white-space: nowrap; }
+.rd-akc + .rd-akc { margin-left: 8px; }
+.rd-akc.cerv { color: var(--zle-t); }
+.rd-den { flex: none; font: 700 .78rem/1 var(--fb); color: var(--muted); }
+.rd-pozn { margin: 0; padding: 2px 14px 13px; font: 400 .81rem/1.45 var(--fb); color: var(--muted); }
+.rd-h + .rd-pozn { padding-top: 0; }
+.rd-riadok + .rd-pozn { padding-top: 8px; border-top: 1.5px solid var(--sand); }
+.rd-vnutri { padding: 4px 14px 14px; }
+.rd-vpravo { display: flex; justify-content: flex-end; }
+.rd-form { display: grid; gap: 14px; padding: 14px; }
+.rd-blok.rd-form .btn, .rd-vnutri .btn { justify-self: start; }
+.rd-potvrd { padding: 0 14px 14px; }
+.rd-potvrd .rd-p { margin: 0 0 10px; color: var(--text); }
+.rd-ano { display: flex; flex-wrap: wrap; gap: 10px; }
+.rd-nebez { border-color: var(--coral-d); }
+.rd-nebez .rd-h { color: var(--zle-t); }
+.rd-verzia { margin: 0; font: 400 .81rem/1 var(--fb); color: var(--muted); text-align: center; }
+/* tlačidlá v rodičovskej časti: rovné, bez spodného tieňa */
+.rd .btn { min-height: 46px; padding: 10px 18px 12px; border-width: 2px; border-radius: 12px; box-shadow: inset 0 -4px 0 var(--cta-d); font-size: 1rem; }
+.rd .btn::before { display: none; }
+.rd .btn:active { transform: translateY(2px); box-shadow: inset 0 -2px 0 var(--cta-d); }
+/* prepínač */
+.rd-prep { flex: none; position: relative; width: 54px; height: 32px; padding: 0; border: 2px solid var(--ink); border-radius: 999px; background: var(--sand); transition: background-color .2s; }
+.rd-prep i { position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); transition: left .2s var(--spring); }
+.rd-prep[aria-pressed="true"] { background: var(--teal); }
+.rd-prep[aria-pressed="true"] i { left: 25px; }
+.rd-prep:focus-visible { outline-offset: 3px; }
+/* panel: karty detí s rovnakou tabuľkou štyroch čísel */
+.rd-dieta { cursor: pointer; }
+.rd-dieta-h { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.rd-dieta-h > .kruh-av { flex: none; width: 52px; aspect-ratio: 1; border-width: 2px; }
+.rd-dieta-h .rd-t b { font-size: 1.19rem; line-height: 1.15; }
+.rd-dieta-h.rd-vel { padding: 0; }
+.rd-dieta-h.rd-vel > .kruh-av { width: 64px; }
+.rd-cisla { display: grid; grid-template-columns: 1fr 1fr; border-top: 1.5px solid var(--sand); }
+.rd-cisla > span { padding: 10px 14px 9px; border-bottom: 1.5px solid var(--sand); }
+.rd-cisla > span:nth-child(odd) { border-right: 1.5px solid var(--sand); }
+.rd-cisla b { display: block; font: 800 1.31rem/1.1 var(--fd); }
+.rd-cisla small { display: block; font: 400 .81rem/1.3 var(--fb); color: var(--muted); }
+.rd-tyzd { display: flex; align-items: center; gap: 6px; padding: 10px 14px 11px; font: 400 .81rem/1 var(--fb); color: var(--muted); }
+.rd-tyzd > span { margin-right: 4px; }
+.rd-tyzd i { width: 15px; height: 15px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.rd-tyzd i.h { background: var(--teal); }
+.rd-tyzd i.dn { box-shadow: 0 0 0 2.5px var(--sun); }
+/* prehľad (aj v karte Ja, keď ešte nie je účet rodiča) */
+.rd-prehlad { gap: 14px; }
+.rd-prehlad .rd-blok .btn { justify-self: start; }
+.rd-hlasy { padding: 0 14px 12px; }
+.rd-hlasy .hlasy { margin: 0; }
+.rd-hlasy .hlas { border-width: 2px; box-shadow: none; }
+/* panel pre rodiča: meno a obrázok na zamknutý panel */
+.rodic-kruh { display: grid; place-items: center; align-items: center; }
+.rodic-kruh .ik { width: 62%; height: auto; }
+.rodic-ikony { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; width: 100%; }
+.rodic-ikony button { aspect-ratio: 1; padding: 6px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 12px; background: var(--card); }
+.rodic-ikony button[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 0 0 3px var(--sun); }
+.rodic-ikony button .ik { width: 100%; height: auto; }
+@media (max-width: 380px) { .rodic-ikony { grid-template-columns: repeat(3, 1fr); } .rodic-ikony button { aspect-ratio: auto; height: 64px; } .rodic-ikony button .ik { width: 44px; } }
+/* PIN rodiča */
+.rd-pin-hl { display: grid; justify-items: center; gap: 4px; }
+.rd-pin-hl .rd-p { margin: 0; min-height: 1.45em; }
+.rodic-brana-kruh { width: 84px; margin-bottom: 6px; }
+.rodic-brana-kruh .rodic-kruh { width: 100%; aspect-ratio: 1; border-width: 2px; }
+.pin-bodky { display: flex; gap: 16px; justify-content: center; padding: 6px 0; }
+.pin-bodky i { width: 20px; height: 20px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); transition: transform .12s, background-color .12s; }
+.pin-bodky i.plna { background: var(--violet); transform: scale(1.12); }
+.pin-bodky.trasie { animation: shake .45s; }
+.pin-bodky.trasie i { background: var(--coral-l); border-color: var(--coral-d); }
+.rd-pin .chyba { text-align: center; }
+.pin-klavesnica { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(300px, 100%); margin: 0 auto; }
+.pin-klavesnica button { aspect-ratio: 1.45; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); font: 700 1.75rem/1 var(--fd); color: var(--text); }
+.pin-klavesnica button:active { background: var(--sun-l); transform: scale(.96); }
+.pin-klavesnica button:disabled { opacity: .45; }
+.pin-klavesnica button .ik { width: 32px; height: 32px; }
+.pin-klavesnica .prazdne { visibility: hidden; }
+.rodic-pauza { margin: 0; font: 700 .94rem/1.3 var(--fb); color: var(--zle-t); }
+
+/* širší displej: krajina vstupu ako ilustrácia s rohmi, panel rodiča v strede */
+@media (min-width: 600px) {
+  .vs-sc { margin-inline: 0; margin-top: 12px; border: var(--obrys); border-radius: var(--r-karta); }
+  .vs-telo { padding-top: 24px; }
+  .rd-hl { margin-inline: 0; margin-top: 0; border: 2px solid var(--ink); border-radius: 0 0 14px 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vs-zast, .vs-telo, .vs-rec, .rd-prep, .rd-prep i, .pin-bodky i { animation: none !important; transition: none !important; }
+}
+/* vstup a rodičovská časť: pozadie je pokojný papier bez čmáraníc (vzor si dieťa vyberá až v appke) */
+body:has(.brana.vstup, .brana.rd) .blobs { visibility: hidden; }
+.rd-hlasy .hlas { border: 2px solid var(--ink); border-radius: 12px; background: var(--card); box-shadow: none; }
+.rd-hlasy .hlas[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 0 0 3px var(--sun); }
+.rd-hlasy .hlas b { font: 700 .94rem/1.2 var(--fb); }
+.rd-hlasy .hlas small { font: 400 .78rem/1.3 var(--fb); }
+.rd-hlasy .muted, .rd-hlasy .rada { margin: 8px 0 0; font: 400 .81rem/1.45 var(--fb); color: var(--muted); }

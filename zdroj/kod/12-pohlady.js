@@ -59,45 +59,46 @@ const views = {
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
   anglictina: () => Ang.render(),
+  // 5.0 Ja: preukaz objaviteľa s fotkou postavičky, kruh prebratých tém, zbierka (kartaOdznakov robí sekcia odznakov), nastavenia vzhľadu,
+  // sprievodca, kategórie, uložené témy a rodina
   ja() {
-    const vsetky = TV().length, h = TV().filter(t => st.done.includes(t.id)).length, s = seria(), obvod = 326.7;
-    const f = st.fav.map(byId).filter(Boolean), C = window.Cloud;
-    return `<div class="prof-top"><button class="av-ja kruh-av" data-upravit aria-label="Upraviť postavičku" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</button>
-        <div class="prof-meno"><h1 class="h1">${esc(st.meno)}</h1><span class="chip" style="--c:#4C7DFF">${vekText(st.vek)}</span></div></div>
-      <button class="btn wide" data-upravit>${ii(IK.ceruzka)} Upraviť postavičku, meno a vek</button>
-      <section class="stats">
-        <div class="card ringc">
-          <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--text)" stroke-width="18"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" style="stroke:var(--grass)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}"/></svg><b>${h}/${vsetky}</b></div>
-          <div><b class="lbl" style="font-size:1.3rem">Prebraté témy</b><br><small>${h === vsetky ? 'Všetky! Si skvelý.' : 'Každá téma pridá body a kúsok kruhu.'}</small></div>
-        </div>
-        <div class="card mini" style="--c:#FFF0B3"><b>${ii(STAR())} ${st.body}</b><small>bodov</small></div>
-        <div class="card mini" style="--c:#FFE3C7"><b>${ii(IK.ohen)} ${s}</b><small>${dni(s)} po sebe</small></div>
+    const vsetky = TV().length, h = TV().filter(t => st.done.includes(t.id)).length, s = seria(), obvod = 263.9;
+    const f = st.fav.map(byId).filter(Boolean), C = window.Cloud, k = kats().sort((a, b) => b.hotovo / b.n - a.hotovo / a.n);
+    const katRiadok = x => `<div class="ja-kat-r" style="--pc:${x.c}"><span>${x.nazov}</span><b class="cis">${x.hotovo}/${x.n}</b><div class="pruh"><i style="width:${Math.round(x.hotovo / x.n * 100)}%"></i></div></div>`;
+    return `<section class="ja-preukaz prof-top"><div class="ja-preukaz-hl"><span>Preukaz objaviteľa</span>${logo()}</div>
+        <button class="ja-foto kruh-av" data-upravit aria-label="Upraviť postavičku" style="--bg:${st.avatar.pozadie}">${postavicka(st.avatar)}</button>
+        <div class="ja-udaje"><h1 class="n0">${esc(st.meno)}</h1><span class="st">${vekText(st.vek)}</span>
+          <span class="ja-rad"><span class="st cis">${ikn('hviezda')}${st.body}</span><span class="st cis">${ikn('plamen')}${s} ${dni(s)}</span></span></div>
+        <button class="btn dve maly wide ja-uprav" data-upravit>${ikn('ceruzka')}Upraviť postavičku, meno a vek</button></section>
+      <section class="ja-kruh">
+        <div class="ja-ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--sand)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--leaf)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}" transform="rotate(-90 50 50)"/></svg><b class="cis">${h}</b></div>
+        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá body a kúsok kruhu.`}</p></div>
       </section>
       ${kartaOdznakov()}
-      ${Rezim.karta()}
-      ${Pozadie.karta()}
-      <button class="card spr-karta" data-sprievodca>${owl('hi')}<span><b>Sprievodca appkou</b><small>Sovička ti znova ukáže, čo kde je.</small></span><span class="auto-play">${IKO.play}</span></button>
+      <div class="ja-vzhlad">${Rezim.karta()}${Pozadie.karta()}</div>
+      <button class="ja-spr spr-karta" data-sprievodca><span class="ja-spr-sova">${mudra('ahoj', { tien: false })}</span><span class="odkaz"><b>Sprievodca appkou</b>Znova ti ukážem, čo kde je.</span><span class="btn kruh mud" aria-hidden="true">${ikn('hraj')}</span></button>
       ${maRodica() ? '' : prehladRodica()}
-      <section class="sec"><h2 class="h2" style="--hc:#B36BFF">Podľa kategórií</h2>
-        <div class="card prog">${kats().map(k => `<div class="prog-r" style="--c:${k.c}"><span class="ico">${ikKat(k.id)}</span><span>${k.nazov}</span><b>${k.hotovo}/${k.n}</b><div class="bar"><i style="width:${Math.round(k.hotovo / k.n * 100)}%"></i></div></div>`).join('')}</div>
+      <section class="karta ja-kat"><span class="zal" style="--c:var(--sky-l)">Podľa kategórií</span>
+        ${k.slice(0, 4).map(katRiadok).join('')}
+        ${k.length > 4 ? `<details class="ja-viac"><summary>Všetkých ${k.length} kategórií${ikn('dole')}</summary>${k.slice(4).map(katRiadok).join('')}</details>` : ''}
       </section>
-      <section class="sec"><h2 class="h2" style="--hc:#FF5A5F">Uložené témy</h2>
+      <section class="sec"><div class="ja-nh"><h2 class="n1">Uložené témy</h2><small class="cis">${f.length || ''}</small></div>
         ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ${ii(IK.srdcePrazdne)} a nájdeš ju tu.</span></div>`}
       </section>
       ${Zvuk.ios ? `<section class="card prof">
         <span class="lbl">Zvuky</span>
-        <div class="tests"><button class="btn blue" data-test-zvuk="web">${ii(IK.repro)} Test 1</button><button class="btn" data-test-zvuk="subor">${ii(IK.repro)} Test 2</button></div>
+        <div class="tests"><button class="btn mud" data-test-zvuk="web">${ikn('zvuk')}Test 1</button><button class="btn" data-test-zvuk="subor">${ikn('zvuk')}Test 2</button></div>
         <p class="muted">Ťuknite na oba testy a vyberte ten, ktorý počujete:</p>
         <div class="seg2"><button data-sposob="web" aria-pressed="${Zvuk.sposob === 'web'}">Počujem Test 1</button><button data-sposob="subor" aria-pressed="${Zvuk.sposob === 'subor'}">Počujem Test 2</button></div>
         <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
       </section>` : ''}
-      <section class="card prof"><span class="lbl">${ii(IK.rodina)} Rodina</span>
-        ${maRodica() ? `<div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button></div>` : `<p class="muted">Účet: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b><br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
-        <div class="tests"><button class="btn blue" data-deti>Zmeniť dieťa</button><button class="btn ghost" data-ucet="odhlas">Odhlásiť sa</button></div>
-        <button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button>
-        ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}`}
+      <section class="ja-rodina"><span class="dop">Rodina</span>
+        ${maRodica() ? `<div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button></div>` : `<p class="tx">Účet rodiča: ${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}<br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
+        <div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button><button class="btn dve maly" data-ucet="odhlas">${ikn('odhlas')}Odhlásiť sa</button></div>
+        <button class="btn dve maly wide" data-rodic-novy>${ikn('kluc')}Vytvoriť účet rodiča</button>
+        ${Plocha.naPloche() ? '' : `<button class="btn dve maly wide" data-plocha>${ikn('domov')}Pridať appku na plochu</button>`}`}
       </section>
-      <p class="muted" style="font-size:.85rem">${maRodica() ? '' : `Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>`}Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
+      <p class="ja-pata">${maRodica() ? '' : `Verzia appky ${VERZIA_NAZOV} · ${vsetky} tém. Pokrok každého dieťaťa sa ukladá do cloudu k účtu rodiča.<br>`}Obrázky emoji: <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> (licencia CC BY-SA 4.0).</p>`;
   },
 };
 
