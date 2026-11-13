@@ -5,7 +5,7 @@ document.addEventListener('click', e => {
   const sova = e.target.closest('[data-sova]');
   if (sova) {
     Zvuk.play('hoot'); vibruj(30);
-    const o = sova.querySelector('.owl'); if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
+    const o = sova.querySelector('.owl'); if (o && o.classList.contains('mudra')) Mudra.tukni(o); else if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
     const [x, y] = stred(sova); FX.burst(x, y, 14, ['star', 'dot'], 6);
     return;
   }

@@ -2697,6 +2697,113 @@ body.auto-rezim .blobs { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .pas-pol.cerstva .pas-pec::before, .pas-pol.prevzaty .pas-pec, .odm-pec, .os-stredna, .osr-luce g, .osr-list, .osr-pec, .osr-mud, .osr-karta, .mala-plus, .stopa, #body.roll { animation: none !important; }
 }
+/* ============ Múdra 5.0: živé pohyby (kód v kod/24-mudra.js, vrstvy mz-* kreslí mudra() v obrazky.js) ============
+   Triedy dáva kód: .mz-zije (Múdra je na obrazovke a pohyb nie je obmedzený), .mz-mimo (mimo obrazovky, stojí),
+   .mz-p-<pohyb> (jedna reakcia), .mz-huk (zahúka), .mz-spi (spí); na <html> .mz-pauza (okno je skryté).
+   Hýbe sa len transform (aj vlastnosť scale) a opacity. Pokoj sú dlhé cykly s krátkym pohybom, aby sa SVG väčšinu času neprekresľovalo. */
+svg.mudra { overflow: visible; }
+.mudra .mz-cele { transform-box: fill-box; transform-origin: 50% 100%; }
+.mudra .mz-hlava { transform-box: fill-box; transform-origin: 50% 92%; }
+.mudra .mz-oko { transform-box: fill-box; transform-origin: 50% 50%; }
+.mudra .mz-zob { transform-box: fill-box; transform-origin: 50% 10%; }
+.mudra .mz-pierko { transform-box: fill-box; transform-origin: 8% 100%; }
+.mudra .mz-satka { transform-box: fill-box; transform-origin: 30% 0%; }
+.mudra .mz-extra { transform-box: fill-box; transform-origin: 50% 50%; }
+.mudra .mz-zzz path { transform-box: fill-box; transform-origin: 50% 50%; }
+/* staré žmurkanie len zrenicou nahrádza žmurknutie celým okom */
+.mudra .ow-blink { animation: none; }
+
+/* ---------- pokoj ---------- */
+/* dýchanie: celé SVG cez vlastnosť scale (ide na grafickej karte a nebije sa s cudzími animáciami transform) */
+:where(svg.mudra.mz-zije) { transform-origin: 50% 96%; animation: mzDych 3.7s ease-in-out var(--mzd, 0s) infinite; }
+.mz-zije .mz-otv { animation: mzZmurk 6.3s linear var(--mzd, 0s) infinite; }
+.mz-zije .mz-otv .ow-blink { animation: mzPozri 11.5s ease-in-out var(--mzd, 0s) infinite; }
+.mz-zije .mz-hlava { animation: mzHlava 13s ease-in-out var(--mzd, 0s) infinite; }
+.mz-zije .mz-pierko { animation: mzPierko 8.5s ease-out var(--mzd, 0s) infinite; }
+.mz-zije .mz-satka { animation: mzSatka 3.3s ease-in-out var(--mzd, 0s) infinite alternate; }
+/* pokoj podľa výrazu */
+.mz-zije[data-v="zvedava"] .mz-hlava { animation: mzHlavaZv 6.5s ease-in-out var(--mzd, 0s) infinite; }
+.mz-zije[data-v="premysla"] .mz-hlava { animation: mzHlavaMysli 5s ease-in-out infinite alternate; }
+.mz-zije[data-v="radost"] .mz-cele { animation: mzPoskok 4.2s ease-out var(--mzd, 0s) infinite; }
+.mz-zije[data-v="oslava"] .mz-cele { animation: mzPoskok2 3.4s ease-out var(--mzd, 0s) infinite; }
+.mz-zije[data-v="povzbudenie"] .ow-wr { animation: mzHladka 3.6s ease-in-out var(--mzd, 0s) infinite; }
+.mz-zije[data-v="radost"] .mz-extra, .mz-zije[data-v="oslava"] .mz-extra { animation: mzIskri 1.8s ease-in-out infinite alternate; }
+.mz-zije[data-v="povzbudenie"] .mz-extra { animation: mzBije 1.6s ease-in-out infinite; }
+.mz-zije[data-v="zvedava"] .mz-extra { transform-origin: 50% 100%; animation: mzLupa 4s ease-in-out infinite; }
+.mz-zije[data-v="premysla"] .mz-extra { animation: mzPlava 3s ease-in-out infinite alternate; }
+
+@keyframes mzDych { 50% { scale: 1.016 .984; } }
+@keyframes mzZmurk { 0%, 44%, 47.5%, 86%, 89%, 92.5%, 100% { transform: none; } 45.6%, 87.4%, 90.8% { transform: scaleY(.1); } }
+@keyframes mzPozri { 0%, 26%, 50%, 62%, 84%, 100% { transform: none; } 30%, 46% { transform: translate(3px, -2px); } 66%, 80% { transform: translate(-3px, 1px); } }
+@keyframes mzHlava { 0%, 52%, 82%, 100% { transform: none; } 58%, 74% { transform: rotate(-5deg); } 78% { transform: rotate(1deg); } }
+@keyframes mzHlavaZv { 0%, 30%, 85%, 100% { transform: none; } 38%, 70% { transform: rotate(-8deg) translateY(-2px); } 76% { transform: rotate(-3deg); } }
+@keyframes mzHlavaMysli { from { transform: rotate(1deg); } to { transform: rotate(5deg); } }
+@keyframes mzPierko { 0%, 78%, 100% { transform: none; } 82% { transform: rotate(-12deg); } 87% { transform: rotate(7deg); } 92% { transform: rotate(-3deg); } }
+@keyframes mzSatka { from { transform: rotate(-5deg); } to { transform: rotate(7deg); } }
+@keyframes mzPoskok { 0%, 70%, 100% { transform: none; } 74% { transform: scale(1.06, .93); } 80% { transform: translateY(-12px) scale(.97, 1.04); } 86% { transform: scale(1.04, .95); } 90% { transform: none; } }
+@keyframes mzPoskok2 { 0%, 50%, 100% { transform: none; } 54%, 72% { transform: scale(1.07, .92); } 61% { transform: translateY(-16px) rotate(-5deg); } 79% { transform: translateY(-16px) rotate(5deg); } 86% { transform: scale(1.05, .94); } 91% { transform: none; } }
+@keyframes mzHladka { 0%, 40%, 100% { transform: none; } 50%, 70% { transform: rotate(14deg); } 60%, 80% { transform: rotate(2deg); } }
+@keyframes mzIskri { from { transform: scale(.94); opacity: .75; } to { transform: scale(1.05); opacity: 1; } }
+@keyframes mzBije { 0%, 40%, 100% { transform: none; } 12% { transform: scale(1.08); } 24% { transform: scale(.98); } }
+@keyframes mzLupa { 0%, 60%, 100% { transform: none; } 70% { transform: translate(-4px, -3px) rotate(-6deg); } 85% { transform: translate(-4px, -3px) rotate(4deg); } }
+@keyframes mzPlava { from { transform: translateY(2px); } to { transform: translateY(-5px); } }
+
+/* ---------- reakcie (jedna trieda .mz-p-*, kód ju po skončení zoberie) ---------- */
+.mudra.mz-p-hop .mz-cele { animation: mzHop .72s cubic-bezier(.3, .7, .4, 1); }
+.mudra.mz-p-hop2 .mz-cele { animation: mzHop2 1s ease-out; }
+.mudra.mz-p-tocka .mz-cele { animation: mzTocka .85s ease-in-out; }
+.mudra.mz-p-tras .mz-cele { animation: mzTras .75s ease-in-out; }
+.mudra.mz-p-skrc .mz-cele { animation: mzSkrc .8s cubic-bezier(.3, .7, .4, 1); }
+.mudra.mz-p-skrc .mz-otv { animation: mzOciVelke .8s ease-out; }
+.mudra.mz-p-oslava .mz-cele { animation: mzOslava 1.3s ease-out; }
+.mudra.mz-p-pohlad .mz-cele { animation: mzNaklon 1.5s ease-in-out; }
+.mudra.mz-p-pohlad .ow-wr { animation: mzPohlad 1.5s ease-in-out; }
+.mudra.mz-p-zved .mz-cele { animation: mzZved .9s ease-out; }
+.mudra.mz-p-zved .mz-hlava { animation: mzZvedHlava 1.2s ease-in-out; }
+.mudra.mz-p-mysli .mz-hlava { animation: mzZvedHlava 1.4s ease-in-out reverse; }
+.mudra.mz-p-mysli .mz-extra > * { animation: mzBublina .5s cubic-bezier(.3, 1.6, .5, 1) backwards; transform-box: fill-box; transform-origin: 50% 50%; }
+.mudra.mz-p-mysli .mz-extra > :nth-child(2) { animation-delay: .25s; }
+.mudra.mz-p-mysli .mz-extra > :nth-child(3) { animation-delay: .5s; }
+.mudra.mz-p-mav .mz-cele { animation: mzMav 1.1s ease-in-out; }
+.mudra.mz-p-mav .mz-hlava { animation: mzZvedHlava 1.1s ease-in-out reverse; }
+.mudra.mz-p-usad .mz-cele { animation: mzUsad .5s ease-out; }
+.mudra.mz-huk .mz-zob { animation: mzHuk .7s ease-out; }
+
+@keyframes mzHop { 0%, 100% { transform: none; } 15% { transform: scale(1.1, .88); } 40% { transform: translateY(-26px) scale(.94, 1.08); } 58% { transform: translateY(-28px) scale(.98, 1.02); } 80% { transform: scale(1.08, .92); } 90% { transform: scale(.98, 1.02); } }
+@keyframes mzHop2 { 0%, 100% { transform: none; } 10%, 50% { transform: scale(1.07, .91); } 28% { transform: translateY(-18px) scale(.96, 1.05); } 70% { transform: translateY(-14px) scale(.97, 1.04); } 88% { transform: scale(1.05, .95); } }
+@keyframes mzTocka { 0%, 100% { transform: none; } 14% { transform: scale(1.08, .9); } 32% { transform: translateY(-16px) scale(.25, 1.05); } 50% { transform: translateY(-22px) scale(-1, 1); } 68% { transform: translateY(-14px) scale(.25, 1.03); } 86% { transform: scale(1.06, .94); } }
+@keyframes mzTras { 0%, 100% { transform: none; } 14% { transform: rotate(-9deg); } 30% { transform: rotate(8deg); } 46% { transform: rotate(-6deg); } 62% { transform: rotate(4deg); } 78% { transform: rotate(-2deg); } }
+@keyframes mzSkrc { 0%, 100% { transform: none; } 18% { transform: scale(1.14, .82); } 42% { transform: translateY(-18px) scale(.9, 1.14); } 66% { transform: scale(1.05, .95); } 82% { transform: scale(.99, 1.01); } }
+@keyframes mzOciVelke { 0%, 100% { transform: none; } 30%, 60% { transform: scale(1.14); } }
+@keyframes mzOslava { 0%, 100% { transform: none; } 8%, 44% { transform: scale(1.1, .88); } 26% { transform: translateY(-32px) rotate(-8deg) scale(.95, 1.06); } 64% { transform: translateY(-26px) rotate(8deg) scale(.96, 1.05); } 84% { transform: scale(1.07, .93); } 93% { transform: scale(.99, 1.01); } }
+@keyframes mzNaklon { 0%, 100% { transform: none; } 25%, 75% { transform: translateX(4px) rotate(5deg); } }
+@keyframes mzPohlad { 0%, 100% { transform: none; } 25%, 55% { transform: rotate(16deg); } 40%, 70% { transform: rotate(2deg); } }
+@keyframes mzZved { 0%, 100% { transform: none; } 30% { transform: translateY(-7px) scale(.97, 1.05); } 60% { transform: scale(1.02, .98); } }
+@keyframes mzZvedHlava { 0%, 100% { transform: none; } 30%, 70% { transform: rotate(-10deg); } }
+@keyframes mzBublina { from { transform: scale(0); opacity: 0; } }
+@keyframes mzMav { 0%, 100% { transform: none; } 20%, 60% { transform: translateY(-5px) rotate(-3deg); } 40%, 80% { transform: rotate(2deg); } }
+@keyframes mzUsad { 0%, 100% { transform: none; } 40% { transform: scale(1.05, .94); } }
+@keyframes mzHuk { 0%, 30%, 49%, 80%, 100% { transform: none; } 12%, 60% { transform: scale(1.12, 1.35); } }
+
+/* ---------- spánok (Mesačný režim alebo večer, po chvíli bez dotyku) ---------- */
+:where(svg.mudra.mz-spi) { animation-duration: 5.6s; }
+.mudra.mz-spi .mz-oko { animation: mzZaspi 1.6s ease-in forwards; }
+.mudra.mz-spi .mz-hlava { animation: mzKyva 5.6s ease-in-out .8s infinite alternate backwards; }
+.mudra.mz-spi .ow-wl, .mudra.mz-spi .ow-wr, .mudra.mz-spi .ow-blink { animation: none; }
+.mudra .mz-zzz path { opacity: 0; }
+.mudra.mz-spi .mz-zzz path { animation: mzZzz 3.6s ease-out 1.4s infinite; }
+.mudra.mz-spi .mz-zzz path:nth-child(2) { animation-delay: 2.6s; }
+.mudra.mz-spi .mz-zzz path:nth-child(3) { animation-delay: 3.8s; }
+@keyframes mzZaspi { 0% { transform: none; } 35% { transform: scaleY(.45); } 50% { transform: scaleY(.75); } 100% { transform: scaleY(.1); } }
+@keyframes mzKyva { from { transform: rotate(3deg); } to { transform: rotate(8deg) translateY(2px); } }
+@keyframes mzZzz { 0% { opacity: 0; transform: translate(0, 6px) scale(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(14px, -26px) scale(1.1); } }
+
+/* ---------- stop: skryté okno, mimo obrazovky, obmedzený pohyb ---------- */
+.mz-pauza .mudra, .mz-pauza .mudra *, .mudra.mz-mimo, .mudra.mz-mimo * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .mudra, .mudra * { animation: none !important; }
+  .mudra .mz-zzz { display: none; }
+}
 </style>
 </head>
 <body>
@@ -4537,8 +4644,8 @@ const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if 
 // Múdra v lište hry reaguje: radosť, povzbudenie, oslava; po chvíli sa vráti k zvedavému pohľadu
 function mudraHra(v, ms = 1500) {
   const el = document.getElementById('hra-mud'); if (!el) return;
-  clearTimeout(el._t); el.innerHTML = mudra(v); el.classList.remove('reaguje'); void el.offsetWidth; el.classList.add('reaguje');
-  el._t = setTimeout(() => { if (el.isConnected !== false) { el.innerHTML = mudra('zvedava'); el.classList.remove('reaguje'); } }, ms);
+  clearTimeout(el._t); Mudra.reaguj(el, v); el.classList.remove('reaguje'); void el.offsetWidth; el.classList.add('reaguje');
+  el._t = setTimeout(() => { if (el.isConnected !== false) { Mudra.zmen(el, 'zvedava'); el.classList.remove('reaguje'); } }, ms);
 }
 
 // Lietajúca sova: svet hry (obloha, ceruzky, hviezdy) a jeden krok fyziky; kreslenie je v Hra.sovaKresli
@@ -6120,6 +6227,7 @@ function renderFlow(anim = true) {
 // efekty po odpovedi (zvuk, konfety z Múdrej, štítok s bodmi letí do počítadla); stav už vykreslil renderFlow(false)
 function reakciaOdpovede(f, ok, v) {
   const h = main.querySelector('.harok');
+  Mudra.reaguj(main.querySelector('.rk-mud'), ok ? 'oslava' : 'povzbudenie', { oneskorenie: ok ? 750 : 450 });
   if (h && h.scrollIntoView) setTimeout(() => h.isConnected && h.scrollIntoView({ block: 'nearest', behavior: tiche ? 'auto' : 'smooth' }), 150);
   if (ok) {
     Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); Haptika.hraj(f.precvic ? 'spravne' : 'hotovo');
@@ -7440,7 +7548,7 @@ document.addEventListener('click', e => {
   const sova = e.target.closest('[data-sova]');
   if (sova) {
     Zvuk.play('hoot'); vibruj(30);
-    const o = sova.querySelector('.owl'); if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
+    const o = sova.querySelector('.owl'); if (o && o.classList.contains('mudra')) Mudra.tukni(o); else if (o) { o.classList.remove('jump'); void o.getBoundingClientRect(); o.classList.add('jump'); }
     const [x, y] = stred(sova); FX.burst(x, y, 14, ['star', 'dot'], 6);
     return;
   }
@@ -7658,6 +7766,164 @@ render();
 setTimeout(() => Uvod.skry(), 3600);
 // keď sa Firebase do chvíle nenačíta (prvé spustenie bez internetu), povieme to
 setTimeout(() => { if (!window.Cloud && st.faza === 'nacitava') { st.faza = 'bezNetu'; render(); } }, 9000);
+// ============ Múdra 5.0: živé pohyby (štýly v styly/59-mudra.css, kresba mudra() v obrazky.js) ============
+// Rozhranie pre sekcie:
+//   Mudra.reaguj(prvok, vyraz, { oneskorenie })  plynule zmení výraz (ak treba) a zahrá k nemu pohyb
+//   Mudra.zmen(prvok, vyraz)                      len plynulá zmena výrazu (oči sa otvoria do nového, krídla dorovnajú uhol)
+//   Mudra.tukni(prvok)                            ťuknutie: zahúka a poskočí, zakaždým trochu inak
+// prvok je <svg class="mudra"> alebo prvok, v ktorom je. Každá nová Múdra na obrazovke dostane sama pokoj (dýcha, žmurká,
+// obzerá sa) a krátky nástup podľa výrazu; mimo obrazovky a pri skrytom okne stojí, pri obmedzení pohybu sa nehýbe vôbec.
+const Mudra = (() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const mm = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  const ticho = () => mm.matches;
+  const dom = () => typeof document === 'object' && typeof document.createElementNS === 'function'; // test beží bez skutočného DOM
+  // pohyb, ktorý patrí k výrazu, a dĺžky pohybov (ms), po ktorých sa trieda zoberie
+  const POHYB = { ahoj: 'mav', stoji: 'usad', radost: 'hop', oslava: 'oslava', povzbudenie: 'pohlad', zvedava: 'zved', premysla: 'mysli' };
+  const DLZKA = { mav: 1100, usad: 500, hop: 720, hop2: 1000, oslava: 1300, pohlad: 1500, zved: 1200, mysli: 1400, tocka: 850, tras: 750, skrc: 800 };
+  const TUK = ['hop', 'tocka', 'tras', 'skrc', 'hop2'];
+  const SPANOK_MS = 30000;
+  const sledovane = new Set(), nastupy = new Map();
+  let io = null, tukPosl = -1, spi = false, casSpanku = 0;
+
+  const svgZ = el => !el ? null : el.matches && el.matches('svg.mudra') ? el : el.querySelector ? el.querySelector('svg.mudra') : null;
+  const vyrazy = () => (typeof VYRAZY === 'object' ? VYRAZY : {});
+
+  // zapne pokoj a sledovanie, či je Múdra na obrazovke
+  function priprav(s, nastup) {
+    if (s.dataset.mz) return;
+    s.dataset.mz = '1';
+    if (!s.style.getPropertyValue('--mzd')) s.style.setProperty('--mzd', (-Math.random() * 9).toFixed(2) + 's');
+    if (ticho()) return;
+    s.classList.add('mz-zije');
+    if (io) { io.observe(s); sledovane.add(s); }
+    if (spi) uspi(s);
+    else if (nastup) {
+      // ten istý nástup na tom istom mieste najviac raz za 6 s (render sa opakuje)
+      const k = (s.parentNode && s.parentNode.getAttribute && s.parentNode.getAttribute('class') || '') + '|' + s.dataset.v, t = Date.now();
+      if (t - (nastupy.get(k) || 0) > 6000) { nastupy.set(k, t); pohyb(s, POHYB[s.dataset.v]); }
+    }
+  }
+
+  function pohyb(s, typ) {
+    if (!s || !typ || ticho()) return;
+    for (const c of [...s.classList]) if (c.startsWith('mz-p-')) s.classList.remove(c);
+    void s.getBoundingClientRect();
+    const c = 'mz-p-' + typ; s.classList.add(c);
+    clearTimeout(s._mzt); s._mzt = setTimeout(() => s.classList.remove(c), (DLZKA[typ] || 900) + 50);
+  }
+
+  // nová kresba s rovnakými doplnkami a rozmermi, s plynulým prechodom
+  function zmen(el, v) {
+    const s = svgZ(el), V = vyrazy();
+    if (!s || !V[v] || typeof mudra !== 'function') return s;
+    if (!s.dataset || s.dataset.v === v) return s;
+    if (!dom()) { if (el !== s) el.innerHTML = mudra(v); return s; } // bez skutočného DOM (test)
+    const t = document.createElementNS(NS, 'svg');
+    t.innerHTML = mudra(v, { extra: s.dataset.x === '1', tien: s.dataset.t === '1' });
+    const n = t.firstElementChild; if (!n) return s;
+    for (const a of ['x', 'y', 'width', 'height', 'style']) if (s.hasAttribute(a)) n.setAttribute(a, s.getAttribute(a));
+    for (const c of s.classList) if (!/^(owl|mudra|jump|mz-p-.*|mz-huk)$/.test(c)) n.classList.add(c);
+    if (s.dataset.mzPred) n.dataset.mzPred = s.dataset.mzPred;
+    n.dataset.mz = '1'; n.dataset.mzr = '1';
+    const stary = V[s.dataset.v] || V.ahoj, novy = V[v];
+    clearTimeout(s._mzt);
+    s.replaceWith(n);
+    if (io) { io.unobserve(s); sledovane.delete(s); if (n.classList.contains('mz-zije')) { io.observe(n); sledovane.add(n); } }
+    if (ticho() || typeof n.animate !== 'function') return n;
+    // oči sa otvoria už do nového výrazu (výmena je schovaná v žmurknutí), krídla a zrenice idú z pôvodnej polohy
+    const pruz = 'cubic-bezier(.3, 1.45, .5, 1)';
+    n.querySelectorAll('.mz-oko').forEach(o => o.animate([{ transform: 'scaleY(.12)' }, { transform: 'none' }], { duration: 200, easing: pruz }));
+    n.querySelectorAll('.mz-zob').forEach(o => o.animate([{ transform: 'scale(.8)' }, { transform: 'none' }], { duration: 220, easing: pruz }));
+    for (const [tr, k] of [['.ow-wl', 'wl'], ['.ow-wr', 'wr']]) {
+      const w = n.querySelector(tr), d = Math.max(-150, Math.min(150, (stary[k] || 0) - (novy[k] || 0)));
+      if (w && Math.abs(d) > 2) w.animate([{ transform: `rotate(${d}deg)` }, { transform: 'none' }], { duration: 380, easing: pruz });
+    }
+    if (stary.oci === 'otv' && novy.oci === 'otv') {
+      const l0 = stary.look || [1, 1], l1 = novy.look || [1, 1], dx = l0[0] - l1[0], dy = l0[1] - l1[1];
+      if (dx || dy) n.querySelectorAll('.ow-blink').forEach(p => p.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 320, easing: 'ease-out' }));
+    }
+    const h = n.querySelector('.mz-hlava'), dt = (stary.tilt || 0) - (novy.tilt || 0);
+    if (h && dt) h.animate([{ transform: `rotate(${dt}deg)` }, { transform: 'none' }], { duration: 360, easing: pruz });
+    const x = n.querySelector('.mz-extra');
+    if (x) x.animate([{ transform: 'scale(0)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 360, delay: 90, easing: pruz, fill: 'backwards' });
+    n.animate([{ scale: '1.06 .92' }, { scale: '.98 1.03', offset: .6 }, { scale: '1 1' }], { duration: 300, easing: 'ease-out' });
+    return n;
+  }
+
+  function reaguj(el, v, o = {}) {
+    if (!dom()) { if (v && el) zmen(el, v); return null; }
+    let s = svgZ(el); if (!s) return null;
+    if (v && s.dataset.v !== v) s = zmen(s, v);
+    s.dataset.mzr = '1'; priprav(s, false);
+    const typ = POHYB[s.dataset.v];
+    if (o.oneskorenie) setTimeout(() => { if (s.isConnected) pohyb(s, typ); }, o.oneskorenie); else pohyb(s, typ);
+    return s;
+  }
+
+  function tukni(el) {
+    if (!dom()) return;
+    let s = svgZ(el); if (!s) return;
+    if (spi || s.classList.contains('mz-spi')) { zobud(); return; }
+    budik();
+    if (ticho()) return;
+    let i; do i = Math.floor(Math.random() * TUK.length); while (i === tukPosl);
+    tukPosl = i;
+    pohyb(s, TUK[i]);
+    s.classList.remove('mz-huk'); void s.getBoundingClientRect(); s.classList.add('mz-huk');
+    clearTimeout(s._mzh); s._mzh = setTimeout(() => s.classList.remove('mz-huk'), 750);
+    if (typeof s.animate === 'function') s.querySelectorAll('.mz-otv').forEach(o => o.animate([{ transform: 'none' }, { transform: 'scaleY(.12)', offset: .4 }, { transform: 'none' }], { duration: 220, delay: 380 }));
+  }
+
+  // ---------- spánok: v Mesačnom režime alebo večer, keď sa dlho nik nedotkne ----------
+  const noc = () => { const h = new Date().getHours(); return document.documentElement.dataset.rezim === 'mesacny' || h >= 20 || h < 6; };
+  const ZZZ = [[150, 10, .8], [166, -8, 1], [184, -28, 1.2]].map(([x, y, k]) => `<path d="M${x} ${y}h${9 * k}l${-9 * k} ${11 * k}h${9 * k}"/>`).join('');
+  function uspi(s) {
+    if (ticho() || s.classList.contains('mz-spi')) return;
+    if (!['ahoj', 'stoji'].includes(s.dataset.v)) return;
+    if (s.dataset.v !== 'stoji') { const p = s.dataset.v; s = zmen(s, 'stoji'); s.dataset.mzPred = p; }
+    const g = s.querySelector('.mz-cele');
+    if (g && !s.querySelector('.mz-zzz')) {
+      const z = document.createElementNS(NS, 'g'); z.setAttribute('class', 'mz-zzz'); z.setAttribute('fill', 'none');
+      z.innerHTML = `<g stroke="#fff" stroke-width="9">${ZZZ}</g><g stroke-width="4">${ZZZ}</g>`;
+      // Z sú dve vrstvy (biely lem a obrys) s rovnakým pohybom, aby boli vidieť cez deň aj v noci
+      g.parentNode.appendChild(z);
+    }
+    s.classList.add('mz-spi');
+  }
+  function zaspi() {
+    if (spi || document.hidden || ticho() || !noc()) { budik(); return; }
+    spi = true;
+    document.querySelectorAll('svg.mudra.mz-zije').forEach(uspi);
+  }
+  function zobud() {
+    if (spi) { spi = false; document.querySelectorAll('svg.mudra.mz-spi').forEach(s => {
+      s.classList.remove('mz-spi');
+      const z = s.querySelector('.mz-zzz'); if (z) z.remove();
+      const p = s.dataset.mzPred; delete s.dataset.mzPred;
+      if (p) s = zmen(s, p);
+      pohyb(s, 'skrc');
+    }); }
+    budik();
+  }
+  function budik() { clearTimeout(casSpanku); casSpanku = setTimeout(zaspi, SPANOK_MS); }
+
+  // ---------- sledovanie: nové Múdry, obrazovka, skryté okno ----------
+  function skenuj() {
+    for (const s of sledovane) if (!s.isConnected) { sledovane.delete(s); if (io) io.unobserve(s); }
+    document.querySelectorAll('svg.mudra:not([data-mz])').forEach(s => priprav(s, !s.dataset.mzr));
+  }
+  function start() {
+    if (typeof IntersectionObserver === 'function') io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('mz-mimo', !e.isIntersecting)));
+    if (typeof MutationObserver === 'function') new MutationObserver(skenuj).observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('visibilitychange', () => document.documentElement.classList.toggle('mz-pauza', document.hidden));
+    for (const t of ['pointerdown', 'keydown']) document.addEventListener(t, () => { if (spi) zobud(); else budik(); }, { passive: true, capture: true });
+    if (mm.addEventListener) mm.addEventListener('change', () => { if (ticho()) { zobud(); document.querySelectorAll('svg.mudra').forEach(s => s.classList.remove('mz-zije')); } });
+    skenuj(); budik();
+  }
+  if (typeof document !== 'undefined') { if (document.body) start(); else document.addEventListener('DOMContentLoaded', start); }
+  return { reaguj, zmen, tukni, zobud };
+})();
 </script>
 <script type="module">
 // Prihlásenie rodiča a profily detí vo Firebase (projekt svet-za-3-minuty).
