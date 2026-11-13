@@ -1,5 +1,4 @@
 /* Téma krok za krokom (5.0: nová kniha a javisko sú v 51-tema-kviz.css; tu ostalo, čo používajú aj iné sekcie) */
-.blobs > i, .blobs::after { will-change: transform; }
 body.hra-rezim .blobs { display: none; } /* počas hry pozadie stojí, hra beží plynulejšie */
 .ib { flex: none; width: 44px; height: 44px; border-radius: 14px; border: 3px solid var(--line); background: var(--paper); font: 700 1.2rem/1 var(--f-display); box-shadow: 0 3px 0 var(--shc); }
 .step { display: grid; gap: 18px; }

@@ -156,21 +156,10 @@ document.addEventListener('click', e => {
     if (d.kat && d.kat !== 'fav') st.skupina = (skupinaKat(d.kat) || {}).id || ''; else if (d.kat === 'fav') st.skupina = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
   } else if (d.rezim) {
-    // bez prekreslenia obrazovky: prepne sa len atribút na koreni a označenie tlačidiel
-    Zvuk.play('pop'); const v = Rezim.zvol(d.rezim);
-    document.querySelectorAll('[data-rezim]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.rezim === v)));
-  } else if (d.pozstyl || d.pozfarba) {
-    Zvuk.play('pop');
-    if (d.pozstyl) Pozadie.zvolStyl(d.pozstyl); else Pozadie.zvolFarbu(d.pozfarba);
-    const k = document.querySelector('.poz-karta');
-    if (k) {
-      { const rad = k.querySelector('.poz-rad'), nov = document.createElement('div'); nov.innerHTML = Pozadie.rad(); morph(rad, nov, true); } // zmení len tlačidlá, ktoré sa líšia
-      k.querySelectorAll('.poz-styl').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.pozstyl === Pozadie.styl())));
-    }
-  } else if (d.pozadie) {
-    // bez prekreslenia obrazovky: len prepne farby, výber a zvuk, aby nič neblikalo
-    Zvuk.play('pop'); Pozadie.zvol(d.pozadie);
-    document.querySelectorAll('.poz-vol').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.pozadie === d.pozadie)));
+    // bez prekreslenia obrazovky: prepne sa len atribút na koreni a karta s prepínačom
+    Zvuk.play('pop'); Rezim.zvol(d.rezim);
+    const k = document.querySelector('.rez-karta');
+    if (k) { k.outerHTML = Rezim.karta(); const n = document.querySelector('.rez-sw'); if (n) n.focus(); }
   } else if (d.vek) {
     Zvuk.play('pop'); st.vek = d.vek; S.set('vek', d.vek); render(true);
   } else if (d.citaj !== undefined && f) {
