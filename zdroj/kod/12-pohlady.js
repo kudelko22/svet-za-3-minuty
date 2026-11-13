@@ -55,19 +55,7 @@ const views = {
       <div class="chips" id="filtre"></div>
       <div id="zoznam" class="list"></div>`;
   },
-  hry() {
-    return `<h1 class="h1">Hry</h1>
-      <p class="muted">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
-      ${hnStupen() ? `<p class="hn-info">${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} ${ii(STAR())} spí. ${HN_TEXT[hnStupen()].p}</p>` : ''}
-      <div class="hry">${HRY_VID().map(h => {
-        const ok = bodyHry() >= h.cena, spi = !ok && st.body >= h.cena, rek = S.get(rekordKluc(h.id), null);
-        return `<button class="hra-karta${ok ? '' : ' zamknuta'}" data-hra="${h.id}" style="--c:${h.c}"><span class="hra-obr">${OBR_HRY[h.id]}</span>
-          <span class="hra-info"><b>${h.n}</b><small>${h.p}</small>${ok
-            ? `<span class="chip" style="--c:${h.c}">${rek != null ? ii(IK.pohar) + ' Rekord: ' + rekordText(h.id, rek) : 'Hrať'}</span>`
-            : spi ? `<span class="zamok">${ii(IK.zamok)} Spí, kým strom vädne. Preber tému a odomkne sa!</span>`
-            : `<span class="zamok">${ii(IK.zamok)} Pri ${h.cena} ${ii(STAR())} · chýba ${h.cena - st.body}</span><span class="bar" style="--c:#FFC233"><i style="width:${Math.max(4, Math.round(st.body / h.cena * 100))}%"></i></span>`}</span></button>`;
-      }).join('')}</div>`;
-  },
+  hry: () => hryZoznam(), // 5.0: ihrisko, kreslí 09-hry.js
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
   anglictina: () => Ang.render(),
