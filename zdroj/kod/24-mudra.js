@@ -103,7 +103,7 @@ const Mudra = (() => {
     tukPosl = i;
     pohyb(s, TUK[i]);
     s.classList.remove('mz-huk'); void s.getBoundingClientRect(); s.classList.add('mz-huk');
-    clearTimeout(s._mzh); s._mzh = setTimeout(() => s.classList.remove('mz-huk'), 750);
+    clearTimeout(s._mzh); s._mzh = setTimeout(() => s.classList.remove('mz-huk'), 850);
     if (typeof s.animate === 'function') s.querySelectorAll('.mz-otv').forEach(o => o.animate([{ transform: 'none' }, { transform: 'scaleY(.12)', offset: .4 }, { transform: 'none' }], { duration: 220, delay: 380 }));
   }
 
