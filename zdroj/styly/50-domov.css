@@ -1,2 +1,152 @@
 /* 5.0: Domov, strom, týždeň, misia, angličtina. Sem patria nové štýly tejto sekcie (smer: krajina s cestou a lístkom na dnešnú tému, strom rastie v krajine).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+
+/* Farby krajiny (len pre krajinu Domova): deň a Mesačný režim. Tmavý obrys je var(--ink), v noci tiež tmavý. */
+:root {
+  --sc-sky: #BFE7FF; --sc-sun: #FFD95A; --sc-cloud: #FFFFFF; --sc-far: #9AD9CF; --sc-far2: #82CCC1; --sc-lava: #FF8A5C; --sc-mid: #B9E8A8;
+  --sc-path: #FFF1CC; --sc-pathdot: #E2A93C; --sc-front: #5BC56B; --sc-tree: #2FA35A; --sc-snih: #FFFFFF; --sc-stavba: #FFF1CC; --sc-strecha: #FF6A4D; --sc-okno: #BFE7FF;
+  --dom-h: 206px; /* výška miesta pre Múdru a jej odkaz medzi hlavičkou a lístkom */
+}
+:root[data-rezim="mesacny"] {
+  --sc-sky: #1B1650; --sc-sun: #FFE9A6; --sc-cloud: #3A3382; --sc-far: #2B2A72; --sc-far2: #35348A; --sc-mid: #263C78;
+  --sc-path: #4A4596; --sc-pathdot: #FFD45C; --sc-front: #1F6E63; --sc-tree: #17544E; --sc-snih: #C9C6F0; --sc-stavba: #4A4596; --sc-strecha: #CF472F; --sc-okno: #FFD45C;
+}
+
+/* Krajina: od vrchu stránky (pod hlavičkou) po horný okraj lístka, na celú šírku okna. SVG je zarovnané na stred a dole. */
+.dom-krajina { position: absolute; top: 0; left: 0; width: 100%; height: calc(var(--top-v, 84px) + 10px + var(--dom-h) + 44px); z-index: -1; overflow: hidden; pointer-events: none; background: var(--sc-sky); transition: background-color .7s; }
+.anim > .dom-krajina { animation: none; }
+.dom-krajina > svg { position: absolute; left: 0; bottom: 0; display: block; width: 100%; height: 330px; }
+.dom-krajina svg path, .dom-krajina svg circle, .dom-krajina svg rect { transition: fill .7s, stroke .7s; }
+.dom-krajina .len-noc { display: none; }
+:root[data-rezim="mesacny"] .dom-krajina .len-noc { display: inline; }
+:root[data-rezim="mesacny"] .dom-krajina .len-den { display: none; }
+:root:root body.domov-v::before { background: var(--sc-sky); } /* pás pod stavovým riadkom telefónu má farbu oblohy */
+/* pri otvorení sa krajina poskladá odzadu dopredu */
+.anim .kr-vz { animation: krVz .55s var(--spring) both; animation-delay: calc(var(--v) * 90ms); }
+@keyframes krVz { from { transform: translateY(48px); } }
+.kr-ciel-hv { transform-box: fill-box; transform-origin: center; }
+.anim .kr-ciel-hv { animation: krHviezda .6s var(--spring) .6s both; }
+@keyframes krHviezda { from { transform: scale(0) rotate(-90deg); } }
+/* živé kúsky nad krajinou: samostatné vrstvy, hýbu sa len posunom a priehľadnosťou (bez prekresľovania SVG) */
+.kr-z { position: absolute; left: calc(50% + var(--x)); bottom: calc(330px - var(--y)); translate: -50% 50%; display: block; }
+.kr-mrak { width: var(--w); animation: krMrak var(--t, 24s) ease-in-out infinite alternate; }
+.kr-mrak svg { display: block; width: 100%; height: auto; fill: var(--sc-cloud); transition: fill .7s; }
+@keyframes krMrak { to { transform: translateX(22px); } }
+.kr-d { width: 16px; height: 16px; border-radius: 50%; background: var(--sc-cloud); opacity: 0; animation: krDym 6s ease-out infinite; animation-delay: var(--d, 0s); }
+.kr-d.mala { width: 10px; height: 10px; }
+@keyframes krDym { 0% { transform: translateY(6px) scale(.5); opacity: 0; } 20% { opacity: .95; } 100% { transform: translate(8px, -40px) scale(1.6); opacity: 0; } }
+.kr-hv { width: 10px; height: 10px; background: #FFE9A6; clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); opacity: .55; animation: krHv 12s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes krHv { 0%, 84%, 100% { opacity: .55; transform: none; } 90% { opacity: 1; transform: scale(1.7); } } /* bliká vždy len jedna */
+
+/* Hlavička na Domove: meno bez „Ahoj,“ (pozdravuje Múdra), stromček so sériou ako štítok */
+.domov-v #pozdrav .pz-ahoj, .domov-v #pozdrav .pz-vykr { display: none; }
+.domov-v .hi b { font-size: 1.4rem; }
+.tyz-strom { position: relative; display: flex; align-items: center; gap: 2px; height: 38px; padding: 0 11px 0 4px; border: var(--obrys-m); border-radius: 999px; background: var(--leaf-l); color: var(--text); box-shadow: 0 3px 0 var(--shc); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.tyz-strom svg { flex: none; width: 30px; height: 30px; overflow: visible; }
+.ts-pocet { min-width: .7em; font: 800 1.05rem/1 var(--fd); text-align: center; }
+.tyz-strom.spi { background: var(--sand); }
+.tyz-strom.schne { background: var(--sun-l); }
+.tyz-strom.hotovo::after { content: ""; position: absolute; inset: -6px; border: 2px dotted var(--leaf-d); border-radius: 999px; pointer-events: none; }
+.tyz-strom:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--shc); }
+@media (max-width: 380px) { .top-r { gap: 5px; } .tyz-strom { padding-right: 9px; } .tyz-strom svg { width: 26px; height: 26px; } .stars { padding-right: 10px; } }
+
+/* Múdra a jej odkaz nad lístkom */
+.dom-start { display: grid; }
+.dom-hore { position: relative; height: var(--dom-h); }
+.dom-rec { position: absolute; left: 0; top: 2px; z-index: 3; max-width: min(268px, 78%); margin: 0; box-shadow: 0 3px 0 var(--shc); }
+.dom-mud { position: absolute; left: -4px; bottom: -11px; z-index: 2; width: 112px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.dom-mud .owl { display: block; width: 100%; height: auto; }
+.dom-mud .owl.mudra .ow-wl, .dom-mud .owl.mudra .ow-wr { animation-iteration-count: 3; } /* zamáva pri otvorení, potom len žmurká */
+.dom-mud .owl.mudra[data-m="cheer"] .ow-wl, .dom-mud .owl.mudra[data-m="cheer"] .ow-wr { animation-iteration-count: 8; }
+.anim .dom-mud { animation: mudIn .55s var(--spring) .3s both; }
+.anim .dom-rec { animation: recIn .45s var(--spring) .55s both; transform-origin: 10% 100%; }
+@keyframes mudIn { from { opacity: 0; transform: translateY(26px) scale(.85); } }
+@keyframes recIn { from { opacity: 0; transform: scale(.6); } }
+
+/* Téma dňa: lístok na výpravu */
+.dom-listok { z-index: 1; }
+.dl-hore { display: grid; gap: 9px; justify-items: start; padding: 14px; }
+.dl-rad { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.dl-rad .dop { text-align: right; }
+.dl-obr { position: relative; width: 100%; border: var(--obrys-m); border-radius: 14px 16px 14px 18px; overflow: hidden; background: var(--card); }
+.dl-hotovo { position: absolute; right: 10px; top: 10px; --pc: var(--ok-t); background: var(--card); rotate: 7deg; }
+.anim .dl-hotovo { animation: pecat .45s var(--spring) .55s both; }
+@keyframes pecat { from { opacity: 0; transform: scale(1.8); } }
+.dl-kat { background: color-mix(in srgb, var(--k) 22%, var(--card)); }
+.dl-kik { display: grid; width: 18px; height: 18px; } .dl-kik svg { width: 100%; height: 100%; }
+.dl-tx { color: var(--muted); }
+.dl-dole { display: grid; gap: 12px; padding: 14px 14px 12px; }
+.btn > .ikn.za { margin: -4px 0 -5px 8px; }
+.dom-misia { display: flex; align-items: center; gap: 8px; width: 100%; margin: 0; padding: 4px 0; border: 0; background: none; font: 700 .94rem/1.25 var(--fb); color: var(--text); text-align: left; }
+.dom-misia > span { flex: 1; min-width: 0; }
+.dom-misia b { font-weight: 800; }
+.dom-misia .ikn { width: 22px; height: 22px; }
+.dom-misia > .ikn:last-child { width: 18px; height: 18px; color: var(--muted); }
+.dom-misia.zamk { color: var(--muted); }
+button.dom-misia { cursor: pointer; } button.dom-misia:active { transform: translateX(3px); }
+.dom-misia.hotova > .ikn:last-child { color: var(--ok-t); }
+
+/* Pripomienka (séria, strom schne): pásik s krížikom */
+.strom-pas { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: var(--obrys); border-radius: var(--r-karta); background: var(--sun-l); box-shadow: 0 4px 0 var(--shc); color: var(--text); cursor: pointer; text-align: left; }
+.strom-pas.schne { background: var(--coral-l); }
+.strom-pas:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shc); }
+.sp-ik { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border: var(--obrys-m); border-radius: 13px 15px 12px 16px; background: var(--card); rotate: -4deg; }
+.sp-k { width: 38px; height: 38px; overflow: visible; }
+.sp-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.sp-t b { font: 800 1rem/1.15 var(--fd); overflow-wrap: anywhere; }
+.sp-t small { font: 600 .85rem/1.3 var(--fb); overflow-wrap: anywhere; }
+.sp-sip { flex: none; font: 800 1.4rem/1 var(--fd); font-style: normal; }
+.sp-x { flex: none; }
+
+/* Tvoj týždeň: cestička zo siedmich dní, strom múdrosti, okruh týždňa */
+.dom-tyz { display: grid; gap: 12px; }
+.dom-nh { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.dom-strom { display: inline-flex; align-items: center; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+.dom-strom.schne { --cta: var(--sun-l); --cta-d: var(--sun); }
+.dom-dni { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); align-items: start; }
+.dom-dni::before { content: ""; position: absolute; left: 7%; right: 7%; top: 21px; border-top: 4px dotted var(--sc-pathdot); }
+.dom-den { position: relative; display: grid; justify-items: center; gap: 6px; padding: 0; border: 0; background: none; font: 700 .75rem/1 var(--fb); color: var(--muted); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.dom-den i { display: grid; place-items: center; width: 36px; height: 36px; margin-top: 3px; border: 2.5px dashed var(--muted); border-radius: 50%; background: var(--bg); color: #fff; }
+.dom-den.hot i { border: var(--obrys-m); background: var(--teal); box-shadow: inset 0 -4px 0 var(--teal-d); }
+.dom-den.hot .ikn { width: 20px; height: 20px; }
+.dom-den.zme i { background: var(--card); }
+.dom-den.dnes { color: var(--text); font-weight: 800; }
+.dom-den.tu i { width: 44px; height: 44px; margin-top: -1px; border: var(--obrys); background: var(--sun); box-shadow: inset 0 -5px 0 var(--sun-d), 0 3px 0 var(--shc); }
+.dom-den.tu .ikn { width: 26px; height: 26px; }
+.dom-den.tu .ikn path { fill: #FFF6E3; }
+.dom-den:disabled { cursor: default; }
+.dom-den:not(:disabled):active i { transform: translateY(2px); }
+.anim .dom-den.tu i { animation: denTu .6s var(--spring) .5s both; }
+@keyframes denTu { from { transform: scale(.4); } }
+.dom-okr { display: flex; gap: 8px; }
+.dom-okruh, .dom-preh { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 4px 12px 4px 8px; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--card); box-shadow: 0 3px 0 var(--shc); font: 600 .88rem/1.15 var(--fb); color: var(--text); text-align: left; cursor: pointer; }
+.dom-okruh { flex: 1; min-width: 0; }
+.dom-okruh > span:nth-child(2) { flex: 1; min-width: 0; }
+.dom-okruh b { font: 800 .94rem/1.15 var(--fd); }
+.dom-okruh > .ikn, .dom-preh > .ikn { width: 20px; height: 20px; }
+.dom-okruh:active, .dom-preh:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--shc); }
+
+/* Angličtina a Objavuj: dve nálepky */
+.dom-nal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.dom-nal .nalepka { width: 100%; min-height: 124px; font-family: var(--fb); cursor: pointer; }
+.dom-nal .objavuj-karta .ikb { rotate: 5deg; }
+.nal-ok { position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 28px; height: 28px; border: var(--obrys-m); border-radius: 50%; background: var(--teal); color: #fff; }
+.nal-ok .ikn { width: 16px; height: 16px; }
+
+/* Ďalšia odmena: karta so záložkou */
+.dom-odmena { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+.dom-odm-av { width: 60px; height: 60px; margin: 0; rotate: 0deg; }
+.dom-odmena b { display: block; margin-bottom: 8px; font: 800 1rem/1.25 var(--fd); }
+.dom-odmena small { display: block; margin-top: 6px; font: 700 .81rem/1 var(--fd); color: var(--muted); }
+.dom-odmena .ii { width: 1.1em; height: 1.1em; vertical-align: -.2em; }
+
+/* Režim do auta a Odznaky */
+.dom-mini { display: flex; flex-wrap: wrap; gap: 10px; }
+.dom-mini .btn { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kr-vz, .kr-ciel-hv, .kr-mrak, .kr-hv, .dom-mud, .dom-rec, .dl-hotovo, .dom-den.tu i, #pozdrav .pz-s span, .av { animation: none !important; }
+  .kr-d { display: none; }
+  .dom-mud .owl.mudra .ow-wl, .dom-mud .owl.mudra .ow-wr { animation: none !important; }
+  .dom-krajina, .dom-krajina svg path, .dom-krajina svg circle, .dom-krajina svg rect, .kr-mrak svg { transition: none; }
+}

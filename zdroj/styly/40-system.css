@@ -85,8 +85,8 @@ h1.logo { margin: .35em 0 0; }
 .act, .tile { background: color-mix(in srgb, var(--c) 38%, var(--card)); color: var(--text); text-shadow: none; border-radius: var(--r-karta); }
 .cc b { color: var(--text); text-shadow: none; }
 .chips .chip[aria-pressed="true"] { background: var(--sun); color: var(--dk); text-shadow: none; }
-.badge.ok, .hero-art .sticker.done { color: var(--dk); text-shadow: none; }
-.seg2 button[aria-pressed="true"], .misia-cast.hotova i { text-shadow: none; }
+.badge.ok { color: var(--dk); text-shadow: none; }
+.seg2 button[aria-pressed="true"] { text-shadow: none; }
 .row { border-radius: var(--r-karta); }
 .input, .search { border-radius: var(--r-pole); font-family: var(--fb); }
 

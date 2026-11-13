@@ -2,8 +2,6 @@
 .ik { display: block; width: 100%; height: 100%; overflow: visible; }
 .ii { display: inline-block; width: 1.2em; height: 1.2em; vertical-align: -.25em; line-height: 0; }
 .ii > svg { display: block; width: 100%; height: 100%; }
-.snd { display: inline-grid; place-items: center; }
-.snd .ik { width: 28px; height: 28px; }
 .kocka .ik { width: 34px; height: 34px; margin: auto; }
 .act-e .ik { width: 34px; height: 34px; }
 .tile-e .ik { width: 30px; height: 30px; }

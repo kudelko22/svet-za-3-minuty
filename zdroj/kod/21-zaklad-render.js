@@ -47,8 +47,8 @@ function fitPozdrav() {
     }
   } catch (e) { /* písmo sa nezmení */ }
 }
-addEventListener('resize', () => fitPozdrav());
-try { document.fonts && document.fonts.ready.then(() => fitPozdrav()); } catch (e) { /* bez písiem */ }
+addEventListener('resize', () => { fitPozdrav(); vyskaHlavicky(); });
+try { document.fonts && document.fonts.ready.then(() => { fitPozdrav(); vyskaHlavicky(); }); } catch (e) { /* bez písiem */ }
 function paintHead() {
   const el = document.getElementById('pozdrav');
   // 4.4: pozdrav má dva riadky: „Ahoj,“ a pod ním meno. Slovo sa nikdy nelámé, dlhé meno sa zmenší, aby sa zmestilo.
@@ -66,7 +66,7 @@ function paintHead() {
         const sk2 = document.createElement('span'); sk2.className = 'pz-s';
         [...slovo].forEach(ch => {
           const s = document.createElement('span'); s.textContent = ch; s.style.setProperty('--k', i++);
-          if (meno && ch !== '!') s.style.color = DUHA[j % DUHA.length];
+          if (meno && ch === '!') s.className = 'pz-vykr'; // 5.0: na Domove je v hlavičke len meno (pozdrav hovorí Múdra), výkričník sa skryje
           j++; sk2.appendChild(s);
         });
         g.appendChild(sk2); j++;
@@ -76,7 +76,9 @@ function paintHead() {
   }
   const b = document.getElementById('body');
   if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
-  const z = document.getElementById('snd'); z.innerHTML = Zvuk.on ? IK.repro : IK.reproVyp; z.setAttribute('aria-pressed', Zvuk.on); z.hidden = st.view === 'domov' && st.faza === 'appka'; // na Domove tlačidlo zvuku nezavadzia
+  document.body.classList.toggle('domov-v', st.view === 'domov' && st.faza === 'appka'); // 5.0: hlavička nad krajinou Domova
+  const z = document.getElementById('snd'), zk = Zvuk.on ? 'on' : 'off';
+  if (z.dataset.k !== zk) { z.dataset.k = zk; z.innerHTML = Zvuk.on ? ikn('zvuk') : ikn('zvuk').replace('</g>', '<path d="M3.5 4.5l17 15" stroke-width="2.6"/></g>'); } z.setAttribute('aria-pressed', Zvuk.on); z.hidden = st.view === 'domov' && st.faza === 'appka'; // na Domove tlačidlo zvuku nezavadzia
   const av = document.getElementById('av'), k = JSON.stringify(st.avatar);
   if (av.dataset.k !== k) {
     av.dataset.k = k; av.innerHTML = st.avatar ? postavicka(st.avatar) : owl('hi');
@@ -85,6 +87,11 @@ function paintHead() {
   document.getElementById('nav-ja').classList.toggle('novinka', nevybrate() > 0);
   TyzStrom.maluj();
   fitPozdrav(); // až po stromčeku a tlačidle zvuku: ich šírka (ukázanie, skrytie) rozhoduje, koľko miesta ostane menu
+  vyskaHlavicky();
+}
+// 5.0: kde končí hlavička (--top-v); krajina Domova siaha od vrchu stránky pod hlavičku až k lístku témy dňa
+function vyskaHlavicky() {
+  try { const t = document.getElementById('top'); if (t && !t.hidden && t.offsetHeight) document.documentElement.style.setProperty('--top-v', Math.round(t.getBoundingClientRect().bottom + scrollY) + 'px'); } catch (e) { /* ostane predvolená výška */ }
 }
 // koniec rozbehnutej hry, auta, angličtiny či misie predošlého dieťaťa (zmena dieťaťa, odhlásenie, zmena účtu)
 function zrusAktivity() { try { Hlas.stop(); Hra.zrus(); Auto.zrus(); } catch (e) { /* nič sa nezastaví */ } st.auto = st.ang = st.misia = null; st.flow = null; }

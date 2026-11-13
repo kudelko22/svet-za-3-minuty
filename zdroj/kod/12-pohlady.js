@@ -1,29 +1,37 @@
 const views = {
   domov() {
+    // 5.0: krajina s cestou k cieľu dnešnej témy, Múdra s odkazom, téma dňa ako lístok na výpravu (pomocník Domov je v 11-domov-tyzden.js)
     const t = tD(), k = KAT[t.k], dnes = key(new Date()), hot = st.kedy[t.id] === dnes;
-    return `${location.hostname.endsWith('github.io') ? `
-      <a class="presun" href="https://svet-za-3-minuty.web.app/">Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
-      ${Pripomienka.html()}
-      <section class="dnes-blok" aria-label="Dnes">
-        <section class="hero" style="--c:${k.c}">
-          <div class="hero-art">${scene(t, 'sm')}<span class="sticker">${ii(STAR())} Téma dňa</span>${hot ? '<span class="sticker done">✓ Hotovo</span>' : ''}</div>
-          <div class="hero-in">
-            <span class="chip" style="--c:${k.c}">${ii(ikKat(t.k))} ${k.nazov}</span>
-            <h2 class="tt">${t.t}</h2>
-            <p class="muted">${teaser(t)}</p>
-            <button class="btn wide ${hot ? 'ghost' : 'cta'}" data-start="${t.id}">${hot ? '↻ Zopakovať tému' : 'Poďme na to! →'}</button>
+    const datum = new Date().toLocaleDateString('sk-SK', { weekday: 'long', day: 'numeric', month: 'long' });
+    return `${Domov.krajina(t, hot)}
+      <section class="dom-start" aria-label="Dnes">
+        <div class="dom-hore"><p class="odkaz dom-rec">${Domov.odkaz(t, hot)}</p>
+          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button></div>
+        <article class="listok dom-listok hero${hot ? ' hotovy' : ''}">
+          <div class="dl-hore">
+            <div class="dl-rad"><span class="pec">Téma dňa</span><span class="dop">${datum}</span></div>
+            <div class="dl-obr">${scene(t, 'sm')}${hot ? '<span class="pec dl-hotovo">Splnené</span>' : ''}</div>
+            <span class="st dl-kat" style="--k:${k.c}"><span class="dl-kik">${ikKat(t.k)}</span>${k.nazov}</span>
+            <h2 class="n1">${t.t}</h2>
+            <p class="tx dl-tx">${teaser(t)}</p>
+          </div>
+          <div class="perf"></div>
+          <div class="dl-dole">
+            <button class="btn wide${hot ? ' dve' : ''}" data-start="${t.id}">${hot ? ikn('znova') + 'Zopakovať tému' : 'Poďme na to!' + ikn('sipka', 'za')}</button>
             ${kartaMisie(hot, t)}
           </div>
-        </section>
-        ${Ang.karta()}
+        </article>
       </section>
-      ${kartaDalsiaOdmena()}
+      ${location.hostname.endsWith('github.io') ? `
+      <a class="presun" href="https://svet-za-3-minuty.web.app/">Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
+      ${Pripomienka.html()}
+      ${Domov.tyzden()}
+      <div class="dom-nal">${Ang.karta()}<button class="nalepka objavuj-karta" data-go="objavuj" style="--c:var(--sun-l)"><span class="ikb">${ikn('lupa')}</span><b>Objavuj</b><small>Kvízy, iná téma a všetky oblasti</small></button></div>
+      ${Domov.odmena()}
       ${Plocha.karta()}
-      <button class="objavuj-karta" data-go="objavuj"><span class="objavuj-ik">${IK.lupa}</span>
-        <div><b>Objavuj</b><small>Kvízy, iná téma a všetky oblasti tém.</small></div><span class="objavuj-sip">${IKO.play}</span></button>
-      <div class="mini-odkazy">
-        <button class="mini-odkaz auto-mala" data-auto-start="${t.id}"><span class="mo-ik">${IKO.auto}</span>Režim do auta</button>
-        <button class="mini-odkaz" data-go="odznaky"><span class="mo-ik">${IK.medaila}</span>Odznaky</button>
+      <div class="dom-mini">
+        <button class="btn maly dve auto-mala" data-auto-start="${t.id}">${ikn('auto')}Režim do auta</button>
+        <button class="btn maly dve" data-go="odznaky">${ikn('odznak')}Odznaky</button>
       </div>`;
   },
   objavuj() {

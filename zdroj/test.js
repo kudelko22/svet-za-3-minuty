@@ -714,7 +714,11 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
 { Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, vek: "starsi", view: "domov" }); render();
   const h = main.innerHTML;
   if (h.includes("Misia dňa") || !h.includes("Téma dňa")) throw new Error("domov: nazov Tema dna");
-  if (h.includes("data-tyz-den=") || h.includes("data-okruh-otvor") || !h.includes('data-go="objavuj"')) throw new Error("domov: tyzden ma byt schovany, objavuj ostava");
+  // 5.0: týždeň je na Domove znova ako cestička zo siedmich dní s okruhom; krajina, lístok a Múdra; ciele, na ktoré ukazuje sprievodca
+  if (!h.includes("data-tyz-den=") || !h.includes("data-okruh-otvor") || !h.includes("data-tyz-prehlad") || !h.includes("data-strom") || !h.includes('data-go="objavuj"')) throw new Error("domov 5.0: tyzden, okruh, prehlad, strom a objavuj");
+  if (!h.includes('class="dom-krajina') || !h.includes("dom-listok hero") || !h.includes("ang-karta") || !h.includes("objavuj-karta") || !h.includes("data-sova") || !h.includes('data-go="anglictina"') || !h.includes("data-auto-start=") || !h.includes('data-go="odznaky"')) throw new Error("domov 5.0: krajina, listok, nalepky, mudra, odkazy");
+  if ((h.match(/data-tyz-den=/g) || []).length + (h.match(/class="dom-den [^"]*" disabled/g) || []).length !== 7) throw new Error("domov 5.0: sedem dni");
+  ['sopka', 'hora', 'hrad', 'hvezdaren', 'dom'].forEach(c => { if (!Domov.cielSvg(c).includes('<')) throw new Error("krajina: ciel " + c); });
   { const ok = TyzStrom.html(); if (!ok.includes("data-tyz-den=") || !ok.includes("data-okruh-otvor")) throw new Error("okno tyzdna"); TyzStrom.maluj(); }
   if (h.includes("data-kviz") || h.includes("data-skupina")) throw new Error("domov: kvizy a oblasti maju byt v Objavuj");
   st.view = "objavuj"; render(); const o = main.innerHTML;

@@ -145,17 +145,11 @@ const Misie = {
     return false;
   },
 };
-// dve časti jednej misie dňa v karte na Domove: 1 téma (objav), 2 hra (skús)
-function kartaMisie(temaHotova, tema) {
-  const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes(), id = (tema || temaDna()).id;
-  // 1 téma dňa (zvýraznená, kým nie je prebratá), 2 misia (sa odomkne až po téme)
-  const prva = temaHotova
-    ? `<span class="misia-cast hotova"><i>1</i><span><b>Téma dňa ✓</b><small>prebratá</small></span></span>`
-    : `<button class="misia-cast aktivna" data-start="${id}"><i>1</i><span><b>Téma dňa</b><small>začni tu</small></span></button>`;
-  const druha = !temaHotova
-    ? `<span class="misia-cast druha zamknuta" aria-disabled="true"><i>2</i><span><b>Misia</b><small>po téme dňa</small></span></span>`
-    : `<button class="misia-cast druha${ok ? ' hotova' : ' aktivna'}" data-go="misia" style="--c:${T.c}"><i>2</i><span><b>Misia${ok ? ' ✓' : ''}</b><small>${T.n}</small></span></button>`;
-  return `<div class="misia-casti">${prva}${druha}</div>`;
+// misia dňa na lístku témy dňa (5.0): jeden riadok pod tlačidlom. Odomkne sa až po téme dňa (poradie: 1 téma, 2 misia).
+function kartaMisie(temaHotova) {
+  const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
+  if (!temaHotova) return `<p class="dom-misia zamk">${ikn('kompas')}<span>Po téme ťa čaká misia: <b>${T.n}</b></span>${ikn('zamok')}</p>`;
+  return `<button class="dom-misia${ok ? ' hotova' : ''}" data-go="misia">${ikn('kompas')}<span>${ok ? 'Misia splnená' : 'Teraz misia'}: <b>${T.n}</b></span>${ikn(ok ? 'check' : 'sipka')}</button>`;
 }
 // veľká karta na konci témy dňa: misia viazaná na tému s jej obrázkom
 function kartaMisiePoTeme(t) {

@@ -37,7 +37,6 @@ html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transitio
 .rez-karta .rez-vol { display: flex; gap: 8px; }
 .rez-karta .poz-vol i { display: grid; place-items: center; }
 .rez-karta .poz-vol svg { width: 100%; height: 100%; display: block; }
-:root[data-rezim="mesacny"] .ang-karta { background: linear-gradient(135deg, #4B2D63, #5B4423); }
 :root[data-rezim="mesacny"] .ang-otazka .ang-slovo, :root[data-rezim="mesacny"] .ang-karta .ang-slovo { color: #FF9EC4; }
 :root[data-rezim="mesacny"] .win-odm > summary { color: #FFC266; }
 :root[data-rezim="mesacny"] .link { color: #9DB8FF; }

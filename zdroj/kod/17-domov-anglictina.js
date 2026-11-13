@@ -62,9 +62,8 @@ const Ang = {
   farbaSkup: ['#FFE0EC', '#FFF1C9', '#D9F2FF', '#E7F9EC', '#EADCFF', '#FFE3BD'],
   karta() {
     const ok = this.splnenaDnes();
-    return `<button class="ang-karta${ok ? ' hotova' : ''}" data-go="anglictina"><span class="ang-ik">${IK_KAT.anglictina}</span>
-      <div><small class="lbl-mala">${ok ? 'Dnes hotovo' : 'Dnes ešte nie'}</small><b>Angličtina na každý deň</b><small>${ok ? 'Dnešný kvízik je hotový. Môžeš si dať ešte jeden.' : 'Dnešný kvízik: 6 otázok so slovíčkami a vetami, 2 až 3 minúty.'}</small>
-        <span class="ang-tl">${ok ? ii(IK.fajka) + ' Zahrať si ešte raz' : 'Začať kvízik'}</span></div><span class="misia-sip">${ok ? ii(IK.fajka) : IKO.play}</span></button>`;
+    // 5.0: nálepka na Domove vedľa Objavuj (trieda ang-karta ostáva, ukazuje na ňu sprievodca)
+    return `<button class="nalepka ang-karta${ok ? ' hotova' : ''}" data-go="anglictina" style="--c:var(--sky-l)"><span class="ikb">${ikn('bublina')}</span><b>Angličtina</b><small>${ok ? 'Dnes hotovo, môžeš znova' : 'Dnešné slovíčka, 2 až 3 minúty'}</small>${ok ? `<span class="nal-ok" aria-label="Hotovo">${ikn('check')}</span>` : ''}</button>`;
   },
   kvizKarta(ik, nazov, pocet, hotovo, atr, i, farba) {
     return `<button class="ang-kv${hotovo ? ' hotova' : ''}" ${atr} style="--i:${i};--c:${farba}"><span class="ang-ik">${ik}</span>

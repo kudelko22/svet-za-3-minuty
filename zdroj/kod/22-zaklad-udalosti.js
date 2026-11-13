@@ -221,7 +221,7 @@ document.addEventListener('click', e => {
 });
 
 document.getElementById('av').innerHTML = owl('hi');
-document.getElementById('star-ico').innerHTML = STAR();
+document.getElementById('star-ico').innerHTML = ikn('hviezda');
 render();
 setTimeout(() => Uvod.skry(), 3600);
 // keď sa Firebase do chvíle nenačíta (prvé spustenie bez internetu), povieme to

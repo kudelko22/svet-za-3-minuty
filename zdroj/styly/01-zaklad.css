@@ -76,26 +76,30 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 .float-pts { position: fixed; z-index: 61; translate: -50% -50%; pointer-events: none; font: 700 2rem/1 var(--f-display); color: var(--sun); -webkit-text-stroke: 2.5px var(--dk); paint-order: stroke fill; text-shadow: 0 3px 0 var(--dk); animation: ptsUp 1.1s ease-out forwards; }
 @keyframes ptsUp { 0% { transform: scale(.4); opacity: 0; } 25% { transform: scale(1.35); opacity: 1; } 100% { transform: translateY(-80px) scale(1); opacity: 0; } }
 
-/* Hlavička */
-.top .gut { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 14px 6px; }
-.hi { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.av { flex: none; width: 60px; padding: 0; border: 0; background: none; animation: wiggle 4s ease-in-out infinite; transform-origin: 50% 90%; }
+/* Hlavička 5.0: postavička, meno (Grandstander, atrament), štítky ako .st: stromček so sériou, hviezdy, zvuk. Na Domove leží nad krajinou. */
+.top { position: relative; z-index: 3; }
+.top .gut { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-block: 12px 6px; }
+.hi { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.av { flex: none; width: 50px; padding: 0; border: 0; background: none; animation: wiggle 6s ease-in-out infinite; transform-origin: 50% 90%; }
+.top .av.kruh-av { width: 50px; height: 50px; border-width: 2.5px; box-shadow: 0 3px 0 var(--shc); }
 .hi > div { min-width: 0; }
-.hi small { display: none; font-size: .8rem; color: var(--muted); font-weight: 800; }
-.hi b { display: block; font: 700 1.4rem/1.1 var(--f-display); white-space: normal; overflow-wrap: anywhere; } /* meno sa vždy ukáže celé, v prípade potreby na dvoch riadkoch */
+.hi small { display: none; }
+.hi b { display: block; font: 800 1.3rem/1.08 var(--fd); color: var(--text); white-space: normal; overflow-wrap: anywhere; } /* meno sa vždy ukáže celé, v prípade potreby na dvoch riadkoch */
 #pozdrav { display: flex; flex-direction: column; align-items: flex-start; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .hi #pozdrav, #pozdrav .pz-w { overflow-wrap: normal; word-break: normal; }
 #pozdrav .pz-w { display: block; white-space: nowrap; }
-#pozdrav .pz-ahoj { font-size: .78em; line-height: 1.05; }
+#pozdrav .pz-ahoj { font: 700 .8rem/1.15 var(--fb); color: var(--muted); }
 #pozdrav.pz-zalom .pz-w { white-space: normal; }
 #pozdrav.pz-lom .pz-w { overflow-wrap: anywhere; }
 #pozdrav .pz-s { display: inline-block; white-space: nowrap; }
-#pozdrav .pz-s span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
-.top-r { flex: none; display: flex; align-items: center; gap: 8px; }
-.snd { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--line); background: var(--paper); box-shadow: 0 3px 0 var(--shc); font-size: 1.2rem; padding: 0; }
-.snd[aria-pressed="false"] { background: var(--off); }
-.stars { display: flex; align-items: center; gap: 6px; padding: 5px 14px 5px 8px; border-radius: 999px; background: var(--paper); border: 3px solid var(--line); box-shadow: 0 4px 0 var(--shc); font: 700 1.2rem/1 var(--f-display); }
-.stars svg { width: 26px; height: 26px; animation: spinSlow 6s linear infinite; }
+#pozdrav .pz-s span { display: inline-block; white-space: pre; animation: wav 1.4s ease-in-out 1 both; animation-delay: calc(var(--k) * .06s + .3s); } /* písmená raz poskočia, potom je pokoj */
+.top-r { flex: none; display: flex; align-items: center; gap: 7px; }
+.snd { display: grid; place-items: center; width: 40px; height: 40px; padding: 0 0 3px; border: var(--obrys-m); border-radius: 50%; background: var(--card); color: var(--text); box-shadow: inset 0 -4px 0 var(--sand), 0 3px 0 var(--shc); }
+.snd .ikn { width: 22px; height: 22px; }
+.snd[aria-pressed="false"] { background: var(--sand); }
+.stars { display: flex; align-items: center; gap: 5px; height: 36px; padding: 1px 12px 0 7px; border: var(--obrys-m); border-radius: 999px; background: var(--card); box-shadow: 0 3px 0 var(--shc); font: 800 1.05rem/1 var(--fd); color: var(--text); font-variant-numeric: tabular-nums; }
+#star-ico { display: grid; }
+#star-ico .ikn { width: 22px; height: 22px; margin-top: -2px; }
 .stars.bump { animation: jelly .7s; }
 
 main.gut { display: grid; gap: 24px; padding-block: 10px 120px; }
