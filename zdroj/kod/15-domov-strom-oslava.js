@@ -264,13 +264,13 @@ const Strom = {
       ${hotovo ? '' : `<button class="btn wide" data-strom-tema>Poďme na tému dňa${ikn('sipka', 'za')}</button>`}
       <p class="dop so-tip">${hn ? 'Rodič môže vädnutie vypnúť vo svojom paneli.' : 'Ťukni na strom a zatrasie sa. Ťukni na Múdru a zahúka.'}</p></div>`;
     document.body.appendChild(el);
-    Zvuk.play('whoosh'); setTimeout(() => Zvuk.play('pop'), 300);
+    Zvuk.play('okno'); setTimeout(() => Zvuk.play('pop'), 300);
     const kl = e => { if (e.key === 'Escape') zavri(); };
     const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 320); };
     document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
       e.stopPropagation();
-      if (e.target.closest('[data-strom-zavri]')) { Zvuk.play('tap'); zavri(); return; }
+      if (e.target.closest('[data-strom-zavri]')) { Zvuk.play('zavri'); zavri(); return; }
       if (e.target.closest('[data-strom-tema]')) { zavri(); startTema(temaDna().id); return; }
       if (e.target.closest('[data-so-okruh]')) { Zvuk.play('tap'); zavri(); setTimeout(() => Okruh.ukaz(), 200); return; }
       tukniNaStrom(el, e);

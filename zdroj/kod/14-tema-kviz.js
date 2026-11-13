@@ -28,7 +28,7 @@ function odpovedz(f, v) {
 // rýchly kvíz: 5 otázok; ťažký kvíz (väčšie deti): 8 otázok len pre väčšie deti; výzva: 10 extra ťažkých otázok za dvojnásobné body
 function startKviz(druh = '') {
   const tazky = druh === 'tazky', vyzva = druh === 'vyzva', d = vyzva ? 'vyzva' : tazky ? 'tazky' : 'rychly';
-  if (kvizMinuty(d)) { Zvuk.play('boing'); toast(`${KVIZY[d].koho} môžeš znova hrať o ${kvizMinuty(d)} min.`); return; }
+  if (kvizMinuty(d)) { Zvuk.play('zamok'); toast(`${KVIZY[d].koho} môžeš znova hrať o ${kvizMinuty(d)} min.`); return; }
   // kvizy.js (4.6): sady navyše podľa náročnosti; 1 rýchly, 2 ťažký (v rýchlom len pre väčšie deti), 3 výzva
   const navyse = u => KVIZ_SADY.filter(s => u.includes(s.u) && TV().some(t => t.id === s.tid)).flatMap(s => s.z.map(q => ({ t: 'q', q, tid: s.tid })));
   const vsetky = vyzva ? [...VYZVA.filter(x => byId(x.tid)).map(q => ({ t: 'q', q, tid: q.tid })), ...navyse([3])]

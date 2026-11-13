@@ -154,7 +154,7 @@ const Hra = {
     const info = HRY.find(x => x.id === id);
     if (!info) return;
     if (bodyHry() < info.cena) {
-      toast(st.body >= info.cena ? `${info.n} si chvíľu oddychuje, kým strom vädne. Preber tému a hneď sa odomkne!` : `${info.n} sa odomkne pri ${info.cena} bodoch. Chýba ešte ${info.cena - st.body} bodov.`); Zvuk.play('boing');
+      toast(st.body >= info.cena ? `${info.n} si chvíľu oddychuje, kým strom vädne. Preber tému a hneď sa odomkne!` : `${info.n} sa odomkne pri ${info.cena} bodoch. Chýba ešte ${info.cena - st.body} bodov.`); Zvuk.play('zamok');
       if (b && b.classList) { b.classList.remove('trasie'); void b.offsetWidth; b.classList.add('trasie'); }
       return;
     }

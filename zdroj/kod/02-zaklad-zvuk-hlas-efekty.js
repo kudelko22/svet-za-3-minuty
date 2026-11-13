@@ -1,10 +1,30 @@
-/* Zvuky: všetky sa skladajú priamo v prehliadači, nič sa nesťahuje */
+/* Zvuky 5.0: jeden nástroj (kalimba, drevené paličky, zvončeky) v jednej tónine (C dur, päťtónová stupnica)
+   sa skladá priamo v prehliadači; štyri krátke nahrávky (lístok, strana, pečiatka, Múdra) sú v z/*.wav (skript zdroj/zvuky.js).
+   Rozhranie: Zvuk.hraj('peciatka') alebo Zvuk.play('ok'); zoznam mien a kde znejú je v zvuky-50.md. */
 const Zvuk = (() => {
   let ctx = null, out = null, on = S.get('zvuk', true);
   const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   let sposob = S.get('zvuk-sposob', 'web'); // na iPhone: 'web' (Web Audio) alebo 'subor' (krátke súbory)
   const D = { chyba: '', slucka: 'nespustená', posledny: '' };
 
+  // Reťaz: zvuk -> (dozvuk malej drevenej izby) -> jemný kompresor -> reproduktor
+  function dozvukIR(c) {
+    const len = Math.floor(c.sampleRate * 1.1), b = c.createBuffer(2, len, c.sampleRate);
+    for (let k = 0; k < 2; k++) {
+      const d = b.getChannelData(k); let p = 0;
+      for (let i = 0; i < len; i++) { p = p * .55 + (Math.random() * 2 - 1) * .45; d[i] = p * Math.exp(-i / (c.sampleRate * .22)); }
+    }
+    return b;
+  }
+  function retaz(c) {
+    const comp = c.createDynamicsCompressor(), vstup = c.createGain(), dry = c.createGain(), wet = c.createGain(), conv = c.createConvolver();
+    comp.threshold.value = -8; comp.knee.value = 4; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .2;
+    vstup.gain.value = 1; dry.gain.value = .82; wet.gain.value = .2;
+    conv.buffer = dozvukIR(c);
+    vstup.connect(dry); dry.connect(comp); vstup.connect(conv); conv.connect(wet); wet.connect(comp); comp.connect(c.destination);
+    return vstup;
+  }
+  let vstup = null;
   function ac() {
     if (!on) return null;
     try {
@@ -12,9 +32,8 @@ const Zvuk = (() => {
         const C = window.AudioContext || window.webkitAudioContext;
         if (!C) { D.chyba = 'Web Audio v prehliadači chýba'; return null; }
         ctx = new C();
-        const comp = ctx.createDynamicsCompressor();
-        out = ctx.createGain(); out.gain.value = .75;
-        out.connect(comp); comp.connect(ctx.destination);
+        vstup = retaz(ctx);
+        // iPhone: prázdny zvuk v tom istom ťuknutí odomkne zvukový kontext
         const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(ctx.destination); b.start(0);
       }
       if (ctx.state !== 'running') {
@@ -26,61 +45,149 @@ const Zvuk = (() => {
       return ctx;
     } catch (e) { D.chyba = 'Web Audio: ' + e.name; ctx = null; return null; }
   }
-  function tone(c, f, t, d, type = 'sine', v = .2, f2) {
-    const o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + t;
-    o.type = type; o.frequency.setValueAtTime(f, t0);
-    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + d);
-    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .012); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
-    o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + d + .03);
+
+  // --- nástroje ---
+  const N = { D4: 293.66, E4: 329.63, G4: 392, A4: 440, C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880, C6: 1046.5, D6: 1174.66, E6: 1318.51, G6: 1567.98, A6: 1760, C7: 2093 };
+  function osc(c, typ, f, t0, gain, dl, utlm = .004, f2) {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = typ; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dl);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + utlm); g.gain.exponentialRampToValueAtTime(.0001, t0 + dl);
+    o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + dl + .05);
   }
-  function sum(c, t, d, v, f1, f2) {
+  // kalimba: základný tón s dlhým doznievaním, rýchlo zhasínajúce kovové alikvoty jazýčka a mäkký nábeh prsta
+  function kal(c, f, t, v = .25, dl = 1.1, makka) {
+    const t0 = c.currentTime + t;
+    osc(c, 'sine', f, t0, v, dl);
+    osc(c, 'sine', f * 2.01, t0, v * .07, dl * .35);
+    if (!makka && f * 5.93 < 9000) osc(c, 'sine', f * 5.93, t0, v * .16, .09, .002);
+    osc(c, 'triangle', f * 3, t0, v * .08, .025, .001);
+  }
+  // drevená palička: krátky tón s malým poklesom a drevené klepnutie
+  function drevo(c, f, t, v = .14, dl = .07) {
+    const t0 = c.currentTime + t;
+    osc(c, 'sine', f, t0, v, dl, .002, f * .9);
+    osc(c, 'sine', f * 3.95, t0, v * .22, dl * .35, .001);
+    sum(c, t, .014, v * .5, 2600, 2200, 3);
+  }
+  // zvonček: neharmonické alikvoty ako kovová doštička
+  function zvon(c, f, t, v = .1, dl = .8) {
+    const t0 = c.currentTime + t;
+    [[1, 1, 1], [2.76, .32, .45], [5.4, .12, .25], [8.93, .05, .12]].forEach(([k, a, d]) => { if (f * k < 10000) osc(c, 'sine', f * k, t0, v * a, dl * d, .002); });
+  }
+  function sum(c, t, d, v, f1, f2, q = 1.2) {
     // šum sa vyrobí raz pre každú dĺžku (mávnutie krídel v hre ho pri každom ťuknutí nevyrába znova)
     const pamat = c.sumy || (c.sumy = {});
     let buf = pamat[d];
-    if (!buf) { const len = Math.floor(c.sampleRate * d), ch = (buf = pamat[d] = c.createBuffer(1, len, c.sampleRate)).getChannelData(0); for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1; }
+    if (!buf) { const len = Math.max(1, Math.floor(c.sampleRate * d)), ch = (buf = pamat[d] = c.createBuffer(1, len, c.sampleRate)).getChannelData(0); for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1; }
     const s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime + t;
-    s.buffer = buf; fl.type = 'bandpass'; fl.Q.value = 1.4;
+    s.buffer = buf; fl.type = 'bandpass'; fl.Q.value = q;
     fl.frequency.setValueAtTime(f1, t0); fl.frequency.exponentialRampToValueAtTime(f2, t0 + d);
-    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + d * .3); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + Math.min(.01, d * .3)); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
     s.connect(fl); fl.connect(g); g.connect(out); s.start(t0); s.stop(t0 + d);
   }
+  // nahrávky z/*.wav: načítajú sa až po štarte appky; kým nie sú, hrá podobný skladaný zvuk
+  const nahr = {}, NAHRAVKY = ['listok', 'strana', 'peciatka', 'mudra'];
+  function nahravka(c, m, t, v = .7, rychlost = 1) {
+    if (!nahr[m]) return false;
+    const s = c.createBufferSource(), g = c.createGain(), t0 = c.currentTime + t;
+    s.buffer = nahr[m]; s.playbackRate.value = rychlost; g.gain.value = v;
+    s.connect(g); g.connect(out); s.start(t0);
+    return true;
+  }
+  let nacitane = null;
+  function nacitajNahravky() {
+    if (nacitane) return nacitane;
+    const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!OC || !window.fetch) return (nacitane = Promise.resolve());
+    const dek = new OC(1, 1, 44100);
+    const dekoduj = ab => new Promise((res, rej) => { const p = dek.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); });
+    return (nacitane = Promise.all(NAHRAVKY.map(m => fetch('z/' + m + '.wav').then(r => r.ok ? r.arrayBuffer() : Promise.reject(r.status)).then(dekoduj)
+      .then(b => { nahr[m] = b; }, e => { D.chyba = 'nahrávka ' + m + ': ' + (e && e.name || e); }))));
+  }
+
+  // stúpajúce tóny: hviezdy a body idúce po sebe znejú stále o kúsok vyššie (po chvíli ticha sa začína odznova)
+  let stup = 0, stupCas = 0;
+  const dalsiStup = c => { const t = c.currentTime; stup = t - stupCas < 1.2 ? Math.min(stup + 1, 5) : 0; stupCas = t; return stup; };
+
+  const hu = (c, t, v = .7) => nahravka(c, 'mudra', t, v) || [0, .38].forEach((x, i) => { osc(c, 'sine', i ? N.C5 : N.G4, c.currentTime + t + x, .28, .32, .04, i ? N.C5 * .97 : N.G4); sum(c, t + x, .3, .03, 900, 900, 1.5); });
   const zvuky = {
-    tap: c => tone(c, 520, 0, .07, 'triangle', .16, 900),
-    pop: c => tone(c, 300, 0, .1, 'sine', .3, 1200),
-    boing: c => { tone(c, 130, 0, .38, 'sine', .32, 560); tone(c, 260, 0, .25, 'triangle', .07, 1000); },
-    whoosh: c => sum(c, 0, .32, .28, 300, 3500),
-    start: c => { sum(c, 0, .25, .18, 400, 2500); [523, 659, 784, 1047, 1319].forEach((f, i) => tone(c, f, .05 + i * .055, .16, 'square', .06)); },
-    ok: c => { [659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(c, f, i * .07, .24, 'triangle', .22)); tone(c, 2093, .3, .4, 'sine', .08); },
-    coin: c => { tone(c, 988, 0, .08, 'square', .07); tone(c, 1319, .07, .34, 'square', .07); },
-    bad: c => { tone(c, 311, 0, .18, 'sawtooth', .1, 233); tone(c, 233, .17, .36, 'sawtooth', .1, 110); },
-    star: c => { tone(c, 880, 0, .2, 'triangle', .22, 1760); tone(c, 1760, .08, .3, 'sine', .1, 2637); },
+    // Ťuk: každé tlačidlo. Krátke tiché ťuknutie do dreva, výška sa nepatrne mení, aby neunavovalo.
+    tap: c => drevo(c, 1180 * (.96 + Math.random() * .08), 0, .12, .06),
+    // Plod: nový plod, nová správa, malé „áno“. Šťavnaté puk.
+    pop: c => { const t0 = c.currentTime; osc(c, 'sine', 360, t0, .26, .09, .003, 980); kal(c, N.G5, .02, .06, .3, true); },
+    // Odraz: skok, hopsanie v hrách
+    boing: c => { const t0 = c.currentTime; osc(c, 'sine', 160, t0, .24, .28, .004, 420); kal(c, N.G4, .0, .1, .4, true); },
+    // Strana: ďalší krok témy, prechod medzi obrazovkami
+    whoosh: c => nahravka(c, 'strana', 0, .5) || sum(c, 0, .3, .12, 600, 2600, .8),
+    // Lístok: „Poďme na to!“, začiatok témy, kvízu a hry. Odtrhnutie papiera a jeden tón nahor.
+    start: c => { nahravka(c, 'listok', 0, .6) || sum(c, 0, .22, .14, 1800, 4200, 1); kal(c, N.C6, .2, .2, .9); },
+    // Správne: dva tóny kalimby nahor (G a vyššie C, ako „to je ono“)
+    ok: c => { kal(c, N.G5, 0, .24, .9); kal(c, N.C6, .1, .26, 1.1); zvon(c, N.C7, .12, .025, .5); },
+    // Body: krátky tón, každý ďalší o stupeň vyššie
+    coin: c => kal(c, [N.G5, N.A5, N.C6, N.D6, N.E6, N.G6][dalsiStup(c)], 0, .17, .6),
+    // Skús znova: jeden mäkký nízky tón, bez kovu, žiadny bzučiak
+    bad: c => { kal(c, N.D4, 0, .2, .55, true); osc(c, 'sine', N.D4 * 1.5, c.currentTime, .03, .25); },
+    // Hviezda: letí do počítadla, každá o kúsok vyššie, so zvončekom
+    star: c => { const f = [N.C6, N.D6, N.E6, N.G6, N.A6, N.C7][dalsiStup(c)]; kal(c, f, 0, .2, .8); zvon(c, f * 2, .03, .03, .4); },
+    // Fanfára: koniec témy, výhra v hre. Štyri tóny kalimby a húknutie Múdrej, do 1,5 sekundy.
     win: c => {
-      [392, 523.25, 659.25, 783.99, 659.25, 783.99].forEach((f, i) => tone(c, f, i * .11, .15, 'square', .08));
-      [1046.5, 1318.5, 1568].forEach(f => tone(c, f, .68, .9, 'triangle', .13));
-      for (let i = 0; i < 10; i++) tone(c, 1800 + Math.random() * 2200, .75 + i * .07, .1, 'sine', .06);
+      [N.C5, N.E5, N.G5, N.C6].forEach((f, i) => kal(c, f, i * .11, .24, 1.1));
+      kal(c, N.E5, .33, .1, 1); kal(c, N.G5, .33, .1, 1);
+      [N.G6, N.C7].forEach((f, i) => zvon(c, f, .4 + i * .07, .04, .6));
+      hu(c, .58, .55);
     },
-    hoot: c => [0, .34].forEach(t => { tone(c, 440, t, .26, 'sine', .32, 350); tone(c, 880, t, .22, 'sine', .05, 700); }),
-    tick: c => tone(c, 1300 + Math.random() * 400, 0, .04, 'square', .035),
-    heart: c => { tone(c, 660, 0, .1, 'sine', .22, 990); tone(c, 990, .09, .2, 'sine', .2, 1480); },
-    bum: c => { tone(c, 160, 0, .3, 'sine', .35, 50); sum(c, 0, .35, .25, 2500, 400); },
-    ton0: c => tone(c, 330, 0, .42, 'triangle', .34), ton1: c => tone(c, 392, 0, .42, 'triangle', .34),
-    ton2: c => tone(c, 494, 0, .42, 'triangle', .34), ton3: c => tone(c, 587, 0, .42, 'triangle', .34),
-    krid: c => { sum(c, 0, .1, .16, 500, 1500); tone(c, 420, 0, .08, 'sine', .08, 640); },
-    cink: c => { [1047, 1319, 1568, 2093].forEach((f, i) => { tone(c, f, i * .07, .32, 'sine', .22); tone(c, f * 2, i * .07, .18, 'triangle', .05); }); tone(c, 2637, .3, .45, 'sine', .1, 3136); },
-    // 4.6: zvuk predĺženia série: nábeh, úder, stúpajúca fanfára a trblietky
+    // Húknutie Múdrej: otvorenie appky, Múdra hovorí, ťuknutie na Múdru
+    hoot: c => hu(c, 0),
+    // Tikanie času v hrách: ledva počuteľné drievko
+    tick: c => drevo(c, 1700 + Math.random() * 120, 0, .05, .035),
+    // Srdiečko (priatelia): dva mäkké zvončeky
+    heart: c => { zvon(c, N.E6, 0, .1, .7); zvon(c, N.G6, .1, .1, .8); },
+    // Mäkký drevený úder: náraz v hre, koniec hry
+    bum: c => { drevo(c, 150, 0, .28, .16); osc(c, 'sine', 90, c.currentTime, .2, .2, .003, 60); },
+    // Tóny hier (Opakuj po mne, plody na strome): štyri tóny kalimby
+    ton0: c => kal(c, N.C5, 0, .3, 1), ton1: c => kal(c, N.E5, 0, .3, 1), ton2: c => kal(c, N.G5, 0, .3, 1), ton3: c => kal(c, N.A5, 0, .3, 1),
+    // Krídla sovy: mäkké mávnutie
+    krid: c => sum(c, 0, .09, .09, 700, 1500, .9),
+    // Odomknutie, prevzatá odmena: hracia skrinka, tri zvončeky nahor
+    cink: c => [N.E6, N.G6, N.C7].forEach((f, i) => { zvon(c, f, i * .07, .1, .9); kal(c, f / 2, i * .07, .06, .5, true); }),
+    // Strom rastie, séria: šuchot lístia a tri tóny nahor
     seria: c => {
-      // nábeh: stúpajúci šum a hučanie, bubnový úder, trúbková fanfára (G dur) a zvončeková trblietka
-      sum(c, 0, .5, .22, 300, 4200); tone(c, 150, 0, .5, 'sawtooth', .07, 620);
-      [0, .1, .2, .3, .4].forEach(x => tone(c, 90, x, .08, 'sine', .22 + x * .2, 70));
-      tone(c, 120, .5, .45, 'sine', .6, 38); sum(c, .5, .3, .35, 3800, 300);
-      [[587, .52, .13], [784, .66, .13], [988, .8, .13]].forEach(([f, s, d]) => { tone(c, f, s, d + .1, 'sawtooth', .13); tone(c, f * 2, s, d, 'square', .035); });
-      [392, 494, 587, 784, 988].forEach(f => { tone(c, f, .96, 1.1, 'sawtooth', .1); tone(c, f * 2, .96, .9, 'triangle', .06); });
-      [1568, 1976, 2349, 2637, 3136, 3951].forEach((f, k) => { tone(c, f, 1.0 + k * .07, .5, 'sine', .11); tone(c, f * 2.01, 1.0 + k * .07, .25, 'sine', .03); });
-      for (let k = 0; k < 8; k++) tone(c, 3000 + Math.random() * 3000, 1.2 + k * .08, .12, 'sine', .04);
+      for (let k = 0; k < 7; k++) sum(c, k * .06, .07, .05 + k * .006, 2400 + Math.random() * 1600, 4200, 2);
+      [N.C5, N.E5, N.G5].forEach((f, i) => kal(c, f, .12 + i * .13, .24, 1));
+      kal(c, N.C6, .51, .22, 1.2); zvon(c, N.C7, .55, .05, .7);
     },
-    dopad1: c => { tone(c, 1319, 0, .3, 'triangle', .26); tone(c, 2637, 0, .2, 'sine', .08); },
-    dopad2: c => { tone(c, 1760, 0, .4, 'triangle', .28); tone(c, 3520, .02, .28, 'sine', .08); tone(c, 880, 0, .35, 'sine', .14); },
+    // Pečiatka: nový odznak, pečiatka „Hotovo“
+    dopad1: c => nahravka(c, 'peciatka', 0, .85) || drevo(c, 120, 0, .3, .15),
+    dopad2: c => { nahravka(c, 'peciatka', 0, .9, .9) || drevo(c, 110, 0, .3, .16); kal(c, N.C5, .04, .12, .8, true); },
+    // Zámok: ťuknutie na zamknutú vec, krátke kovové cvak-cvak
+    zamok: c => { sum(c, 0, .012, .12, 4200, 3800, 3); osc(c, 'sine', 2400, c.currentTime, .05, .03, .001); sum(c, .05, .012, .09, 3000, 2800, 3); osc(c, 'sine', 1800, c.currentTime + .05, .04, .03, .001); },
+    // Okno sa otvorí / zavrie, prepnutie karty: tiché, aby rámovali pohyb, nie rušili
+    okno: c => { drevo(c, 880, 0, .06, .05); kal(c, N.C6, .03, .07, .4, true); },
+    zavri: c => { drevo(c, 700, 0, .06, .05); kal(c, N.G5, .02, .06, .3, true); },
+    karta: c => drevo(c, 1400, 0, .08, .045),
+    // Iskra ohňostroja: tichý vysoký zvonček z tej istej stupnice
+    iskra: c => zvon(c, [N.G6, N.A6, N.C7][Math.floor(Math.random() * 3)], 0, .035, .6),
+    // Oslavy: malá (malý úspech), stredná (pečiatka a tri tóny), veľká (fanfára so zvončekmi)
+    'oslava-mala': c => { [N.C6, N.E6, N.G6].forEach((f, i) => kal(c, f, i * .07, .16, .8)); zvon(c, N.C7, .2, .04, .6); },
+    'oslava-stredna': c => { zvuky.dopad2(c); [N.E5, N.G5, N.C6].forEach((f, i) => kal(c, f, .2 + i * .1, .2, 1)); },
+    'oslava-velka': c => { zvuky.win(c); [N.C7, N.G6, N.A6, N.C7].forEach((f, i) => zvon(c, f, .5 + i * .09, .03, .5)); },
+    // samotné nahrávky
+    listok: c => nahravka(c, 'listok', 0, .6) || sum(c, 0, .22, .14, 1800, 4200, 1),
+    strana: c => zvuky.whoosh(c),
+    peciatka: c => zvuky.dopad1(c),
+    mudra: c => hu(c, 0),
   };
+  // slovenské mená pre nové volania
+  const MENA = { tuk: 'tap', plod: 'pop', odraz: 'boing', spravne: 'ok', skus: 'bad', body: 'coin', hviezda: 'star', fanfara: 'win', dokoncenie: 'win', hukanie: 'hoot', tik: 'tick', srdce: 'heart', uder: 'bum', kridla: 'krid', odomknutie: 'cink', strom: 'seria', zaciatok: 'start' };
+  const meno = n => zvuky[n] ? n : MENA[n];
+  // dĺžky (s doznievaním) pre súbory na iPhone a pre počítanie, koľko zvukov práve znie
+  const DLZKA = { tap: .15, pop: .35, boing: .45, whoosh: .5, start: 1.15, ok: 1.25, coin: .65, bad: .6, star: .85, win: 1.45, hoot: .8, tick: .08, heart: .9, bum: .25, ton0: 1.05, ton1: 1.05, ton2: 1.05, ton3: 1.05, krid: .12, cink: 1.05, seria: 1.75, dopad1: .32, dopad2: .9, zamok: .1, okno: .45, zavri: .35, karta: .08, iskra: .55, 'oslava-mala': .85, 'oslava-stredna': 1.5, 'oslava-velka': 1.5, listok: .36, strana: .5, peciatka: .32, mudra: .8 };
+  // zvuky, ktoré sa smú vynechať, keď ich znie naraz priveľa (ťuknutia, tikanie, body)
+  const DROBNE = new Set(['tap', 'tick', 'coin', 'pop', 'krid', 'karta', 'okno', 'zavri', 'iskra', 'whoosh', 'star']);
+  const OSLAVY = new Set(['win', 'seria', 'oslava-velka', 'oslava-stredna']);
+  // vyrovnanie hlasitosti (drobné zvuky tichšie ako oslavy, ale počuteľné)
+  const HL = { tap: 5, tick: 6, karta: 5, okno: 3, zavri: 3, coin: 3, star: 2.5, bad: 3, ton0: 2.5, ton1: 2.5, ton2: 2.5, ton3: 2.5, pop: 3, zamok: 6, boing: 3, bum: 3, heart: 2.5, cink: 1.6, krid: 6, iskra: 5, dopad1: 1.5, dopad2: 1.4, peciatka: 1.5, 'oslava-mala': 1.6, hoot: .8, mudra: .8, ok: 1.1 };
+  let znie = [], naposledy = {};
 
   // --- iPhone ---
   function wav(d, sr) {
@@ -112,31 +219,32 @@ const Zvuk = (() => {
     } catch (e) { D.chyba = 'slučka: ' + e.name; }
   }
 
-  // Záloha: zvuky vopred vyrobené ako krátke súbory a prehrávané ako bežné audio
-  const DLZKA = { tap: .15, pop: .2, boing: .45, whoosh: .4, start: .55, ok: .8, coin: .5, bad: .65, star: .45, win: 1.9, hoot: .7, tick: .07, heart: .35, bum: .55, ton0: .5, ton1: .5, ton2: .5, ton3: .5, cink: .8, seria: 2.6, dopad1: .35, dopad2: .45, krid: .15 };
+  // Zvuk vyrobený vopred ako súbor WAV (záloha na iPhone a ukážky na vypočutie)
   const urly = {}, banka = {};
-  const nahraj = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
-  async function priprav() {
+  const vykresli = oc => new Promise((res, rej) => { oc.oncomplete = e => res(e.renderedBuffer); const p = oc.startRendering(); if (p && p.then) p.then(res, rej); });
+  async function subor(n) {
     const OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    if (!OC) { D.chyba = 'nedajú sa vyrobiť súbory'; return; }
-    for (const [n, d] of Object.entries(DLZKA)) {
-      try {
-        const oc = new OC(1, Math.ceil(44100 * d), 44100), comp = oc.createDynamicsCompressor(), g = oc.createGain();
-        g.gain.value = .75; g.connect(comp); comp.connect(oc.destination);
-        const zivy = out; out = g;
-        try { zvuky[n](oc); } finally { out = zivy; }
-        const buf = await nahraj(oc);
-        urly[n] = dataUrl(wav(buf.getChannelData(0), buf.sampleRate));
-      } catch (e) { D.chyba = 'súbor ' + n + ': ' + e.name; }
+    if (!OC) throw new Error('OfflineAudioContext chýba');
+    await nacitajNahravky();
+    const oc = new OC(1, Math.ceil(44100 * (DLZKA[n] + .25)), 44100), g = oc.createGain();
+    g.gain.value = .8 * (HL[n] || 1); g.connect(retaz(oc));
+    const zivy = out; out = g;
+    try { zvuky[n](oc); } finally { out = zivy; }
+    const buf = await vykresli(oc);
+    return wav(buf.getChannelData(0), buf.sampleRate);
+  }
+  async function priprav() {
+    for (const n of Object.keys(DLZKA)) {
+      try { urly[n] = dataUrl(await subor(n)); } catch (e) { D.chyba = 'súbor ' + n + ': ' + e.name; }
     }
   }
   function prehravace() {
     for (const n of Object.keys(urly)) if (!banka[n]) banka[n] = [0, 1].map(() => { const a = new Audio(); a.preload = 'auto'; a.src = urly[n]; a.load(); return a; });
   }
-  function hrajSubor(n) {
+  function hrajSubor(n, v) {
     if (!banka[n]) return false;
     const zoz = banka[n], a = zoz.find(x => x.paused || x.ended) || zoz[0];
-    try { a.currentTime = 0; } catch (e) {}
+    try { a.currentTime = 0; a.volume = Math.min(1, v); } catch (e) {}
     const p = a.play(); if (p) p.catch(e => { D.chyba = 'súbor: ' + e.name; });
     return true;
   }
@@ -154,28 +262,53 @@ const Zvuk = (() => {
     D.slucka = 'pozastavená';
     if (ctx) { try { ctx.close(); } catch (e) {} ctx = null; }
   });
-  if (ios) priprav();
+  // nahrávky (82 kB) sa načítajú až chvíľu po štarte, aby nezdržali otvorenie appky
+  setTimeout(() => { nacitajNahravky().then(() => { if (ios) priprav(); }); }, 1500);
 
-  function hrajWeb(n) {
+  // hlasitosť: v Mesačnom režime tichšie, počas hlasu témy ešte tichšie (hlas sa neprerušuje)
+  function hlasitost() {
+    let v = 1;
+    try { if (typeof Rezim !== 'undefined' && Rezim.tmavy()) v *= .6; } catch (e) {}
+    try { if (typeof Hlas !== 'undefined' && Hlas.hovori) v *= .4; } catch (e) {}
+    return v;
+  }
+  function hrajWeb(n, v) {
     const c = ac();
     if (!c) return false;
-    try { zvuky[n](c); D.posledny = 'Web Audio (' + c.state + ')'; return true; } catch (e) { D.chyba = 'hranie: ' + e.name; return false; }
+    const g = c.createGain(); g.gain.value = .8 * v * (HL[n] || 1); g.connect(vstup);
+    const zivy = out; out = g;
+    try { zvuky[n](c); D.posledny = 'Web Audio (' + c.state + ')'; return true; } catch (e) { D.chyba = 'hranie: ' + e.name; return false; } finally { out = zivy; }
+  }
+
+  function hraj(m) {
+    const n = meno(m);
+    if (!on || !n || (typeof document !== 'undefined' && document.hidden)) return;
+    const t = performance.now();
+    // ten istý zvuk dvakrát v tej istej chvíli neznie (napr. ťuk a dvojklik)
+    if (t - (naposledy[n] || -1e9) < (n === 'tap' || n === 'tick' ? 45 : 70)) return;
+    znie = znie.filter(k => k.do > t);
+    // naraz znejú najviac štyri zvuky; drobné sa radšej vynechajú
+    if (znie.length >= 4 && DROBNE.has(n)) return;
+    // dve veľké oslavy cez seba nie
+    if (OSLAVY.has(n) && znie.some(k => OSLAVY.has(k.n) && k.do - t > 600)) return;
+    naposledy[n] = t; znie.push({ n, do: t + DLZKA[n] * 1000 });
+    const v = hlasitost();
+    if (ios && sposob === 'subor' && hrajSubor(n, v)) { D.posledny = 'súbor'; return; }
+    hrajWeb(n, v);
   }
 
   return {
     ios,
     get sposob() { return sposob; },
     set sposob(s) { sposob = s; S.set('zvuk-sposob', s); },
-    play(n) {
-      if (!on || !zvuky[n]) return;
-      if (ios && sposob === 'subor' && hrajSubor(n)) { D.posledny = 'súbor'; return; }
-      hrajWeb(n);
-    },
+    hraj, play: hraj,
+    mena: () => Object.keys(zvuky),
+    subor,
     test(s) {
       if (!on) this.toggle();
       prebud();
-      if (s === 'subor') { if (hrajSubor('ok')) { D.posledny = 'súbor'; setTimeout(() => hrajSubor('coin'), 260); } else D.chyba = 'súbory ešte nie sú pripravené'; }
-      else { hrajWeb('ok'); setTimeout(() => hrajWeb('coin'), 260); }
+      if (s === 'subor') { if (hrajSubor('ok', 1)) { D.posledny = 'súbor'; setTimeout(() => hrajSubor('coin', 1), 260); } else D.chyba = 'súbory ešte nie sú pripravené'; }
+      else { hrajWeb('ok', 1); setTimeout(() => hrajWeb('coin', 1), 260); }
     },
     get on() { return on; },
     stav() { return ctx ? ctx.state : 'zatiaľ nespustený'; },
@@ -184,6 +317,7 @@ const Zvuk = (() => {
         'iPhone: ' + (ios ? 'áno' : 'nie'),
         'appka na ploche: ' + (navigator.standalone || matchMedia('(display-mode: standalone)').matches ? 'áno' : 'nie'),
         'Web Audio: ' + (ctx ? ctx.state : '–'),
+        'nahrávky: ' + Object.keys(nahr).length + '/' + NAHRAVKY.length,
         ios ? 'tichá slučka: ' + D.slucka : '',
         ios ? 'súbory: ' + Object.keys(urly).length + '/' + Object.keys(DLZKA).length : '',
         'naposledy: ' + (D.posledny || '–'),
@@ -314,7 +448,7 @@ const FX = (() => {
     burst(x, y, n = 28, kinds = ['star', 'rect', 'dot'], sila = 9) { for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = sila * (.4 + Math.random() * .8); add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3, k: kinds[i % kinds.length] }); } },
     rain(n = 120) { for (let i = 0; i < n; i++) add({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .7, vx: (Math.random() - .5) * 2, vy: 2 + Math.random() * 3, g: .05, life: 220 + Math.random() * 80 }); },
     hearts(x, y) { for (let i = 0; i < 14; i++) { const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, v = 4 + Math.random() * 5; add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, k: 'heart', c: i % 2 ? '#FF5A5F' : '#FF6FA8', g: .12, s: 8 + Math.random() * 5 }); } },
-    ohnostroj(n = 5) { for (let i = 0; i < n; i++) setTimeout(() => { this.burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.12 + Math.random() * .35), 34, ['star', 'dot', 'rect'], 8); Zvuk.play('bum'); }, i * 420); },
+    ohnostroj(n = 5) { for (let i = 0; i < n; i++) setTimeout(() => { this.burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.12 + Math.random() * .35), 34, ['star', 'dot', 'rect'], 8); Zvuk.play('iskra'); }, i * 420); },
   };
 })();
 const stred = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
