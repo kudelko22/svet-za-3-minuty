@@ -549,32 +549,32 @@ function mudraCasti(e) {
   const wR = v.wr > 90 ? `<g transform="translate(154 138) scale(-1 1) rotate(${v.wr}) scale(1.12)"><g class="ow-wr">${kridlo}</g></g>` : `<g transform="translate(140 146) scale(-1 1) rotate(${v.wr})"><g class="ow-wr">${kridlo}</g></g>`;
   const oko = (cx, s) => {
     const cy = 86, typ = v.oci === 'zmurk' ? (s > 0 ? 'smiech' : 'otv') : v.oci;
-    if (typ === 'smiech') return `<path d="M${cx - 17} ${cy + 7}Q${cx} ${cy - 19} ${cx + 17} ${cy + 7}" fill="none" stroke-width="6"/>`;
+    if (typ === 'smiech') return `<g class="mz-oko mz-smiech"><path d="M${cx - 17} ${cy + 7}Q${cx} ${cy - 19} ${cx + 17} ${cy + 7}" fill="none" stroke-width="6"/></g>`;
     let t = `<circle cx="${cx}" cy="${cy}" r="23" fill="#fff"/>`;
-    if (typ === 'hviezdy') return t + mStar5(cx, cy + 1, 15, '#FFC533', 3.5);
+    if (typ === 'hviezdy') return `<g class="mz-oko mz-hviezdy">${t}${mStar5(cx, cy + 1, 15, '#FFC533', 3.5)}</g>`;
     const px = cx + s * 2 + v.look[0], py = cy + 1 + v.look[1];
     t += `<g class="ow-blink"><circle cx="${px}" cy="${py}" r="14.5" fill="#FFB020" stroke-width="3.5"/><circle cx="${px}" cy="${py}" r="8.5" fill="${NK}" stroke="none"/>${mStar4(px + 5.5, py - 6, 5.5)}<circle cx="${px - 5}" cy="${py + 5}" r="2" fill="#fff" stroke="none"/></g>`;
     if (v.viecka) { const id = 'mo' + (++mudraUid); t += `<clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="23"/></clipPath><g clip-path="url(#${id})"><rect x="${cx - 26}" y="${cy - 26}" width="52" height="${3 + 46 * v.viecka}" fill="${VL}" stroke="none"/><path d="M${cx - 26} ${cy - 23 + 46 * v.viecka}H${cx + 26}" stroke-width="4"/></g><circle cx="${cx}" cy="${cy}" r="23" fill="none"/>`; }
-    return t;
+    return `<g class="mz-oko mz-otv">${t}</g>`;
   };
   const zobak = v.zobak === 'otv'
     ? `<path d="M91 106Q100 131 109 106Z" fill="#D5432B"/><path d="M88 101Q100 92 112 101Q108 110 100 111Q92 110 88 101Z" fill="${OR}"/>`
     : v.zobak === 'maly' ? `<path d="M92 103Q100 97 108 103Q106 111 100 114Q94 111 92 103Z" fill="${OR}"/>`
     : `<path d="M89 102Q100 94 111 102Q108 114 100 118Q92 114 89 102Z" fill="${OR}"/>`;
-  const hlava = `<g transform="rotate(${v.tilt} 100 134)">
+  const hlava = `<g class="mz-hlava"><g transform="rotate(${v.tilt} 100 134)">
     <path d="M40 58C28 42 24 22 30 6C46 14 62 28 72 40Z" fill="${VD}"/>
-    <path d="M128 40C138 26 152 14 166 10C178 7 190 12 194 22C183 21 175 27 171 37C168 46 164 54 160 58Z" fill="${VD}"/>
+    <path class="mz-pierko" d="M128 40C138 26 152 14 166 10C178 7 190 12 194 22C183 21 175 27 171 37C168 46 164 54 160 58Z" fill="${VD}"/>
     <path d="M100 20C146 20 178 50 178 88C178 122 146 140 100 140C54 140 22 122 22 88C22 50 54 20 100 20Z" fill="${V}"/>
     <path d="M44 62C52 46 66 36 84 31" fill="none" stroke="${VL}" stroke-width="6"/>
     <path d="M100 64C112 44 152 40 162 68C171 94 150 120 124 118C112 117 104 110 100 102C96 110 88 117 76 118C50 120 29 94 38 68C48 40 88 44 100 64Z" fill="${CR}"/>
     <circle cx="41" cy="109" r="8" fill="#FF8FA3" stroke="none" opacity=".9"/><circle cx="159" cy="109" r="8" fill="#FF8FA3" stroke="none" opacity=".9"/>
-    ${oko(70, 1)}${oko(130, -1)}${zobak}</g>`;
+    ${oko(70, 1)}${oko(130, -1)}<g class="mz-zob">${zobak}</g></g></g>`;
   const telo = `<path d="M52 172q-18 6-24 22q18 2 30-8z" fill="${VD}"/>
     <path d="M100 116C140 116 152 150 150 176C148 198 128 206 100 206C72 206 52 198 50 176C48 150 60 116 100 116Z" fill="${V}"/>
     <path d="M100 146C122 146 131 164 129 181C127 196 115 201 100 201C85 201 73 196 71 181C69 164 78 146 100 146Z" fill="${CR}"/>
     <path d="M86 172q5 6 10 0M104 172q5 6 10 0M95 185q5 6 10 0" fill="none" stroke-width="3"/>
     <ellipse cx="82" cy="207" rx="14" ry="7.5" fill="${OR}"/><ellipse cx="118" cy="207" rx="14" ry="7.5" fill="${OR}"/>
-    <path d="M54 134C80 152 120 152 146 134L147 149C122 166 78 166 53 149Z" fill="${CO}"/><path d="M126 156l13 20l-15-5zM122 157l-3 21l-9-12z" fill="${CO}"/><circle cx="125" cy="155" r="6.5" fill="${CO}"/>`;
+    <path d="M54 134C80 152 120 152 146 134L147 149C122 166 78 166 53 149Z" fill="${CO}"/><path class="mz-satka" d="M126 156l13 20l-15-5zM122 157l-3 21l-9-12z" fill="${CO}"/><circle cx="125" cy="155" r="6.5" fill="${CO}"/>`;
   const X = {
     iskry: mStar4(2, 44, 11, '#FFC533', 'stroke-width="3.5"') + mStar4(200, 26, 9, '#FFC533', 'stroke-width="3.5"') + mStar4(214, 122, 7, '#fff', 'stroke-width="3"') + mStar4(-16, 118, 6, '#fff', 'stroke-width="3"'),
     lupa: `<path d="M207 112L204 144" stroke-width="11"/><path d="M207 113L204 143" stroke="#FFA928" stroke-width="5"/><circle cx="208" cy="92" r="20" fill="#D5EDFF" fill-opacity=".9" stroke-width="5.5"/><path d="M198 88c2-5 6-8 11-9" fill="none" stroke="#fff" stroke-width="4"/>`,
@@ -586,8 +586,9 @@ function mudraCasti(e) {
 }
 function mudra(e = 'ahoj', o = {}) {
   if (!VYRAZY[e]) e = 'ahoj';
-  const c = mudraCasti(e), v = c.v, ex = o.extra ? c.extra : '';
-  return `<svg class="owl mudra" data-m="${o.m || MUDRA_STARE[e] || e}" data-v="${e}" viewBox="8 -2 184 222" aria-hidden="true">${o.tien ? `<ellipse cx="100" cy="214" rx="${52 - v.skok}" ry="6" fill="#2A2356" opacity=".14"/>` : ''}<g stroke="var(--mink,#2A2356)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0 ${-v.skok})">${c.telo}${v.wlF ? '' : c.wL}${v.wrF ? '' : c.wR}${c.lupa ? ex : ''}${c.hlava}${v.wlF ? c.wL : ''}${v.wrF ? c.wR : ''}${c.lupa ? '' : ex}</g></svg>`;
+  const c = mudraCasti(e), v = c.v, ex = o.extra && c.extra ? `<g class="mz-extra">${c.extra}</g>` : '';
+  /* vrstvy mz-* (celá, hlava, oko, zobák, pierko, šatka, doplnky) a data-x, data-t hýbe styly/59-mudra.css a kod/24-mudra.js */
+  return `<svg class="owl mudra" data-m="${o.m || MUDRA_STARE[e] || e}" data-v="${e}"${o.extra ? ' data-x="1"' : ''}${o.tien ? ' data-t="1"' : ''} viewBox="8 -2 184 222" aria-hidden="true">${o.tien ? `<ellipse cx="100" cy="214" rx="${52 - v.skok}" ry="6" fill="#2A2356" opacity=".14"/>` : ''}<g stroke="var(--mink,#2A2356)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0 ${-v.skok})"><g class="mz-cele">${c.telo}${v.wlF ? '' : c.wL}${v.wrF ? '' : c.wR}${c.lupa ? ex : ''}${c.hlava}${v.wlF ? c.wL : ''}${v.wrF ? c.wR : ''}${c.lupa ? '' : ex}</g></g></svg>`;
 }
 const MUDRA_NOVE = { hi: 'ahoj', cheer: 'oslava', happy: 'radost', oops: 'povzbudenie' }, MUDRA_STARE = { ahoj: 'hi', oslava: 'cheer', radost: 'happy', povzbudenie: 'oops' };
 function owl(m = 'hi') { return mudra(MUDRA_NOVE[m] || m, { m }); }

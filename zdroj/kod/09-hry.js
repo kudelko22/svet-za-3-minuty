@@ -63,8 +63,8 @@ const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if 
 // Múdra v lište hry reaguje: radosť, povzbudenie, oslava; po chvíli sa vráti k zvedavému pohľadu
 function mudraHra(v, ms = 1500) {
   const el = document.getElementById('hra-mud'); if (!el) return;
-  clearTimeout(el._t); el.innerHTML = mudra(v); el.classList.remove('reaguje'); void el.offsetWidth; el.classList.add('reaguje');
-  el._t = setTimeout(() => { if (el.isConnected !== false) { el.innerHTML = mudra('zvedava'); el.classList.remove('reaguje'); } }, ms);
+  clearTimeout(el._t); Mudra.reaguj(el, v); el.classList.remove('reaguje'); void el.offsetWidth; el.classList.add('reaguje');
+  el._t = setTimeout(() => { if (el.isConnected !== false) { Mudra.zmen(el, 'zvedava'); el.classList.remove('reaguje'); } }, ms);
 }
 
 // Lietajúca sova: svet hry (obloha, ceruzky, hviezdy) a jeden krok fyziky; kreslenie je v Hra.sovaKresli

@@ -207,6 +207,7 @@ function renderFlow(anim = true) {
 // efekty po odpovedi (zvuk, konfety z Múdrej, štítok s bodmi letí do počítadla); stav už vykreslil renderFlow(false)
 function reakciaOdpovede(f, ok, v) {
   const h = main.querySelector('.harok');
+  Mudra.reaguj(main.querySelector('.rk-mud'), ok ? 'oslava' : 'povzbudenie', { oneskorenie: ok ? 750 : 450 });
   if (h && h.scrollIntoView) setTimeout(() => h.isConnected && h.scrollIntoView({ block: 'nearest', behavior: tiche ? 'auto' : 'smooth' }), 150);
   if (ok) {
     Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); Haptika.hraj(f.precvic ? 'spravne' : 'hotovo');
