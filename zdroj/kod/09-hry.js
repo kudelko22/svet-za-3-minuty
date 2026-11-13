@@ -193,7 +193,7 @@ const Hra = {
     }
     Zvuk.play('start'); render(); scrollTo(0, 0);
   },
-  zrus() { const h = st.hra; if (h) { h.beh = false; clearInterval(h.casovac); if (h.id !== 'sova') clearTimeout(h.dalsia); if (h.hore) Object.values(h.hore).forEach(k => clearTimeout(k.to)); } st.hra = null; },
+  zrus() { zrusVysledok(); const h = st.hra; if (h) { h.beh = false; clearInterval(h.casovac); if (h.id !== 'sova') clearTimeout(h.dalsia); if (h.hore) Object.values(h.hore).forEach(k => clearTimeout(k.to)); } st.hra = null; },
   koniec(menejJeLepsie, hodnota) {
     const h = st.hra; h.beh = false; const kl = rekordKluc(h.id), stary = S.get(kl, null);
     const lepsi = stary == null || (menejJeLepsie ? hodnota < stary : hodnota > stary);
@@ -203,10 +203,9 @@ const Hra = {
     h.hotovo = { hodnota, novy: lepsi && stary != null, prvy: stary == null && hodnota > 0, stary, odznaky };
     Zvuk.play('win'); FX.ohnostroj(3); vibruj([40, 60, 40]);
     if (h.id === 'skladacka') obnovSklad();
-    const el = main.querySelector('.hra');
-    if (!el) return;
-    el.insertAdjacentHTML('beforeend', vysledokHry(h));
-    const v = el.querySelector('.vysl [data-hra]'); if (v && v.focus) setTimeout(() => { try { v.focus({ preventScroll: true }); } catch (e) { /* bez fokusu */ } }, 700);
+    if (!main.querySelector('.hra')) return;
+    ukazVysledok(h);
+    const v = document.querySelector('.vysl [data-hra]'); if (v && v.focus) setTimeout(() => { try { v.focus({ preventScroll: true }); } catch (e) { /* bez fokusu */ } }, 700);
   },
   // Lietajúca sova: ťuknutie = mávnutie krídlami
   sovaStart() {
@@ -738,6 +737,9 @@ function vysledokHry(h) {
       ${odmenyHtml({ noveOdznaky: v.odznaky || [] })}
       <div class="vysl-tl"><button class="btn wide" data-hra="${h.id}">${ikn('znova')}Hrať znova</button><button class="btn dve wide" data-hra-spat>${ikn('hry')}Iná hra</button></div></div></div>`;
 }
+// výsledok ide priamo do body: v main by ho animácia obrazovky (transform) zviazala s hrou a nebol by cez celú obrazovku
+const zrusVysledok = () => { try { document.querySelectorAll('.vysl').forEach(x => x.remove()); } catch (e) { /* test bez DOM */ } };
+function ukazVysledok(h) { zrusVysledok(); try { document.body.insertAdjacentHTML('beforeend', vysledokHry(h)); } catch (e) { /* test bez DOM */ } }
 const startTl = h => h.beh || h.hotovo ? '' : `<button class="hv-start" data-hv-start>${ikn('hraj')}<span>Štart</span></button>`;
 const SIMON_FARBY = ['var(--coral)', 'var(--sky)', 'var(--leaf)', 'var(--sun)'];
 function renderHra() {
@@ -777,8 +779,9 @@ function renderHra() {
   main.classList.add('anim');
   main.innerHTML = `<div class="hra hra-${h.id}">
     <div class="hra-top"><button class="btn kruh dve" data-hra-spat aria-label="Späť na hry">${ikn('zavriet')}</button><b class="hra-nazov">${info.n}</b><span class="hra-mud" id="hra-mud" aria-hidden="true">${mudra('zvedava')}</span><span class="st cis hra-stav" id="hra-stav" aria-live="polite">${stavHry(h)}</span></div>
-    ${telo}${h.hotovo ? vysledokHry(h) : ''}</div>`;
+    ${telo}</div>`;
   ocisluj();
+  if (h.hotovo) ukazVysledok(h); else zrusVysledok();
   if (h.id === 'sova') requestAnimationFrame(() => Hra.sovaKresli(h));
 }
 
@@ -792,10 +795,10 @@ function hryZoznam() {
   let i = 0;
   const dlazdica = h => { const r = rek(h);
     return `<button class="dlazdica hra-karta" data-hra="${h.id}" style="--c:${h.c};--i:${i++}" aria-label="${esc(h.n)}${r != null ? ', rekord ' + esc(rekordText(h.id, r)) : ', nová hra'}">
-      <span class="dl-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
-      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r)}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
+      <span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
+      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
   const zamknuta = h => `<button class="dlazdica hra-karta zamknuta${spi(h) ? ' spi' : ''}" data-hra="${h.id}" style="--i:${i++}" aria-label="${esc(h.n)}, ${spi(h) ? 'spí, kým strom vädne' : `zamknutá, cena ${h.cena}, chýba ${h.cena - st.body}`}">
-      <span class="zmk">${ikn(spi(h) ? 'mesiac' : 'zamok')}</span><span class="dl-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
+      <span class="zmk">${ikn(spi(h) ? 'mesiac' : 'zamok')}</span><span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;
   const r0 = hore && rek(hore);
   return `<div class="ihrisko">
@@ -804,12 +807,12 @@ function hryZoznam() {
     ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} bodov spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">
       <span class="zal" style="--c:var(--card)">${hore.id === st.hraPosledna ? 'Hrané naposledy' : r0 != null ? 'Tvoja hra' : 'Najnovšia hra'}</span>
-      <span class="dl-obr">${OBR_HRY[hore.id]}</span>
-      <span class="inf"><b>${hore.n}</b>${r0 != null ? `<span class="st">${ikn('pohar')}Rekord ${rekordText(hore.id, r0)}</span>` : `<small>${hore.p}</small>`}</span>
+      <span class="hr-obr">${OBR_HRY[hore.id]}</span>
+      <span class="inf"><b>${hore.n}</b>${r0 != null ? `<span class="st">${ikn('pohar')}Rekord ${rekordText(hore.id, r0)}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}</span>
       <span class="hraj-v">${ikn('hraj')}</span></button>` : ''}
     ${ok.length > 1 ? `<div class="dlazdice">${ok.filter(h => h !== hore).map(dlazdica).join('')}</div>` : ''}
-    ${dalsia ? `<button class="karta dalsia" data-hra="${dalsia.id}" aria-label="Ďalšia hra ${esc(dalsia.n)}, chýba ${dalsia.cena - st.body}"><span class="zal">Ďalšia hra</span>
-      <span class="dl-obr">${OBR_HRY[dalsia.id]}</span>
+    ${dalsia ? `<button class="karta dalsia-hra" data-hra="${dalsia.id}" aria-label="Ďalšia hra ${esc(dalsia.n)}, chýba ${dalsia.cena - st.body}"><span class="zal">Ďalšia hra</span>
+      <span class="hr-obr">${OBR_HRY[dalsia.id]}</span>
       <span class="inf"><b>${dalsia.n}</b><span class="pruh"><i style="width:${Math.max(6, Math.min(100, Math.round(st.body / dalsia.cena * 100)))}%"></i></span><small>Chýba ${dalsia.cena - st.body} ${slovoBody(dalsia.cena - st.body)}</small></span>
       <span class="cena">${ikn('hviezda')}${dalsia.cena}</span></button>` : !zamk.length ? `<p class="odkaz vsetko">${ikn('koruna')}<span>Máš odomknuté všetky hry. Si majster ihriska!</span></p>` : ''}
     ${ostatne.length ? `<h2 class="n2 zamk-n">Ešte zamknuté</h2><div class="dlazdice zamk">${ostatne.map(zamknuta).join('')}</div>` : ''}

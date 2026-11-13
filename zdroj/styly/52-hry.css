@@ -20,28 +20,28 @@ body:has(main > .ihrisko) .blobs { display: none; }
 .vsetko { display: flex; gap: 10px; align-items: center; margin: 0; background: var(--card); }
 
 /* obrázok hry v dlaždici */
-.dl-obr { display: block; }
-.dl-obr svg, .hra-kresba { display: block; width: 100%; height: 100%; overflow: visible; }
-.dlazdica .dl-obr { height: 78px; margin: 0 -2px; }
+.hr-obr { display: block; }
+.hr-obr svg, .hra-kresba { display: block; width: 100%; height: 100%; overflow: visible; }
+.dlazdica .hr-obr { height: 78px; margin: 0 -2px; }
 
 /* hraná naposledy: veľká karta s okrúhlym tlačidlom */
 .naposledy { position: relative; display: grid; grid-template-columns: minmax(0, 46%) 1fr; gap: 6px; align-items: center; width: 100%; margin-top: 10px; padding: 22px 12px 14px 6px; text-align: left; border: var(--obrys); border-radius: 22px 24px 22px 26px; background: var(--c); box-shadow: 0 6px 0 var(--ink); rotate: 1deg; color: var(--text); animation: dlPadne .5s var(--spring) backwards; }
 .naposledy .zal { color: var(--text); }
-.naposledy .dl-obr { height: 96px; }
+.naposledy .hr-obr { height: 96px; }
 .naposledy .inf { display: grid; gap: 8px; justify-items: start; align-self: start; padding: 4px 58px 0 0; min-width: 0; }
-.naposledy .inf b { font: 800 1.3rem/1.1 var(--fd); overflow-wrap: anywhere; }
-.naposledy .inf small { font: 500 .84rem/1.3 var(--fb); }
+.naposledy .inf b { font: 800 1.22rem/1.1 var(--fd); overflow-wrap: break-word; hyphens: auto; }
+.naposledy .pec { background: var(--card); }
 .naposledy .st, .dlazdica .st { background: var(--card); }
 .hraj-v { position: absolute; right: 12px; bottom: 12px; display: grid; place-items: center; width: 58px; height: 58px; padding-left: 4px; border: var(--obrys); border-radius: 50%; background: var(--sun); box-shadow: inset 0 -5px 0 var(--sun-d), 0 3px 0 var(--ink); }
 .hraj-v .ikn { width: 28px; height: 28px; --iko: var(--dk); }
-.naposledy:active, .dlazdica:not(.zamknuta):active, .dalsia:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.naposledy:active, .dlazdica:not(.zamknuta):active, .dalsia-hra:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
 
 /* dlaždice: odomknuté farebné a nakrivo, dopadnú jedna po druhej ako karty hodené na stôl */
 .dlazdice { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 12px; }
 .dlazdica { position: relative; display: grid; gap: 4px; align-content: start; min-width: 0; padding: 8px 10px 10px; text-align: left; border: var(--obrys); border-radius: 18px 20px 22px 18px; background: var(--c); box-shadow: 0 5px 0 var(--ink); color: var(--text); animation: dlPadne .5s calc(.06s * var(--i, 0)) var(--spring) backwards; }
 .dlazdica:nth-child(odd) { rotate: -1.6deg; }
 .dlazdica:nth-child(even) { rotate: 1.3deg; translate: 0 7px; }
-.dlazdica b { font: 800 1.03rem/1.15 var(--fd); overflow-wrap: anywhere; }
+.dlazdica b { font: 800 1.03rem/1.15 var(--fd); overflow-wrap: break-word; hyphens: auto; }
 .pata { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 32px; margin-top: auto; padding-top: 3px; }
 .pata .st { height: 26px; min-width: 0; padding: 0 8px 0 5px; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; }
 .pata small { font: 700 .75rem/1 var(--fb); color: var(--muted); white-space: nowrap; }
@@ -49,32 +49,32 @@ body:has(main > .ihrisko) .blobs { display: none; }
 .dl-hraj { flex: none; display: grid; place-items: center; width: 32px; height: 32px; padding-left: 2px; border: var(--obrys-m); border-radius: 50%; background: var(--sun); box-shadow: 0 2px 0 var(--ink); }
 .dl-hraj .ikn { width: 18px; height: 18px; --iko: var(--dk); }
 .dlazdica.ide, .naposledy.ide { rotate: 0deg; translate: 0 0; scale: 1.06; z-index: 2; box-shadow: 0 9px 0 var(--ink); transition: rotate .2s, scale .2s var(--spring), translate .2s, box-shadow .2s; }
-.dlazdica.ide .dl-obr svg, .naposledy.ide .dl-obr svg { animation: jelly .5s; }
+.dlazdica.ide .hr-obr svg, .naposledy.ide .hr-obr svg { animation: jelly .5s; }
 @keyframes dlPadne { 0% { opacity: 0; transform: translateY(-34px) rotate(7deg) scale(1.1); } 60% { opacity: 1; } }
 /* obrázok odomknutej hry sa jemne hýbe, keď je dlaždica na očiach */
-.dlazdica:not(.zamknuta) .dl-obr svg { animation: tileBob 3.2s calc(-.4s * var(--i, 0)) ease-in-out infinite; }
+.dlazdica:not(.zamknuta) .hr-obr svg { animation: tileBob 3.2s calc(-.4s * var(--i, 0)) ease-in-out infinite; }
 
 /* zamknuté: pieskové, rovné, prerušovaný okraj, zámok vpravo hore, cena vľavo dole a vpravo koľko chýba */
 .zamk-n { margin: 8px 0 -6px 2px; }
 .dlazdice.zamk .dlazdica { rotate: 0deg; translate: none; background: var(--sand); border-style: dashed; box-shadow: none; }
-.zamknuta .dl-obr svg { filter: grayscale(.85); opacity: .62; animation: none; }
+.zamknuta .hr-obr svg { filter: grayscale(.85); opacity: .62; animation: none; }
 .zamknuta b { color: var(--muted); }
 .zmk { position: absolute; right: -8px; top: -11px; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--card); border: var(--obrys-m); }
 .zmk .ikn { width: 20px; height: 20px; }
 .zamknuta.spi .zmk { background: var(--violet-l); }
-.dlazdica.trasie, .dalsia.trasie { animation: shake .45s; }
+.dlazdica.trasie, .dalsia-hra.trasie { animation: shake .45s; }
 .dlazdica.trasie .zmk { animation: zamokCink .5s; }
 @keyframes zamokCink { 25% { rotate: -18deg; } 50% { rotate: 14deg; } 75% { rotate: -8deg; } }
 
 /* Ďalšia hra: karta so záložkou, pásik postupu, cena */
-.karta.dalsia { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 24px 12px 14px 8px; margin-top: 18px; text-align: left; color: var(--text); box-shadow: 0 5px 0 var(--ink); animation: dlPadne .5s .2s var(--spring) backwards; }
-.dalsia .zal { color: var(--dk); }
-.dalsia .dl-obr { height: 58px; }
-.dalsia .inf { display: grid; gap: 6px; min-width: 0; }
-.dalsia .inf b { font: 800 1.03rem/1.2 var(--fd); }
-.dalsia .inf small { font: 700 .78rem/1 var(--fd); color: var(--muted); }
-.dalsia .pruh { height: 14px; }
-.dalsia .cena { align-self: start; margin-top: 4px; }
+.karta.dalsia-hra { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 24px 12px 14px 8px; margin-top: 18px; text-align: left; color: var(--text); box-shadow: 0 5px 0 var(--ink); animation: dlPadne .5s .2s var(--spring) backwards; }
+.dalsia-hra .zal { color: var(--dk); }
+.dalsia-hra .hr-obr { height: 58px; }
+.dalsia-hra .inf { display: grid; gap: 6px; min-width: 0; }
+.dalsia-hra .inf b { font: 800 1.03rem/1.2 var(--fd); }
+.dalsia-hra .inf small { font: 700 .78rem/1 var(--fd); color: var(--muted); }
+.dalsia-hra .pruh { height: 14px; }
+.dalsia-hra .cena { align-self: start; margin-top: 4px; }
 
 /* ---------- Obal hry: lišta, Múdra, stav ---------- */
 .hra { gap: 16px; padding-top: 6px; }
@@ -112,9 +112,9 @@ body:has(main > .ihrisko) .blobs { display: none; }
 .btn.poc-btn, .btn.hadaj-btn, .btn.kv-btn { --cta: var(--card); --cta-d: var(--sand); --cta-t: var(--text); box-shadow: inset 0 -6px 0 var(--cta-d), 0 4px 0 var(--ink); transition: background-color .3s, box-shadow .3s, transform .1s, opacity .25s; }
 .btn.poc-btn { min-height: 100px; font: 900 3.2rem/1 var(--fd); }
 .btn.hadaj-btn { padding: 14px 16px 18px; font: 800 1.15rem/1.2 var(--fd); }
-.btn.poc-btn.ok, .btn.hadaj-btn.ok, .btn.kv-btn.ok { --cta: var(--teal); --cta-d: var(--teal-d); --cta-t: #06302B; border-color: var(--ink); animation: okPop .5s var(--spring); }
-.btn.poc-btn.zle, .btn.hadaj-btn.zle, .btn.kv-btn.zle { --cta: var(--coral); --cta-d: var(--coral-d); --cta-t: #3A0E05; border-color: var(--ink); animation: shake .45s; }
-.btn.poc-btn.zle:disabled, .btn.kv-btn.zle:disabled { --cta: var(--coral-l); --cta-t: var(--muted); border-style: dashed; box-shadow: none; }
+.btn.poc-btn.ok, .btn.hadaj-btn.ok, .btn.kv-btn.ok { --cta: var(--teal); --cta-d: var(--teal-d); --cta-t: #06302B; background: var(--cta); border-color: var(--ink); animation: okPop .5s var(--spring); }
+.btn.poc-btn.zle, .btn.hadaj-btn.zle, .btn.kv-btn.zle { --cta: var(--coral); --cta-d: var(--coral-d); --cta-t: #3A0E05; background: var(--cta); border-color: var(--ink); animation: shake .45s; }
+.btn.poc-btn.zle:disabled, .btn.kv-btn.zle:disabled { --cta: var(--coral-l); --cta-t: var(--muted); background: var(--cta); border-style: dashed; box-shadow: none; }
 .btn.kv-btn.vzata { opacity: .3; scale: .9; }
 .kv-moz.ine .kv-btn { min-height: 132px; }
 .kv-nap { font: 800 .95rem/1.1 var(--fb); }
@@ -215,7 +215,7 @@ body:has(main > .ihrisko) .blobs { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .naposledy, .dlazdica, .dlazdica .dl-obr svg, .karta.dalsia, .pex, .hra-mud.reaguje, .hra-stav.bump, .hs-cas.malo, .hv-start, .kolo-nove,
+  .naposledy, .dlazdica, .dlazdica .hr-obr svg, .karta.dalsia-hra, .pex, .hra-mud.reaguje, .hra-stav.bump, .hs-cas.malo, .hv-start, .kolo-nove,
   .vysl, .vysl-slnko, .vysl-slnko .luce, .vysl-mud, .vysl-cislo, .vysl-harok, .vysl-pec, .dlazdica.trasie, .dlazdica.trasie .zmk { animation: none !important; }
   .dlazdica.ide, .naposledy.ide { transition: none; }
 }
