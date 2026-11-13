@@ -3,17 +3,17 @@
 .brana > .card, .brana > .btn { width: 100%; text-align: left; }
 .brana > .btn { text-align: center; }
 .brana-owl { width: 150px; animation: bob 3s ease-in-out infinite; }
-.kruh-av { display: grid; align-items: end; overflow: hidden; border-radius: 50%; background: var(--bg); border: 3px solid var(--line); }
+.kruh-av { display: grid; align-items: end; overflow: hidden; border-radius: 50%; background: var(--bg); border: 3px solid var(--ink); }
 .kruh-av svg { display: block; width: 92%; height: auto; margin: 0 auto; }
 .deti { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
-.dieta { display: grid; justify-items: center; gap: 2px; padding: 14px 8px 12px; border: 3px solid var(--line); border-radius: 24px; background: var(--paper); box-shadow: var(--sh); }
-.dieta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--shc); }
+.dieta { display: grid; justify-items: center; gap: 2px; padding: 14px 8px 12px; border: 3px solid var(--ink); border-radius: 24px; background: var(--card); box-shadow: var(--sh); }
+.dieta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
 .dieta .kruh-av { width: min(118px, 100%); aspect-ratio: 1; animation: tileBob 3s ease-in-out infinite; }
 .dieta:nth-child(2) .kruh-av { animation-delay: -1s; } .dieta:nth-child(3) .kruh-av { animation-delay: -2s; }
-.dieta b { margin-top: 6px; font: 700 1.35rem/1.15 var(--f-display); }
+.dieta b { margin-top: 6px; font: 700 1.35rem/1.15 var(--fd); }
 .dieta small { color: var(--muted); font-weight: 800; }
-.dieta.nove { border-style: dashed; background: var(--glass); box-shadow: none; }
-.dieta .plus { width: min(118px, 100%); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; border: 3px dashed var(--line); background: var(--soft); font: 700 3.6rem/1 var(--f-display); }
+.dieta.nove { border-style: dashed; background: var(--card); box-shadow: none; }
+.dieta .plus { width: min(118px, 100%); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; border: 3px dashed var(--ink); background: var(--violet-l); font: 700 3.6rem/1 var(--fd); }
 .tvorba { justify-items: stretch; text-align: left; }
 .tvorba > .h1 { text-align: center; }
 .btn.red { background: var(--coral); }

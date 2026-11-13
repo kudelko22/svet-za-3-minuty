@@ -1,31 +1,31 @@
 /* Odznaky a odmeny */
 .mini-av { flex: none; width: 74px; aspect-ratio: 1; }
-.dalsia { display: flex; align-items: center; gap: 14px; background: var(--grad-warm); }
+.dalsia { display: flex; align-items: center; gap: 14px; background: var(--sun-l); }
 .dalsia > div { display: grid; gap: 6px; min-width: 0; flex: 1; }
-.dalsia b { font: 700 1.1rem/1.2 var(--f-display); }
+.dalsia b { font: 700 1.1rem/1.2 var(--fd); }
 .dalsia small { color: var(--muted); font-weight: 800; }
 .dalsia .bar { grid-column: auto; margin: 2px 0 0; height: 16px; }
 .dalsia .bar i { background: repeating-linear-gradient(-45deg, var(--sun) 0 10px, var(--sun) 10px 20px); background-size: 28px 28px; animation: stripes .7s linear infinite; }
-.lbl-mala { font: 600 .8rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-.h2 .pocet { font: 700 .9rem/1 var(--f-body); color: var(--muted); text-decoration: none; display: inline-block; margin-left: 6px; }
+.lbl-mala { font: 600 .8rem/1 var(--fd); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.h2 .pocet { font: 700 .9rem/1 var(--fb); color: var(--muted); text-decoration: none; display: inline-block; margin-left: 6px; }
 .odznaky { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.odznak { display: grid; justify-items: center; gap: 4px; padding: 10px 6px; border-radius: 20px; border: 3px dashed var(--off2); background: var(--glass); text-align: center; color: var(--muted); }
-.odznak b { font: 600 .9rem/1.15 var(--f-display); }
+.odznak { display: grid; justify-items: center; gap: 4px; padding: 10px 6px; border-radius: 20px; border: 3px dashed var(--sand); background: var(--card); text-align: center; color: var(--muted); }
+.odznak b { font: 600 .9rem/1.15 var(--fd); }
 .odznak small { font-size: .72rem; line-height: 1.25; font-weight: 700; }
-.odznak .medaila { width: 52px; height: 52px; font-size: 1.6rem; background: var(--off); filter: grayscale(1); opacity: .7; }
-.odznak.ma { border: 3px solid var(--line); background: var(--paper); color: var(--text); box-shadow: 0 4px 0 var(--shc); }
-.odznak.ma .medaila { background: radial-gradient(circle at 35% 30%, var(--p-FFF3B0,#FFF3B0), var(--sun)); filter: none; opacity: 1; animation: tileBob 3s ease-in-out infinite; }
-.medaila { display: grid; place-items: center; border-radius: 50%; border: 3px solid var(--line); }
+.odznak .medaila { width: 52px; height: 52px; font-size: 1.6rem; background: var(--sand); filter: grayscale(1); opacity: .7; }
+.odznak.ma { border: 3px solid var(--ink); background: var(--card); color: var(--text); box-shadow: 0 4px 0 var(--ink); }
+.odznak.ma .medaila { background: radial-gradient(circle at 35% 30%, var(--sun-l), var(--sun)); filter: none; opacity: 1; animation: tileBob 3s ease-in-out infinite; }
+.medaila { display: grid; place-items: center; border-radius: 50%; border: 3px solid var(--ink); }
 .nove-odmeny { display: grid; gap: 12px; width: 100%; text-align: left; }
-.odmena-karta { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 22px; border: 3px solid var(--line); background: var(--grad-warm); box-shadow: 0 4px 0 var(--shc); animation: pop .6s var(--spring) both; animation-delay: var(--d, 0s); }
-.odmena-karta .medaila { flex: none; width: 64px; height: 64px; font-size: 2rem; background: radial-gradient(circle at 35% 30%, var(--p-FFF3B0,#FFF3B0), var(--sun)); }
+.odmena-karta { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 22px; border: 3px solid var(--ink); background: var(--sun-l); box-shadow: 0 4px 0 var(--ink); animation: pop .6s var(--spring) both; animation-delay: var(--d, 0s); }
+.odmena-karta .medaila { flex: none; width: 64px; height: 64px; font-size: 2rem; background: radial-gradient(circle at 35% 30%, var(--sun-l), var(--sun)); }
 .odmena-karta .mini-av { width: 64px; }
 .odmena-karta > div { display: grid; }
-.odmena-karta b { font: 700 1.25rem/1.15 var(--f-display); color: var(--sun-t); }
+.odmena-karta b { font: 700 1.25rem/1.15 var(--fd); color: var(--sun-t); }
 .odmena-karta span:not(.medaila):not(.mini-av) { font-weight: 800; }
 .av-opt { position: relative; }
 .av-opt.zamknute > svg { filter: grayscale(.85); opacity: .55; }
-.av-opt.zamknute::after { content: attr(data-cena); position: absolute; inset: auto 0 10% 0; text-align: center; font: 700 .8rem/1 var(--f-display); color: #fff; text-shadow: 0 1px 0 var(--dk), 0 0 4px var(--dk); }
+.av-opt.zamknute::after { content: attr(data-cena); position: absolute; inset: auto 0 10% 0; text-align: center; font: 700 .8rem/1 var(--fd); color: #fff; text-shadow: 0 1px 0 var(--dk), 0 0 4px var(--dk); }
 .av-opt.farba.zamknute { filter: saturate(.4); }
 .av-opt.farba.zamknute::after { inset: auto 0 22% 0; }
 .av-opt.trasie { animation: shake .4s; }

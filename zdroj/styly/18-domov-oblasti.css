@@ -11,31 +11,24 @@
 .skupiny.rad { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 2px 4px 12px; margin: -2px -4px 0; scrollbar-width: none; }
 .skupiny.rad::-webkit-scrollbar { display: none; }
 .skupiny.rad .skupina { flex: none; width: 132px; scroll-snap-align: start; }
-.acts.kompakt { gap: 10px; }
-.acts.kompakt .act { grid-template-columns: auto 1fr; align-items: center; column-gap: 8px; padding: 10px 12px; border-radius: 20px; }
-.acts.kompakt .act-e { grid-row: 1 / span 2; width: 40px; height: 40px; margin: 0; }
-.acts.kompakt .act-e .ik { width: 28px; height: 28px; }
-.acts.kompakt .act b { font-size: 1.05rem; }
-.acts.kompakt .act:not(.cas) small { display: none; }
-.acts.kompakt .act.cas small { grid-column: 2; font-size: .75rem; line-height: 1.15; }
 .auto-karta { padding: 10px 14px; }
 .skupiny.vybrana .skupina[aria-pressed="false"] { opacity: .55; transform: scale(.96); }
-.skupina[aria-pressed="true"] { outline: 3px dashed var(--line); outline-offset: 4px; }
+.skupina[aria-pressed="true"] { outline: 3px dashed var(--ink); outline-offset: 4px; }
 #filtre { display: grid; gap: 12px; }
 #filtre .chip .ikn { width: 18px; height: 18px; }
 
 /* 5.0 karta témy: výstrižok z atlasu. Obrázok je nalepená pohľadnica (nakrivo, s tieňom), za ňou perforácia, kategória ako popisok mapy,
    vpravo pečiatka Nová alebo tyrkysová fajka Prebraté. Farba oblasti ide cez --c (svetlá) a --cd (tmavá). */
 .list { display: grid; gap: 14px; }
-.row { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px 12px 10px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); color: var(--text); box-shadow: 0 4px 0 var(--shc); text-align: left; }
+.row { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px 12px 10px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); color: var(--text); box-shadow: 0 4px 0 var(--ink); text-align: left; }
 .row:nth-child(2n) { border-radius: 22px 20px 24px 20px; }
-.row:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shc); }
-.thumb { flex: none; width: 84px; height: 64px; overflow: hidden; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--c); box-shadow: 0 3px 0 var(--shc); rotate: -3deg; }
+.row:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.thumb { flex: none; width: 84px; height: 64px; overflow: hidden; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--c); box-shadow: 0 3px 0 var(--ink); rotate: -3deg; }
 .row:nth-child(2n) .thumb { rotate: 2.5deg; }
 .thumb svg { display: block; width: 100%; height: 100%; }
 .row-main { flex: 1; display: grid; gap: 4px; align-self: stretch; align-content: center; min-width: 0; padding-left: 12px; border-left: 2.5px dashed var(--sand); }
 .row-s { display: inline-flex; align-items: center; gap: 6px; font: 700 .72rem/1.2 var(--fb); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
-.row-s::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--line); border-radius: 50%; background: var(--cd); }
+.row-s::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--ink); border-radius: 50%; background: var(--cd); }
 .row-s .ikn { width: 15px; height: 15px; }
 .row-t { font: 800 1.06rem/1.2 var(--fd); overflow-wrap: anywhere; }
 .row-nova { position: absolute; right: 12px; top: -11px; --pc: var(--link); background: var(--card); font-size: .7rem; rotate: 4deg; }
@@ -46,3 +39,12 @@
 .skup-h .ikb { width: 38px; height: 38px; margin: 0; }
 .skup-h .ikb .ikn { width: 24px; height: 24px; }
 .skup-h small { margin-left: auto; font: 700 .94rem/1 var(--fd); color: var(--muted); }
+
+/* Objavuj: kvízy a Iná téma ako nálepky v mriežke; ďalšie témy ako pohľadnice v rade */
+.obj-akty { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.obj-akt .ikb { margin: 0 0 4px; }
+.obj-akt small { color: var(--muted); }
+.obj-akt.cas { opacity: .62; }
+.cc { background: var(--card); border-radius: var(--r-karta); box-shadow: 0 4px 0 var(--shc); }
+.cc .scene { background: var(--c); }
+.cc b { padding: 8px 10px 10px; font: 800 .98rem/1.15 var(--fd); color: var(--text); text-shadow: none; border-top: var(--obrys-m); }

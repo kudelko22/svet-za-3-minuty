@@ -37,7 +37,7 @@ function socKontrola(txt) {
   return NEVH_SLITE.some(p => slite.includes(p)) ? 'slova' : '';
 }
 const socZablokovane = (pid, txt) => { const k = 'soc-zablok-' + pid, v = S.get(k, []); v.push({ k: Date.now(), t: String(txt).slice(0, 200) }); S.set(k, v.slice(-10)); };
-const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? '#FFD23F' : '#E4E0EE')).join('')}</span>${moja ? '' : `<button class="btn blue" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
+const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? 'var(--sun)' : 'var(--sand)')).join('')}</span>${moja ? '' : `<button class="btn mud" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
   : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : (x.x ? (!moja && socKontrola(x.x) === 'slova' ? '<span class="msg-t msg-x"><i>Správa je skrytá, lebo obsahuje nevhodné slová.</i></span>' : `<span class="msg-t msg-x">${esc(x.x)}</span>`) : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`);
 /* 5.0: vzhľad Priateľov (logika a údaje sú rovnaké ako v 4.9). Každý priateľ má podklad postavičky v inej farbe podľa svojho id. */
 const PR_FARBY = ['sky', 'sun', 'leaf', 'violet', 'teal', 'coral'];
@@ -59,7 +59,7 @@ function chatHtml(fid) {
 function nahladSpravy(f) {
   const So = socC(), m = (So.spravy[f] || []).slice(-1)[0];
   if (!m) return '<small class="muted">Napíš prvú správu</small>';
-  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ii(IK.kniha)} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : m.x ? esc(m.x.slice(0, 40)) : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
+  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ikn('temy')} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : m.x ? esc(m.x.slice(0, 40)) : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
 }
 // rebríček: stupne víťazov pre prvých troch (koruna len pre prvé miesto), ostatní v riadkoch pod nimi
 function rebricekHtml() {
@@ -127,7 +127,7 @@ Object.assign(views, {
       ${p ? `<button class="dm-kto" data-soc-profil="${f}">${prAv(p.avatar, f)}<span class="dm-meno"><b>${esc(p.meno)}</b><span class="dm-staty"><span>${ikn('plamen')}${p.seria || 0}</span><span>${ikn('hviezda')}${p.body || 0}</span></span></span><span class="dm-profil">Profil${ikn('sipka')}</span></button>` : '<b class="dm-nacit">Načítava sa…</b>'}</header>
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : '<div class="pr-kostra dm-kostra"><span></span><span></span><span></span></div>'}</div>
       <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="pr-mala">Najprv preber nejakú tému.</small>'}</div>` : ''}
-        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému" aria-pressed="${!!st.socTemy}">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
+        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému" aria-pressed="${!!st.socTemy}">${ikn('temy')}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
         ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search bez-lupy" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn" type="submit">Poslať</button></form>` : ''}
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="veta" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },

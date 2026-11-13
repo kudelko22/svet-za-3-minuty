@@ -3,7 +3,7 @@
 .okruh-tl-ik svg, .okruh-ik svg { width: 100%; height: 100%; }
 .okruh-okno { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgb(24 20 63 / .6); animation: zavojIn .25s ease-out both; }
 .okruh-okno.pryc { opacity: 0; transition: opacity .25s; }
-.okruh-karta { position: relative; display: grid; gap: 12px; width: min(100%, 420px); max-height: calc(100dvh - 32px); overflow: auto; padding: 18px 16px 16px; border: var(--obrys); border-radius: 24px 26px 24px 28px; background: var(--card); color: var(--text); box-shadow: 0 6px 0 var(--shc); animation: oknoIn .35s var(--spring) both; }
+.okruh-karta { position: relative; display: grid; gap: 12px; width: min(100%, 420px); max-height: calc(100dvh - 32px); overflow: auto; padding: 18px 16px 16px; border: var(--obrys); border-radius: 24px 26px 24px 28px; background: var(--card); color: var(--text); box-shadow: 0 6px 0 var(--ink); animation: oknoIn .35s var(--spring) both; }
 .okruh-karta > .tx { color: var(--muted); }
 .tyzs-hl { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .tyz-strom[hidden] { display: none; }
@@ -27,9 +27,9 @@
 .tyzs-st .st.zhas { background: var(--sand); }
 .tyzs-tip { text-align: center; }
 .tyzs-karta .dom-okr { flex-wrap: wrap; }
-.tyzs-strom { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px 8px 8px; border: var(--obrys); border-radius: var(--r-karta); background: var(--leaf-l); color: var(--text); box-shadow: 0 4px 0 var(--shc); text-align: left; }
+.tyzs-strom { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px 8px 8px; border: var(--obrys); border-radius: var(--r-karta); background: var(--leaf-l); color: var(--text); box-shadow: 0 4px 0 var(--ink); text-align: left; }
 .tyzs-strom.schne { background: var(--sun-l); }
-.tyzs-strom:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shc); }
+.tyzs-strom:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .tyzs-strom-k { flex: none; width: 64px; }
 .tyzs-strom-k .os-strom * { animation: none !important; }
 .tyzs-strom-t { flex: 1; display: grid; gap: 3px; min-width: 0; }
@@ -43,16 +43,16 @@
 .tp-nav-st small { font: 700 .94rem/1 var(--fd); color: var(--muted); }
 .tp-krok:disabled { opacity: .45; }
 .tp-suctu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.tp-sucet { display: grid; align-content: center; justify-items: center; gap: 4px; padding: 10px 4px; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--sun-l); color: var(--text); text-align: center; font: 700 .78rem/1.15 var(--fb); box-shadow: 0 3px 0 var(--shc); }
+.tp-sucet { display: grid; align-content: center; justify-items: center; gap: 4px; padding: 10px 4px; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--sun-l); color: var(--text); text-align: center; font: 700 .78rem/1.15 var(--fb); box-shadow: 0 3px 0 var(--ink); }
 .tp-sucet:nth-child(2) { background: var(--sky-l); } .tp-sucet:nth-child(3) { background: var(--coral-l); } .tp-sucet.zhas { background: var(--sand); }
 .tp-cis { font: 900 1.75rem/1 var(--fd); } .tp-cis small { font-size: .9rem; font-weight: 700; }
-.tp-okruh { display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 12px; border: 2.5px dashed var(--line); border-radius: var(--r-maly); background: var(--bg); color: var(--text); font: 500 .94rem/1.2 var(--fb); }
+.tp-okruh { display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 12px; border: 2.5px dashed var(--ink); border-radius: var(--r-maly); background: var(--bg); color: var(--text); font: 500 .94rem/1.2 var(--fb); }
 .tp-okruh b { font: 800 1rem/1.15 var(--fd); }
 .tp-okruh > span:nth-child(2) { flex: 1; } .tp-zmen { width: auto; }
 .tp-dni { display: grid; gap: 8px; }
 .tp-prec { width: 100%; margin-top: -2px; }
-.tp-den { display: grid; grid-template-columns: 50px 46px minmax(0, 1fr) 22px; align-items: center; gap: 10px; width: 100%; min-height: 72px; padding: 8px 10px; border: var(--obrys-m); border-radius: var(--r-karta); background: var(--card); color: var(--text); box-shadow: 0 3px 0 var(--shc); font: 500 1rem/1.2 var(--fb); text-align: left; animation: osIn .3s ease-out both; animation-delay: calc(var(--i) * 30ms); }
-button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--shc); }
+.tp-den { display: grid; grid-template-columns: 50px 46px minmax(0, 1fr) 22px; align-items: center; gap: 10px; width: 100%; min-height: 72px; padding: 8px 10px; border: var(--obrys-m); border-radius: var(--r-karta); background: var(--card); color: var(--text); box-shadow: 0 3px 0 var(--ink); font: 500 1rem/1.2 var(--fb); text-align: left; animation: osIn .3s ease-out both; animation-delay: calc(var(--i) * 30ms); }
+button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .tp-den.hotovo { background: var(--teal-l); } .tp-den.dnes { background: var(--sun-l); border-width: 3px; }
 .tp-den.pred { background: var(--bg); box-shadow: none; }
 .tp-den.zmeskane { background: var(--card); } .tp-den.buduci { background: var(--bg); border-style: dashed; box-shadow: none; opacity: .8; }
@@ -60,7 +60,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 .tp-ik { display: grid; place-items: center; width: 46px; height: 46px; border: var(--obrys-m); border-radius: 13px 15px 12px 16px; background: color-mix(in srgb, var(--c) 30%, var(--card)); rotate: -4deg; } .tp-ik svg { width: 30px; height: 30px; }
 .tp-telo { display: grid; gap: 5px; min-width: 0; } .tp-tema { font: 800 1rem/1.2 var(--fd); overflow-wrap: anywhere; }
 .tp-stitky { display: flex; flex-wrap: wrap; gap: 4px; }
-.tp-stitok { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px 0 6px; border: 2px solid var(--line); border-radius: 999px; background: var(--card); color: var(--text); font: 700 .75rem/1 var(--fb); }
+.tp-stitok { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px 0 6px; border: 2px solid var(--ink); border-radius: 999px; background: var(--card); color: var(--text); font: 700 .75rem/1 var(--fb); }
 .tp-stitok .ikn { width: 15px; height: 15px; }
 .tp-stitok.s-hotovo { background: var(--leaf-l); } .tp-stitok.s-dnes { background: var(--sun); color: var(--dk); } .tp-stitok.s-zmeskane { background: var(--coral-l); } .tp-stitok.s-buduci { background: var(--violet-l); } .tp-stitok.s-pred, .tp-stitok.s-ang { background: var(--sand); }
 .tp-sip .ikn { width: 20px; height: 20px; }
@@ -69,9 +69,9 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 
 /* okruh týždňa: nálepky so štyrmi oblasťami a Zmiešaným */
 .okruh-mriezka { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.okruh-volba { display: grid; justify-items: center; gap: 6px; padding: 12px 6px 10px; border: var(--obrys); border-radius: 18px 20px 24px 18px; background: var(--card); color: var(--text); box-shadow: 0 4px 0 var(--shc); font: 800 .94rem/1.15 var(--fd); text-align: center; }
-.okruh-volba:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shc); }
-.okruh-volba[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 4px 0 var(--shc), 0 0 0 3px var(--sun) inset; }
+.okruh-volba { display: grid; justify-items: center; gap: 6px; padding: 12px 6px 10px; border: var(--obrys); border-radius: 18px 20px 24px 18px; background: var(--card); color: var(--text); box-shadow: 0 4px 0 var(--ink); font: 800 .94rem/1.15 var(--fd); text-align: center; }
+.okruh-volba:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.okruh-volba[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 4px 0 var(--ink), 0 0 0 3px var(--sun) inset; }
 .okruh-ik.ikb { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .ts-z, .ts-i, .tyzs-karta, .ts-list, .tp-den, .okruh-karta { animation: none; } }
 

@@ -80,7 +80,7 @@ const Pripomienka = {
     const pod = tx || (hn ? HN_TEXT[hn].p : `${STROM_STUPNE[stromStupen()].n}${s ? `, séria ${s} ${dni(s)}` : ''}`);
     return `<div class="strom-pas${hn ? ' schne' : ''}${tx ? ' pripomienka' : ''}" data-strom role="button" tabindex="0" aria-label="Strom múdrosti. ${esc(stav)}. ${esc(pod)}">
       <span class="sp-ik">${stromIkona(hn ? 'schne' : 'rastie', 'sp-k')}</span><span class="sp-t"><b>${esc(stav)}</b><small>${esc(pod)}</small></span>
-      ${tx ? `<button class="ib sp-x" data-prip-zavri aria-label="Zavrieť pripomienku">${IKO.zavriet}</button>` : '<i class="sp-sip">›</i>'}</div>`;
+      ${tx ? `<button class="btn kruh dve sp-x" data-prip-zavri aria-label="Zavrieť pripomienku">${ikn('zavriet')}</button>` : '<i class="sp-sip">›</i>'}</div>`;
   },
   zavri(b) { S.set(this.kluc(), key(new Date())); Zvuk.play('tap'); const p = b.closest && b.closest('.strom-pas'); if (p) p.outerHTML = this.html(); },
 };

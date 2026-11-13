@@ -61,7 +61,7 @@
 
 /* Kto sa dnes učí? */
 .vs-vyber .deti { gap: 12px; }
-.vs-vyber .dieta { gap: 4px; padding: 14px 8px 12px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.vs-vyber .dieta { gap: 4px; padding: 14px 8px 12px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); box-shadow: 0 4px 0 var(--ink); }
 .vs-vyber .dieta b { margin-top: 4px; font: 800 1.25rem/1.1 var(--fd); }
 .vs-vyber .dieta small { font: 600 .81rem/1.2 var(--fb); color: var(--muted); }
 .vs-vyber .dieta .st.cis { margin-top: 4px; }

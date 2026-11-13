@@ -1,9 +1,9 @@
 /* Hry */
-.hra-mini { flex: none; display: grid; place-items: center; width: 58px; height: 50px; border: 3px solid var(--line); border-radius: 14px; background: var(--c); }
+.hra-mini { flex: none; display: grid; place-items: center; width: 58px; height: 50px; border: 3px solid var(--ink); border-radius: 14px; background: var(--c); }
 .hra-mini svg { width: 50px; height: 40px; }
 .hra { display: grid; gap: 14px; padding-top: 4px; }
 .hra-top { display: flex; align-items: center; gap: 10px; } /* lišta misie, angličtiny, Objavuj a Pasu; lišta hry je v 52-hry.css */
-.hra-nazov { flex: 1; min-width: 0; font: 700 1.35rem/1.1 var(--f-display); }
+.hra-nazov { flex: 1; min-width: 0; font: 700 1.35rem/1.1 var(--fd); }
 .hra-pomoc { text-align: center; font-size: .92rem; }
 .hra-pomoc svg { width: 18px; height: 18px; vertical-align: -3px; }
 /* pexeso */
@@ -11,15 +11,15 @@
 .pex { aspect-ratio: 1; padding: 0; border: 0; background: none; perspective: 600px; }
 .pex-in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .45s var(--spring); }
 .pex.otocena .pex-in { transform: rotateY(180deg); }
-.pex-rub, .pex-lic { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; border: 3px solid var(--line); border-radius: 14px; box-shadow: 0 3px 0 var(--shc); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.pex-rub, .pex-lic { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; border: 3px solid var(--ink); border-radius: 14px; box-shadow: 0 3px 0 var(--ink); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .pex-rub { background: repeating-linear-gradient(45deg, var(--violet) 0 9px, var(--violet-d) 9px 18px); }
 .pex-rub svg { width: 48%; height: 48%; }
-.pex-lic { transform: rotateY(180deg); background: var(--paper); }
+.pex-lic { transform: rotateY(180deg); background: var(--card); }
 .pex-lic svg { display: block; width: 100%; height: 100%; }
-.pex.najdena .pex-lic { box-shadow: 0 0 0 4px var(--grass), 0 3px 0 var(--shc); }
+.pex.najdena .pex-lic { box-shadow: 0 0 0 4px var(--leaf), 0 3px 0 var(--ink); }
 .pex.najdena .pex-in { animation: okPop .5s; }
 /* chytaj hviezdičky */
-.nebo { position: relative; height: min(60vh, 480px); overflow: hidden; border: 3px solid var(--line); border-radius: 24px; box-shadow: var(--sh);
+.nebo { position: relative; height: min(60vh, 480px); overflow: hidden; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh);
   background: radial-gradient(2px 2px at 18% 24%, #fff, transparent), radial-gradient(2px 2px at 72% 14%, #fff, transparent), radial-gradient(2px 2px at 44% 66%, #fffa, transparent),
     radial-gradient(2px 2px at 86% 78%, #fffa, transparent), radial-gradient(circle at 30% 20%, var(--violet-d), var(--noc-card) 72%); }
 .hv { position: absolute; width: 66px; height: 66px; padding: 0; border: 0; background: none; animation: pop .3s var(--spring) both; }
@@ -30,31 +30,31 @@
 .hv.burka { width: 74px; height: 66px; }
 .hv.prec { animation: hvPrec .25s forwards; }
 @keyframes hvPrec { to { transform: scale(0); opacity: 0; } }
-.hv-plus { position: absolute; margin: 14px 0 0 14px; font: 800 1.9rem/1 var(--f-display); color: #FFE27A; text-shadow: 0 2px 0 var(--dk); pointer-events: none; animation: hvPlus .7s forwards; }
+.hv-plus { position: absolute; margin: 14px 0 0 14px; font: 800 1.9rem/1 var(--fd); color: #FFE27A; text-shadow: 0 2px 0 var(--dk); pointer-events: none; animation: hvPlus .7s forwards; }
 .hv-plus.minus { color: #FF9EA1; }
 @keyframes hvPlus { to { transform: translateY(-44px); opacity: 0; } }
-.hv-start { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 2px; width: 150px; height: 150px; margin: auto; border: 4px solid var(--line); border-radius: 50%; background: var(--sun); box-shadow: 0 6px 0 var(--shc); font: 700 1.4rem/1 var(--f-display); animation: pulse 1.6s ease-in-out infinite; }
+.hv-start { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 2px; width: 150px; height: 150px; margin: auto; border: 4px solid var(--ink); border-radius: 50%; background: var(--sun); box-shadow: 0 6px 0 var(--ink); font: 700 1.4rem/1 var(--fd); animation: pulse 1.6s ease-in-out infinite; }
 .hv-start svg { width: 58px; height: 58px; fill: #fff; stroke: var(--dk); stroke-width: 3.5; stroke-linejoin: round; }
 /* ťukaj krtkov */
-.luka { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 14px 12px 10px; border: 3px solid var(--line); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#C9F2B0, var(--leaf)); }
+.luka { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px; padding: 14px 12px 10px; border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--sh); background: linear-gradient(#C9F2B0, var(--leaf)); }
 .diera { position: relative; display: block; aspect-ratio: 1 / .92; padding: 0; border: 0; background: none; overflow: hidden; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-.diera-v { position: absolute; left: 6%; right: 6%; bottom: 8%; height: 32%; border: 3px solid var(--line); border-radius: 50%; background: #3D2410; }
+.diera-v { position: absolute; left: 6%; right: 6%; bottom: 8%; height: 32%; border: 3px solid var(--ink); border-radius: 50%; background: #3D2410; }
 .krt { position: absolute; left: 22%; right: 22%; bottom: 20%; height: 66%; transform: translateY(78%); transition: transform .16s ease-out; pointer-events: none; }
 .krt svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .krt-z, .diera.zlaty .krt-h { display: none; } .diera.zlaty .krt-z { display: block; }
 .diera.hore .krt { transform: translateY(0); }
 .diera.buch .krt { transform: translateY(78%) rotate(-8deg); transition-duration: .1s; }
-.diera-p { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; border: 3px solid var(--line); border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%; background: #8B5A2B; pointer-events: none; }
+.diera-p { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; border: 3px solid var(--ink); border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%; background: #8B5A2B; pointer-events: none; }
 .luka .hv-plus { z-index: 3; margin: 0; color: #fff; }
 @media (prefers-reduced-motion: reduce) { .krt { transition: none; } }
 /* skladačka */
-.sklad { display: grid; grid-template-columns: repeat(var(--sl), 1fr); gap: 5px; aspect-ratio: 16 / 9; padding: 5px; border: 3px solid var(--line); border-radius: 18px; background: var(--dk); box-shadow: var(--sh); transition: gap .5s, padding .5s; }
-.diel { position: relative; overflow: hidden; padding: 0; border: 0; border-radius: 8px; background: var(--paper); transition: border-radius .5s; }
+.sklad { display: grid; grid-template-columns: repeat(var(--sl), 1fr); gap: 5px; aspect-ratio: 16 / 9; padding: 5px; border: 3px solid var(--ink); border-radius: 18px; background: var(--dk); box-shadow: var(--sh); transition: gap .5s, padding .5s; }
+.diel { position: relative; overflow: hidden; padding: 0; border: 0; border-radius: 8px; background: var(--card); transition: border-radius .5s; }
 .diel-obr { position: absolute; left: calc(var(--x) * -100%); top: calc(var(--y) * -100%); width: calc(var(--sl) * 100%); height: calc(var(--ri) * 100%); pointer-events: none; }
 .diel-obr svg { display: block; width: 100%; height: 100%; }
-.diel.sedi::after, .diel.vybraty::before { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 3px var(--grass); }
+.diel.sedi::after, .diel.vybraty::before { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 3px var(--leaf); }
 .diel.vybraty { z-index: 1; animation: jelly .45s; }
-.diel.vybraty::before { box-shadow: inset 0 0 0 5px var(--sun), inset 0 0 0 7px var(--shc); }
+.diel.vybraty::before { box-shadow: inset 0 0 0 5px var(--sun), inset 0 0 0 7px var(--ink); }
 .sklad.hotova { gap: 0; padding: 0; }
 .sklad.hotova .diel { border-radius: 0; }
 .sklad.hotova .diel::after { display: none; }

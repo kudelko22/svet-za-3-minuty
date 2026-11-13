@@ -59,7 +59,7 @@ const Ang = {
     paintHead(); render(); scrollTo(0, 0);
   },
   ikSkup: g => ({ zvierata: IK.labka, jedlo: IK_KAT.zivot, domov: IK_KAT.domacnost, skola: IK.kniha, telo: IK_KAT.telo, farby: IK.duha, cisla: IK_KAT.tvary, slovesa: IK.gamepad, priroda: IK_KAT.priroda, ludia: IK.rodina, mesto: IK_KAT.doprava, cas: IK_KAT.cas })[g] || IK_KAT.anglictina,
-  farbaSkup: ['#FFE0EC', '#FFF1C9', '#D9F2FF', '#E7F9EC', '#EADCFF', '#FFE3BD'],
+  farbaSkup: ['var(--coral-l)', 'var(--sun-l)', 'var(--sky-l)', 'var(--leaf-l)', 'var(--violet-l)', 'var(--sun-l)'],
   karta() {
     const ok = this.splnenaDnes();
     // 5.0: nálepka na Domove vedľa Objavuj (trieda ang-karta ostáva, ukazuje na ňu sprievodca)
@@ -73,31 +73,31 @@ const Ang = {
     const ok = this.splnenaDnes(), s = this.sucet(), lek = ANGT(), d = this.data(), sk = d.skup || {};
     const sk1 = Object.keys(ANG_SKUPINY).filter(g => ANG_SLOVA.some(w => w.g === g));
     let n = 1;
-    return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Angličtina</h1></div>
+    return `<div class="hra-top"><button class="btn kruh dve" data-go="domov" aria-label="Späť domov">${ikn('zavriet')}</button><h1 class="h1 hra-nazov">Angličtina</h1></div>
       <p class="muted">Vyber si kvíz. Keď ho nestihneš, nič sa nestane, zajtra príde nový denný kvízik.</p>
       <section class="sec"><h2 class="h2">Kvízy</h2><div class="ang-kvizy">
-        ${this.kvizKarta(IK_KAT.anglictina, 'Kvízik dňa', 6, ok, 'data-ang-start', n++, '#FFE0EC')}
+        ${this.kvizKarta(IK_KAT.anglictina, 'Kvízik dňa', 6, ok, 'data-ang-start', n++, 'var(--coral-l)')}
         ${sk1.map((g, j) => this.kvizKarta(this.ikSkup(g), ANG_SKUPINY[g], 6, !!sk[g], `data-ang-skup="${g}"`, n++, this.farbaSkup[j % this.farbaSkup.length])).join('')}
       </div></section>
       <section class="sec"><h2 class="h2">Môj postup</h2>
-        <div class="ang-stats"><div class="card mini" style="--c:#FFE0EC"><b>${s.n}</b><small>${s.n === 1 ? 'kvízik' : s.n > 1 && s.n < 5 ? 'kvíziky' : 'kvízikov'}</small></div>
-        <div class="card mini" style="--c:#E7F9EC"><b>${s.bezChyby}</b><small>bez chyby</small></div></div></section>
+        <div class="ang-stats"><div class="card mini" style="--c:var(--coral-l)"><b>${s.n}</b><small>${s.n === 1 ? 'kvízik' : s.n > 1 && s.n < 5 ? 'kvíziky' : 'kvízikov'}</small></div>
+        <div class="card mini" style="--c:var(--leaf-l)"><b>${s.bezChyby}</b><small>bez chyby</small></div></div></section>
       <section class="sec"><h2 class="h2">Anglické lekcie</h2><p class="muted">Pôvodné anglické témy s kvízom, otvor si ktorúkoľvek.</p>
-        <div class="ang-kvizy">${lek.map(t => this.kvizKarta(IK_KAT.anglictina, t.t, (t.z || []).length, st.done.includes(t.id), `data-start="${t.id}"`, n++, '#FFE0EC')).join('')}</div></section>`;
+        <div class="ang-kvizy">${lek.map(t => this.kvizKarta(IK_KAT.anglictina, t.t, (t.z || []).length, st.done.includes(t.id), `data-start="${t.id}"`, n++, 'var(--coral-l)')).join('')}</div></section>`;
   },
   render() {
     const q = st.ang;
     if (!q) return this.hub();
     const o = q.qs[q.i], k = q.koniec;
     const pokrok = `<div class="ang-pokrok" aria-label="Otázka ${q.i + 1} z ${q.qs.length}">${q.qs.map((_, i) => `<i class="${i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''}"></i>`).join('')}</div>`;
-    const top = `<div class="hra-top"><button class="ib" data-ang-spat aria-label="Späť na angličtinu">${IKO.zavriet}</button><b class="hra-nazov">${q.skup ? esc(ANG_SKUPINY[q.skup]) : 'Kvízik z angličtiny'}</b></div>`;
+    const top = `<div class="hra-top"><button class="btn kruh dve" data-ang-spat aria-label="Späť na angličtinu">${ikn('zavriet')}</button><b class="hra-nazov">${q.skup ? esc(ANG_SKUPINY[q.skup]) : 'Kvízik z angličtiny'}</b></div>`;
     if (k) return `${top}<section class="card misia-pribeh ang-koniec" style="text-align:center">${q.precvic ? '<div>' + Precvic.stitok() + '</div>' : ''}<b class="misia-typ">${q.precvic ? 'Dobre si si to zopakoval' : 'Hotovo!'}</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} ${q.precvic ? '' : q.skup ? 'Môžeš si ho zahrať znova, otázky sa menia.' : 'Zajtra príde nový kvízik.'}</p></section>
-      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ii(STAR())}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
+      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
       ${odmenyHtml(k)}<button class="btn wide cta" data-ang-spat>Späť na angličtinu</button>`;
     return `${top}${pokrok}${q.precvic ? Precvic.stitok() + Precvic.poznamka() : q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
       <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
       <div class="ang-rea">${this.reakcia(q)}</div>
-      <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:#FFE0EC"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
+      <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:var(--coral-l)"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
       ${this.pata(q, o)}`;
   },
   reakcia(q) { return q.zle.length && !q.spravne ? `<div class="card misia-reakcia nova">${ii(IK.ziarovka)} Ešte nie. Skús inú možnosť.</div>` : ''; },

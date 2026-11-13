@@ -50,7 +50,7 @@ const Rezim = {
   karta() {
     const on = Rezim.tmavy();
     return `<section class="card rez-karta"><span class="rez-ik ikb" style="--c:var(--violet-l)">${ikn(on ? 'mesiac' : 'slnko')}</span>
-      <div class="rez-t"><h2 class="n2">Mesačný režim</h2><p class="dop">Nočná obloha s mesiacom. Príjemná večer a v tme.</p></div>
+      <div class="rez-t"><h2 class="n2">Mesačný režim</h2><p class="tx rez-p">Nočná obloha s mesiacom. Príjemná večer a v tme.</p></div>
       <button class="rez-sw" role="switch" aria-checked="${on}" aria-label="Mesačný režim" data-rezim="${on ? 'svetly' : 'mesacny'}"><i></i></button></section>`;
   },
 };

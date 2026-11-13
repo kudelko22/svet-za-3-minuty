@@ -125,7 +125,7 @@ document.addEventListener('click', e => {
   }
   else if (d.socPochval) {
     const [tid, h] = d.socPochval.split(':'), C = window.Cloud, So = socC();
-    S.set('soc-pochvala-' + So.pid + '-' + tid, true); b.disabled = true; b.innerHTML = ii(IK.fajka) + ' Poslané priateľom';
+    S.set('soc-pochvala-' + So.pid + '-' + tid, true); b.disabled = true; b.innerHTML = ikn('check') + ' Poslané priateľom';
     Zvuk.play('win'); FX.ohnostroj(2);
     socAkcia(C.soc.pochval(tid, Math.max(0, Math.min(3, +h || 0))));
   }

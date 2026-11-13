@@ -118,8 +118,8 @@ function kartaDalsiaOdmena() {
   const pred = ODMENY.filter(x => x.cena <= st.body).pop(), od = pred ? pred.cena : 0;
   const pct = Math.max(4, Math.round((st.body - od) / (o.cena - od) * 100));
   return `<section class="card dalsia"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka({ ...st.avatar, [o.k]: o.v })}</span>
-      <div><small class="lbl-mala">Ďalšia odmena</small><b>Ešte ${o.cena - st.body} ${ii(STAR())} a máš ${NAZVY_ODMIEN[o.kluc]}!</b>
-      <div class="bar" style="--c:#FFC233"><i style="width:${pct}%"></i></div></div></section>`;
+      <div><small class="lbl-mala">Ďalšia odmena</small><b>Ešte ${o.cena - st.body} ${ikn('hviezda')} a máš ${NAZVY_ODMIEN[o.kluc]}!</b>
+      <div class="bar" style="--c:var(--sun)"><i style="width:${pct}%"></i></div></div></section>`;
 }
 function odmenyHtml(f) {
   const o = f.noveOdznaky || [], r = f.noveOdmeny || [], h = f.noveHry || [];
@@ -128,8 +128,8 @@ function odmenyHtml(f) {
       ${o.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + i * .25}s"><span class="odm-pec">${peciatka(x, 'ma')}</span><div><b>Nový odznak!</b><span>${esc(x.n)}</span></div></div>`).join('')}
       ${r.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + i) * .25}s"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka({ ...st.avatar, [x.k]: x.v })}</span><div><b>Odomknuté!</b><span>Máš ${NAZVY_ODMIEN[x.kluc]} pre postavičku</span></div></div>`).join('')}
       ${h.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + r.length + i) * .25}s"><span class="hra-mini" style="--c:${x.c}">${OBR_HRY[x.id]}</span><div><b>Nová hra!</b><span>${esc(x.n)}</span></div></div>`).join('')}
-      ${r.length ? `<button class="btn wide" data-upravit="${r[0].k}">${ii(IK.iskra)} Obliecť postavičku</button>` : ''}
-      ${h.length ? `<button class="btn wide blue" data-hra="${h[0].id}">Hrať: ${esc(h[0].n)}</button>` : ''}</div>`;
+      ${r.length ? `<button class="btn wide" data-upravit="${r[0].k}">${ikn('hviezda')} Obliecť postavičku</button>` : ''}
+      ${h.length ? `<button class="btn wide mud" data-hra="${h[0].id}">Hrať: ${esc(h[0].n)}</button>` : ''}</div>`;
 }
 // za každý získaný odznak si dieťa ťuknutím vyzdvihne 2 hviezdičky (body); dve hviezdy priletia do hlavičky
 function vyberOdznak(id, el) {

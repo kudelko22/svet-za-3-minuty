@@ -4,7 +4,7 @@ const SPR_RUKA = `<svg viewBox="0 0 64 72" aria-hidden="true"><g stroke="${INK}"
   <path d="M20 40 V9 C20 2 30 2 30 9 V28 C31 23 39 23 39 29 C40 24 48 24 48 31 C49 27 56 28 56 34 V48 C56 61 48 69 37 69 H33 C25 69 20 65 16 58 L8 44 C5 38 12 34 16 39 L20 44Z" fill="#fff"/>
   <path d="M30 28 V37 M39 29 V37 M48 31 V38" fill="none" stroke-width="3"/></g></svg>`;
 const SPR_KROKY = [
-  { id: 'vitaj', nalada: 'hi', tl: [['dalej', 'Ukáž mi to! →', 1], ['zavri', 'Teraz nie']], p: 'Ja som Sovička Múdra. Ukážem ti, čo všetko v appke nájdeš. Bude to rýchle, sľubujem!' },
+  { id: 'vitaj', nalada: 'hi', tl: [['dalej', 'Ukáž mi to!', 1], ['zavri', 'Teraz nie']], p: 'Ja som Sovička Múdra. Ukážem ti, čo všetko v appke nájdeš. Bude to rýchle, sľubujem!' },
   { n: 'Sovička Múdra', nalada: 'happy', p: 'Pri každom kroku môžeš ťuknúť na reproduktor a ja ti ho prečítam nahlas. Keď chceš skončiť, ťukni na krížik.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň ťa tu čaká nová téma. S rodičom si ju prečítate za 3 minúty a potom odpovieš na pár otázok.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Každý deň jeden krátky kvízik z angličtiny. Ťukneš na anglické slovo a vyberieš správny preklad.' },
@@ -22,12 +22,12 @@ const SPR_KROKY = [
   { v: 'ja', cil: '.prof-top', n: 'Tvoj profil', nalada: 'happy', p: 'Tu je tvoja postavička. Ťukni na ňu a môžeš ju prezliecť.' },
   { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky', nalada: 'cheer', p: 'Za úspechy dostávaš odznaky. Koľko ich nazbieraš?' },
   { v: 'ja', cil: '.spr-karta', n: 'Kedykoľvek znova', p: 'Keď budeš chcieť, ukážem ti všetko znova. Stačí ťuknúť sem.' },
-  { id: 'koniec', nalada: 'cheer', oslava: true, tl: [['tema', 'Poďme na tému dňa! →', 1], ['domov', 'Zavrieť']], p: 'Teraz už vieš, kde je čo. Poďme spolu na tému dňa?' },
+  { id: 'koniec', nalada: 'cheer', oslava: true, tl: [['tema', 'Poďme na tému dňa!', 1], ['domov', 'Zavrieť']], p: 'Teraz už vieš, kde je čo. Poďme spolu na tému dňa?' },
 ];
 // Nový účet rodiča (verzia 2.7): najprv pri tvorbe profilu dieťaťa (SPR_UCET), po uložení celá appka (SPR_RODIC).
 // Ďalšie deti a karta Ja už spúšťajú len sprievodcu pre dieťa (SPR_KROKY).
 const SPR_UCET = [
-  { id: 'vitaj', n: 'Vitajte!', nalada: 'hi', tl: [['dalej', 'Ukážte mi to →', 1], ['zavri', 'Teraz nie']], p: 'Účet rodiča je vytvorený. Som Sovička Múdra a ukážem vám krok za krokom, ako appka funguje. Najprv spolu pripravíme profil dieťaťa.' },
+  { id: 'vitaj', n: 'Vitajte!', nalada: 'hi', tl: [['dalej', 'Ukážte mi to', 1], ['zavri', 'Teraz nie']], p: 'Účet rodiča je vytvorený. Som Sovička Múdra a ukážem vám krok za krokom, ako appka funguje. Najprv spolu pripravíme profil dieťaťa.' },
   { id: 'ucet', n: 'Ako funguje účet', nalada: 'happy', p: 'Pod jedným účtom rodiča môžu byť profily viacerých detí. Každé dieťa má vlastnú postavičku, body a pokrok. Všetko sa ukladá do cloudu, takže sa nič nestratí ani pri výmene telefónu a prihlásiť sa dá aj na ďalšom zariadení.' },
   { cil: '#meno-dietata', n: 'Meno dieťaťa', p: 'Sem napíšte meno alebo prezývku. Appka ním dieťa oslovuje a uvidia ho aj priatelia, ak ich neskôr zapnete.' },
   { cil: '.tvorba .seg2', n: 'Vek', p: '5 – 8 rokov: jednoduchšie otázky s obrázkami. 9 – 12 rokov: ťažšie otázky, časť Do hĺbky a navyše ťažký kvíz a výzva. Vek sa dá kedykoľvek zmeniť.' },
@@ -35,7 +35,7 @@ const SPR_UCET = [
   { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Napíšte meno, vyberte vek a ťuknite na Ďalej. Postavičku si potom vyberiete spolu s dieťaťom. Hneď po nej pokračujeme prehliadkou appky.' },
 ];
 const SPR_RODIC = [
-  { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko →', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
+  { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň jedna krátka téma na 3 minúty. Prečítate ju dieťaťu (alebo ju appka prečíta nahlas), porozprávate sa a dieťa odpovie na otázky. Za tému dňa je najviac bodov.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Denný kvízik z angličtiny má 6 otázok. Dieťa vyberá preklad slova a dostane krátke vysvetlenie. Ďalšie kvízy sú v Objavuj.' },
   { v: 'domov', cil: '#tyz-strom', n: 'Séria a strom múdrosti', p: 'Každý deň s témou pribudne hviezdička a rastie séria. Prvá téma dňa spustí oslavu a na strome múdrosti pribudne plod. Keď sú všetky odpovede zlé, treba otázky skúsiť ešte raz. Stromček hore ukáže týždeň: ťuknutím na minulý deň otvoríte jeho tému, tlačidlom Okruh vyberiete, o čom budú témy týždňa, a ťuknutím na strom uvidíte jeho stupeň.' },
@@ -43,7 +43,7 @@ const SPR_RODIC = [
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Jedno ťuknutie a appka prečíta tému aj otázky nahlas, s prestávkou na odpoveď. Hodí sa na cestu, keď šoférujete.' },
   { v: 'domov', cil: '.plocha-karta', ak: () => !!document.querySelector('.plocha-karta'), n: 'Appka na ploche', p: 'Pridajte si appku na plochu telefónu. Bude sa otvárať ako naozajstná aplikácia, s ikonkou a cez celú obrazovku.' },
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', p: 'Kvízy, iná téma a všetky oblasti tém sú schované tu. Ťuknite na kartu.' },
-  { v: 'objavuj', cil: '.acts', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a body sú raz za deň.' },
+  { v: 'objavuj', cil: '.obj-akty', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a body sú raz za deň.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťuknite na Témy', p: 'Teraz si to vyskúšajte: ťuknite dole na Témy.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${TV().length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
   { tap: 'hry', cil: '#nav-hry', n: 'Ťuknite na Hry', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Hry.' },
@@ -56,17 +56,17 @@ const SPR_RODIC = [
   { v: 'ja', ak: () => !maRodica(), cil: () => (x => x && x.closest ? x.closest('section') : null)([...document.querySelectorAll('main .h2')].find(x => x.textContent.trim() === 'Pre rodiča')), n: 'Pre rodiča', p: 'Tu vidíte, čo dieťa tento týždeň prebralo a v ktorých otázkach sa pomýlilo, aby ste sa o nich mohli porozprávať.' },
   { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('main [data-deti]')), n: 'Rodina a ďalšie deti', p: 'Cez Zmeniť dieťa pridáte ďalšie dieťa alebo prepnete medzi deťmi, prepnúť sa dá aj ťuknutím na postavičku hore.' },
   { v: 'ja', cil: '.spr-karta', n: 'Sprievodca pre dieťa', p: 'Keď bude chcieť, Sovička ukáže appku aj dieťaťu, jeho slovami. Spustíte ho tu.' },
-  { id: 'rodicucet', ak: () => !maRodica(), n: 'Účet rodiča', nalada: 'happy', tl: [['rodicucet', 'Vytvoriť účet rodiča →', 1], ['dalej', 'Neskôr']], p: 'Nastavenia, prehľady a mazanie profilov nemajú byť deťom na dosah. Vytvorte si účet rodiča s vlastným PIN-om (4 číslice), zaberie to chvíľku.' },
+  { id: 'rodicucet', ak: () => !maRodica(), n: 'Účet rodiča', nalada: 'happy', tl: [['rodicucet', 'Vytvoriť účet rodiča', 1], ['dalej', 'Neskôr']], p: 'Nastavenia, prehľady a mazanie profilov nemajú byť deťom na dosah. Vytvorte si účet rodiča s vlastným PIN-om (4 číslice), zaberie to chvíľku.' },
   { id: 'koniec', n: 'Všetko pripravené!', nalada: 'cheer', oslava: true, tl: [['dieta', 'Ukázať sprievodcu dieťaťu', 1], ['tema', 'Poďme na tému dňa →']], p: 'Teraz už viete všetko. Ukážte appku aj dieťaťu, alebo rovno začnite tému dňa.' },
 ];
 // Krátka prehliadka noviniek pre tých, čo už starého sprievodcu videli (ponúka ju okno Čo je nové)
 const SPR_NOVE = [
-  { id: 'vitaj', n: 'Pozri, čo je nové', nalada: 'hi', tl: [['dalej', 'Ukáž mi to! →', 1], ['zavri', 'Teraz nie']], p: 'V appke pribudlo pár vecí. Ukážem ti ich za chvíľku.' },
+  { id: 'vitaj', n: 'Pozri, čo je nové', nalada: 'hi', tl: [['dalej', 'Ukáž mi to!', 1], ['zavri', 'Teraz nie']], p: 'V appke pribudlo pár vecí. Ukážem ti ich za chvíľku.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Hore je zasa Téma dňa. Každý deň nová, na 3 minúty.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', p: 'Denný kvízik z angličtiny: vyberieš správny preklad slova.' },
   { v: 'domov', cil: '#tyz-strom', n: 'Stromček hore', nalada: 'cheer', p: 'Týždeň je teraz schovaný v stromčeku. Ťukni naň a uvidíš dni, okruh, prehľad aj strom múdrosti. Tmavý stromček znamená, že dnešná téma ešte čaká.' },
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Kvízy, Iná téma a všetky oblasti tém nájdeš tu.' },
-  { id: 'koniec', n: 'Hotovo!', nalada: 'cheer', tl: [['tema', 'Poďme na tému dňa! →', 1], ['domov', 'Zavrieť']], p: 'Celého sprievodcu nájdeš kedykoľvek v karte Ja.' },
+  { id: 'koniec', n: 'Hotovo!', nalada: 'cheer', tl: [['tema', 'Poďme na tému dňa!', 1], ['domov', 'Zavrieť']], p: 'Celého sprievodcu nájdeš kedykoľvek v karte Ja.' },
 ];
 const Sprievodca = {
   el: null, i: 0, kroky: SPR_KROKY, o: {},
@@ -94,13 +94,13 @@ const Sprievodca = {
     Hlas.stop();
     if (k.v && st.view !== k.v) go(k.v);
     el.classList.toggle('velka', velka); el.classList.toggle('tap', !!k.tap);
-    const tl = k.tl ? k.tl.map(([a, text, hlavne]) => `<button class="btn wide ${hlavne ? 'cta' : 'ghost'}" data-spr="${a}">${text}</button>`).join('')
-      : k.tap ? '' : `<button class="btn cta" data-spr="dalej">${this.i === n ? 'Hotovo' : 'Ďalej'} →</button>`;
+    const tl = k.tl ? k.tl.map(([a, text, hlavne]) => `<button class="btn wide ${hlavne ? 'cta' : 'dve'}" data-spr="${a}">${text}${hlavne ? ikn('sipka', 'za') : ''}</button>`).join('')
+      : k.tap ? '' : `<button class="btn cta" data-spr="dalej">${this.i === n ? 'Hotovo' : 'Ďalej'}${ikn('sipka', 'za')}</button>`;
     el.querySelector('.spr-obsah').innerHTML = `${velka ? `<div class="spr-hviezdy">${[[6, 30], [86, 22], [90, 58], [4, 66], [72, 84], [18, 88]].map(([x, y], i) => `<i style="left:${x}%;top:${y}%;--k:${i}">${STAR()}</i>`).join('')}</div>` : ''}
       <div class="spr-hlava"><button class="spr-sova" data-spr="sova" aria-label="Sovička Múdra">${owl(k.nalada || 'hi')}</button>
         <div class="spr-nadpis">${velka ? '' : `<small>${this.i} z ${n}</small>`}<b>${velka ? [...nadpis].map((ch, i) => `<span style="--k:${i}">${esc(ch)}</span>`).join('') : esc(nadpis)}</b></div>
-        <button class="ib spr-citaj" data-spr="citaj" aria-label="Prečítať nahlas">${IK.repro}</button>
-        ${k.id === 'koniec' ? '' : `<button class="ib spr-x" data-spr="zavri" aria-label="Zavrieť sprievodcu">${IKO.zavriet}</button>`}</div>
+        <button class="btn kruh dve spr-citaj" data-spr="citaj" aria-label="Prečítať nahlas">${ikn('zvuk')}</button>
+        ${k.id === 'koniec' ? '' : `<button class="btn kruh dve spr-x" data-spr="zavri" aria-label="Zavrieť sprievodcu">${ikn('zavriet')}</button>`}</div>
       <p class="spr-text">${this.veta(k).split(' ').map((w, i) => `<span style="--k:${i}">${esc(w)}</span>`).join(' ')}</p>
       ${k.tap ? `<p class="spr-tip"><i class="spr-tip-ruka">${SPR_RUKA}</i>${this.kroky === SPR_KROKY ? 'Ťukni' : 'Ťuknite'} na svietiace tlačidlo</p>` : ''}
       ${tl ? `<div class="spr-tlacidla">${tl}</div>` : ''}`;

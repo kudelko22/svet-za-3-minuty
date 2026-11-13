@@ -668,7 +668,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (main.innerHTML.includes("tyzden-karta")) chyby.push("karta Tento tyzden ma byt schovana");
   { const sv = stromTlacidlo(true), sp = stromTlacidlo(false); if (!sv.includes("ts-i") || sp.includes("ts-i") || !sp.includes("ts-z") || !sv.startsWith("<svg") || !sp.startsWith("<svg")) chyby.push("strom v lište: stavy"); TyzStrom.maluj();
     const kd = st.kedy; st.kedy = {}; if (TyzStrom.jeHotovo()) chyby.push("strom: nema byt hotovo"); st.kedy = { [temaDna().id]: key(new Date()) }; if (!TyzStrom.jeHotovo()) chyby.push("strom: ma byt hotovo"); st.kedy = kd;
-    const ok = TyzStrom.html(); if (!ok.includes("tyzden-strom") || !ok.includes("data-tyz-den") || !ok.includes("data-tyz-prehlad") || !ok.includes("data-okruh-otvor") || !ok.includes("data-tyzs-zavri")) chyby.push("okno tyzdna"); }
+    const ok = TyzStrom.html(); if (!ok.includes("tyzs-strom") || !ok.includes("data-tyz-den") || !ok.includes("data-tyz-prehlad") || !ok.includes("data-okruh-otvor") || !ok.includes("data-tyzs-zavri")) chyby.push("okno tyzdna"); }
   const dniPred = st.dni; for (const n of [0, 1, 5, 20, 40]) { st.dni = Array.from({ length: n }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz(); Oslava.ukaz(() => {}); }
   /* 5.0: okno stromu, strom v krajine Domova, pečiatky, Pas objaviteľa, stredná oslava (falošný DOM: zachytíme vytvorené prvky) */
   { const zaz = [], ce = document.createElement, qs = document.querySelector; document.createElement = () => { const e = ce(); zaz.push(e); return e; }; document.querySelector = () => null;

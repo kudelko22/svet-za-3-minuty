@@ -36,18 +36,18 @@ const views = {
   },
   objavuj() {
     const t = tD(), v = TV(), dalsie = [...Array(v.length).keys()].map(i => v[(denCislo() + 1 + i) % v.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
-    return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Objavuj</h1></div>
-      <div class="acts kompakt">
-        <button class="act${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:#FF9F1C" data-kviz><span class="act-e">${IK.blesk}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
-        <button class="act" style="--c:#4C7DFF" data-nahodna><span class="act-e" style="--j:2">${IK.kocka}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 bodov</small></button>
-        ${st.vek === 'starsi' ? `<button class="act${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
-        <button class="act${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
+    return `<div class="hra-top"><button class="btn kruh dve" data-go="domov" aria-label="Späť domov">${ikn('zavriet')}</button><h1 class="h1 hra-nazov">Objavuj</h1></div>
+      <div class="obj-akty">
+        <button class="nalepka obj-akt${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:var(--sun-l)" data-kviz><span class="ikb">${ikn('blesk')}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
+        <button class="nalepka obj-akt" style="--c:var(--sky-l)" data-nahodna><span class="ikb">${ikn('kocka')}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 bodov</small></button>
+        ${st.vek === 'starsi' ? `<button class="nalepka obj-akt${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:var(--violet-l)" data-kviz="tazky"><span class="ikb">${ikn('terc')}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
+        <button class="nalepka obj-akt${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:var(--coral-l)" data-kviz="vyzva"><span class="ikb">${ikn('pohar')}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
       </div>
       <section class="sec"><h2 class="h2">Oblasti tém</h2>
         <div class="skupiny rad">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
       </section>
       ${dalsie.length ? `<section class="sec"><h2 class="h2">Objavujte ďalej</h2>
-        <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}`;
+        <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${skFarba((skupinaKat(x.k) || {}).id)}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}`;
   },
   temy() {
     return `<h1 class="n0">Témy</h1>
@@ -83,7 +83,7 @@ const views = {
         ${k.length > 4 ? `<details class="ja-viac"><summary>Všetkých ${k.length} kategórií${ikn('dole')}</summary>${k.slice(4).map(katRiadok).join('')}</details>` : ''}
       </section>
       <section class="sec"><div class="ja-nh"><h2 class="n1">Uložené témy</h2><small class="cis">${f.length || ''}</small></div>
-        ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ${ii(IK.srdcePrazdne)} a nájdeš ju tu.</span></div>`}
+        ${f.length ? `<div class="list">${f.map(row).join('')}</div>` : `<div class="empty">${owl('hi')}<span>Zatiaľ nič. V téme ťukni na ${ikn('srdce')} a nájdeš ju tu.</span></div>`}
       </section>
       ${Zvuk.ios ? `<section class="card prof">
         <span class="lbl">Zvuky</span>

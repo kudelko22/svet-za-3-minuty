@@ -35,8 +35,8 @@ html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transitio
 :root[data-rezim="mesacny"] .fbk.ok b { color: #6EE7A0; } :root[data-rezim="mesacny"] .fbk.bad b { color: #FF9096; }
 :root[data-rezim="mesacny"] .chyba { color: #FFB3B8; }
 :root[data-rezim="mesacny"] .odmena-karta b { color: #FFC266; }
-:root[data-rezim="mesacny"] .sticker, :root[data-rezim="mesacny"] .badge.new, :root[data-rezim="mesacny"] .misia-typ-bunka.ma i { color: var(--dk); }
-:root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--paper)); border-color: color-mix(in srgb, var(--c) 80%, var(--paper)); }
+:root[data-rezim="mesacny"] .sticker, :root[data-rezim="mesacny"] .misia-typ-bunka.ma i { color: var(--dk); }
+:root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--card)); border-color: color-mix(in srgb, var(--c) 80%, var(--card)); }
 :root[data-rezim="mesacny"] .dm-vety .chip { color: var(--text); }
 :root[data-rezim="mesacny"] .chips .chip:not([aria-pressed="true"]).tmavy { color: var(--text); }
 :root[data-rezim="mesacny"] .burst { opacity: .55; }
