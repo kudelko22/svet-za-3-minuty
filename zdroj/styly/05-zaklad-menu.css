@@ -6,6 +6,6 @@
 .nav .ikn { width: 28px; height: 28px; }
 .nav button:not([aria-current="page"]) .ikn { --sun: var(--sand); --coral: var(--sand); --teal: var(--sand); --sky: var(--sand); --violet: var(--sand); --sky-l: var(--card); }
 .nav button[aria-current="page"] { color: var(--text); font-weight: 800; }
-.nav button[aria-current="page"] .ni { width: 52px; height: 52px; margin-top: -26px; border-radius: 50%; background: var(--sun-l); border: var(--obrys); box-shadow: inset 0 -5px 0 var(--sand), 0 4px 0 var(--shc); animation: jelly .6s; }
+.nav button[aria-current="page"] .ni { width: 52px; height: 52px; margin-top: -26px; border-radius: 50%; background: var(--sun-l); border: var(--obrys); box-shadow: inset 0 -5px 0 var(--sand), 0 4px 0 var(--ink); animation: jelly .6s; }
 .nav button[aria-current="page"] .ikn { width: 30px; height: 30px; margin-top: -4px; }
 

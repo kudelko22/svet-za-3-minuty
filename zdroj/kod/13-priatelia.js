@@ -37,7 +37,7 @@ function socKontrola(txt) {
   return NEVH_SLITE.some(p => slite.includes(p)) ? 'slova' : '';
 }
 const socZablokovane = (pid, txt) => { const k = 'soc-zablok-' + pid, v = S.get(k, []); v.push({ k: Date.now(), t: String(txt).slice(0, 200) }); S.set(k, v.slice(-10)); };
-const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? '#FFD23F' : '#E4E0EE')).join('')}</span>${moja ? '' : `<button class="btn blue" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
+const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? 'var(--sun)' : 'var(--sand)')).join('')}</span>${moja ? '' : `<button class="btn mud" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
   : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : (x.x ? (!moja && socKontrola(x.x) === 'slova' ? '<span class="msg-t msg-x"><i>Správa je skrytá, lebo obsahuje nevhodné slová.</i></span>' : `<span class="msg-t msg-x">${esc(x.x)}</span>`) : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`);
 /* 5.0: vzhľad Priateľov (logika a údaje sú rovnaké ako v 4.9). Každý priateľ má podklad postavičky v inej farbe podľa svojho id. */
 const PR_FARBY = ['sky', 'sun', 'leaf', 'violet', 'teal', 'coral'];
@@ -59,7 +59,7 @@ function chatHtml(fid) {
 function nahladSpravy(f) {
   const So = socC(), m = (So.spravy[f] || []).slice(-1)[0];
   if (!m) return '<small class="muted">Napíš prvú správu</small>';
-  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ii(IK.kniha)} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : m.x ? esc(m.x.slice(0, 40)) : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
+  return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ikn('temy')} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : m.x ? esc(m.x.slice(0, 40)) : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
 }
 // rebríček: stupne víťazov pre prvých troch (koruna len pre prvé miesto), ostatní v riadkoch pod nimi
 function rebricekHtml() {
@@ -127,7 +127,7 @@ Object.assign(views, {
       ${p ? `<button class="dm-kto" data-soc-profil="${f}">${prAv(p.avatar, f)}<span class="dm-meno"><b>${esc(p.meno)}</b><span class="dm-staty"><span>${ikn('plamen')}${p.seria || 0}</span><span>${ikn('hviezda')}${p.body || 0}</span></span></span><span class="dm-profil">Profil${ikn('sipka')}</span></button>` : '<b class="dm-nacit">Načítava sa…</b>'}</header>
       <div class="dm-chat" id="chat">${p ? chatHtml(f) : '<div class="pr-kostra dm-kostra"><span></span><span></span><span></span></div>'}</div>
       <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="pr-mala">Najprv preber nejakú tému.</small>'}</div>` : ''}
-        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému" aria-pressed="${!!st.socTemy}">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
+        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému" aria-pressed="${!!st.socTemy}">${ikn('temy')}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
         ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search bez-lupy" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn" type="submit">Poslať</button></form>` : ''}
         <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="veta" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
@@ -183,15 +183,15 @@ function socAkcia(sl, ok, zle) { sl.then(x => { if (ok) ok(x); }, e => { Zvuk.pl
 function fillTemy() {
   const f = document.getElementById('filtre'), z = document.getElementById('zoznam');
   const kk = kats(), q = bez(st.q.trim()), g = q || st.kat === 'fav' ? null : SKUPINY.find(x => x.id === st.skupina);
-  const chip = k => `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${ii(k.ikona || ikKat(k.id))} ${k.nazov}</button>`;
+  const chip = k => `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}">${k.ikona || ''}${k.nazov}</button>`;
   const hf = `<div class="skupiny${g ? ' vybrana' : ''}">${SKUPINY.map((x, i) => skupinaKarta(x, kk, i)).join('')}</div>
-    <div class="chips">${g ? [{ id: '', nazov: 'Celá oblasť', ikona: g.ikona(), c: g.c }, ...g.kat.map(id => kk.find(k => k.id === id)).filter(Boolean)].map(chip).join('') : ''}${chip({ id: 'fav', nazov: 'Uložené', ikona: IK.srdce, c: '#FF5A5F' })}</div>`;
+    <div class="chips">${g ? [{ id: '', nazov: 'Celá oblasť', ikona: ikn(SK_IKN[g.id] || 'kompas') }, ...g.kat.map(id => kk.find(k => k.id === id)).filter(Boolean)].map(chip).join('') : ''}${chip({ id: 'fav', nazov: 'Uložené', ikona: ikn('srdce') })}</div>`;
   if (f._h !== hf) { f.innerHTML = hf; f._h = hf; } // nezmenený zoznam sa neprekreslí (nebliká, ostane scroll)
   const poradie = SKUPINY.flatMap(x => x.kat);
   const list = TV().sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k))
     .filter(t => q ? bez(t.t + ' ' + t.m).includes(q) : st.kat === 'fav' ? st.fav.includes(t.id) : st.kat ? t.k === st.kat : !g || g.kat.includes(t.k));
   const html = q || !g ? (st.kat === 'fav' && !q ? list.map(row).join('')
-    : SKUPINY.map(x => (tt => tt.length ? `<h2 class="h2 skup-h" style="--hc:${x.c}">${ii(x.ikona())} ${x.nazov}</h2>${tt.map(row).join('')}` : '')(list.filter(t => x.kat.includes(t.k)))).join(''))
+    : SKUPINY.map(x => (tt => tt.length ? `<h2 class="n1 skup-h"><span class="ikb" style="background:${skFarba(x.id)}">${ikn(SK_IKN[x.id] || 'kompas')}</span>${x.nazov}<small class="cis">${tt.length}</small></h2>${tt.map(row).join('')}` : '')(list.filter(t => x.kat.includes(t.k)))).join(''))
     : list.map(row).join('');
   const hz = html || `<div class="empty">${owl('oops')}<span>${st.kat === 'fav' ? 'Zatiaľ nič uložené.' : 'Takú tému zatiaľ nemáme.'}</span></div>`;
   if (z._h !== hz) { z.innerHTML = hz; z._h = hz; }

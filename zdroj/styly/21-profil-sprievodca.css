@@ -12,7 +12,7 @@
 .spr-ruka::before { content: ""; position: absolute; left: 21px; top: 2px; width: 30px; height: 30px; margin: -15px 0 0 -15px; border: 4px solid #fff; border-radius: 50%; opacity: 0; animation: sprVlna 1.2s ease-out infinite; }
 @keyframes sprTuk { 0%, 100% { transform: translate(12px, 18px) rotate(-8deg); } 45%, 55% { transform: translate(0, 0) scale(.9) rotate(0); } }
 @keyframes sprVlna { 0%, 44% { transform: scale(.3); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
-.spr-bublina { position: fixed; left: 50%; top: 30%; z-index: 1; display: grid; gap: 10px; width: min(calc(100% - 32px), 420px); padding: 14px; translate: -50% 0; border: 3px solid var(--line); border-radius: 26px; background: var(--paper); box-shadow: 0 6px 0 var(--shc); transition: top .5s var(--spring); }
+.spr-bublina { position: fixed; left: 50%; top: 30%; z-index: 1; display: grid; gap: 10px; width: min(calc(100% - 32px), 420px); padding: 14px; translate: -50% 0; border: 3px solid var(--ink); border-radius: 26px; background: var(--card); box-shadow: 0 6px 0 var(--ink); transition: top .5s var(--spring); }
 .spr-bublina.nova .spr-obsah { animation: sprPop .45s var(--spring) both; }
 .spr-bublina.tras { animation: sprTras .45s; }
 @keyframes sprPop { from { transform: scale(.85); opacity: 0; } }
@@ -24,18 +24,18 @@
 .spr-bublina.nova .spr-sova .owl { animation: hop 1.6s ease-in-out .2s; }
 .spr-nadpis { flex: 1; min-width: 0; }
 .spr-nadpis small { display: block; color: var(--muted); font-weight: 800; }
-.spr-nadpis b { display: block; font: 700 1.35rem/1.15 var(--f-display); }
-.spr-hlava .ib { width: 40px; height: 40px; border-radius: 12px; padding: 7px; }
-.spr-hlava .ib svg { width: 100%; height: 100%; }
-.spr-citaj.on { background: var(--sun); }
+.spr-nadpis b { display: block; font: 700 1.35rem/1.15 var(--fd); }
+.spr-hlava .btn.kruh { flex: none; width: 42px; height: 42px; }
+.spr-citaj.on { --cta: var(--sun); --cta-d: var(--sun-d); }
+
 .spr-text { margin: 0; font-weight: 700; font-size: 1.08rem; line-height: 1.4; }
 .spr-text span { display: inline-block; animation: sprSlovo .4s ease-out both; animation-delay: calc(.12s + var(--k) * 40ms); }
 @keyframes sprSlovo { from { transform: translateY(8px); opacity: 0; } }
-.spr-tip { display: flex; align-items: center; gap: 8px; margin: 0; padding: 8px 12px; border: 2.5px dashed var(--line); border-radius: 16px; background: var(--t-yel); font: 700 1rem/1.25 var(--f-display); animation: novinka 1.4s ease-in-out infinite; }
+.spr-tip { display: flex; align-items: center; gap: 8px; margin: 0; padding: 8px 12px; border: 2.5px dashed var(--ink); border-radius: 16px; background: var(--sun-l); font: 700 1rem/1.25 var(--fd); animation: novinka 1.4s ease-in-out infinite; }
 .spr-tip-ruka { flex: none; width: 24px; height: 27px; } .spr-tip-ruka svg { display: block; width: 100%; height: 100%; }
 .spr-tlacidla { display: flex; gap: 10px; justify-content: flex-end; }
-.spr-pruh { height: 10px; border: 2.5px solid var(--line); border-radius: 999px; background: var(--p-EFEAF7,#EFEAF7); overflow: hidden; }
-.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun), var(--sun-d)); transition: width .6s var(--spring); }
+.spr-pruh { height: 10px; border: 2.5px solid var(--ink); border-radius: 999px; background: var(--violet-l); overflow: hidden; }
+.spr-pruh i { display: block; width: 0; height: 100%; border-radius: 999px; background: var(--sun); box-shadow: inset 0 -3px 0 var(--sun-d); transition: width .6s var(--spring); }
 .spr.velka .spr-pruh { display: none; }
 .spr.velka .spr-bublina { gap: 14px; padding: 22px 18px 18px; text-align: center; }
 .spr.velka .spr-hlava { flex-direction: column; gap: 6px; }
@@ -43,7 +43,7 @@
 .spr.velka .spr-sova .owl { animation: hop 1.8s ease-in-out infinite; }
 .spr.velka .spr-nadpis b { font-size: 2.1rem; }
 .spr.velka .spr-nadpis b span { display: inline-block; white-space: pre; animation: wav 2.8s ease-in-out infinite; animation-delay: calc(var(--k) * .08s); }
-.spr.velka .spr-hlava .ib { position: absolute; top: 12px; right: 12px; }
+.spr.velka .spr-hlava .btn.kruh { position: absolute; top: 12px; right: 12px; }
 .spr.velka .spr-citaj { left: 12px; right: auto !important; }
 .spr.velka .spr-tlacidla { flex-direction: column; }
 .spr-hviezdy { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 23px; }
@@ -51,9 +51,9 @@
 .spr-hviezdy svg { width: 100%; height: 100%; }
 @keyframes sprHviezda { 0%, 100% { transform: scale(.5) rotate(0); opacity: .3; } 50% { transform: scale(1.1) rotate(25deg); opacity: 1; } }
 /* karta v profile */
-.spr-karta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; text-align: left; background: var(--t-blu); }
+.spr-karta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; text-align: left; background: var(--sky-l); }
 .spr-karta .owl { flex: none; width: 54px; height: auto; animation: hop 2.2s ease-in-out infinite; }
 .spr-karta span { flex: 1; min-width: 0; }
-.spr-karta b { display: block; font: 700 1.15rem/1.2 var(--f-display); }
+.spr-karta b { display: block; font: 700 1.15rem/1.2 var(--fd); }
 .spr-karta small { display: block; color: var(--muted); font-weight: 700; }
 .spr-karta .auto-play { flex: none; }

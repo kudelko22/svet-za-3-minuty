@@ -50,7 +50,7 @@ function prehladRodica(d = st) {
   const den = k => k === dnes ? 'dnes' : DNI[(new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8)).getDay() + 6) % 7];
   const tyzden = Object.entries(d.kedy || {}).filter(([id, k]) => k >= od && byId(id)).sort((a, b) => a[1] < b[1] ? -1 : 1);
   const chyby = (d.chyby || []).map(x => { const [id, i] = x.split(':'), t = byId(id), q = t && t.z[+i]; return q && { t, q }; }).filter(Boolean).slice(-6).reverse();
-  return `<section class="sec rd-prehlad">${d === st ? '<h2 class="h2" style="--hc:var(--sky)">Pre rodiča</h2>' : ''}
+  return `<section class="sec rd-prehlad">${d === st ? '<h2 class="h2">Pre rodiča</h2>' : ''}
     <section class="rd-blok"><h2 class="rd-h">Tento týždeň prebraté</h2>
       ${tyzden.length ? tyzden.map(([id, k]) => `<div class="rd-riadok"><span class="pr-ik">${ikKat(byId(id).k)}</span><span class="rd-t"><b>${esc(byId(id).t)}</b></span><span class="rd-den">${den(k)}</span></div>`).join('') : '<p class="rd-pozn">Tento týždeň zatiaľ nič.</p>'}</section>
     <section class="rd-blok"><h2 class="rd-h">Na čo sa ešte pozrieť</h2>

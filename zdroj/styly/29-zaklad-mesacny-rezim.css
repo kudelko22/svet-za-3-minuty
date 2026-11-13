@@ -21,31 +21,22 @@
 }
 html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transition: background-color .35s, color .35s, border-color .35s; }
 .blobs .luna, .blobs .hviezdy { display: none; }
-:root[data-rezim="mesacny"] .blobs .luna { display: block; position: absolute; right: 18px; top: calc(14px + env(safe-area-inset-top, 0px)); width: 64px; height: 64px; filter: drop-shadow(0 0 14px rgb(255 226 122 / .55)); animation: lunaHoupe 7s ease-in-out infinite alternate; }
+:root[data-rezim="mesacny"] .blobs .luna { display: block; position: absolute; right: 18px; top: calc(14px + env(safe-area-inset-top, 0px)); width: 64px; height: 64px; filter: drop-shadow(0 0 14px rgb(255 226 122 / .55)); }
 :root[data-rezim="mesacny"] .blobs .hviezdy { display: block; position: absolute; inset: 0; }
-.hviezdy i { position: absolute; left: var(--x); top: var(--y); width: var(--r, 3px); height: var(--r, 3px); border-radius: 50%; background: #FFF3B0; box-shadow: 0 0 8px 2px rgb(255 226 122 / .55); animation: miha 3.2s ease-in-out infinite; animation-delay: var(--d, 0s); }
+.hviezdy i { position: absolute; left: var(--x); top: var(--y); width: var(--r, 3px); height: var(--r, 3px); border-radius: 50%; background: #FFF3B0; box-shadow: 0 0 8px 2px rgb(255 226 122 / .55); opacity: .75; }
 .hviezdy i:nth-child(3n) { background: #FFC2E0; box-shadow: 0 0 8px 2px rgb(255 140 200 / .5); }
 .hviezdy i:nth-child(4n) { background: #BFE3FF; box-shadow: 0 0 8px 2px rgb(140 200 255 / .5); }
-@keyframes miha { 0%, 100% { opacity: .25; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.15); } }
-@keyframes lunaHoupe { to { transform: translateY(6px) rotate(-5deg); } }
-:root[data-rezim="mesacny"] .blobs::after { opacity: .2; }
 :root[data-rezim="mesacny"] body.tinted { background-color: color-mix(in srgb, var(--kc) 13%, #18143F); }
 :root[data-rezim="mesacny"] body::before { background: var(--fon); }
 :root[data-rezim="mesacny"] .btn.cta::after { opacity: .6; }
-:root[data-rezim="mesacny"] .poz-vol i, :root[data-rezim="mesacny"] .poz-styl i { border-color: var(--line); }
-.rez-karta { display: grid; gap: 10px; }
-.rez-karta .rez-vol { display: flex; gap: 8px; }
-.rez-karta .poz-vol i { display: grid; place-items: center; }
-.rez-karta .poz-vol svg { width: 100%; height: 100%; display: block; }
 :root[data-rezim="mesacny"] .ang-otazka .ang-slovo, :root[data-rezim="mesacny"] .ang-karta .ang-slovo { color: #FF9EC4; }
 :root[data-rezim="mesacny"] .win-odm > summary { color: #FFC266; }
 :root[data-rezim="mesacny"] .link { color: #9DB8FF; }
 :root[data-rezim="mesacny"] .fbk.ok b { color: #6EE7A0; } :root[data-rezim="mesacny"] .fbk.bad b { color: #FF9096; }
 :root[data-rezim="mesacny"] .chyba { color: #FFB3B8; }
 :root[data-rezim="mesacny"] .odmena-karta b { color: #FFC266; }
-:root[data-rezim="mesacny"] .poz-styl i { background: #E3F4FF; }
-:root[data-rezim="mesacny"] .sticker, :root[data-rezim="mesacny"] .badge.new, :root[data-rezim="mesacny"] .day i, :root[data-rezim="mesacny"] .misia-typ-bunka.ma i { color: var(--dk); }
-:root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--paper)); border-color: color-mix(in srgb, var(--c) 80%, var(--paper)); }
+:root[data-rezim="mesacny"] .sticker, :root[data-rezim="mesacny"] .misia-typ-bunka.ma i { color: var(--dk); }
+:root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--card)); border-color: color-mix(in srgb, var(--c) 80%, var(--card)); }
 :root[data-rezim="mesacny"] .dm-vety .chip { color: var(--text); }
 :root[data-rezim="mesacny"] .chips .chip:not([aria-pressed="true"]).tmavy { color: var(--text); }
 :root[data-rezim="mesacny"] .burst { opacity: .55; }

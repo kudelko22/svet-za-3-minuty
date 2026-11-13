@@ -1,5 +1,5 @@
 /* priatelia: zo 4.9 tu ostali len pravidlá, ktoré používajú iné časti appky. Vzhľad Priateľov 5.0 je v 54-priatelia.css. */
 .nav button { font-size: .8rem; }
-.hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 16px; background: var(--t-yel); font-weight: 700; line-height: 1.35; }
+.hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--ink); border-radius: 16px; background: var(--sun-l); font-weight: 700; line-height: 1.35; }
 .soc-pochval { margin: 6px 0; }
 body.dm-rezim::before { display: none; }

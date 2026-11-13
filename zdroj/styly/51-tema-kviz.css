@@ -13,7 +13,7 @@ body.tinted main.gut { padding-top: 0; padding-bottom: 24px; }
 .ftop .ikn { width: 22px; height: 22px; }
 .beh { text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kroky { grid-column: 1 / -1; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
-.kroky i { height: 9px; border: 2px solid var(--line); border-radius: 999px; background: var(--card); transition: background-color .4s ease; }
+.kroky i { height: 9px; border: 2px solid var(--ink); border-radius: 999px; background: var(--card); transition: background-color .4s ease; }
 .kroky i.on { background: var(--coral); }
 .btn.fav[aria-pressed="false"] .ikn path:first-child { fill: none; }
 .btn.fav[aria-pressed="false"] .ikn path + path { display: none; }
@@ -21,7 +21,7 @@ body.tinted main.gut { padding-top: 0; padding-bottom: 24px; }
 .btn.fav[aria-pressed="true"] .ikn { animation: jelly .6s; }
 
 .kniha { gap: 20px; padding-top: 6px; }
-.tabula { margin: 0; border: var(--obrys); border-radius: 18px 20px 18px 22px; background: color-mix(in srgb, var(--c) 25%, var(--card)); overflow: hidden; box-shadow: 0 5px 0 var(--shc); }
+.tabula { margin: 0; border: var(--obrys); border-radius: 18px 20px 18px 22px; background: color-mix(in srgb, var(--c) 25%, var(--card)); overflow: hidden; box-shadow: 0 5px 0 var(--ink); }
 .tabula svg { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
 .nadp { display: grid; gap: 12px; justify-items: start; }
 .nadp .n0 { font-size: clamp(1.75rem, 7.4vw, 2.2rem); }
@@ -138,15 +138,6 @@ body.tinted .win .h1 { font-size: clamp(2rem, 8.6vw, 2.5rem); }
   .harok { border: var(--obrys); border-radius: 28px; box-shadow: 0 5px 0 var(--ink); margin-bottom: 28px; }
   .vies { grid-template-columns: 110px 1fr; }
 }
-
-/* ---------- Zoznam tém: karty ladia s knihou ---------- */
-.row { background: var(--card); box-shadow: 0 4px 0 var(--shc); }
-.row .thumb { background: color-mix(in srgb, var(--c) 25%, var(--card)); border-radius: 12px 14px 12px 15px; }
-.row-t { font-weight: 800; }
-.row-s { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 700; }
-.row-s::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--line); border-radius: 50%; background: var(--c); }
-.badge.new { background: var(--sun); color: var(--dk); font-family: var(--fd); font-weight: 800; }
-.badge.ok { background: var(--teal); color: #06302B; }
 
 @media (prefers-reduced-motion: reduce) {
   .flow-dalej > .kniha, .slnko, .slnko .luce, .rk-mud, .reakcia.zle .rk-mud, .plus, .harok, .znak, .od.spravna, .od.trasie, .skore.bump,

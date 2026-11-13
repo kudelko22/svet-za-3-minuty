@@ -109,18 +109,18 @@ function krok(f, k) {
   // 4.2: po téme len to najdôležitejšie (misia a jedno tlačidlo ďalej), ostatné je zbalené v rozbaľovacích riadkoch
   const dnesTema = f.typ === 'tema' && !!t && t.id === temaDna().id, misiaCaka = dnesTema && !Misie.splnenaDnes();
   const nOdm = (f.noveOdznaky || []).length + (f.noveOdmeny || []).length + (f.noveHry || []).length;
-  const pochval = (So => So && So.zapnute && f.typ === 'tema' && Object.keys(So.priatelia).length && !S.get('soc-pochvala-' + So.pid + '-' + f.id, false) ? `<button class="btn wide cta soc-pochval" data-soc-pochval="${f.id}:${hv}">${ii(IK.rodina)} Pochváliť sa priateľom</button>` : '')(socC());
-  const viac = [dnesTema && !misiaCaka ? kartaMisiePoTeme(t) : '', pochval, rel.length ? `<div class="sec"><h2 class="h2" style="--hc:#4C7DFF">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''].filter(Boolean).join('');
+  const pochval = (So => So && So.zapnute && f.typ === 'tema' && Object.keys(So.priatelia).length && !S.get('soc-pochvala-' + So.pid + '-' + f.id, false) ? `<button class="btn wide cta soc-pochval" data-soc-pochval="${f.id}:${hv}">${ikn('priatelia')} Pochváliť sa priateľom</button>` : '')(socC());
+  const viac = [dnesTema && !misiaCaka ? kartaMisiePoTeme(t) : '', pochval, rel.length ? `<div class="sec"><h2 class="h2">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''].filter(Boolean).join('');
   return `<div class="win win-krat">
       <div class="win-hero"><div class="burst"></div><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl(c ? 'cheer' : 'hi')}</button></div>
       <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
-      <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? '#FFD23F' : '#E4E0EE')).join('')}</div>
+      <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? 'var(--sun)' : 'var(--sand)')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
       ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 bodov. Najviac bodov dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
-      ${nOdm ? `<details class="win-zbal win-odm"${nOdm === 1 ? ' open' : ''}><summary>${ii(IK.iskra)} ${nOdm === 1 ? 'Máš novú odmenu' : 'Máš nové odmeny: ' + nOdm}</summary>${odmenyHtml(f)}</details>` : ''}
+      ${nOdm ? `<details class="win-zbal win-odm"${nOdm === 1 ? ' open' : ''}><summary>${ikn('hviezda')} ${nOdm === 1 ? 'Máš novú odmenu' : 'Máš nové odmeny: ' + nOdm}</summary>${odmenyHtml(f)}</details>` : ''}
       ${misiaCaka ? kartaMisiePoTeme(t) : ''}
       <div class="win-acts">
-        ${f.typ === 'kviz' ? `<div class="earn plain">${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</div>` : misiaCaka ? '' : `<button class="btn cta wide" data-nahodna>${ii(IK.kocka)} Ďalšia téma</button>`}
+        ${f.typ === 'kviz' ? `<div class="earn plain">${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</div>` : misiaCaka ? '' : `<button class="btn cta wide" data-nahodna>${ikn('kocka')} Ďalšia téma</button>`}
         <button class="btn dve wide" data-zavriet>Späť domov</button>
       </div>
       ${viac ? `<details class="win-zbal"><summary>Viac</summary><div class="win-viac">${viac}</div></details>` : ''}</div>`;
@@ -178,7 +178,7 @@ const NAZOV_DALEJ = { priklad: 'Príklad zo života', rozhovor: 'Porozprávajte 
 
 function renderFlow(anim = true) {
   const f = st.flow, k = f.kroky[f.i], t = f.id && byId(f.id);
-  document.body.style.setProperty('--kc', t ? KAT[t.k].c : '#FF9F1C');
+  document.body.style.setProperty('--kc', t ? KAT[t.k].c : 'var(--sun)');
   document.body.classList.add('tinted');
   document.body.classList.toggle('javisko', k.t === 'q');
   let dalej = '';

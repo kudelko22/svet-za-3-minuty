@@ -105,12 +105,12 @@ const Plocha = {
     if (this.naPloche() || S.get('plocha-neskor', 0) > Date.now() || (z === 'pocitac' && !this.udalost)) return '';
     return `<div class="plocha-karta"><span class="plocha-obr">${plPlocha()}</span><div class="plocha-t"><b>Pridajte si appku na plochu</b>
       <small>Bude sa otvárať ako naozajstná aplikácia: s ikonkou a cez celú obrazovku.</small>
-      <div class="plocha-tl"><button class="btn blue" data-plocha>${this.priamo() ? 'Pridať' : 'Ukázať ako'}</button><button class="btn ghost" data-plocha-neskor>Neskôr</button></div></div></div>`;
+      <div class="plocha-tl"><button class="btn maly mud" data-plocha>${this.priamo() ? 'Pridať' : 'Ukázať ako'}</button><button class="btn maly dve" data-plocha-neskor>Neskôr</button></div></div></div>`;
   },
   // na iPhone má appka na ploche vlastné prihlásenie, preto radíme pridať ju ešte pred prihlásením
   tip() {
     return this.naPloche() || !['iphone', 'ipad', 'vnutri'].includes(this.zariadenie()) ? ''
-      : `<button type="button" class="plocha-tip" data-plocha>${ii(IK.iskra)}<span><b>Tip:</b> najprv si appku pridajte na plochu, potom sa prihlásite len raz. <u>Ukázať ako</u></span></button>`;
+      : `<button type="button" class="plocha-tip" data-plocha>${ikn('hviezda')}<span><b>Tip:</b> najprv si appku pridajte na plochu, potom sa prihlásite len raz. <u>Ukázať ako</u></span></button>`;
   },
   navod(z = this.zariadenie()) {
     if (this.priamo() && (z === 'android' || z === 'pocitac')) {
@@ -122,14 +122,14 @@ const Plocha = {
     let i = 0;
     el.className = 'novinky plocha-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Pridať appku na plochu');
     el.innerHTML = `<div class="nov-karta pl-karta"><div class="pl-hlava"><div><small>Návod pre ${PLOCHA_NAZOV[z] || 'počítač'}</small><b>Pridať na plochu</b></div>
-      <button class="ib" data-pl="zavri" aria-label="Zavrieť">${IKO.zavriet}</button></div><div class="pl-telo"></div></div>`;
+      <button class="btn kruh dve" data-pl="zavri" aria-label="Zavrieť">${ikn('zavriet')}</button></div><div class="pl-telo"></div></div>`;
     const kresli = () => {
       const k = kroky[i], posl = i === kroky.length - 1;
       el.querySelector('.pl-telo').innerHTML = `<div class="pl-obr">${k.obr()}</div>
-        <div class="pl-krok"><span class="pl-cislo">${k.hotovo ? ii(STAR()) : i + 1}</span><div><b>${k.n}</b><small>${k.p}</small></div></div>
-        ${k.kopiruj ? '<button class="btn blue wide" data-pl="kopiruj">Skopírovať adresu appky</button>' : ''}
+        <div class="pl-krok"><span class="pl-cislo">${k.hotovo ? ikn('hviezda') : i + 1}</span><div><b>${k.n}</b><small>${k.p}</small></div></div>
+        ${k.kopiruj ? '<button class="btn mud wide" data-pl="kopiruj">Skopírovať adresu appky</button>' : ''}
         <div class="pl-spodok"><div class="pl-bodky">${kroky.length > 1 ? kroky.map((_, j) => `<i${j === i ? ' class="on"' : ''}></i>`).join('') : ''}</div>
-          ${i ? '<button class="btn ghost" data-pl="spat" aria-label="Späť">←</button>' : ''}<button class="btn cta" data-pl="${posl ? 'hotovo' : 'dalej'}">${posl ? 'Hotovo' : 'Ďalej →'}</button></div>`;
+          ${i ? `<button class="btn kruh dve" data-pl="spat" aria-label="Späť">${ikn('spat')}</button>` : ''}<button class="btn cta" data-pl="${posl ? 'hotovo' : 'dalej'}">${posl ? 'Hotovo' : 'Ďalej →'}</button></div>`;
       if (k.hotovo) setTimeout(() => { if (el.isConnected) { Zvuk.play('win'); const o = el.querySelector('.pl-obr'); if (o) { const [x, y] = stred(o); FX.burst(x, y, 26, ['star', 'dot']); } } }, 450);
     };
     el.addEventListener('click', e => {

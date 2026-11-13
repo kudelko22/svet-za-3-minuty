@@ -21,10 +21,14 @@ const SKUPINY = [
   { id: 'veda', nazov: 'Veda a technika', c: '#7C6CFF', ikona: () => IK_KAT.veda, kat: ['tvary', 'veda', 'technika', 'doprava', 'vynalezy', 'digital'] },
 ];
 const skupinaKat = id => SKUPINY.find(g => g.kat.includes(id));
+// 5.0: oblasti tém ako nálepky na mape: farba a ikona z palety (nie stará farba z SKUPINY.c), pásik prebratých tém
+const SK_FARBA = { priroda: 'teal', ludia: 'coral', svet: 'sun', veda: 'violet' };
+const SK_IKN = { priroda: 'strom', ludia: 'priatelia', svet: 'mapa', veda: 'raketa' };
+const skFarba = (id, t = '-l') => `var(--${SK_FARBA[id] || 'sky'}${t})`;
 const skupinaKarta = (g, kk, i) => {
   const k = g.kat.map(id => kk.find(x => x.id === id)).filter(Boolean), n = k.reduce((a, x) => a + x.n, 0), h = k.reduce((a, x) => a + x.hotovo, 0);
-  return `<button class="tile skupina" style="--c:${g.c}" data-skupina="${g.id}" aria-pressed="${st.skupina === g.id}"><span class="tile-e" style="--j:${i}">${g.ikona()}</span><b>${g.nazov}</b>
-    <span class="mini-ik">${k.map(x => `<i>${ikKat(x.id)}</i>`).join('')}</span><small>${h}/${n} tém</small></button>`;
+  return `<button class="nalepka skupina" style="--c:${skFarba(g.id)};--cd:${skFarba(g.id, '')};--j:${i}" data-skupina="${g.id}" aria-pressed="${st.skupina === g.id}"><span class="ikb">${ikn(SK_IKN[g.id] || 'kompas')}</span><b>${g.nazov}</b>
+    <span class="pruh"><i style="width:${n ? Math.max(4, Math.round(h / n * 100)) : 0}%"></i></span><small class="cis">${h} z ${n} tém</small></button>`;
 };
 const kats = () => { const v = TV(); return Object.keys(KAT).map(id => ({ id, ...KAT[id], n: v.filter(t => t.k === id).length, hotovo: v.filter(t => t.k === id && st.done.includes(t.id)).length })).filter(k => k.n).sort((a, b) => !!b.vek - !!a.vek); };
 const pre = q => st.vek === 'starsi' || q.v !== 's';
@@ -57,11 +61,12 @@ function seria() {
   while (st.dni.includes(key(d))) { n++; d.setDate(d.getDate() - 1); }
   return n;
 }
+// 5.0: karta témy ako výstrižok z atlasu: obrázok ako nalepená pohľadnica, perforácia, kategória, pečiatka Nová alebo Prebraté
 function row(t) {
-  const k = KAT[t.k];
-  return `<button class="row" data-start="${t.id}" style="--c:${k.c}"><span class="thumb">${svg(t)}</span>
-    <span class="row-main"><span class="row-t">${t.t}</span><span class="row-s">${k.nazov}${st.fav.includes(t.id) ? ` · ${ii(IK.srdce)}` : ''}</span></span>
-    ${st.done.includes(t.id) ? '<span class="badge ok" aria-label="Hotovo">✓</span>' : '<span class="badge new">Nová</span>'}</button>`;
+  const k = KAT[t.k], g = skupinaKat(t.k) || {}, hot = st.done.includes(t.id);
+  return `<button class="row${hot ? ' hot' : ''}" data-start="${t.id}" style="--c:${skFarba(g.id)};--cd:${skFarba(g.id, '-d')}"><span class="thumb">${svg(t)}</span>
+    <span class="row-main"><span class="row-s">${k.nazov}${st.fav.includes(t.id) ? ikn('srdce') : ''}</span><span class="row-t">${t.t}</span></span>
+    ${hot ? `<span class="row-ok" aria-label="Prebraté">${ikn('check')}</span>` : '<span class="pec row-nova">Nová</span>'}</button>`;
 }
 
 // odomknutý panel rodiča sa po vypršaní zámku sám zakryje (bez ťuknutia)

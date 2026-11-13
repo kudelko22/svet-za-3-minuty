@@ -13,8 +13,8 @@
 body:has(main > .ihrisko), body.hra-rezim { background-color: var(--ihr); background-image: radial-gradient(var(--ihr-b) 2.4px, transparent 3px); background-size: 22px 22px; }
 body:has(main > .ihrisko) .blobs { display: none; }
 .ihrisko { display: grid; gap: 22px; }
-.hry-titul { justify-self: start; margin: 4px 0 -6px 2px; font: 900 2.9rem/1 var(--fd); color: var(--h-biela); -webkit-text-stroke: 8px var(--ink); paint-order: stroke fill; text-shadow: 0 5px 0 var(--ink); rotate: -4deg; padding: 4px 6px 0; }
-.uvodka { margin: 0; font: 600 .95rem/1.4 var(--fd); background: var(--card); border: var(--obrys-m); border-radius: 14px 16px 14px 5px; padding: 8px 12px 7px; rotate: -1deg; }
+.hry-titul { justify-self: start; margin: 4px 0 -8px; } /* 5.0: rovnaké písmo a stupeň ako nadpisy ostatných obrazoviek (.n0) */
+.uvodka { margin: 0; font: 500 .94rem/1.4 var(--fb); background: var(--card); border: var(--obrys-m); border-radius: 14px 16px 14px 5px; padding: 8px 12px 7px; rotate: -1deg; }
 .hn-info { display: flex; gap: 10px; align-items: flex-start; margin: 0; background: var(--violet-l); rotate: .6deg; }
 .hn-info .ikn, .vsetko .ikn { flex: none; width: 26px; height: 26px; }
 .vsetko { display: flex; gap: 10px; align-items: center; margin: 0; background: var(--card); }

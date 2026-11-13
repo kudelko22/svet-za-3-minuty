@@ -9,11 +9,11 @@ const radaHlas = () => Zvuk.ios
     ? 'Krajší hlas zadarmo: v Nastaveniach telefónu vyhľadajte „Prevod textu na reč“, pri službe Google stiahnite slovenčinu a vyberte hlas vo vysokej kvalite. Potom appku zavrite a otvorte znova.'
     : 'Na počítači číta najkrajšie prehliadač Microsoft Edge (hlasy Viktória a Lukáš).';
 function hlasyHtml() {
-  const vik = Nahravky.zoznam ? `<button class="hlas" data-hlas="viktoria" aria-pressed="${Nahravky.zapnute()}"><b>Viktória</b><small>${ii(STAR())} najkrajší, na každom telefóne</small></button>` : '';
+  const vik = Nahravky.zoznam ? `<button class="hlas" data-hlas="viktoria" aria-pressed="${Nahravky.zapnute()}"><b>Viktória</b><small>${ikn('hviezda')} najkrajší, na každom telefóne</small></button>` : '';
   if (!('speechSynthesis' in window)) return vik ? `<div class="hlasy">${vik}</div>` : '<p class="muted">Tento telefón nevie čítať nahlas.</p>';
   const z = hlasy(), vyb = vik && Nahravky.zapnute() ? null : hlasSk();
   if (!z.length) return vik ? `<div class="hlasy">${vik}</div>` : `<p class="muted">Slovenský hlas sa v telefóne zatiaľ nenašiel.</p><p class="rada">${radaHlas()}</p>`;
-  return `<div class="hlasy">${vik}${z.map(v => `<button class="hlas" data-hlas="${esc(v.voiceURI)}" aria-pressed="${v === vyb}"><b>${esc(menoHlasu(v))}</b><small>${kvalitaHlasu(v) ? ii(STAR()) + ' kvalitný' : 'hlas telefónu'}</small></button>`).join('')}</div>
+  return `<div class="hlasy">${vik}${z.map(v => `<button class="hlas" data-hlas="${esc(v.voiceURI)}" aria-pressed="${v === vyb}"><b>${esc(menoHlasu(v))}</b><small>${kvalitaHlasu(v) ? ikn('hviezda') + ' kvalitný' : 'hlas telefónu'}</small></button>`).join('')}</div>
     <p class="muted">Ťuknite na hlas a vypočujte si ho.</p>${vik || kvalitaHlasu(z[0]) ? '' : `<p class="rada">${radaHlas()}</p>`}`;
 }
 try { speechSynthesis.addEventListener('voiceschanged', () => { const el = document.getElementById('hlasy'); if (el) el.innerHTML = hlasyHtml(); }); } catch (e) {}

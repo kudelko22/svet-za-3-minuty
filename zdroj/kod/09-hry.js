@@ -622,7 +622,7 @@ function pocitajHtml(h) {
   const n = h.kola[h.i], obr = POC_OBR[h.druh[h.i % 4]];
   return `<div class="card poc-pole" aria-label="${n} obrázkov">${Array.from({ length: n }, (_, i) => `<span class="poc-obr" style="--d:${(i * .12).toFixed(2)}s">${obr()}</span>`).join('')}</div>
     <p class="hadaj-otazka">Koľko ich je?</p>
-    <div class="poc-moz">${h.moznosti.map(m => `<button class="btn ghost poc-btn${h.odp ? (m === n ? ' ok' : '') : h.zle.includes(m) ? ' zle' : ''}" data-pocitaj="${m}"${h.zle.includes(m) ? ' disabled' : ''}>${m}</button>`).join('')}</div>`;
+    <div class="poc-moz">${h.moznosti.map(m => `<button class="btn dve poc-btn${h.odp ? (m === n ? ' ok' : '') : h.zle.includes(m) ? ' zle' : ''}" data-pocitaj="${m}"${h.zle.includes(m) ? ' disabled' : ''}>${m}</button>`).join('')}</div>`;
 }
 // obnova obsahu hry bez blikania: v tom istom kole sa zmení len to, čo sa líši (farba tlačidla); nové kolo sa vymení s jemným vyblednutím
 function obnovKolo(el, h, html) {
@@ -637,7 +637,7 @@ function hadajHtml(h) {
   const t = byId(h.kola[h.i]);
   return `<div class="frame hadaj-obr">${svg(t)}</div>
     <p class="hadaj-otazka">O ktorej téme je tento obrázok?</p>
-    <div class="hadaj-moz">${h.moznosti.map(id => `<button class="btn ghost hadaj-btn${h.odp ? (id === t.id ? ' ok' : id === h.odp ? ' zle' : '') : ''}" data-hadaj="${id}">${esc(byId(id).t)}</button>`).join('')}</div>`;
+    <div class="hadaj-moz">${h.moznosti.map(id => `<button class="btn dve hadaj-btn${h.odp ? (id === t.id ? ' ok' : id === h.odp ? ' zle' : '') : ''}" data-hadaj="${id}">${esc(byId(id).t)}</button>`).join('')}</div>`;
 }
 const obnovHadaj = () => { if (st.hra) obnovKolo(document.getElementById('hadaj'), st.hra, hadajHtml(st.hra)); };
 /* Nové hry 4.1: Ktorý je iný?, Nájdi tieň, Zoraď čísla, Poskladaj slovo */
@@ -703,7 +703,7 @@ function kvHtml(h) {
   return `<div class="card kv-prompt${k.tr ? ' ' + k.tr : ''}">${k.prompt}</div>
     <p class="hadaj-otazka">${k.otazka}</p>
     ${k.sloty ? `<div class="kv-sloty">${k.sprav.map((z, j) => `<span class="kv-slot${j < h.krok ? ' plny' : ''}">${j < h.krok ? esc(k.moz[h.vzate[j]].sl) : ''}</span>`).join('')}</div>` : ''}
-    <div class="kv-moz kv-${k.moz.length}${k.tm ? ' ' + k.tm : ''}">${k.moz.map((m, j) => `<button class="btn ghost kv-btn${h.vzate.includes(j) ? (k.sloty ? ' vzata' : ' ok') : ''}${h.zle.includes(j) ? ' zle' : ''}" data-kv="${j}"${h.zle.includes(j) || (k.sloty && h.vzate.includes(j)) ? ' disabled' : ''} aria-label="${esc(m.nap || 'Možnosť ' + (j + 1))}">${m.html}</button>`).join('')}</div>${k.x ? `<p class="kv-vysv${h.odp ? ' vid' : ''}">${h.odp ? esc(k.x) : '&nbsp;'}</p>` : ''}`;
+    <div class="kv-moz kv-${k.moz.length}${k.tm ? ' ' + k.tm : ''}">${k.moz.map((m, j) => `<button class="btn dve kv-btn${h.vzate.includes(j) ? (k.sloty ? ' vzata' : ' ok') : ''}${h.zle.includes(j) ? ' zle' : ''}" data-kv="${j}"${h.zle.includes(j) || (k.sloty && h.vzate.includes(j)) ? ' disabled' : ''} aria-label="${esc(m.nap || 'Možnosť ' + (j + 1))}">${m.html}</button>`).join('')}</div>${k.x ? `<p class="kv-vysv${h.odp ? ' vid' : ''}">${h.odp ? esc(k.x) : '&nbsp;'}</p>` : ''}`;
 }
 const obnovKv = () => { if (st.hra) obnovKolo(document.getElementById('kv'), st.hra, kvHtml(st.hra)); };
 const simonStav = text => { const el = document.getElementById('simon-stav'); if (el) el.textContent = text; };
@@ -802,7 +802,7 @@ function hryZoznam() {
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;
   const r0 = hore && rek(hore);
   return `<div class="ihrisko">
-    <h1 class="hry-titul">Hry</h1>
+    <h1 class="n0 hry-titul">Hry</h1>
     <p class="uvodka">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
     ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} bodov spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">
