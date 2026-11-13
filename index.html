@@ -2702,7 +2702,7 @@ body.auto-rezim .blobs { visibility: hidden; }
    Stará appka (.pm-stara) má zámerne staré farby a staré písmo 4.x, nie premenné 5.0. */
 html.pm-bezi, html.pm-bezi body { overflow: hidden; }
 .pm { --pm-sp: "Baloo 2", "Nunito", "Segoe UI", Roboto, system-ui, sans-serif; --pm-si: #2B2240;
-  position: fixed; inset: 0; z-index: 90; overflow: hidden; color: var(--text); font-family: var(--fb); transition: opacity .3s; -webkit-tap-highlight-color: transparent; }
+  position: fixed; inset: 0; z-index: 90; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--fb); transition: opacity .3s; -webkit-tap-highlight-color: transparent; }
 .pm.pryc { opacity: 0; pointer-events: none; }
 .pm-bg-stare, .pm-st-pozadie { position: absolute; inset: 0; background: linear-gradient(165deg, #E9E0FF 0%, #FFE6F0 46%, #E3F4FF 100%); }
 .pm-bg-stare i, .pm-st-pozadie i { position: absolute; width: 18px; height: 18px; opacity: .75; }
@@ -2714,7 +2714,7 @@ html.pm-bezi, html.pm-bezi body { overflow: hidden; }
 .pm-mk svg { display: block; width: 100%; height: 100%; overflow: visible; }
 
 /* scéna = obrazovka telefónu; na širokom displeji stĺpec v strede */
-.pm-scena { --pm-w: min(100vw, 430px); position: absolute; top: 0; bottom: 0; left: 50%; width: var(--pm-w); margin-left: calc(var(--pm-w) / -2); z-index: 3; overflow: hidden; border-radius: 30px; pointer-events: none; transform-origin: 50% 50%; }
+.pm-scena { --pm-w: min(100vw, 430px); position: absolute; top: 0; bottom: 0; left: 50%; width: var(--pm-w); margin-left: calc(var(--pm-w) / -2); z-index: 3; overflow: hidden; border-radius: 30px; background: var(--bg); pointer-events: none; transform-origin: 50% 50%; }
 .pm-ram { position: absolute; inset: 0; z-index: 8; border: 7px solid var(--ink); border-radius: 30px; }
 
 /* ---------- stará appka 4.x ---------- */
@@ -2790,7 +2790,7 @@ html.pm-bezi, html.pm-bezi body { overflow: hidden; }
 .pm-luce { position: absolute; left: -270px; top: -270px; width: 540px; height: 540px; border-radius: 50%;
   background: repeating-conic-gradient(rgb(255 226 122 / .5) 0 9deg, transparent 9deg 30deg);
   -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 100%); mask-image: radial-gradient(closest-side, #000 30%, transparent 100%); }
-.pm-ziara { position: absolute; left: -140px; top: -140px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(closest-side, #FFF8D6 0%, rgb(255 226 122 / .65) 45%, rgb(255 226 122 / 0) 100%); }
+.pm-ziara { position: absolute; left: -140px; top: -140px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(closest-side, rgb(255 200 60 / .7) 0%, rgb(255 200 60 / .35) 50%, rgb(255 200 60 / 0) 100%); }
 .pm-iskry i { position: absolute; left: -10px; top: -10px; width: 20px; height: 20px; background: #FFE27A; clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); }
 .pm-iskry i:nth-child(3n) { background: #fff; }
 .pm-blesk { position: absolute; z-index: 7; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; background: radial-gradient(closest-side, #fff 0 55%, rgb(255 255 255 / 0) 100%); }
@@ -2819,7 +2819,7 @@ html.pm-bezi, html.pm-bezi body { overflow: hidden; }
 .pm-pol b { display: block; font: 800 16px/1.25 var(--fd); }
 .pm-pol small { display: block; color: var(--muted); font-size: 14px; line-height: 1.4; }
 .pm-l-dole { padding: 12px 16px 14px; }
-.pm-preskoc { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 10; }
+.pm-preskoc { position: absolute; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); right: max(12px, calc(50% - 203px)); z-index: 10; }
 @media (min-width: 720px) {
   .pm-koniec { grid-template-columns: auto minmax(0, 440px); grid-template-rows: auto auto; grid-template-areas: "slot znacka" "slot listok"; align-content: center; justify-content: center; gap: 18px 44px; }
   .pm-listok { align-self: start; max-height: calc(100vh - 230px); max-height: calc(100dvh - 230px); }
@@ -7118,7 +7118,8 @@ const Premena = {
     if (!el) return;
     const kf = [];
     if (body[0][0] > 0) kf.push({ offset: 0, ...body[0][1] });
-    body.forEach(([t, v, e]) => kf.push({ offset: Math.min(1, t / PM_KONIEC), ...v, ...(e ? { easing: e } : {}) }));
+    let pred = 0;
+    body.forEach(([t, v, e]) => { pred = Math.max(pred, Math.min(1, t / PM_KONIEC)); kf.push({ offset: pred, ...v, ...(e ? { easing: e } : {}) }); });
     const posl = body[body.length - 1];
     if (posl[0] < PM_KONIEC) kf.push({ offset: 1, ...posl[1] });
     const a = el.animate(kf, { duration: PM_KONIEC, fill: 'both' });
@@ -7149,7 +7150,7 @@ const Premena = {
     try { this.os(q('.pm-s-stara .pm-ss-oci'), [[0, { transform: 'translate(0,0)' }], [950, { transform: 'translate(0,0)' }], [1100, { transform: 'translate(2px,-4px)' }], [1900, { transform: 'translate(2px,-4px)' }]]); } catch (e) { /* bez pohľadu */ }
     // vývin: biela silueta starej sovy, potom striedanie siluet, čoraz rýchlejšie, až zostane nová
     this.os(q('.pm-s-stara'), [[0, V], [2050, V], [2300, N]]);
-    const krok = [400, 320, 260, 210, 170, 135, 110, 90, 75, 62, 52, 45, 40, 40], body0 = [[0, N], [2000, N], [2300, V]], body1 = [[0, N], [2300, N]];
+    const krok = [380, 300, 240, 195, 160, 130, 105, 85, 70, 58, 48, 42, 38, 36], body0 = [[0, N], [2000, N], [2300, V]], body1 = [[0, N], [2300, N]];
     let t = 2300, nova = false;
     krok.forEach(d => { t += d; nova = !nova; body0.push([t - 1, nova ? V : N], [t, nova ? N : V]); body1.push([t - 1, nova ? N : V], [t, nova ? V : N]); });
     body0.push([t + 1, N]); body1.push([4300, V], [4700, N]);
@@ -7182,7 +7183,7 @@ const Premena = {
     const prid = (el, t0) => this.os(el, [[0, { opacity: 0, transform: 'perspective(700px) rotateY(-90deg) scale(.9)' }], [t0 + 190, { opacity: 0, transform: 'perspective(700px) rotateY(-90deg) scale(.9)' }, SPR], [t0 + 620, { opacity: 1, transform: 'perspective(700px) rotateY(0deg) scale(1)' }]]);
     const stare = qa('[data-pm-a]'), nove = qa('[data-pm-b]');
     stare.forEach(el => pryc(el, kedy(el)));
-    nove.forEach(el => prid(el, kedy(el)));
+    nove.forEach(el => prid(el, Math.max(W0 + 60, kedy(el) - 160))); // nové o chvíľu skôr, aby medzi starým a novým neostalo prázdno
     // menu: vlastný rytmus zľava doprava
     const na = qa('[data-pm-na]'), nb = qa('[data-pm-nb]');
     na.forEach((el, i) => pryc(el, 6450 + i * 110));

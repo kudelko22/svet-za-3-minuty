@@ -187,7 +187,8 @@ const Premena = {
     if (!el) return;
     const kf = [];
     if (body[0][0] > 0) kf.push({ offset: 0, ...body[0][1] });
-    body.forEach(([t, v, e]) => kf.push({ offset: Math.min(1, t / PM_KONIEC), ...v, ...(e ? { easing: e } : {}) }));
+    let pred = 0;
+    body.forEach(([t, v, e]) => { pred = Math.max(pred, Math.min(1, t / PM_KONIEC)); kf.push({ offset: pred, ...v, ...(e ? { easing: e } : {}) }); });
     const posl = body[body.length - 1];
     if (posl[0] < PM_KONIEC) kf.push({ offset: 1, ...posl[1] });
     const a = el.animate(kf, { duration: PM_KONIEC, fill: 'both' });
@@ -218,7 +219,7 @@ const Premena = {
     try { this.os(q('.pm-s-stara .pm-ss-oci'), [[0, { transform: 'translate(0,0)' }], [950, { transform: 'translate(0,0)' }], [1100, { transform: 'translate(2px,-4px)' }], [1900, { transform: 'translate(2px,-4px)' }]]); } catch (e) { /* bez pohľadu */ }
     // vývin: biela silueta starej sovy, potom striedanie siluet, čoraz rýchlejšie, až zostane nová
     this.os(q('.pm-s-stara'), [[0, V], [2050, V], [2300, N]]);
-    const krok = [400, 320, 260, 210, 170, 135, 110, 90, 75, 62, 52, 45, 40, 40], body0 = [[0, N], [2000, N], [2300, V]], body1 = [[0, N], [2300, N]];
+    const krok = [380, 300, 240, 195, 160, 130, 105, 85, 70, 58, 48, 42, 38, 36], body0 = [[0, N], [2000, N], [2300, V]], body1 = [[0, N], [2300, N]];
     let t = 2300, nova = false;
     krok.forEach(d => { t += d; nova = !nova; body0.push([t - 1, nova ? V : N], [t, nova ? N : V]); body1.push([t - 1, nova ? N : V], [t, nova ? V : N]); });
     body0.push([t + 1, N]); body1.push([4300, V], [4700, N]);
@@ -251,7 +252,7 @@ const Premena = {
     const prid = (el, t0) => this.os(el, [[0, { opacity: 0, transform: 'perspective(700px) rotateY(-90deg) scale(.9)' }], [t0 + 190, { opacity: 0, transform: 'perspective(700px) rotateY(-90deg) scale(.9)' }, SPR], [t0 + 620, { opacity: 1, transform: 'perspective(700px) rotateY(0deg) scale(1)' }]]);
     const stare = qa('[data-pm-a]'), nove = qa('[data-pm-b]');
     stare.forEach(el => pryc(el, kedy(el)));
-    nove.forEach(el => prid(el, kedy(el)));
+    nove.forEach(el => prid(el, Math.max(W0 + 60, kedy(el) - 160))); // nové o chvíľu skôr, aby medzi starým a novým neostalo prázdno
     // menu: vlastný rytmus zľava doprava
     const na = qa('[data-pm-na]'), nb = qa('[data-pm-nb]');
     na.forEach((el, i) => pryc(el, 6450 + i * 110));
