@@ -48,7 +48,5 @@ html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transitio
 :root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--paper)); border-color: color-mix(in srgb, var(--c) 80%, var(--paper)); }
 :root[data-rezim="mesacny"] .dm-vety .chip { color: var(--text); }
 :root[data-rezim="mesacny"] .chips .chip:not([aria-pressed="true"]).tmavy { color: var(--text); }
-:root[data-rezim="mesacny"] .oslava { background: radial-gradient(circle at 50% 38%, #4A3A82, #1A1547 72%); }
-:root[data-rezim="mesacny"] .os-lucy { background: repeating-conic-gradient(rgb(255 226 122 / .13) 0 9deg, transparent 9deg 22deg); }
 :root[data-rezim="mesacny"] .burst { opacity: .55; }
 @media (prefers-reduced-motion: reduce) { .hviezdy i, .blobs .luna { animation: none !important; } html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transition: none; } }

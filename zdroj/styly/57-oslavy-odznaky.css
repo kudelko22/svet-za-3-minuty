@@ -1,2 +1,97 @@
-/* 5.0: Oslavy, odznaky, odmeny. Sem patria nové štýly tejto sekcie (smer: pečiatky do Pasu objaviteľa, tri veľkosti osláv).
-   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+/* 5.0: Oslavy, odznaky, odmeny. Pečiatky do Pasu objaviteľa, tri veľkosti osláv (malá do počítadla, stredná s pečiatkou, veľká v krajine stromu v 16-).
+   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. */
+
+/* Pečiatka: farba atramentu podľa skupiny (cez color), v noci svetlejší atrament */
+.pec-svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--pi); }
+.pi-leaf { --pi: var(--leaf-d); } .pi-sky { --pi: var(--sky-d); } .pi-coral { --pi: var(--coral-d); } .pi-violet { --pi: var(--violet-d); }
+.pi-teal { --pi: var(--teal-d); } .pi-sun { --pi: var(--sun-d); } .pi-nie { --pi: var(--muted); opacity: .55; }
+:root[data-rezim="mesacny"] .pi-leaf { --pi: var(--leaf); } :root[data-rezim="mesacny"] .pi-sky { --pi: var(--sky); } :root[data-rezim="mesacny"] .pi-coral { --pi: var(--coral); }
+:root[data-rezim="mesacny"] .pi-violet { --pi: var(--violet); } :root[data-rezim="mesacny"] .pi-teal { --pi: var(--teal); } :root[data-rezim="mesacny"] .pi-sun { --pi: var(--sun); }
+
+/* Pas objaviteľa: každá skupina je strana pasu (papier so stehom vľavo) */
+.pas-top { align-items: center; }
+.pas-top .hra-nazov { flex: 1; margin: 0; font-size: clamp(1.45rem, 6.6vw, 1.9rem); }
+.pas-tip { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; padding: 10px 12px; border: var(--obrys-m); border-radius: 14px 16px 12px 15px; background: var(--sun-l); color: var(--text); font: 700 .92rem/1.3 var(--fb); text-align: left; box-shadow: 0 3px 0 var(--shc); }
+.pas-tip .ikn { flex: none; width: 24px; height: 24px; }
+.pas-str { position: relative; margin: 0 0 16px; padding: 14px 12px 14px 22px; border: var(--obrys); border-radius: 10px 22px 20px 10px; background: var(--card); box-shadow: 0 5px 0 var(--shc); }
+.pas-str::before { content: ""; position: absolute; left: 9px; top: 12px; bottom: 12px; border-left: 3px dotted var(--sun-d); }
+.pas-nh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 8px; }
+.pas-nh .n1 { margin: 0; }
+.pas-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 6px; }
+.odznak.pas-pol { position: relative; display: grid; justify-items: center; align-content: start; gap: 3px; padding: 4px 2px; border: 0; border-radius: 16px; background: none; box-shadow: none; color: var(--text); text-align: center; animation: none; font: inherit; }
+.pas-pec { position: relative; display: block; width: min(84px, 100%); aspect-ratio: 1; margin-bottom: 2px; }
+.pas-pol b { font: 800 .84rem/1.15 var(--fd); }
+.pas-pol small { font: 500 .72rem/1.25 var(--fb); color: var(--muted); }
+.pas-pol.nie b { color: var(--muted); }
+.pas-pol.cerstva { cursor: pointer; }
+.pas-pol.cerstva .pas-pec::before { content: ""; position: absolute; inset: -5px; border: 4px solid var(--sun); border-radius: 50%; background: var(--sun-l); z-index: -1; animation: pecZiari 1.8s ease-in-out infinite; }
+.pas-pol .plus2 { position: absolute; right: -8px; top: -6px; height: 24px; padding: 0 7px 0 5px; border-radius: 8px 11px 11px 8px; background: var(--sun); color: var(--dk); font-size: .8rem; rotate: 6deg; }
+.pas-pol .plus2 .ikn { width: 14px; height: 14px; }
+.pas-pol:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.pas-pol.prevzaty .pas-pec { animation: pecOdtlac .55s var(--spring); }
+@keyframes pecZiari { 50% { transform: scale(1.06); } }
+@keyframes pecOdtlac { 0% { transform: scale(1); } 35% { transform: scale(.82) rotate(-4deg); } 100% { transform: scale(1); } }
+.pas-viac { margin-top: 10px; }
+.pas-viac > summary { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 6px; list-style: none; cursor: pointer; font: 800 .92rem/1 var(--fd); color: var(--link); }
+.pas-viac > summary::-webkit-details-marker { display: none; }
+.pas-viac > summary .ikn { width: 18px; height: 18px; transition: transform .2s; }
+.pas-viac[open] > summary .ikn { transform: rotate(180deg); }
+.pas-viac[open] > summary { margin-bottom: 8px; }
+
+/* blok Pasu v karte Ja (pasKarta) */
+.pas-karta { display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 16px; padding-top: 22px; color: var(--text); text-align: left; font: inherit; cursor: pointer; }
+.pas-karta:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shc); }
+.pas-obal { flex: none; width: 58px; rotate: -5deg; }
+.pas-obal svg { display: block; width: 100%; height: auto; }
+.pas-karta .ok-info { display: grid; gap: 6px; flex: 1; min-width: 0; }
+.pas-karta .ok-info .n1 { margin: 0; font-size: 1.15rem; }
+.pas-posl { display: flex; gap: 4px; }
+.pas-posl .pec-svg { width: 40px; flex: none; }
+.pas-karta .cena { justify-self: start; }
+.pas-sip { flex: none; width: 24px; height: 24px; }
+.pas-karta.novinka { animation: none; box-shadow: 0 0 0 4px var(--sun), 0 5px 0 var(--shc); }
+
+/* karty odmien na konci témy, hry a misie: pečiatka dopadne */
+.odm-pec { flex: none; width: 64px; animation: pecDopad .55s cubic-bezier(.3, 1.4, .5, 1) calc(var(--d, 0s) + .15s) both; }
+.odmena-karta { background: var(--card); }
+@keyframes pecDopad { 0% { transform: scale(2.2) rotate(-14deg); opacity: 0; } 60% { transform: scale(.92) rotate(2deg); opacity: 1; } 100% { transform: none; } }
+
+/* Stredná oslava: žlté lúče, list pasu, pečiatka dopadne, papier sa zatrasie */
+.os-stredna { position: fixed; inset: 0; z-index: 56; display: grid; place-items: center; overflow: hidden auto; padding: 16px; background: var(--sun); animation: osIn .3s ease-out both; }
+.os-stredna.pryc { animation: osOut .3s ease-in both; }
+:root[data-rezim="mesacny"] .os-stredna { background: var(--noc-bg); }
+.osr-luce { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.osr-luce g { fill: #FFE48C; transform-origin: 180px 190px; animation: spin 50s linear infinite; }
+:root[data-rezim="mesacny"] .osr-luce g { fill: var(--violet-l); }
+.osr-obsah { position: relative; display: grid; justify-items: center; width: min(100%, 380px); }
+.osr-list { position: relative; display: grid; place-items: center; width: min(240px, 66vw); aspect-ratio: 1; margin-bottom: -10px; border: var(--obrys); border-radius: 10px 18px 16px 10px; background: var(--card); box-shadow: 0 6px 0 var(--shc); rotate: -4deg; animation: osrList .45s var(--spring) both; }
+.osr-list::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; border-left: 3px dotted var(--sun-d); }
+.os-stredna.dopadla .osr-list { animation: osrTras .4s ease-out; }
+.osr-stitok { position: absolute; top: -14px; left: 50%; translate: -50% 0; background: var(--card); --pc: var(--coral-d); font-size: .82rem; }
+.osr-pec { width: 72%; animation: osrPec .55s cubic-bezier(.5, 0, .6, 1.4) .25s both; }
+.osr-mud { position: absolute; left: -6px; top: min(190px, 52vw); width: 96px; z-index: 2; animation: mudIn .5s var(--spring) .7s both; }
+.osr-mud .owl { display: block; width: 100%; height: auto; }
+.osr-karta { display: grid; justify-items: center; gap: 8px; width: 100%; padding-top: 34px; text-align: center; animation: osIn .4s ease-out .5s both; }
+.osr-karta .n0, .osr-karta .tx, .osr-ini { margin: 0; }
+.osr-ini { font: 500 .85rem/1.35 var(--fb); color: var(--muted); }
+.osr-cena { height: 32px; font-size: 1rem; background: var(--sun); color: var(--dk); }
+.osr-cena .ikn { width: 20px; height: 20px; }
+.osr-karta .btn { width: 100%; }
+@keyframes osrList { from { transform: translateY(30px) scale(.8); opacity: 0; } }
+@keyframes osrPec { 0% { transform: scale(2.6) rotate(-18deg); opacity: 0; } 70% { transform: scale(.94) rotate(1deg); opacity: 1; } 100% { transform: none; } }
+@keyframes osrTras { 25% { transform: translate(-3px, 2px) rotate(-.6deg); } 50% { transform: translate(3px, -2px) rotate(.5deg); } 75% { transform: translate(-1px, 1px); } }
+
+/* Malá oslava: „+N“, hviezdičky letia po bodkovanej dráhe do počítadla, číslo sa pretočí */
+.mala-plus { position: fixed; z-index: 61; translate: -50% -50%; height: 30px; font-size: 1rem; background: var(--sun); color: var(--dk); pointer-events: none; animation: malaPlus 1.05s ease-out forwards; }
+.mala-plus .ikn { width: 18px; height: 18px; }
+@keyframes malaPlus { 0% { transform: scale(.4); opacity: 0; } 25% { transform: scale(1.15) translateY(-10px); opacity: 1; } 75% { opacity: 1; } 100% { transform: translateY(-46px); opacity: 0; } }
+.leti { position: fixed; z-index: 60; width: 30px; height: 30px; margin: -15px 0 0 -15px; pointer-events: none; filter: none; }
+.leti .ikn { display: block; width: 100%; height: 100%; }
+.stopa { position: fixed; z-index: 59; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--sun-d); pointer-events: none; animation: stopa .6s ease-out forwards; }
+@keyframes stopa { to { opacity: 0; transform: scale(.3); } }
+#body.roll { display: inline-block; animation: cisloRoll .4s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes cisloRoll { from { transform: translateY(-70%); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pas-pol.cerstva .pas-pec::before, .pas-pol.prevzaty .pas-pec, .odm-pec, .os-stredna, .osr-luce g, .osr-list, .osr-pec, .osr-mud, .osr-karta, .mala-plus, .stopa, #body.roll { animation: none !important; }
+}

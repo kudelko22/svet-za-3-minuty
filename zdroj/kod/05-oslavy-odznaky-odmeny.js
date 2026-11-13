@@ -107,11 +107,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
 }
-function oznamOdznaky(nove) {
-  nove.forEach((o, i) => setTimeout(() => {
-    toast(`Nový odznak: ${o.n}`); Zvuk.play('star'); FX.burst(innerWidth / 2, innerHeight / 3, 26, ['star', 'dot']);
-  }, i * 1300));
-}
+function oznamOdznaky(nove) { oslavaOdznaku(nove); }
 /* Odmeny za body: diely postavičky */
 const noveOdmeny = (pred, po) => ODMENY.filter(o => o.cena > pred && o.cena <= po);
 const dalsiaOdmena = () => ODMENY.find(o => o.cena > st.body);
@@ -129,7 +125,7 @@ function odmenyHtml(f) {
   const o = f.noveOdznaky || [], r = f.noveOdmeny || [], h = f.noveHry || [];
   if (!o.length && !r.length && !h.length) return '';
   return `<div class="nove-odmeny">
-      ${o.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + i * .25}s"><span class="medaila">${ikOdznaku(x)}</span><div><b>Nový odznak!</b><span>${esc(x.n)}</span></div></div>`).join('')}
+      ${o.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + i * .25}s"><span class="odm-pec">${peciatka(x, 'ma')}</span><div><b>Nový odznak!</b><span>${esc(x.n)}</span></div></div>`).join('')}
       ${r.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + i) * .25}s"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka({ ...st.avatar, [x.k]: x.v })}</span><div><b>Odomknuté!</b><span>Máš ${NAZVY_ODMIEN[x.kluc]} pre postavičku</span></div></div>`).join('')}
       ${h.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + r.length + i) * .25}s"><span class="hra-mini" style="--c:${x.c}">${OBR_HRY[x.id]}</span><div><b>Nová hra!</b><span>${esc(x.n)}</span></div></div>`).join('')}
       ${r.length ? `<button class="btn wide" data-upravit="${r[0].k}">${ii(IK.iskra)} Obliecť postavičku</button>` : ''}
@@ -140,59 +136,165 @@ function vyberOdznak(id, el) {
   if (!st.odznaky.includes(id) || st.vybrate.includes(id)) return;
   st.vybrate = [...st.vybrate, id]; S.set('vybrate', st.vybrate);
   st.body += 2; S.set('body', st.body);
-  el.classList.remove('na-vyber'); el.removeAttribute('data-vyber');
+  el.classList.remove('na-vyber', 'cerstva'); el.classList.add('ma'); el.removeAttribute('data-vyber');
   const p = el.querySelector('.plus2'); if (p) p.remove();
   const zost = odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length, tip = document.querySelector('.vyber-tip');
   document.getElementById('nav-ja').classList.toggle('novinka', zost > 0);
-  if (tip) { if (zost) tip.innerHTML = `${ii(IK.iskra)} Ťukni na žiariace odznaky a vyzdvihni si ${zost * 2} ${ii(STAR())}`; else tip.remove(); }
+  if (tip) { if (zost) tip.innerHTML = `${ikn('hviezda')}<span>Ťukni na čerstvú pečiatku a vyzdvihni si ${zost * 2} ${zost * 2 < 5 ? 'hviezdičky' : 'hviezdičiek'}.</span>`; else tip.remove(); }
   const [x, y] = stred(el), ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30];
   el.classList.add('prevzaty'); Zvuk.play('cink'); vibruj([20, 40, 20]);
-  for (const [trieda, text, dlzka] of [['vlna', '', 800], ['plus-velke', '+2', 1200]]) {
-    const e = document.createElement('span'); e.className = trieda; e.textContent = text;
-    e.style.left = x + 'px'; e.style.top = y + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), dlzka);
-  }
-  FX.burst(x, y, 24, ['star', 'dot'], 8);
-  [0, 1].forEach(i => setTimeout(() => letHviezdu(x, y, cx, cy, i, () => {
-    Zvuk.play(i ? 'dopad2' : 'dopad1'); FX.burst(cx, cy, 10, ['star', 'dot'], 4);
-    const b = document.getElementById('body'), s = document.getElementById('stars');
-    if (b) b.textContent = st.body - 1 + i;
-    if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+  malaOslava(x, y, 2, i => {
     if (i) { const nove = noveOdznaky(); oznamOdznaky(nove); if (nove.length && st.view === 'odznaky') setTimeout(render, 1500); }
-  }), 250 + i * 260));
+  });
 }
-// hviezdička letí z odznaku do hlavičky po oblúku, točí sa a nechá za sebou iskry
+/* Malá oslava: hviezdičky priletia po bodkovanej dráhe do počítadla v hlavičke a číslo sa pretočí. Trvá do sekundy a nič nezakryje.
+   Volať po pripočítaní: malaOslava(x, y, n, hotovo) (x, y = odkiaľ letia; n = koľko pribudlo; hotovo(i) po každej hviezdičke). */
+function malaOslava(x, y, n = 2, hotovo = () => {}) {
+  const ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30], k = Math.min(n, 3);
+  const t = document.createElement('span'); t.className = 'cena mala-plus'; t.innerHTML = `${ikn('hviezda')}+${n}`;
+  t.style.left = x + 'px'; t.style.top = y + 'px'; document.body.appendChild(t); setTimeout(() => t.remove(), 1100);
+  for (let i = 0; i < k; i++) setTimeout(() => letHviezdu(x, y, cx, cy, i, () => {
+    Zvuk.play(i ? 'dopad2' : 'dopad1');
+    const b = document.getElementById('body'), s = document.getElementById('stars');
+    if (b) { b.textContent = st.body - (k - 1 - i) * Math.floor(n / k); b.classList.remove('roll'); void b.offsetWidth; b.classList.add('roll'); }
+    if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+    hotovo(i);
+  }), 150 + i * 200);
+}
+// hviezdička letí po oblúku do hlavičky a nechá za sebou bodkovanú stopu
 function letHviezdu(x, y, cx, cy, i, hotovo) {
-  const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = STAR();
+  const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = ikn('hviezda');
   h.style.left = x + 'px'; h.style.top = y + 'px'; document.body.appendChild(h);
-  if (!h.animate) { h.remove(); hotovo(); return; }
-  const dx = cx - x, dy = cy - y, bok = i ? -70 : 70;
+  if (!h.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { h.remove(); hotovo(); return; }
+  const dx = cx - x, dy = cy - y, bok = i ? -50 : 50;
   const a = h.animate([
-    { transform: 'translate(0, 0) scale(.3) rotate(0deg)', opacity: 0 },
-    { transform: `translate(${bok}px, -80px) scale(1.7) rotate(160deg)`, opacity: 1, offset: .3 },
-    { transform: `translate(${dx * .55 + bok * .6}px, ${dy * .55 - 60}px) scale(1.2) rotate(300deg)`, offset: .65 },
-    { transform: `translate(${dx}px, ${dy}px) scale(.55) rotate(420deg)`, opacity: 1 },
-  ], { duration: 950, easing: 'cubic-bezier(.45, 0, .55, 1)' });
-  const stopa = setInterval(() => { const q = h.getBoundingClientRect(); FX.burst(q.left + q.width / 2, q.top + q.height / 2, 2, ['star', 'dot'], 1.5); }, 60);
+    { transform: 'translate(0, 0) scale(.4)', opacity: 0 },
+    { transform: `translate(${bok}px, -60px) scale(1.4) rotate(90deg)`, opacity: 1, offset: .3 },
+    { transform: `translate(${dx}px, ${dy}px) scale(.6) rotate(240deg)`, opacity: 1 },
+  ], { duration: 750, easing: 'cubic-bezier(.45, 0, .55, 1)' });
+  const stopa = setInterval(() => { const q = h.getBoundingClientRect(), d = document.createElement('i'); d.className = 'stopa'; d.style.left = q.left + q.width / 2 + 'px'; d.style.top = q.top + q.height / 2 + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 600); }, 70);
   a.onfinish = () => { clearInterval(stopa); h.remove(); hotovo(); };
 }
 // odznaky pre vek dieťaťa (Majster kategórie len pre jeho kategórie)
 const odznakyVek = () => ODZNAKY.filter(o => !o.vek || o.vek === st.vek);
 // odznaky v profile len ako jedna karta; celá zbierka sa otvorí ťuknutím
 const nevybrate = () => st.dietaId ? odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length : 0;
-function kartaOdznakov() {
-  const k = nevybrate();
-  const posledne = st.odznaky.slice(-5).reverse().map(id => odznakyVek().find(o => o.id === id)).filter(Boolean);
-  return `<button class="card odznaky-karta${k ? ' novinka' : ''}" data-go="odznaky">${k ? '<span class="nov-stitok">Novinka!</span>' : ''}<span class="medaila velka">${IK.medaila}</span>
-      <span class="ok-info"><b>Moje odznaky</b><small>${odznakyVek().filter(o => st.odznaky.includes(o.id)).length} z ${odznakyVek().length} · ťukni a pozri všetky</small>${(k => k ? `<span class="chip tmavy" style="--c:#FFD23F">+${k * 2} ${ii(STAR())} na vyzdvihnutie</span>` : '')(odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length)}
-      <span class="posledne">${posledne.map(o => `<span class="medaila mala">${ikOdznaku(o)}</span>`).join('') || '<small>Prvý odznak dostaneš za prvú tému.</small>'}</span></span><span class="sipka">›</span></button>
-    <section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
+/* ===== 5.0: odznaky ako pečiatky do Pasu objaviteľa =====
+   Každá skupina má vlastný tvar a farbu atramentu (témy okrúhle a osemhranné, séria štít, hry šesťuholník, body ozubené koliesko).
+   Pečiatka je jednofarebná a mierne nakrivo, text ide po obvode. Nezískaná je sivá prerušovaná so zámkom, čerstvá má žltý krúžok a „+2“. */
+const PEC_SKUP = {
+  'Témy': { tv: ['kruh', 'osem'], f: ['leaf', 'sky', 'coral', 'violet'], ik: 'temy' },
+  'Dni a séria': { tv: ['stit'], f: ['coral'], ik: 'kalendar' },
+  'Body': { tv: ['zubky'], f: ['sun'], ik: 'hviezda' },
+  'Hry': { tv: ['sest'], f: ['teal'], ik: 'hry' },
+  'Misie': { tv: ['osem'], f: ['sky'], ik: 'lupa' },
+  'Angličtina': { tv: ['kruh'], f: ['violet'], ik: 'bublina' },
+  'Rôzne': { tv: ['kruh'], f: ['coral'], ik: 'srdce' },
+  'Majster kategórie': { tv: ['zubky'], f: ['leaf'], ik: 'koruna' },
+};
+const PEC_IK = { prva: 'klicok', temy3: 'lupa', temy5: 'raketa', temy10: 'kompas', temy15: 'mapa', temy20: 'ciapka', temy30: 'pohar', temy40: 'hviezda', vsetky: 'koruna',
+  kat3: 'karty', katvsetky: 'mapa', bezchyby: 'terc', blesk: 'blesk', tazky: 'stit', vyzva: 'pohar', auto: 'auto', rano: 'slnko', vecer: 'mesiac', vikend: 'darcek',
+  hra1: 'hry', hry10: 'kocka', hry50: 'hry', hryvsetky: 'pohar', pexeso: 'karty', 'pexeso-genius': 'ciapka', hadaj6: 'oko', hadaj8: 'lupa', skladacka: 'karty', 'skladacka-rychlo': 'blesk',
+  opakuj5: 'zvuk', opakuj10: 'zvuk', sova10: 'raketa', sova30: 'raketa', fav1: 'obalka', zberatel: 'srdce', fav10: 'srdce', stylista: 'ceruzka', zvieratko: 'srdce', myticke: 'koruna',
+  misia1: 'lupa', misia5: 'oko', misia15: 'terc', misia30: 'koruna', misiaTypy: 'karty', vyzva1: 'mapa', ang1: 'bublina', ang7: 'bublina', ang20: 'ciapka', ang50: 'koruna', angBezChyby: 'terc' };
+const pecHash = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 997, 7);
+const pecVelke = s => s.toLocaleUpperCase('sk');
+// tvar, farba, ikona alebo číslo v strede, texty po obvode
+function pecInfo(o) {
+  const sk = PEC_SKUP[o.g] || PEC_SKUP['Rôzne'], zoz = ODZNAKY.filter(x => x.g === o.g), i = Math.max(0, zoz.indexOf(o));
+  const cislo = (o.p.match(/\d+/) || [])[0], seria = /^seria\d/.test(o.id), spolu = /^dni\d/.test(o.id), body = o.g === 'Body';
+  const dole = seria ? 'SÉRIA' : spolu ? 'SPOLU' : cislo ? pecVelke(o.p.slice(o.p.indexOf(cislo)).split(' ').slice(0, 2).join(' ')) : pecVelke(o.g === 'Majster kategórie' ? 'majster' : o.g);
+  return { tv: sk.tv[i % sk.tv.length], f: sk.f[i % sk.f.length], ik: o.id.startsWith('kat-') ? 'koruna' : PEC_IK[o.id] || sk.ik,
+    cislo: seria || spolu || body ? cislo : '', hore: pecVelke(seria ? 'dni po sebe' : spolu ? 'dni učenia' : o.n.replace(/^Majster: /, '')), dole, rot: pecHash(o.id) % 13 - 6 };
 }
+// jednofarebná ikona: plochy dostanú len jemný nádych atramentu
+const ikPec = n => (IKN[n] || IKN.hviezda).replace(/fill="([^"]*)"/g, (m, v) => v === 'none' ? m : 'fill="currentColor" fill-opacity=".2"').replace(/stroke="#fff"/g, 'stroke="currentColor"');
+let pecUid = 0;
+// stav: 'nie' (nezískaná), 'ma' (získaná), 'cerstva' (získaná, 2 hviezdičky čakajú na vyzdvihnutie)
+function peciatka(o, stav = 'ma') {
+  const x = pecInfo(o), nie = stav === 'nie', id = 'pc' + (++pecUid), tv = x.tv;
+  const zub = n => { let p = ''; for (let i = 0; i < n * 2; i++) { const r = i % 2 ? 49 : 54, a = i * Math.PI / n; p += (i ? 'L' : 'M') + (60 + r * Math.cos(a)).toFixed(1) + ' ' + (60 + r * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  const roh = (n, r = 54) => { let p = ''; for (let i = 0; i < n; i++) { const a = i * 2 * Math.PI / n - Math.PI / 2 + Math.PI / n; p += (i ? 'L' : 'M') + (60 + r * Math.cos(a)).toFixed(1) + ' ' + (60 + r * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  const cr = nie ? 'stroke-dasharray="5 7"' : '';
+  const OBR = {
+    kruh: `<circle cx="60" cy="60" r="52" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '96 3 60 2 120 4'}"/><circle cx="60" cy="60" r="43.5" stroke-width="2" stroke-dasharray=".1 5.5"/>`,
+    zubky: `<path d="${zub(18)}" stroke-width="4" ${cr}/><circle cx="60" cy="60" r="43" stroke-width="2"/>`,
+    osem: `<path d="${roh(8)}" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '110 3 70 2'}"/><circle cx="60" cy="60" r="43" stroke-width="2" stroke-dasharray=".1 5.5"/>`,
+    sest: `<path d="${roh(6)}" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '130 3 90 2'}"/><path d="${roh(6, 43)}" stroke-width="2"/>`,
+    stit: `<path d="M60 6L106 20V60C106 88 86 106 60 115C34 106 14 88 14 60V20Z" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '140 3 80 2'}"/><path d="M60 16L97 27V60C97 82 81 97 60 105C39 97 23 82 23 60V27Z" stroke-width="2" stroke-dasharray=".1 5.5"/>`,
+  };
+  const oblu = tv !== 'stit' && tv !== 'sest', T = 'font-family="Grandstander, sans-serif" font-weight="800" fill="currentColor" stroke="none"';
+  const fs = (s, max, dl) => Math.min(max, +(dl / (s.length * .72 + .5)).toFixed(1));
+  let txt = '';
+  if (!nie) {
+    txt = oblu ? `<path id="${id}a" d="M27 60a33 33 0 0 1 66 0" fill="none" stroke="none"/><text ${T} font-size="${fs(x.hore, 10.5, 98)}" letter-spacing="1.2"><textPath href="#${id}a" startOffset="50%" text-anchor="middle">${esc(x.hore)}</textPath></text>
+        <path id="${id}b" d="M20 60a40 40 0 0 0 80 0" fill="none" stroke="none"/><text ${T} font-size="${fs(x.dole, 9.5, 110)}" letter-spacing="1.4"><textPath href="#${id}b" startOffset="50%" text-anchor="middle">${esc(x.dole)}</textPath></text>`
+      : `<text x="60" y="${tv === 'stit' ? 38 : 36}" text-anchor="middle" ${T} font-size="${fs(x.hore, 9.5, 66)}" letter-spacing=".8">${esc(x.hore)}</text><text x="60" y="${tv === 'stit' ? 93 : 94}" text-anchor="middle" ${T} font-size="${fs(x.dole, 9, 60)}" letter-spacing=".8">${esc(x.dole)}</text>`;
+  }
+  const stred = !nie && x.cislo ? `<text x="60" y="${oblu ? 72 : 73}" text-anchor="middle" ${T} font-weight="900" font-size="${x.cislo.length > 3 ? 21 : x.cislo.length > 2 ? 26 : 32}">${x.cislo}</text>`
+    : `<g transform="translate(39 ${oblu ? 39 : 40}) scale(1.75)" stroke-width="2.1">${nie ? IKN.zamok.replace(/fill="[^"]*"/g, 'fill="none"') : ikPec(x.ik)}</g>`;
+  return `<svg class="pec-svg pi-${nie ? 'nie' : x.f}" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" transform="rotate(${nie ? 0 : x.rot} 60 60)">${OBR[tv]}${txt}${stred}</g></svg>`;
+}
+const pasStav = o => !st.odznaky.includes(o.id) ? 'nie' : st.vybrate.includes(o.id) ? 'ma' : 'cerstva';
+// jedna pečiatka v pase (čerstvá je tlačidlo: ťuknutím sa vyzdvihnú 2 hviezdičky)
+function pasPolozka(o) {
+  const s = pasStav(o), v = s === 'cerstva', tag = v ? 'button' : 'div';
+  return `<${tag} class="odznak pas-pol ${s}${v ? ' na-vyber' : ''}"${v ? ` data-vyber="${o.id}" aria-label="Vyzdvihnúť 2 hviezdičky za pečiatku ${esc(o.n)}"` : ''}>
+    <span class="pas-pec">${peciatka(o, s)}${v ? `<span class="cena plus2">${ikn('hviezda')}+2</span>` : ''}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small></${tag}>`;
+}
+// stránka Pas objaviteľa (pohľad 'odznaky'): každá skupina je jedna strana pasu, najprv získané, ostatné sa rozbalia
 function zbierkaOdznakov() {
-  const ma = id => st.odznaky.includes(id);
-  return `<div class="hra-top"><button class="ib" data-go="ja" aria-label="Späť">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Odznaky</h1><span class="chip" style="--c:#FFC233">${odznakyVek().filter(o => ma(o.id)).length} z ${odznakyVek().length}</span></div>
-    ${(k => k ? `<p class="vyber-tip">${ii(IK.iskra)} Ťukni na žiariace odznaky a vyzdvihni si ${k * 2} ${ii(STAR())}</p>` : '')(odznakyVek().filter(o => ma(o.id) && !st.vybrate.includes(o.id)).length)}
-    ${[...new Set(odznakyVek().map(o => o.g))].map(g => { const zoz = odznakyVek().filter(o => o.g === g); return `<section class="sec"><h2 class="h2" style="--hc:#FFC233">${g} <span class="pocet">${zoz.filter(o => ma(o.id)).length} z ${zoz.length}</span></h2>
-      <div class="odznaky">${zoz.map(o => { const m = ma(o.id), v = m && !st.vybrate.includes(o.id), tag = v ? 'button' : 'div';
-        return `<${tag} class="odznak${m ? ' ma' : ''}${v ? ' na-vyber' : ''}"${v ? ` data-vyber="${o.id}" aria-label="Vyzdvihnúť 2 hviezdičky za odznak ${esc(o.n)}"` : ''}><span class="medaila">${m ? ikOdznaku(o) : IK.zamok}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small>${v ? `<span class="plus2">+2 ${STAR()}</span>` : ''}</${tag}>`; }).join('')}</div></section>`; }).join('')}`;
+  const vsetky = odznakyVek(), ma = vsetky.filter(o => st.odznaky.includes(o.id)).length, k = nevybrate();
+  const poradie = { cerstva: 0, ma: 1, nie: 2 };
+  return `<div class="hra-top pas-top"><button class="btn kruh dve" data-go="ja" aria-label="Späť">${ikn('spat')}</button><h1 class="n0 hra-nazov">Pas objaviteľa</h1><span class="st cis">${ikn('odznak')}${ma} z ${vsetky.length}</span></div>
+    ${k ? `<p class="vyber-tip pas-tip">${ikn('hviezda')}<span>Ťukni na čerstvú pečiatku a vyzdvihni si ${k * 2} ${k * 2 < 5 ? 'hviezdičky' : 'hviezdičiek'}.</span></p>` : ''}
+    ${[...new Set(vsetky.map(o => o.g))].map(g => {
+      const zoz = vsetky.filter(o => o.g === g).map((o, i) => [o, i]).sort((a, b) => poradie[pasStav(a[0])] - poradie[pasStav(b[0])] || a[1] - b[1]).map(x => x[0]);
+      const n = Math.max(6, Math.ceil(zoz.filter(o => pasStav(o) !== 'nie').length / 3) * 3 + 3), hore = zoz.slice(0, n), viac = zoz.slice(n);
+      return `<section class="pas-str"><div class="pas-nh"><h2 class="n1">${esc(g)}</h2><span class="dop cis">${zoz.filter(o => st.odznaky.includes(o.id)).length} z ${zoz.length}</span></div>
+        <div class="odznaky pas-grid">${hore.map(pasPolozka).join('')}</div>
+        ${viac.length ? `<details class="pas-viac"><summary>Ďalších ${viac.length}${ikn('dole')}</summary><div class="odznaky pas-grid">${viac.map(pasPolozka).join('')}</div></details>` : ''}</section>`;
+    }).join('')}`;
 }
-
+// blok Pasu pre kartu Ja: obal pasu, počet a posledné pečiatky; otvorí celý Pas
+function pasKarta() {
+  const k = nevybrate(), vsetky = odznakyVek(), ma = vsetky.filter(o => st.odznaky.includes(o.id)).length;
+  const posledne = st.odznaky.map(id => vsetky.find(o => o.id === id)).filter(Boolean).slice(-4).reverse();
+  return `<button class="karta odznaky-karta pas-karta${k ? ' novinka' : ''}" data-go="odznaky"><span class="zal">Pas objaviteľa</span>
+    <span class="pas-obal" aria-hidden="true"><svg viewBox="0 0 64 80"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="4" width="52" height="72" rx="7" fill="var(--violet)"/><path d="M14 4v72" stroke="var(--violet-d)" stroke-width="2"/><circle cx="34" cy="34" r="13" fill="none" stroke="var(--sun)" stroke-width="2.6"/><path d="M21 34h26M34 21c-6 8-6 18 0 26M34 21c6 8 6 18 0 26" fill="none" stroke="var(--sun)" stroke-width="2"/><path d="M24 58h20" stroke="var(--sun)" stroke-width="2.6"/></g></svg></span>
+    <span class="ok-info"><b class="n1">${ma} z ${vsetky.length} pečiatok</b>
+      <span class="posledne pas-posl">${posledne.map(o => peciatka(o, 'ma')).join('') || '<small>Prvú pečiatku dostaneš za prvú tému.</small>'}</span>
+      ${k ? `<span class="cena">${ikn('hviezda')}+${k * 2} na vyzdvihnutie</span>` : ''}</span>${ikn('sipka', 'pas-sip')}</button>`;
+}
+// v profile: Pas objaviteľa a odmeny pre postavičku (Ja môže volať aj samotné pasKarta())
+function kartaOdznakov() {
+  return `${pasKarta()}<section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
+}
+/* Stredná oslava: nová pečiatka dopadne na list pasu, žlté lúče, jedno tlačidlo. Ak príde naraz viac odznakov, ukáže sa prvý a ostatné jedným riadkom. */
+function oslavaOdznaku(nove) {
+  if (!nove.length) return;
+  Oslavy.pridaj(() => {
+    const o = nove[0], ini = nove.slice(1), mozno = !st.flow && !st.hra && !st.auto, el = document.createElement('div');
+    el.className = 'os-stredna'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Nový odznak: ' + o.n);
+    el.innerHTML = `<svg class="osr-luce" viewBox="0 0 360 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${Array.from({ length: 14 }, (_, i) => { const a = i * 360 / 14 * Math.PI / 180, b = (i * 360 / 14 + 12) * Math.PI / 180; return `<path d="M180 190L${(180 + 600 * Math.cos(a)).toFixed(0)} ${(190 + 600 * Math.sin(a)).toFixed(0)}L${(180 + 600 * Math.cos(b)).toFixed(0)} ${(190 + 600 * Math.sin(b)).toFixed(0)}Z"/>`; }).join('')}</g></svg>
+      <div class="osr-obsah">
+        <div class="osr-list"><span class="pec osr-stitok">Nový odznak</span><span class="osr-pec">${peciatka(o, 'ma')}</span></div>
+        <span class="osr-mud">${mudra('oslava')}</span>
+        <section class="karta osr-karta"><h2 class="n0">${esc(o.n)}!</h2><p class="tx">${esc(o.p)}: hotovo. Pečiatka je v tvojom pase.</p>
+          ${ini.length ? `<p class="osr-ini">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
+          <span class="cena osr-cena">${ikn('hviezda')}+${nove.length * 2} čaká v pase</span>
+          ${mozno ? `<button class="btn wide" data-osr="pas">Do pasu${ikn('sipka', 'za')}</button><button class="btn wide dve" data-osr="zavri">Neskôr</button>` : '<button class="btn wide" data-osr="zavri">Super!</button>'}</section></div>`;
+    document.body.appendChild(el);
+    Zvuk.play('whoosh'); setTimeout(() => { Zvuk.play('dopad1'); vibruj(30); el.classList.add('dopadla'); }, 520); setTimeout(() => Zvuk.play('star'), 760);
+    const kl = e => { if (e.key === 'Escape') zavri(); };
+    const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => { el.remove(); Oslavy.dalsia(); }, 300); };
+    document.addEventListener('keydown', kl);
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const b = e.target.closest('[data-osr]'); if (!b) return;
+      Zvuk.play('tap'); zavri();
+      if (b.dataset.osr === 'pas') go('odznaky');
+    });
+    const b = el.querySelector('[data-osr]'); if (b && b.focus) b.focus({ preventScroll: true });
+  });
+}

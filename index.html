@@ -802,16 +802,8 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .plus2 { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border: 2px solid var(--line); border-radius: 999px; background: var(--sun); color: var(--dk); font: 800 .85rem/1.2 var(--f-display); }
 .plus2 svg { width: 16px; height: 16px; }
 .vyber-tip { margin: 8px 0 0; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 14px; background: var(--t-yel); font-weight: 800; text-align: center; }
-.leti { position: fixed; z-index: 60; width: 36px; height: 36px; margin: -18px 0 0 -18px; pointer-events: none; filter: drop-shadow(0 0 8px rgb(255 210 63 / .9)); }
 .odznak.prevzaty { animation: prevzaty .6s var(--spring); }
-.odznak.prevzaty .medaila { animation: medaila-otoc .9s ease-out; }
 @keyframes prevzaty { 30% { scale: 1.15; } }
-@keyframes medaila-otoc { to { transform: rotateY(720deg); } }
-.vlna { position: fixed; z-index: 59; width: 24px; height: 24px; margin: -12px 0 0 -12px; border: 5px solid var(--sun); border-radius: 50%; box-shadow: 0 0 12px var(--sun); pointer-events: none; animation: vlna .75s ease-out forwards; }
-@keyframes vlna { to { transform: scale(7); opacity: 0; } }
-.plus-velke { position: fixed; z-index: 61; translate: -50% -50%; font: 800 2.4rem/1 var(--f-display); color: var(--sun); -webkit-text-stroke: 2px var(--dk); text-shadow: 0 3px 0 var(--dk), 0 0 14px rgb(255 210 63 / .8); pointer-events: none; animation: plus-velke 1.15s ease-out forwards; }
-@keyframes plus-velke { 0% { transform: scale(.3); opacity: 0; } 25% { transform: scale(1.35) translateY(-12px); opacity: 1; } 100% { transform: scale(1) translateY(-80px); opacity: 0; } }
-.leti svg { display: block; width: 100%; height: 100%; }
 .chip.tmavy { color: var(--dk); text-shadow: none; }
 .chips .chip[aria-pressed="true"].tmavy { color: var(--dk); text-shadow: none; }
 .ok-info .chip { justify-self: start; }
@@ -848,72 +840,102 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .av-opt.zamknute::after { left: 50%; right: auto; translate: -50% 0; padding-left: 19px; background: var(--ik-zamok) no-repeat left center / 16px 16px; }
 .search { padding-left: 46px; background: var(--paper) var(--ik-lupa) no-repeat 14px center / 24px 24px; }
 .search.bez-lupy { padding-left: 16px; background-image: none; }
-/* veľká oslava po téme dňa */
-.oslava { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; overflow: hidden; padding: 16px; background: radial-gradient(circle at 50% 38%, var(--p-FFF7D1,#FFF7D1), var(--p-BFE7FF,#BFE7FF) 70%); animation: osIn .35s ease-out both; }
+/* Veľká oslava 5.0 (téma dňa, séria, rast stromu, ožitie): celá obrazovka v krajine stromu, pod ňou karta. Kresba stromu je v 24-domov-strom.css. */
+.oslava { position: fixed; inset: 0; z-index: 55; display: grid; place-items: start center; overflow: hidden auto; padding: 0; background: var(--bg); animation: osIn .35s ease-out both; overscroll-behavior: contain; }
 .oslava.pryc { animation: osOut .3s ease-in both; }
-.os-lucy { position: absolute; left: 50%; top: 34%; width: 170vmax; height: 170vmax; margin: -85vmax 0 0 -85vmax; background: repeating-conic-gradient(rgb(255 255 255 / .45) 0 9deg, transparent 9deg 22deg); animation: spin 26s linear infinite; pointer-events: none; }
-.os-obsah { position: relative; display: grid; justify-items: center; gap: 8px; width: min(100%, 420px); text-align: center; }
-.os-strom { width: min(100%, 340px); height: auto; overflow: visible; }
-.os-kmen { transform-box: fill-box; transform-origin: 50% 100%; animation: osRast .6s cubic-bezier(.3, 1.4, .5, 1) .15s both; }
-.os-k { transform-box: fill-box; transform-origin: center; animation: osPop .55s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
-.os-plod { transform-box: fill-box; transform-origin: center; animation: osPlod .5s cubic-bezier(.3, 1.8, .5, 1) var(--d) both; }
-.os-sova { transform-box: fill-box; transform-origin: center; animation: osPrilet 1s cubic-bezier(.25, 1.2, .5, 1) var(--d) both; }
-.os-sova .owl { overflow: visible; }
-.os-nadpis { margin: 0; font: 700 clamp(1.7rem, 7vw, 2.3rem)/1.1 var(--f-display); color: var(--text); }
+.os-obsah { position: relative; display: grid; justify-items: center; gap: 10px; width: min(100%, 460px); padding: 0 16px 20px; text-align: center; }
+.os-velka .os-obsah { gap: 12px; }
+/* scéna: obloha, kopce a cestička (zdieľa farby krajiny Domova --sc-*), strom stojí na prednom kopci */
+.so-scena { --so-sky: var(--sc-sky); --so-far: var(--sc-far); --so-mid: var(--sc-mid); --so-front: var(--sc-front);
+  position: relative; width: calc(100% + 32px); height: min(48vh, 360px); margin: 0 -16px; overflow: hidden; background: var(--so-sky); }
+:root:not([data-rezim="mesacny"]) .so-scena.hn { --so-sky: #DDEAEF; --so-far: #BCD6CF; --so-mid: #D2E3AE; --so-front: #B7CC7C; }
+.so-pozadie { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.so-luce { fill: #fff; opacity: .4; transform-origin: 180px 190px; animation: spin 40s linear infinite; }
+:root[data-rezim="mesacny"] .so-luce { fill: var(--sun); opacity: .1; }
+.so-strom { position: absolute; left: 50%; bottom: 4px; width: min(86%, 340px, 40vh); translate: -44% 0; }
+.so-strom .os-strom { width: 100%; }
+.os-velka .so-scena { height: min(40vh, 330px); }
+.os-velka .so-strom { width: min(84%, 330px, 37vh); }
+/* karta pod scénou */
+.os-velka .so-karta { justify-items: center; text-align: center; }
+.os-nadpis { margin: 0; font: 800 clamp(1.7rem, 7.5vw, 2.2rem)/1.1 var(--fd); color: var(--text); }
 .os-nadpis span { display: inline-block; animation: osPismeno .5s cubic-bezier(.3, 1.8, .5, 1) calc(.9s + var(--k) * .04s) both; }
-.os-seria { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px 6px 8px; border: 3px solid var(--line); border-radius: 999px; background: var(--p-FFE7C2,#FFE7C2); box-shadow: 0 4px 0 var(--shc); font: 700 1.1rem/1 var(--f-display); animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) 1.2s both; }
-.os-ohen { width: 46px; height: 46px; margin: -10px 0; }
-.os-seria b { font-size: 1.9rem; }
-.os-seria b { display: inline-block; }
-.os-seria b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
-.os-seria b.os-roll.bump { animation: none; }
-.os-seria.hrdina { flex-direction: column; gap: 0; padding: 4px 34px 12px; border-radius: 38px; }
-.os-seria.hrdina .os-ohen { width: 112px; height: 112px; margin: 0 0 -8px; }
-.os-seria.hrdina b { font-size: 4.2rem; line-height: 1; }
-@media (max-height: 700px) { .os-seria.hrdina .os-ohen { width: 88px; height: 88px; } .os-seria.hrdina b { font-size: 3.4rem; } }
-.os-seria.zap { margin: 8px 0; animation: osZiara 1s ease-out, osVelka 1.2s cubic-bezier(.3, 1.6, .5, 1); }
-.os-seria.zap .os-ohen { animation: osOhen 1.2s ease-out; }
-.os-roll { position: relative; display: inline-grid !important; overflow: hidden; height: 1.15em; line-height: 1.15; }
+.os-veta { margin: 0; max-width: 34ch; font: 500 1rem/1.4 var(--fb); color: var(--text); animation: osIn .4s ease-out 1.4s both; }
+.os-pred-po { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 8px; border: 2.5px dashed var(--muted); border-radius: 18px; animation: osIn .45s ease-out var(--d) both; }
+.os-pred-po > span { width: 70px; }
+.os-pred-po .ikn { width: 26px; height: 26px; flex: none; }
+.os-pred-po .os-strom *, .os-pred-po .os-strom { animation: none !important; }
+/* séria: plameň a číslo, ktoré sa pretočí */
+.os-seria { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 8px; border: var(--obrys-m); border-radius: 999px; background: var(--coral-l); font: 800 1rem/1 var(--fd); color: var(--text); animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) 1.2s both; }
+.os-ohen { display: grid; width: 30px; height: 30px; }
+.os-ohen .ikn { width: 100%; height: 100%; transform-origin: 50% 90%; animation: plamen 1.4s ease-in-out infinite; }
+.os-seria b { display: inline-block; font-size: 1.5rem; }
+.os-seria.hrdina { height: auto; flex-direction: column; gap: 0; padding: 6px 26px 10px; border-radius: 30px 34px 28px 32px; }
+.os-seria.hrdina .os-ohen { width: 46px; height: 46px; }
+.os-seria.hrdina b { font-size: 2.4rem; line-height: 1; }
+.os-seria.zap { animation: osVelka 1.1s cubic-bezier(.3, 1.6, .5, 1); }
+.os-seria.zap .os-ohen { animation: osOhen 1.1s ease-out; }
+.os-roll { position: relative; display: inline-grid !important; overflow: hidden; height: 1.12em; line-height: 1.12; }
 .os-roll > span { grid-area: 1 / 1; text-align: center; }
 .os-roll .nova { transform: translateY(120%); }
 .os-roll.roll .stara { animation: osStara .45s ease-in forwards; }
 .os-roll.roll .nova { animation: osNova .75s cubic-bezier(.2, 1.9, .4, 1) .2s forwards; }
-.os-blesk { position: fixed; inset: 0; z-index: 3; pointer-events: none; background: radial-gradient(circle at 50% 55%, rgba(255, 226, 122, .85), rgba(255, 179, 71, .35) 40%, transparent 70%); animation: osBlesk .9s ease-out forwards; }
-.os-obsah.tras { animation: osTras .5s ease-out; }
-@keyframes osVelka { 0% { transform: scale(1); } 35% { transform: scale(1.18); } 100% { transform: scale(1); } }
-@keyframes osOhen { 0% { transform: scale(1); filter: none; } 30% { transform: scale(1.5) rotate(-8deg); filter: drop-shadow(0 0 14px var(--sun-d)); } 60% { transform: scale(1.2) rotate(6deg); } 100% { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--sun-d)); } }
+.os-dni { margin: -2px 0 0; font: 600 .9rem/1.2 var(--fb); color: var(--muted); }
+.os-dni b { display: inline-block; color: var(--text); font: 800 1.05rem/1 var(--fd); }
+.os-dni b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1); }
+.os-velka .so-dni { margin-top: 4px; animation: osIn .4s ease-out 1.6s both; }
+.os-padne { display: grid; animation: osPadne .7s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
+.os-padne .ikn { width: 26px; height: 26px; }
+.os-odznak { display: flex; align-items: center; gap: 10px; margin: 2px 0 0; padding: 8px 10px; border: 2px dashed var(--line); border-radius: 14px; text-align: left; font: 500 .9rem/1.3 var(--fb); }
+.os-odznak .pec-svg { flex: none; width: 52px; height: 52px; }
+.oslava .btn.os-dalej { position: sticky; bottom: calc(env(safe-area-inset-bottom) + 12px); z-index: 2; width: 100%; animation: osIn .4s ease-out var(--d) both; }
+.so-karta.tras { animation: osTras .5s ease-out; }
+/* padajúce listy a lupene */
+.os-listy { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+.os-list { position: absolute; top: -24px; left: var(--x); width: 14px; height: 9px; border: 2px solid var(--ink); border-radius: 0 90% 0 90%; background: var(--c); animation: osList var(--t) linear var(--d) infinite both; }
+.os-list.raz { animation-iteration-count: 1; }
+/* 4.6: strom ožije: vyschnutý strom, vietor, špirála listov, strom sa vráti k životu */
+.os-dvojstrom { position: relative; display: grid; }
+.os-dvojstrom > svg { grid-area: 1 / 1; }
+.os-dvojstrom .vyschnuty { transition: opacity .7s ease-out; }
+.os-dvojstrom .vyschnuty.ustup { opacity: 0; }
+.os-strom.fuka { transform-origin: 50% 85%; animation: osFuka 2.2s ease-in-out; }
+.vl { position: absolute; left: 50%; top: 40%; width: 0; height: 0; pointer-events: none; animation: vlKrut 1.9s linear var(--d) both; }
+.vl b { position: absolute; display: block; width: 22px; height: 14px; margin: -7px -11px; border: 2px solid var(--ink); border-radius: 0 90% 0 90%; background: var(--c); animation: vlDnu 1.9s cubic-bezier(.4, 0, .7, 1) var(--d) both; }
+.vs { position: absolute; left: -10%; width: 60%; height: 28px; border-top: 4px solid rgb(255 255 255 / .9); border-radius: 50% 50% 0 0 / 100% 100% 0 0; pointer-events: none; opacity: 0; animation: vsFuk 1.2s ease-in var(--d) both; }
+.oslava.ozil .os-nadpis span { animation-delay: calc(var(--w) + .9s + var(--k) * .04s); }
+.oslava.ozil .os-seria { animation-delay: calc(var(--w) + 1.2s); }
+.oslava.ozil .os-veta { animation-delay: calc(var(--w) + 1.4s); }
+.oslava.ozil .so-dni { animation-delay: calc(var(--w) + 1.6s); }
+/* stará karta Tento týždeň (okno týždňa) otvára strom */
+.tyzden[data-strom] { cursor: pointer; }
+.tyzden-strom { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 10px; border: 2.5px dashed var(--line); border-radius: 16px; background: var(--leaf-l); font: 700 .95rem/1.25 var(--fd); }
+.tyzden-strom svg { flex: none; width: 34px; height: 34px; }
+.tyzden-strom span { flex: 1; }
+.tyzden-strom i { font-style: normal; font-size: 1.5rem; line-height: 1; }
+.prehlad .pr-ik { flex: none; width: 30px; height: 30px; }
+@keyframes osFuka { 0%, 100% { transform: none; } 20% { transform: rotate(-3deg) skewX(-3deg); } 40% { transform: rotate(4deg) skewX(4deg); } 60% { transform: rotate(-5deg) skewX(-4deg); } 80% { transform: rotate(3deg) skewX(2deg); } }
+@keyframes vlKrut { from { transform: rotate(var(--a)); } to { transform: rotate(calc(var(--a) + 620deg)); } }
+@keyframes vlDnu { 0% { transform: translateX(var(--r)) scale(.5); opacity: 0; } 18% { opacity: 1; transform: translateX(calc(var(--r) * .85)) scale(1); } 100% { transform: translateX(0) scale(.5); opacity: 0; } }
+@keyframes vsFuk { 0% { transform: translateX(-20%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(190%); opacity: 0; } }
+@keyframes osList { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 6% { opacity: 1; } 35% { transform: translate(34px, 38vh) rotate(160deg); } 70% { transform: translate(-22px, 78vh) rotate(320deg); } 100% { transform: translate(18px, 115vh) rotate(480deg); opacity: 1; } }
+@keyframes osVelka { 35% { transform: scale(1.14); } }
+@keyframes osOhen { 30% { transform: scale(1.4) rotate(-8deg); } 60% { transform: scale(1.15) rotate(6deg); } }
 @keyframes osStara { to { transform: translateY(-120%); opacity: 0; } }
 @keyframes osNova { to { transform: none; } }
-@keyframes osBlesk { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes osTras { 0%, 100% { transform: none; } 20% { transform: translate(-5px, 3px); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-3px, 2px); } 80% { transform: translate(2px, -1px); } }
-.os-dni { margin: -4px 0 0; font: 600 .9rem/1.2 var(--f-display); color: var(--muted); }
-.os-dni b { display: inline-block; color: var(--text); font-size: 1.05rem; }
-.os-dni b.bump { animation: osCislo .55s cubic-bezier(.3, 1.8, .5, 1), jelly .7s; }
-.os-strom.zari { animation: osZari 1.5s ease-out; }
-.os-sova.skace .owl { animation: osSkok .6s ease-out 2; }
 @keyframes osCislo { 0% { transform: translateY(-.7em); opacity: 0; } 100% { transform: none; opacity: 1; } }
-@keyframes osZiara { 0% { box-shadow: 0 4px 0 var(--shc), 0 0 0 0 rgba(255, 210, 63, .9); } 100% { box-shadow: 0 4px 0 var(--shc), 0 0 0 24px rgba(255, 210, 63, 0); } }
-@keyframes osZari { 40% { filter: drop-shadow(0 0 16px var(--sun)) drop-shadow(0 0 30px #FFE27A); } }
-@keyframes osSkok { 40% { transform: translateY(-14px) rotate(-6deg); } }
-.prehlad .pr-ik { flex: none; width: 30px; height: 30px; }
-.os-veta { margin: 0; max-width: 32ch; font-weight: 800; color: var(--text); animation: osIn .4s ease-out 1.5s both; }
-.os-tyzden { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; width: 100%; font: 600 .85rem/1 var(--f-display); color: var(--muted); animation: osIn .4s ease-out 1.6s both; }
-.os-den { display: grid; justify-items: center; gap: 4px; }
-.os-den i { position: relative; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--c); border: 2.5px solid var(--line); }
-.os-den.h i { background: var(--sun); }
-.os-den.dnes { color: var(--link); }
-.os-den.dnes i { outline: 3px solid var(--blue); outline-offset: 2px; }
-.os-den i svg { width: 24px; height: 24px; }
-.os-padne { display: grid; animation: osPadne .7s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
-.oslava .btn.os-dalej { animation: osIn .4s ease-out var(--d) both; }
 @keyframes osIn { from { opacity: 0; transform: translateY(14px); } }
 @keyframes osOut { to { opacity: 0; transform: scale(1.04); } }
-@keyframes osRast { from { transform: scaleY(0); } }
 @keyframes osPop { from { transform: scale(0); } }
-@keyframes osPlod { from { transform: scale(0); } 70% { transform: scale(1.25); } }
-@keyframes osPrilet { from { transform: translate(190px, -150px) rotate(25deg) scale(.6); } 60% { transform: translate(-6px, 6px) rotate(-6deg); } }
 @keyframes osPismeno { from { opacity: 0; transform: translateY(26px) scale(.4); } }
 @keyframes osPadne { from { opacity: 0; transform: translateY(-120px) scale(1.6); } 70% { opacity: 1; transform: translateY(0) scale(.85); } }
+@media (prefers-reduced-motion: reduce) {
+  .so-luce, .os-listy, .os-nadpis span, .os-veta, .os-seria, .os-ohen .ikn, .os-pred-po, .so-dni, .os-padne, .oslava .btn.os-dalej { animation: none !important; }
+  .os-listy { display: none; }
+}
+.so-scena .len-noc { display: none; }
+:root[data-rezim="mesacny"] .so-scena .len-noc { display: inline; }
+:root[data-rezim="mesacny"] .so-scena .len-den { display: none; }
 /* priatelia: zo 4.9 tu ostali len pravidlá, ktoré používajú iné časti appky. Vzhľad Priateľov 5.0 je v 54-priatelia.css. */
 .nav button { font-size: .8rem; }
 .hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 16px; background: var(--t-yel); font-weight: 700; line-height: 1.35; }
@@ -1074,67 +1096,82 @@ html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 .uvod-bodky i:nth-child(2) { background: var(--coral); animation-delay: .15s; }
 .uvod-bodky i:nth-child(3) { background: var(--violet); animation-delay: .3s; }
 @keyframes uvodBodka { 40% { transform: translateY(-9px); } }
-/* Strom múdrosti (verzia 2.8): stupne, kývanie, nový plod z oblohy, vyrastenie, padajúce listy, okno stromu */
-.oslava { overflow-y: auto; }
-.os-strom { width: min(100%, 340px, 46vh); }
-.os-kmen { animation-delay: var(--d, .15s); }
-.os-zem { transform-box: fill-box; animation: osZem .5s cubic-bezier(.3, 1.4, .5, 1) both; }
-@keyframes osZem { from { transform: translateY(60px); } }
-.os-koruna, .os-klicok { transform-box: fill-box; transform-origin: 50% 100%; animation: osKyv 4.5s ease-in-out 2.5s infinite; }
-@keyframes osKyv { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.5deg); } 70% { transform: rotate(-1.2deg); } }
+/* Strom múdrosti 5.0: kresba (stromSvg), pohyb, strom v krajine Domova, okno stromu. Veľká oslava je v 16-oslavy-tema-dna.css. */
+.os-strom { display: block; width: 100%; height: auto; overflow: visible; }
+.os-zem { transform-box: fill-box; transform-origin: 50% 100%; animation: osZem .5s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes osZem { from { transform: scaleY(0); } }
+.os-kmen { transform-box: fill-box; transform-origin: 50% 100%; animation: osRast .6s cubic-bezier(.3, 1.4, .5, 1) var(--d, .15s) both; }
+.os-k { transform-box: fill-box; transform-origin: 50% 80%; animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
+.os-koruna, .os-klicok { transform-box: fill-box; transform-origin: 50% 100%; animation: osKyv 5s ease-in-out 2.5s infinite; }
+@keyframes osKyv { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.2deg); } 70% { transform: rotate(-1deg); } }
 .os-koruna.tras, .os-klicok.tras { animation: osTras .7s ease-out; }
 @keyframes osTras { 15% { transform: rotate(-4.5deg); } 40% { transform: rotate(4deg); } 65% { transform: rotate(-2.5deg); } 85% { transform: rotate(1deg); } }
-.os-hoj { transform-box: fill-box; transform-origin: 50% 0; animation: osHoj 2.6s ease-in-out var(--d) infinite; }
+.os-plod { transform-box: fill-box; transform-origin: center; animation: osPlod .5s cubic-bezier(.3, 1.8, .5, 1) var(--d) both; }
+.os-hoj { transform-box: fill-box; transform-origin: 50% 0; animation: osHoj 2.8s ease-in-out var(--d) infinite; }
 @keyframes osHoj { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-.os-kvet, .os-iskra { transform-box: fill-box; transform-origin: center; animation: osPop .45s cubic-bezier(.3, 1.6, .5, 1) var(--d) both, osTrblie 2.4s ease-in-out calc(var(--d) + .5s) infinite; }
-@keyframes osTrblie { 50% { transform: scale(1.18) rotate(12deg); } }
+.os-kvet, .os-iskra { transform-box: fill-box; transform-origin: center; animation: osPop .45s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
+.os-iskra { animation: osPop .45s cubic-bezier(.3, 1.6, .5, 1) var(--d) both, osTrblie 2.4s ease-in-out calc(var(--d) + .5s) infinite; }
+@keyframes osTrblie { 50% { transform: scale(1.25) rotate(12deg); } }
 .os-novy { transform-box: fill-box; transform-origin: center; animation: osNovy .85s cubic-bezier(.3, 1.3, .5, 1) var(--d) both; }
-@keyframes osNovy { 0% { transform: translateY(-300px) scale(.5) rotate(-60deg); opacity: 0; } 15% { opacity: 1; } 75% { transform: translateY(8px) scale(1.25, .85); } 100% { transform: none; } }
+@keyframes osNovy { 0% { transform: translateY(-260px) scale(.5) rotate(-60deg); opacity: 0; } 15% { opacity: 1; } 75% { transform: translateY(6px) scale(1.2, .85); } 100% { transform: none; } }
 .os-kruh { transform-box: fill-box; transform-origin: center; animation: osKruh .9s ease-out calc(var(--d) + .7s) both; }
-@keyframes osKruh { 0% { transform: scale(.4); opacity: 0; } 5% { opacity: 1; } 100% { transform: scale(3.4); opacity: 0; } }
-.os-rast.vyrast { transform-box: fill-box; transform-origin: 50% 100%; animation: osVyrast 1.2s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
+@keyframes osKruh { 0% { transform: scale(.4); opacity: 0; } 5% { opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+.os-rast.vyrast { transform-box: fill-box; transform-origin: 50% 100%; animation: osVyrast 1.1s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
 @keyframes osVyrast { from { transform: scale(var(--z)); } }
-.os-ziara { transform-box: fill-box; transform-origin: center; opacity: .45; animation: osZiara 3s ease-in-out infinite; }
-@keyframes osZiara { 50% { transform: scale(1.06); opacity: .65; } }
 .os-kos { transform-box: fill-box; transform-origin: 50% 100%; animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
 .os-kos.novy { animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) var(--d) both, jelly .7s calc(var(--d) + .75s); }
-.os-novy-stupen { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 3px solid var(--line); border-radius: 999px; background: var(--p-D9F8E6,#D9F8E6); box-shadow: 0 4px 0 var(--shc); font: 700 1.05rem/1.2 var(--f-display); animation: osPop .6s cubic-bezier(.3, 1.8, .5, 1) var(--d) both; }
-.os-novy-stupen .ii svg { width: 22px; height: 22px; }
-.os-stupen { display: grid; gap: 4px; width: min(100%, 320px); padding: 8px 12px; border: 3px solid var(--line); border-radius: 18px; background: var(--t-grn); box-shadow: 0 4px 0 var(--shc); text-align: left; animation: osIn .4s ease-out .9s both; }
-.os-stupen b { font: 700 1.15rem/1.2 var(--f-display); }
-.os-stupen small { color: var(--muted); font-weight: 800; line-height: 1.3; }
-.os-stupen .bar { grid-column: auto; }
-.os-listy { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.os-list { position: absolute; top: -24px; left: var(--x); width: 15px; height: 10px; border: 2px solid var(--line); border-radius: 0 90% 0 90%; background: var(--c); animation: osList var(--t) linear var(--d) infinite both; }
-.os-list.raz { animation-iteration-count: 1; }
-/* 4.6: strom ožije: vyschnutý strom, vietor, špirála listov, strom sa vráti k životu */
-.os-dvojstrom { position: relative; display: grid; justify-items: center; }
-.os-dvojstrom > svg { grid-area: 1 / 1; }
-.os-dvojstrom .vyschnuty { transition: opacity .7s ease-out; }
-.os-dvojstrom .vyschnuty.ustup { opacity: 0; }
-.os-strom.fuka { transform-origin: 50% 85%; animation: osFuka 2.2s ease-in-out; }
-.vl { position: absolute; left: 50%; top: 40%; width: 0; height: 0; pointer-events: none; animation: vlKrut 1.9s linear var(--d) both; }
-.vl b { position: absolute; display: block; width: 24px; height: 15px; margin: -8px -12px; border: 2px solid var(--text); border-radius: 0 90% 0 90%; background: var(--c); animation: vlDnu 1.9s cubic-bezier(.4, 0, .7, 1) var(--d) both; }
-.vs { position: absolute; left: -10%; width: 60%; height: 28px; border-top: 4px solid rgba(255, 255, 255, .9); border-radius: 50% 50% 0 0 / 100% 100% 0 0; pointer-events: none; opacity: 0; animation: vsFuk 1.2s ease-in var(--d) both; }
-.oslava.ozil .os-nadpis span { animation-delay: calc(var(--w) + .9s + var(--k) * .04s); }
-.oslava.ozil .os-seria { animation-delay: calc(var(--w) + 1.2s); }
-.oslava.ozil .os-veta { animation-delay: calc(var(--w) + 1.5s); }
-.oslava.ozil .os-tyzden { animation-delay: calc(var(--w) + 1.6s); }
-@keyframes osFuka { 0%, 100% { transform: none; } 20% { transform: rotate(-3deg) skewX(-3deg); } 40% { transform: rotate(4deg) skewX(4deg); } 60% { transform: rotate(-5deg) skewX(-4deg); } 80% { transform: rotate(3deg) skewX(2deg); } }
-@keyframes vlKrut { from { transform: rotate(var(--a)); } to { transform: rotate(calc(var(--a) + 620deg)); } }
-@keyframes vlDnu { 0% { transform: translateX(var(--r)) scale(.5); opacity: 0; } 18% { opacity: 1; transform: translateX(calc(var(--r) * .85)) scale(1); } 100% { transform: translateX(0) scale(.5); opacity: 0; } }
-@keyframes vsFuk { 0% { transform: translateX(-20%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(190%); opacity: 0; } }
-@keyframes osList { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 6% { opacity: 1; } 35% { transform: translate(34px, 38vh) rotate(160deg); } 70% { transform: translate(-22px, 78vh) rotate(320deg); } 100% { transform: translate(18px, 115vh) rotate(480deg); opacity: 1; } }
-.strom-okno .os-x { position: absolute; top: 0; right: 0; z-index: 1; }
-.os-tip { color: var(--muted); font-weight: 800; animation: osIn .4s ease-out 1.4s both; }
-.strom-okno .os-nadpis span { animation-delay: calc(.3s + var(--k) * .04s); }
-.strom-okno .os-veta, .strom-okno .os-tyzden, .strom-okno .os-seria { animation-delay: .8s; }
-/* karta Tento týždeň otvára strom */
-.tyzden[data-strom] { cursor: pointer; }
-.tyzden-strom { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 10px; border: 2.5px dashed var(--line); border-radius: 16px; background: var(--t-grn); font: 700 .95rem/1.25 var(--f-display); }
-.tyzden-strom svg { flex: none; width: 34px; height: 34px; }
-.tyzden-strom span { flex: 1; }
-.tyzden-strom i { font-style: normal; font-size: 1.5rem; line-height: 1; }
+.os-sova { transform-box: fill-box; transform-origin: 50% 100%; animation: osSovaIn .6s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
+@keyframes osSovaIn { from { transform: translateY(40px) scale(.6); opacity: 0; } }
+.os-sova.skace .owl { animation: osSkok .6s ease-out 2; }
+@keyframes osSkok { 40% { transform: translateY(-14px) rotate(-6deg); } }
+.os-strom.zari { animation: osZari 1.5s ease-out; }
+@keyframes osZari { 40% { filter: drop-shadow(0 0 14px var(--sun)); } }
+@keyframes osRast { from { transform: scaleY(0); } }
+@keyframes osPlod { from { transform: scale(0); } 70% { transform: scale(1.25); } }
+
+/* strom v krajine Domova: stojí vpravo na prednom kopci, ťuknutím otvorí okno stromu */
+.kr-strom { position: absolute; right: -4px; bottom: 2px; z-index: 1; width: var(--krs, 128px); padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 30px; }
+.kr-strom.st0 { --krs: 84px; } .kr-strom.st1 { --krs: 100px; } .kr-strom.st2 { --krs: 114px; }
+.kr-strom:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.kr-strom:active .os-koruna { animation: osTras .5s ease-out; }
+.kr-strom .os-zem, .kr-strom .os-kmen, .kr-strom .os-k, .kr-strom .os-plod, .kr-strom .os-kvet, .kr-strom .os-kos { animation: none; }
+.anim .kr-strom { animation: krStromIn .6s var(--spring) .45s both; }
+@keyframes krStromIn { from { transform: translateY(14px) scale(.7); opacity: 0; } }
+@media (min-width: 420px) { .kr-strom { right: 6px; } }
+
+/* okno stromu: krajina hore, karta so stupňom, týždeň s okruhom */
+.strom-okno { place-items: start center; padding: 0; background: var(--bg); }
+.strom-okno .os-obsah { gap: 12px; padding: 0 16px 20px; }
+.so-hlava { position: absolute; z-index: 2; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(env(safe-area-inset-top) + 12px) 16px 0; }
+.so-hlava .n1 { margin: 0; }
+.strom-okno .so-scena { height: min(46vh, 340px); }
+.so-bub { position: absolute; z-index: 2; left: 12px; top: calc(env(safe-area-inset-top) + 64px); max-width: min(190px, 52%); margin: 0; font-size: .92rem; animation: recIn .45s var(--spring) .5s both; transform-origin: 10% 100%; }
+.so-mal { margin: 0; font: 800 .75rem/1.3 var(--fb); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.so-karta { display: grid; justify-items: start; gap: 8px; width: 100%; margin-top: -34px; text-align: left; }
+.so-karta .n0, .so-karta .tx { margin: 0; }
+.so-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.so-cesta { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); width: 100%; margin: 2px 0; padding: 0; list-style: none; }
+.so-cesta::before { content: ""; position: absolute; left: 8%; right: 8%; top: 15px; border-top: 4px dotted var(--sc-pathdot); }
+.so-cesta li { position: relative; display: grid; justify-items: center; gap: 4px; font: 700 .78rem/1 var(--fd); color: var(--muted); }
+.so-cesta i { display: grid; place-items: center; width: 30px; height: 30px; border: 2.5px dashed var(--muted); border-radius: 50%; background: var(--card); color: #fff; }
+.so-cesta .hot i { border: var(--obrys-m); background: var(--teal); box-shadow: inset 0 -3px 0 var(--teal-d); }
+.so-cesta .tu i { width: 36px; height: 36px; margin-top: -3px; border: var(--obrys-m); background: var(--sun); box-shadow: inset 0 -4px 0 var(--sun-d); }
+.so-cesta .tu { color: var(--text); }
+.so-cesta .ikn { width: 18px; height: 18px; }
+.so-cesta .tu .ikn { width: 24px; height: 24px; }
+.so-tyz { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.so-tyz .n2 { margin: 0; }
+.so-tyz .btn { max-width: 62%; overflow: hidden; }
+.so-tyz .okruh-tl-ik { display: inline-grid; flex: none; width: 20px; height: 20px; margin-right: 6px; }
+.so-tyz .okruh-tl-ik svg { width: 100%; height: 100%; }
+.so-dni { width: 100%; }
+.so-dni .dom-den { cursor: default; }
+.so-tip { margin: 0; text-align: center; }
+.strom-okno .btn.wide { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .os-strom *, .kr-strom, .so-bub { animation: none !important; }
+}
 /* Domov 4.0: oddelené časti (Téma dňa, Týždeň, Objavuj, malé odkazy) */
 .tyzden-karta { display: grid; gap: 10px; background: var(--t-blu); }
 .tyzden-karta .streak { justify-self: start; }
@@ -1346,8 +1383,6 @@ html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transitio
 :root[data-rezim="mesacny"] .ang-kv:not(.hotova), :root[data-rezim="mesacny"] .card.mini { background: color-mix(in srgb, var(--c) 17%, var(--paper)); border-color: color-mix(in srgb, var(--c) 80%, var(--paper)); }
 :root[data-rezim="mesacny"] .dm-vety .chip { color: var(--text); }
 :root[data-rezim="mesacny"] .chips .chip:not([aria-pressed="true"]).tmavy { color: var(--text); }
-:root[data-rezim="mesacny"] .oslava { background: radial-gradient(circle at 50% 38%, #4A3A82, #1A1547 72%); }
-:root[data-rezim="mesacny"] .os-lucy { background: repeating-conic-gradient(rgb(255 226 122 / .13) 0 9deg, transparent 9deg 22deg); }
 :root[data-rezim="mesacny"] .burst { opacity: .55; }
 @media (prefers-reduced-motion: reduce) { .hviezdy i, .blobs .luna { animation: none !important; } html[data-rezim] body, html[data-rezim] .top, html[data-rezim] .card { transition: none; } }
 /* ===== Dizajnový systém 5.0: spoločné komponenty =====
@@ -2235,8 +2270,103 @@ body:has(main > .ihrisko) .blobs { display: none; }
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
 /* 5.0: Režim do auta. Sem patria nové štýly tejto sekcie (smer: tmavá plocha (--noc-*), postup ako cesta s autíčkom).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
-/* 5.0: Oslavy, odznaky, odmeny. Sem patria nové štýly tejto sekcie (smer: pečiatky do Pasu objaviteľa, tri veľkosti osláv).
-   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+/* 5.0: Oslavy, odznaky, odmeny. Pečiatky do Pasu objaviteľa, tri veľkosti osláv (malá do počítadla, stredná s pečiatkou, veľká v krajine stromu v 16-).
+   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. */
+
+/* Pečiatka: farba atramentu podľa skupiny (cez color), v noci svetlejší atrament */
+.pec-svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--pi); }
+.pi-leaf { --pi: var(--leaf-d); } .pi-sky { --pi: var(--sky-d); } .pi-coral { --pi: var(--coral-d); } .pi-violet { --pi: var(--violet-d); }
+.pi-teal { --pi: var(--teal-d); } .pi-sun { --pi: var(--sun-d); } .pi-nie { --pi: var(--muted); opacity: .55; }
+:root[data-rezim="mesacny"] .pi-leaf { --pi: var(--leaf); } :root[data-rezim="mesacny"] .pi-sky { --pi: var(--sky); } :root[data-rezim="mesacny"] .pi-coral { --pi: var(--coral); }
+:root[data-rezim="mesacny"] .pi-violet { --pi: var(--violet); } :root[data-rezim="mesacny"] .pi-teal { --pi: var(--teal); } :root[data-rezim="mesacny"] .pi-sun { --pi: var(--sun); }
+
+/* Pas objaviteľa: každá skupina je strana pasu (papier so stehom vľavo) */
+.pas-top { align-items: center; }
+.pas-top .hra-nazov { flex: 1; margin: 0; font-size: clamp(1.45rem, 6.6vw, 1.9rem); }
+.pas-tip { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; padding: 10px 12px; border: var(--obrys-m); border-radius: 14px 16px 12px 15px; background: var(--sun-l); color: var(--text); font: 700 .92rem/1.3 var(--fb); text-align: left; box-shadow: 0 3px 0 var(--shc); }
+.pas-tip .ikn { flex: none; width: 24px; height: 24px; }
+.pas-str { position: relative; margin: 0 0 16px; padding: 14px 12px 14px 22px; border: var(--obrys); border-radius: 10px 22px 20px 10px; background: var(--card); box-shadow: 0 5px 0 var(--shc); }
+.pas-str::before { content: ""; position: absolute; left: 9px; top: 12px; bottom: 12px; border-left: 3px dotted var(--sun-d); }
+.pas-nh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 0 8px; }
+.pas-nh .n1 { margin: 0; }
+.pas-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 6px; }
+.odznak.pas-pol { position: relative; display: grid; justify-items: center; align-content: start; gap: 3px; padding: 4px 2px; border: 0; border-radius: 16px; background: none; box-shadow: none; color: var(--text); text-align: center; animation: none; font: inherit; }
+.pas-pec { position: relative; display: block; width: min(84px, 100%); aspect-ratio: 1; margin-bottom: 2px; }
+.pas-pol b { font: 800 .84rem/1.15 var(--fd); }
+.pas-pol small { font: 500 .72rem/1.25 var(--fb); color: var(--muted); }
+.pas-pol.nie b { color: var(--muted); }
+.pas-pol.cerstva { cursor: pointer; }
+.pas-pol.cerstva .pas-pec::before { content: ""; position: absolute; inset: -5px; border: 4px solid var(--sun); border-radius: 50%; background: var(--sun-l); z-index: -1; animation: pecZiari 1.8s ease-in-out infinite; }
+.pas-pol .plus2 { position: absolute; right: -8px; top: -6px; height: 24px; padding: 0 7px 0 5px; border-radius: 8px 11px 11px 8px; background: var(--sun); color: var(--dk); font-size: .8rem; rotate: 6deg; }
+.pas-pol .plus2 .ikn { width: 14px; height: 14px; }
+.pas-pol:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.pas-pol.prevzaty .pas-pec { animation: pecOdtlac .55s var(--spring); }
+@keyframes pecZiari { 50% { transform: scale(1.06); } }
+@keyframes pecOdtlac { 0% { transform: scale(1); } 35% { transform: scale(.82) rotate(-4deg); } 100% { transform: scale(1); } }
+.pas-viac { margin-top: 10px; }
+.pas-viac > summary { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 6px; list-style: none; cursor: pointer; font: 800 .92rem/1 var(--fd); color: var(--link); }
+.pas-viac > summary::-webkit-details-marker { display: none; }
+.pas-viac > summary .ikn { width: 18px; height: 18px; transition: transform .2s; }
+.pas-viac[open] > summary .ikn { transform: rotate(180deg); }
+.pas-viac[open] > summary { margin-bottom: 8px; }
+
+/* blok Pasu v karte Ja (pasKarta) */
+.pas-karta { display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 16px; padding-top: 22px; color: var(--text); text-align: left; font: inherit; cursor: pointer; }
+.pas-karta:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--shc); }
+.pas-obal { flex: none; width: 58px; rotate: -5deg; }
+.pas-obal svg { display: block; width: 100%; height: auto; }
+.pas-karta .ok-info { display: grid; gap: 6px; flex: 1; min-width: 0; }
+.pas-karta .ok-info .n1 { margin: 0; font-size: 1.15rem; }
+.pas-posl { display: flex; gap: 4px; }
+.pas-posl .pec-svg { width: 40px; flex: none; }
+.pas-karta .cena { justify-self: start; }
+.pas-sip { flex: none; width: 24px; height: 24px; }
+.pas-karta.novinka { animation: none; box-shadow: 0 0 0 4px var(--sun), 0 5px 0 var(--shc); }
+
+/* karty odmien na konci témy, hry a misie: pečiatka dopadne */
+.odm-pec { flex: none; width: 64px; animation: pecDopad .55s cubic-bezier(.3, 1.4, .5, 1) calc(var(--d, 0s) + .15s) both; }
+.odmena-karta { background: var(--card); }
+@keyframes pecDopad { 0% { transform: scale(2.2) rotate(-14deg); opacity: 0; } 60% { transform: scale(.92) rotate(2deg); opacity: 1; } 100% { transform: none; } }
+
+/* Stredná oslava: žlté lúče, list pasu, pečiatka dopadne, papier sa zatrasie */
+.os-stredna { position: fixed; inset: 0; z-index: 56; display: grid; place-items: center; overflow: hidden auto; padding: 16px; background: var(--sun); animation: osIn .3s ease-out both; }
+.os-stredna.pryc { animation: osOut .3s ease-in both; }
+:root[data-rezim="mesacny"] .os-stredna { background: var(--noc-bg); }
+.osr-luce { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.osr-luce g { fill: #FFE48C; transform-origin: 180px 190px; animation: spin 50s linear infinite; }
+:root[data-rezim="mesacny"] .osr-luce g { fill: var(--violet-l); }
+.osr-obsah { position: relative; display: grid; justify-items: center; width: min(100%, 380px); }
+.osr-list { position: relative; display: grid; place-items: center; width: min(240px, 66vw); aspect-ratio: 1; margin-bottom: -10px; border: var(--obrys); border-radius: 10px 18px 16px 10px; background: var(--card); box-shadow: 0 6px 0 var(--shc); rotate: -4deg; animation: osrList .45s var(--spring) both; }
+.osr-list::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; border-left: 3px dotted var(--sun-d); }
+.os-stredna.dopadla .osr-list { animation: osrTras .4s ease-out; }
+.osr-stitok { position: absolute; top: -14px; left: 50%; translate: -50% 0; background: var(--card); --pc: var(--coral-d); font-size: .82rem; }
+.osr-pec { width: 72%; animation: osrPec .55s cubic-bezier(.5, 0, .6, 1.4) .25s both; }
+.osr-mud { position: absolute; left: -6px; top: min(190px, 52vw); width: 96px; z-index: 2; animation: mudIn .5s var(--spring) .7s both; }
+.osr-mud .owl { display: block; width: 100%; height: auto; }
+.osr-karta { display: grid; justify-items: center; gap: 8px; width: 100%; padding-top: 34px; text-align: center; animation: osIn .4s ease-out .5s both; }
+.osr-karta .n0, .osr-karta .tx, .osr-ini { margin: 0; }
+.osr-ini { font: 500 .85rem/1.35 var(--fb); color: var(--muted); }
+.osr-cena { height: 32px; font-size: 1rem; background: var(--sun); color: var(--dk); }
+.osr-cena .ikn { width: 20px; height: 20px; }
+.osr-karta .btn { width: 100%; }
+@keyframes osrList { from { transform: translateY(30px) scale(.8); opacity: 0; } }
+@keyframes osrPec { 0% { transform: scale(2.6) rotate(-18deg); opacity: 0; } 70% { transform: scale(.94) rotate(1deg); opacity: 1; } 100% { transform: none; } }
+@keyframes osrTras { 25% { transform: translate(-3px, 2px) rotate(-.6deg); } 50% { transform: translate(3px, -2px) rotate(.5deg); } 75% { transform: translate(-1px, 1px); } }
+
+/* Malá oslava: „+N“, hviezdičky letia po bodkovanej dráhe do počítadla, číslo sa pretočí */
+.mala-plus { position: fixed; z-index: 61; translate: -50% -50%; height: 30px; font-size: 1rem; background: var(--sun); color: var(--dk); pointer-events: none; animation: malaPlus 1.05s ease-out forwards; }
+.mala-plus .ikn { width: 18px; height: 18px; }
+@keyframes malaPlus { 0% { transform: scale(.4); opacity: 0; } 25% { transform: scale(1.15) translateY(-10px); opacity: 1; } 75% { opacity: 1; } 100% { transform: translateY(-46px); opacity: 0; } }
+.leti { position: fixed; z-index: 60; width: 30px; height: 30px; margin: -15px 0 0 -15px; pointer-events: none; filter: none; }
+.leti .ikn { display: block; width: 100%; height: 100%; }
+.stopa { position: fixed; z-index: 59; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--sun-d); pointer-events: none; animation: stopa .6s ease-out forwards; }
+@keyframes stopa { to { opacity: 0; transform: scale(.3); } }
+#body.roll { display: inline-block; animation: cisloRoll .4s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes cisloRoll { from { transform: translateY(-70%); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pas-pol.cerstva .pas-pec::before, .pas-pol.prevzaty .pas-pec, .odm-pec, .os-stredna, .osr-luce g, .osr-list, .osr-pec, .osr-mud, .osr-karta, .mala-plus, .stopa, #body.roll { animation: none !important; }
+}
 </style>
 </head>
 <body>
@@ -3091,11 +3221,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
 }
-function oznamOdznaky(nove) {
-  nove.forEach((o, i) => setTimeout(() => {
-    toast(`Nový odznak: ${o.n}`); Zvuk.play('star'); FX.burst(innerWidth / 2, innerHeight / 3, 26, ['star', 'dot']);
-  }, i * 1300));
-}
+function oznamOdznaky(nove) { oslavaOdznaku(nove); }
 /* Odmeny za body: diely postavičky */
 const noveOdmeny = (pred, po) => ODMENY.filter(o => o.cena > pred && o.cena <= po);
 const dalsiaOdmena = () => ODMENY.find(o => o.cena > st.body);
@@ -3113,7 +3239,7 @@ function odmenyHtml(f) {
   const o = f.noveOdznaky || [], r = f.noveOdmeny || [], h = f.noveHry || [];
   if (!o.length && !r.length && !h.length) return '';
   return `<div class="nove-odmeny">
-      ${o.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + i * .25}s"><span class="medaila">${ikOdznaku(x)}</span><div><b>Nový odznak!</b><span>${esc(x.n)}</span></div></div>`).join('')}
+      ${o.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + i * .25}s"><span class="odm-pec">${peciatka(x, 'ma')}</span><div><b>Nový odznak!</b><span>${esc(x.n)}</span></div></div>`).join('')}
       ${r.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + i) * .25}s"><span class="kruh-av mini-av" style="--bg:${st.avatar.pozadie}">${postavicka({ ...st.avatar, [x.k]: x.v })}</span><div><b>Odomknuté!</b><span>Máš ${NAZVY_ODMIEN[x.kluc]} pre postavičku</span></div></div>`).join('')}
       ${h.map((x, i) => `<div class="odmena-karta" style="--d:${1.9 + (o.length + r.length + i) * .25}s"><span class="hra-mini" style="--c:${x.c}">${OBR_HRY[x.id]}</span><div><b>Nová hra!</b><span>${esc(x.n)}</span></div></div>`).join('')}
       ${r.length ? `<button class="btn wide" data-upravit="${r[0].k}">${ii(IK.iskra)} Obliecť postavičku</button>` : ''}
@@ -3124,62 +3250,168 @@ function vyberOdznak(id, el) {
   if (!st.odznaky.includes(id) || st.vybrate.includes(id)) return;
   st.vybrate = [...st.vybrate, id]; S.set('vybrate', st.vybrate);
   st.body += 2; S.set('body', st.body);
-  el.classList.remove('na-vyber'); el.removeAttribute('data-vyber');
+  el.classList.remove('na-vyber', 'cerstva'); el.classList.add('ma'); el.removeAttribute('data-vyber');
   const p = el.querySelector('.plus2'); if (p) p.remove();
   const zost = odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length, tip = document.querySelector('.vyber-tip');
   document.getElementById('nav-ja').classList.toggle('novinka', zost > 0);
-  if (tip) { if (zost) tip.innerHTML = `${ii(IK.iskra)} Ťukni na žiariace odznaky a vyzdvihni si ${zost * 2} ${ii(STAR())}`; else tip.remove(); }
+  if (tip) { if (zost) tip.innerHTML = `${ikn('hviezda')}<span>Ťukni na čerstvú pečiatku a vyzdvihni si ${zost * 2} ${zost * 2 < 5 ? 'hviezdičky' : 'hviezdičiek'}.</span>`; else tip.remove(); }
   const [x, y] = stred(el), ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30];
   el.classList.add('prevzaty'); Zvuk.play('cink'); vibruj([20, 40, 20]);
-  for (const [trieda, text, dlzka] of [['vlna', '', 800], ['plus-velke', '+2', 1200]]) {
-    const e = document.createElement('span'); e.className = trieda; e.textContent = text;
-    e.style.left = x + 'px'; e.style.top = y + 'px'; document.body.appendChild(e); setTimeout(() => e.remove(), dlzka);
-  }
-  FX.burst(x, y, 24, ['star', 'dot'], 8);
-  [0, 1].forEach(i => setTimeout(() => letHviezdu(x, y, cx, cy, i, () => {
-    Zvuk.play(i ? 'dopad2' : 'dopad1'); FX.burst(cx, cy, 10, ['star', 'dot'], 4);
-    const b = document.getElementById('body'), s = document.getElementById('stars');
-    if (b) b.textContent = st.body - 1 + i;
-    if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+  malaOslava(x, y, 2, i => {
     if (i) { const nove = noveOdznaky(); oznamOdznaky(nove); if (nove.length && st.view === 'odznaky') setTimeout(render, 1500); }
-  }), 250 + i * 260));
+  });
 }
-// hviezdička letí z odznaku do hlavičky po oblúku, točí sa a nechá za sebou iskry
+/* Malá oslava: hviezdičky priletia po bodkovanej dráhe do počítadla v hlavičke a číslo sa pretočí. Trvá do sekundy a nič nezakryje.
+   Volať po pripočítaní: malaOslava(x, y, n, hotovo) (x, y = odkiaľ letia; n = koľko pribudlo; hotovo(i) po každej hviezdičke). */
+function malaOslava(x, y, n = 2, hotovo = () => {}) {
+  const ciel = document.getElementById('star-ico'), [cx, cy] = ciel ? stred(ciel) : [innerWidth - 40, 30], k = Math.min(n, 3);
+  const t = document.createElement('span'); t.className = 'cena mala-plus'; t.innerHTML = `${ikn('hviezda')}+${n}`;
+  t.style.left = x + 'px'; t.style.top = y + 'px'; document.body.appendChild(t); setTimeout(() => t.remove(), 1100);
+  for (let i = 0; i < k; i++) setTimeout(() => letHviezdu(x, y, cx, cy, i, () => {
+    Zvuk.play(i ? 'dopad2' : 'dopad1');
+    const b = document.getElementById('body'), s = document.getElementById('stars');
+    if (b) { b.textContent = st.body - (k - 1 - i) * Math.floor(n / k); b.classList.remove('roll'); void b.offsetWidth; b.classList.add('roll'); }
+    if (s) { s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
+    hotovo(i);
+  }), 150 + i * 200);
+}
+// hviezdička letí po oblúku do hlavičky a nechá za sebou bodkovanú stopu
 function letHviezdu(x, y, cx, cy, i, hotovo) {
-  const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = STAR();
+  const h = document.createElement('span'); h.className = 'leti'; h.innerHTML = ikn('hviezda');
   h.style.left = x + 'px'; h.style.top = y + 'px'; document.body.appendChild(h);
-  if (!h.animate) { h.remove(); hotovo(); return; }
-  const dx = cx - x, dy = cy - y, bok = i ? -70 : 70;
+  if (!h.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { h.remove(); hotovo(); return; }
+  const dx = cx - x, dy = cy - y, bok = i ? -50 : 50;
   const a = h.animate([
-    { transform: 'translate(0, 0) scale(.3) rotate(0deg)', opacity: 0 },
-    { transform: `translate(${bok}px, -80px) scale(1.7) rotate(160deg)`, opacity: 1, offset: .3 },
-    { transform: `translate(${dx * .55 + bok * .6}px, ${dy * .55 - 60}px) scale(1.2) rotate(300deg)`, offset: .65 },
-    { transform: `translate(${dx}px, ${dy}px) scale(.55) rotate(420deg)`, opacity: 1 },
-  ], { duration: 950, easing: 'cubic-bezier(.45, 0, .55, 1)' });
-  const stopa = setInterval(() => { const q = h.getBoundingClientRect(); FX.burst(q.left + q.width / 2, q.top + q.height / 2, 2, ['star', 'dot'], 1.5); }, 60);
+    { transform: 'translate(0, 0) scale(.4)', opacity: 0 },
+    { transform: `translate(${bok}px, -60px) scale(1.4) rotate(90deg)`, opacity: 1, offset: .3 },
+    { transform: `translate(${dx}px, ${dy}px) scale(.6) rotate(240deg)`, opacity: 1 },
+  ], { duration: 750, easing: 'cubic-bezier(.45, 0, .55, 1)' });
+  const stopa = setInterval(() => { const q = h.getBoundingClientRect(), d = document.createElement('i'); d.className = 'stopa'; d.style.left = q.left + q.width / 2 + 'px'; d.style.top = q.top + q.height / 2 + 'px'; document.body.appendChild(d); setTimeout(() => d.remove(), 600); }, 70);
   a.onfinish = () => { clearInterval(stopa); h.remove(); hotovo(); };
 }
 // odznaky pre vek dieťaťa (Majster kategórie len pre jeho kategórie)
 const odznakyVek = () => ODZNAKY.filter(o => !o.vek || o.vek === st.vek);
 // odznaky v profile len ako jedna karta; celá zbierka sa otvorí ťuknutím
 const nevybrate = () => st.dietaId ? odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length : 0;
-function kartaOdznakov() {
-  const k = nevybrate();
-  const posledne = st.odznaky.slice(-5).reverse().map(id => odznakyVek().find(o => o.id === id)).filter(Boolean);
-  return `<button class="card odznaky-karta${k ? ' novinka' : ''}" data-go="odznaky">${k ? '<span class="nov-stitok">Novinka!</span>' : ''}<span class="medaila velka">${IK.medaila}</span>
-      <span class="ok-info"><b>Moje odznaky</b><small>${odznakyVek().filter(o => st.odznaky.includes(o.id)).length} z ${odznakyVek().length} · ťukni a pozri všetky</small>${(k => k ? `<span class="chip tmavy" style="--c:#FFD23F">+${k * 2} ${ii(STAR())} na vyzdvihnutie</span>` : '')(odznakyVek().filter(o => st.odznaky.includes(o.id) && !st.vybrate.includes(o.id)).length)}
-      <span class="posledne">${posledne.map(o => `<span class="medaila mala">${ikOdznaku(o)}</span>`).join('') || '<small>Prvý odznak dostaneš za prvú tému.</small>'}</span></span><span class="sipka">›</span></button>
-    <section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
+/* ===== 5.0: odznaky ako pečiatky do Pasu objaviteľa =====
+   Každá skupina má vlastný tvar a farbu atramentu (témy okrúhle a osemhranné, séria štít, hry šesťuholník, body ozubené koliesko).
+   Pečiatka je jednofarebná a mierne nakrivo, text ide po obvode. Nezískaná je sivá prerušovaná so zámkom, čerstvá má žltý krúžok a „+2“. */
+const PEC_SKUP = {
+  'Témy': { tv: ['kruh', 'osem'], f: ['leaf', 'sky', 'coral', 'violet'], ik: 'temy' },
+  'Dni a séria': { tv: ['stit'], f: ['coral'], ik: 'kalendar' },
+  'Body': { tv: ['zubky'], f: ['sun'], ik: 'hviezda' },
+  'Hry': { tv: ['sest'], f: ['teal'], ik: 'hry' },
+  'Misie': { tv: ['osem'], f: ['sky'], ik: 'lupa' },
+  'Angličtina': { tv: ['kruh'], f: ['violet'], ik: 'bublina' },
+  'Rôzne': { tv: ['kruh'], f: ['coral'], ik: 'srdce' },
+  'Majster kategórie': { tv: ['zubky'], f: ['leaf'], ik: 'koruna' },
+};
+const PEC_IK = { prva: 'klicok', temy3: 'lupa', temy5: 'raketa', temy10: 'kompas', temy15: 'mapa', temy20: 'ciapka', temy30: 'pohar', temy40: 'hviezda', vsetky: 'koruna',
+  kat3: 'karty', katvsetky: 'mapa', bezchyby: 'terc', blesk: 'blesk', tazky: 'stit', vyzva: 'pohar', auto: 'auto', rano: 'slnko', vecer: 'mesiac', vikend: 'darcek',
+  hra1: 'hry', hry10: 'kocka', hry50: 'hry', hryvsetky: 'pohar', pexeso: 'karty', 'pexeso-genius': 'ciapka', hadaj6: 'oko', hadaj8: 'lupa', skladacka: 'karty', 'skladacka-rychlo': 'blesk',
+  opakuj5: 'zvuk', opakuj10: 'zvuk', sova10: 'raketa', sova30: 'raketa', fav1: 'obalka', zberatel: 'srdce', fav10: 'srdce', stylista: 'ceruzka', zvieratko: 'srdce', myticke: 'koruna',
+  misia1: 'lupa', misia5: 'oko', misia15: 'terc', misia30: 'koruna', misiaTypy: 'karty', vyzva1: 'mapa', ang1: 'bublina', ang7: 'bublina', ang20: 'ciapka', ang50: 'koruna', angBezChyby: 'terc' };
+const pecHash = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 997, 7);
+const pecVelke = s => s.toLocaleUpperCase('sk');
+// tvar, farba, ikona alebo číslo v strede, texty po obvode
+function pecInfo(o) {
+  const sk = PEC_SKUP[o.g] || PEC_SKUP['Rôzne'], zoz = ODZNAKY.filter(x => x.g === o.g), i = Math.max(0, zoz.indexOf(o));
+  const cislo = (o.p.match(/\d+/) || [])[0], seria = /^seria\d/.test(o.id), spolu = /^dni\d/.test(o.id), body = o.g === 'Body';
+  const dole = seria ? 'SÉRIA' : spolu ? 'SPOLU' : cislo ? pecVelke(o.p.slice(o.p.indexOf(cislo)).split(' ').slice(0, 2).join(' ')) : pecVelke(o.g === 'Majster kategórie' ? 'majster' : o.g);
+  return { tv: sk.tv[i % sk.tv.length], f: sk.f[i % sk.f.length], ik: o.id.startsWith('kat-') ? 'koruna' : PEC_IK[o.id] || sk.ik,
+    cislo: seria || spolu || body ? cislo : '', hore: pecVelke(seria ? 'dni po sebe' : spolu ? 'dni učenia' : o.n.replace(/^Majster: /, '')), dole, rot: pecHash(o.id) % 13 - 6 };
 }
+// jednofarebná ikona: plochy dostanú len jemný nádych atramentu
+const ikPec = n => (IKN[n] || IKN.hviezda).replace(/fill="([^"]*)"/g, (m, v) => v === 'none' ? m : 'fill="currentColor" fill-opacity=".2"').replace(/stroke="#fff"/g, 'stroke="currentColor"');
+let pecUid = 0;
+// stav: 'nie' (nezískaná), 'ma' (získaná), 'cerstva' (získaná, 2 hviezdičky čakajú na vyzdvihnutie)
+function peciatka(o, stav = 'ma') {
+  const x = pecInfo(o), nie = stav === 'nie', id = 'pc' + (++pecUid), tv = x.tv;
+  const zub = n => { let p = ''; for (let i = 0; i < n * 2; i++) { const r = i % 2 ? 49 : 54, a = i * Math.PI / n; p += (i ? 'L' : 'M') + (60 + r * Math.cos(a)).toFixed(1) + ' ' + (60 + r * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  const roh = (n, r = 54) => { let p = ''; for (let i = 0; i < n; i++) { const a = i * 2 * Math.PI / n - Math.PI / 2 + Math.PI / n; p += (i ? 'L' : 'M') + (60 + r * Math.cos(a)).toFixed(1) + ' ' + (60 + r * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  const cr = nie ? 'stroke-dasharray="5 7"' : '';
+  const OBR = {
+    kruh: `<circle cx="60" cy="60" r="52" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '96 3 60 2 120 4'}"/><circle cx="60" cy="60" r="43.5" stroke-width="2" stroke-dasharray=".1 5.5"/>`,
+    zubky: `<path d="${zub(18)}" stroke-width="4" ${cr}/><circle cx="60" cy="60" r="43" stroke-width="2"/>`,
+    osem: `<path d="${roh(8)}" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '110 3 70 2'}"/><circle cx="60" cy="60" r="43" stroke-width="2" stroke-dasharray=".1 5.5"/>`,
+    sest: `<path d="${roh(6)}" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '130 3 90 2'}"/><path d="${roh(6, 43)}" stroke-width="2"/>`,
+    stit: `<path d="M60 6L106 20V60C106 88 86 106 60 115C34 106 14 88 14 60V20Z" stroke-width="5" stroke-dasharray="${nie ? '5 7' : '140 3 80 2'}"/><path d="M60 16L97 27V60C97 82 81 97 60 105C39 97 23 82 23 60V27Z" stroke-width="2" stroke-dasharray=".1 5.5"/>`,
+  };
+  const oblu = tv !== 'stit' && tv !== 'sest', T = 'font-family="Grandstander, sans-serif" font-weight="800" fill="currentColor" stroke="none"';
+  const fs = (s, max, dl) => Math.min(max, +(dl / (s.length * .72 + .5)).toFixed(1));
+  let txt = '';
+  if (!nie) {
+    txt = oblu ? `<path id="${id}a" d="M27 60a33 33 0 0 1 66 0" fill="none" stroke="none"/><text ${T} font-size="${fs(x.hore, 10.5, 98)}" letter-spacing="1.2"><textPath href="#${id}a" startOffset="50%" text-anchor="middle">${esc(x.hore)}</textPath></text>
+        <path id="${id}b" d="M20 60a40 40 0 0 0 80 0" fill="none" stroke="none"/><text ${T} font-size="${fs(x.dole, 9.5, 110)}" letter-spacing="1.4"><textPath href="#${id}b" startOffset="50%" text-anchor="middle">${esc(x.dole)}</textPath></text>`
+      : `<text x="60" y="${tv === 'stit' ? 38 : 36}" text-anchor="middle" ${T} font-size="${fs(x.hore, 9.5, 66)}" letter-spacing=".8">${esc(x.hore)}</text><text x="60" y="${tv === 'stit' ? 93 : 94}" text-anchor="middle" ${T} font-size="${fs(x.dole, 9, 60)}" letter-spacing=".8">${esc(x.dole)}</text>`;
+  }
+  const stred = !nie && x.cislo ? `<text x="60" y="${oblu ? 72 : 73}" text-anchor="middle" ${T} font-weight="900" font-size="${x.cislo.length > 3 ? 21 : x.cislo.length > 2 ? 26 : 32}">${x.cislo}</text>`
+    : `<g transform="translate(39 ${oblu ? 39 : 40}) scale(1.75)" stroke-width="2.1">${nie ? IKN.zamok.replace(/fill="[^"]*"/g, 'fill="none"') : ikPec(x.ik)}</g>`;
+  return `<svg class="pec-svg pi-${nie ? 'nie' : x.f}" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" transform="rotate(${nie ? 0 : x.rot} 60 60)">${OBR[tv]}${txt}${stred}</g></svg>`;
+}
+const pasStav = o => !st.odznaky.includes(o.id) ? 'nie' : st.vybrate.includes(o.id) ? 'ma' : 'cerstva';
+// jedna pečiatka v pase (čerstvá je tlačidlo: ťuknutím sa vyzdvihnú 2 hviezdičky)
+function pasPolozka(o) {
+  const s = pasStav(o), v = s === 'cerstva', tag = v ? 'button' : 'div';
+  return `<${tag} class="odznak pas-pol ${s}${v ? ' na-vyber' : ''}"${v ? ` data-vyber="${o.id}" aria-label="Vyzdvihnúť 2 hviezdičky za pečiatku ${esc(o.n)}"` : ''}>
+    <span class="pas-pec">${peciatka(o, s)}${v ? `<span class="cena plus2">${ikn('hviezda')}+2</span>` : ''}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small></${tag}>`;
+}
+// stránka Pas objaviteľa (pohľad 'odznaky'): každá skupina je jedna strana pasu, najprv získané, ostatné sa rozbalia
 function zbierkaOdznakov() {
-  const ma = id => st.odznaky.includes(id);
-  return `<div class="hra-top"><button class="ib" data-go="ja" aria-label="Späť">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Odznaky</h1><span class="chip" style="--c:#FFC233">${odznakyVek().filter(o => ma(o.id)).length} z ${odznakyVek().length}</span></div>
-    ${(k => k ? `<p class="vyber-tip">${ii(IK.iskra)} Ťukni na žiariace odznaky a vyzdvihni si ${k * 2} ${ii(STAR())}</p>` : '')(odznakyVek().filter(o => ma(o.id) && !st.vybrate.includes(o.id)).length)}
-    ${[...new Set(odznakyVek().map(o => o.g))].map(g => { const zoz = odznakyVek().filter(o => o.g === g); return `<section class="sec"><h2 class="h2" style="--hc:#FFC233">${g} <span class="pocet">${zoz.filter(o => ma(o.id)).length} z ${zoz.length}</span></h2>
-      <div class="odznaky">${zoz.map(o => { const m = ma(o.id), v = m && !st.vybrate.includes(o.id), tag = v ? 'button' : 'div';
-        return `<${tag} class="odznak${m ? ' ma' : ''}${v ? ' na-vyber' : ''}"${v ? ` data-vyber="${o.id}" aria-label="Vyzdvihnúť 2 hviezdičky za odznak ${esc(o.n)}"` : ''}><span class="medaila">${m ? ikOdznaku(o) : IK.zamok}</span><b>${esc(o.n)}</b><small>${esc(o.p)}</small>${v ? `<span class="plus2">+2 ${STAR()}</span>` : ''}</${tag}>`; }).join('')}</div></section>`; }).join('')}`;
+  const vsetky = odznakyVek(), ma = vsetky.filter(o => st.odznaky.includes(o.id)).length, k = nevybrate();
+  const poradie = { cerstva: 0, ma: 1, nie: 2 };
+  return `<div class="hra-top pas-top"><button class="btn kruh dve" data-go="ja" aria-label="Späť">${ikn('spat')}</button><h1 class="n0 hra-nazov">Pas objaviteľa</h1><span class="st cis">${ikn('odznak')}${ma} z ${vsetky.length}</span></div>
+    ${k ? `<p class="vyber-tip pas-tip">${ikn('hviezda')}<span>Ťukni na čerstvú pečiatku a vyzdvihni si ${k * 2} ${k * 2 < 5 ? 'hviezdičky' : 'hviezdičiek'}.</span></p>` : ''}
+    ${[...new Set(vsetky.map(o => o.g))].map(g => {
+      const zoz = vsetky.filter(o => o.g === g).map((o, i) => [o, i]).sort((a, b) => poradie[pasStav(a[0])] - poradie[pasStav(b[0])] || a[1] - b[1]).map(x => x[0]);
+      const n = Math.max(6, Math.ceil(zoz.filter(o => pasStav(o) !== 'nie').length / 3) * 3 + 3), hore = zoz.slice(0, n), viac = zoz.slice(n);
+      return `<section class="pas-str"><div class="pas-nh"><h2 class="n1">${esc(g)}</h2><span class="dop cis">${zoz.filter(o => st.odznaky.includes(o.id)).length} z ${zoz.length}</span></div>
+        <div class="odznaky pas-grid">${hore.map(pasPolozka).join('')}</div>
+        ${viac.length ? `<details class="pas-viac"><summary>Ďalších ${viac.length}${ikn('dole')}</summary><div class="odznaky pas-grid">${viac.map(pasPolozka).join('')}</div></details>` : ''}</section>`;
+    }).join('')}`;
 }
-
+// blok Pasu pre kartu Ja: obal pasu, počet a posledné pečiatky; otvorí celý Pas
+function pasKarta() {
+  const k = nevybrate(), vsetky = odznakyVek(), ma = vsetky.filter(o => st.odznaky.includes(o.id)).length;
+  const posledne = st.odznaky.map(id => vsetky.find(o => o.id === id)).filter(Boolean).slice(-4).reverse();
+  return `<button class="karta odznaky-karta pas-karta${k ? ' novinka' : ''}" data-go="odznaky"><span class="zal">Pas objaviteľa</span>
+    <span class="pas-obal" aria-hidden="true"><svg viewBox="0 0 64 80"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="4" width="52" height="72" rx="7" fill="var(--violet)"/><path d="M14 4v72" stroke="var(--violet-d)" stroke-width="2"/><circle cx="34" cy="34" r="13" fill="none" stroke="var(--sun)" stroke-width="2.6"/><path d="M21 34h26M34 21c-6 8-6 18 0 26M34 21c6 8 6 18 0 26" fill="none" stroke="var(--sun)" stroke-width="2"/><path d="M24 58h20" stroke="var(--sun)" stroke-width="2.6"/></g></svg></span>
+    <span class="ok-info"><b class="n1">${ma} z ${vsetky.length} pečiatok</b>
+      <span class="posledne pas-posl">${posledne.map(o => peciatka(o, 'ma')).join('') || '<small>Prvú pečiatku dostaneš za prvú tému.</small>'}</span>
+      ${k ? `<span class="cena">${ikn('hviezda')}+${k * 2} na vyzdvihnutie</span>` : ''}</span>${ikn('sipka', 'pas-sip')}</button>`;
+}
+// v profile: Pas objaviteľa a odmeny pre postavičku (Ja môže volať aj samotné pasKarta())
+function kartaOdznakov() {
+  return `${pasKarta()}<section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
+}
+/* Stredná oslava: nová pečiatka dopadne na list pasu, žlté lúče, jedno tlačidlo. Ak príde naraz viac odznakov, ukáže sa prvý a ostatné jedným riadkom. */
+function oslavaOdznaku(nove) {
+  if (!nove.length) return;
+  Oslavy.pridaj(() => {
+    const o = nove[0], ini = nove.slice(1), mozno = !st.flow && !st.hra && !st.auto, el = document.createElement('div');
+    el.className = 'os-stredna'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Nový odznak: ' + o.n);
+    el.innerHTML = `<svg class="osr-luce" viewBox="0 0 360 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${Array.from({ length: 14 }, (_, i) => { const a = i * 360 / 14 * Math.PI / 180, b = (i * 360 / 14 + 12) * Math.PI / 180; return `<path d="M180 190L${(180 + 600 * Math.cos(a)).toFixed(0)} ${(190 + 600 * Math.sin(a)).toFixed(0)}L${(180 + 600 * Math.cos(b)).toFixed(0)} ${(190 + 600 * Math.sin(b)).toFixed(0)}Z"/>`; }).join('')}</g></svg>
+      <div class="osr-obsah">
+        <div class="osr-list"><span class="pec osr-stitok">Nový odznak</span><span class="osr-pec">${peciatka(o, 'ma')}</span></div>
+        <span class="osr-mud">${mudra('oslava')}</span>
+        <section class="karta osr-karta"><h2 class="n0">${esc(o.n)}!</h2><p class="tx">${esc(o.p)}: hotovo. Pečiatka je v tvojom pase.</p>
+          ${ini.length ? `<p class="osr-ini">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
+          <span class="cena osr-cena">${ikn('hviezda')}+${nove.length * 2} čaká v pase</span>
+          ${mozno ? `<button class="btn wide" data-osr="pas">Do pasu${ikn('sipka', 'za')}</button><button class="btn wide dve" data-osr="zavri">Neskôr</button>` : '<button class="btn wide" data-osr="zavri">Super!</button>'}</section></div>`;
+    document.body.appendChild(el);
+    Zvuk.play('whoosh'); setTimeout(() => { Zvuk.play('dopad1'); vibruj(30); el.classList.add('dopadla'); }, 520); setTimeout(() => Zvuk.play('star'), 760);
+    const kl = e => { if (e.key === 'Escape') zavri(); };
+    const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => { el.remove(); Oslavy.dalsia(); }, 300); };
+    document.addEventListener('keydown', kl);
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const b = e.target.closest('[data-osr]'); if (!b) return;
+      Zvuk.play('tap'); zavri();
+      if (b.dataset.osr === 'pas') go('odznaky');
+    });
+    const b = el.querySelector('[data-osr]'); if (b && b.focus) b.focus({ preventScroll: true });
+  });
+}
 /* Režim do auta: appka prečíta tému, príklad, otázky na rozhovor aj kvíz; rodič za volantom nemusí nič ťukať */
 const vetyZ = txt => txt.split(/(?<=[.!?…])\s+/).filter(Boolean);
 let drzanie = null; // obrazovka počas jazdy nezhasne
@@ -4755,7 +4987,7 @@ const Domov = {
           <path d="M596 334C606 300 690 300 696 280C702 262 646 258 650 242${koniec}" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
           <g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M${fx} ${fy}V${fy - 26}"/><path d="M${fx} ${fy - 26}l17 6.5-17 6.5z" fill="var(--coral)"/></g>
           ${hot ? `<path class="kr-ciel-hv" d="${hv5(fx + 26, fy - 36, 11)}" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>` : ''}</g>
-        <g class="kr-vz" style="--v:2" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M-6 290C150 268 300 276 414 298C460 268 530 272 590 290C650 306 720 280 786 272C900 258 1060 264 1206 280V336H-6Z" fill="var(--sc-front)"/>${strom(738, 286)}${strom(764, 280, .7)}${strom(300, 278, .9)}${strom(150, 282, .7)}${strom(1010, 266, .8)}${strom(1040, 270, .6)}</g>
+        <g class="kr-vz" style="--v:2" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M-6 290C150 268 300 276 414 298C460 268 530 272 590 290C650 306 720 280 786 272C900 258 1060 264 1206 280V336H-6Z" fill="var(--sc-front)"/>${strom(300, 278, .9)}${strom(150, 282, .7)}${strom(1010, 266, .8)}${strom(1040, 270, .6)}</g>
       </svg>
       ${mrak(-30, 190, 58, 22)}${mrak(158, 186, 48, 27)}${mrak(-340, 110, 60, 31)}${mrak(360, 96, 52, 25)}${mrak(500, 170, 44, 29)}${mrak(-510, 180, 50, 24)}${dym}<span class="len-noc">${hviezdy}</span>
     </div>`;
@@ -4797,7 +5029,7 @@ const views = {
     return `${Domov.krajina(t, hot)}
       <section class="dom-start" aria-label="Dnes">
         <div class="dom-hore"><p class="odkaz dom-rec">${Domov.odkaz(t, hot)}</p>
-          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button></div>
+          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button>${StromKrajina.html()}</div>
         <article class="listok dom-listok hero${hot ? ' hotovy' : ''}">
           <div class="dl-hore">
             <div class="dl-rad"><span class="pec">Téma dňa</span><span class="dop">${datum}</span></div>
@@ -5377,48 +5609,75 @@ const HN_TEXT = [null,
   { n: 'Strom je trochu smädný', p: 'Listy žltnú. Preber tému a strom sa hneď zazelená!' },
   { n: 'Strom vädne', p: 'Pár hviezdičiek sa uspalo a najdrahšie hry spia. Jedna téma ich zobudí.' },
   { n: 'Strom je hnedý a unavený', p: 'Nič sa nestratilo! Jedna téma a strom ožije, hviezdičky sa vrátia a hry sa odomknú.' }];
-const HN_FARBY = [null, ['#B8D84A', '#A9CC3C', '#C5DE55', '#B1D145'], ['#CDA93C', '#C0922F', '#D3B24C', '#B98B2D'], ['#8E7C48', '#7F6A3D', '#978752', '#76643A']];
 const KORUNA = [[160, 112, 50, '#4CD07D'], [112, 128, 34, '#3DBB6A'], [208, 126, 36, '#3DBB6A'], [130, 84, 34, '#5FDB8A'], [190, 82, 34, '#5FDB8A'], [160, 62, 30, '#6BE39A']];
 const KORUNA_VIAC = [[98, 106, 28, '#3DBB6A'], [222, 104, 28, '#3DBB6A'], [160, 36, 24, '#7BE8A6']];
 const PLODY = [[150, 92], [186, 104], [124, 118], [168, 128], [204, 130], [140, 68], [194, 74], [112, 96], [158, 106], [218, 104], [132, 142], [182, 148], [100, 112], [222, 116], [160, 42], [146, 144]];
 const KVETY = [[132, 64], [184, 58], [108, 120], [214, 118], [160, 86], [198, 136], [122, 146], [160, 30], [94, 98], [228, 96]];
 const plod = (i, hn = 0) => `<circle r="10" fill="${hn >= 2 ? ['#8B5A2B', '#7A5530', '#6E4A28'][i % 3] : ['#FF5A5F', '#FFD23F', '#FF9F1C', '#FF6FA8', '#B36BFF'][i % 5]}" stroke-width="3"/><path d="M0 -10 C1 -14 4 -16 7 -16 C6 -12 3 -10 0 -10Z" fill="#2FBF71" stroke-width="2"/><path d="M-5.5 -2 A6 6 0 0 1 -2 -6" fill="none" stroke="#fff" stroke-width="2.4"/>`;
-const stromIskra = (x, y, d) => `<g transform="translate(${x} ${y})"><g class="os-iskra" style="--d:${d}s"><path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2Z" fill="#FFE27A" stroke-width="1.5"/></g></g>`;
-// o: stupen, plody (na strome), kos (plody navyše v košíku), novy (index nového plodu, 'kos', alebo -1), z (veľkosť pred vyrastením), sova, t (časy animácií)
+/* 5.0: nová kresba stromu. Koruna je jedna silueta s obrysom a tromi tónmi vnútri, na kmeni Múdrina koralová šatka (od Mladého stromu),
+   od Veľkého stromu dutina. Plody v troch farbách palety, košík s visačkou „+N“. Vädnutie mení tóny koruny a pridáva opadané listy.
+   Súradnice: stred kmeňa x 120, zem y 228. Triedy os-* nesú pohyb (rast, nafúknutie koruny zdola nahor, plody, kývanie). */
+const ST_TON = { z: ['#8BDD90', 'var(--leaf)', 'var(--leaf-d)'], 1: ['#D9E480', '#B9D154', '#96B03C'], 2: ['#EDCE76', '#D8AE48', '#B4892B'], 3: ['#BFAD82', '#A38F62', '#83714B'], zl: ['#FFE48C', 'var(--sun)', 'var(--sun-d)'] };
+const ST_KOR = {
+  1: [[101, 158, 15, 2], [141, 156, 16, 1], [120, 138, 25, 0]],
+  2: [[88, 133, 25, 2], [152, 131, 26, 2], [120, 110, 38, 1], [121, 82, 25, 0]],
+  3: [[72, 121, 31, 2], [168, 119, 32, 2], [120, 99, 48, 1], [90, 71, 31, 1], [150, 69, 31, 0], [120, 47, 27, 0]],
+};
+const ST_PLD = {
+  1: [[120, 136], [101, 158], [141, 156]],
+  2: [[120, 114], [92, 133], [149, 129], [121, 80], [102, 98], [140, 96]],
+  3: [[120, 108], [90, 126], [151, 124], [100, 78], [142, 74], [68, 110], [171, 106], [120, 50], [128, 134], [84, 96], [158, 94], [106, 132], [58, 130], [182, 128], [137, 52], [103, 52]],
+};
+const ST_KVT = [[62, 60], [178, 56], [42, 124], [200, 122], [120, 20], [96, 40], [146, 38], [22, 104], [218, 102]];
+const ST_VELK = [1, .96, .93, 1, 1.05, 1.1];
+const ST_VYSKA = [.3, .52, .7, .9, .95, 1]; // ako vysoko strom siaha (na plynulé vyrastenie z predošlého stupňa)
+const stHviezda = (x, y, r, f) => `<path d="M${x} ${y - r}C${x} ${y - r * .3} ${x + r * .3} ${y} ${x + r} ${y}C${x + r * .3} ${y} ${x} ${y + r * .3} ${x} ${y + r}C${x} ${y + r * .3} ${x - r * .3} ${y} ${x - r} ${y}C${x - r * .3} ${y} ${x} ${y - r * .3} ${x} ${y - r}Z" fill="${f}" stroke-width="2.5"/>`;
+// o: stupen, plody, kos, novy (index plodu, 'kos' alebo -1), z (veľkosť pred vyrastením), hn (vädnutie 0–3), sova, zem ('kopec' | 'tien' | false), t (časy)
 function stromSvg(o) {
-  const hn = o.hn || 0, S0 = STROM_STUPNE[o.stupen], t = { kmen: .25, koruna: .6, krok: .08, plody: 1.2, novy: 2, sova: 2.4, rast: 3, ...(o.t || {}) };
-  const koruna = o.stupen === 1 ? [0, 3, 4].map(i => KORUNA[i]) : o.stupen >= 3 ? [...KORUNA, ...KORUNA_VIAC] : KORUNA;
-  const farba = (c, i) => hn ? HN_FARBY[hn][i % 4] : S0.zlaty ? ['#C6E86B', '#A8DB55', '#D8F07E', '#B9E35F'][i % 4] : c;
-  // sovička sedí na vrchu koruny (pri semienku vedľa klíčka)
-  const vrch = Math.min(...koruna.map(([, y, r]) => y - r)), m = S0.m, sovaX = o.stupen ? 148 : 192, sovaY = o.stupen ? 232 - (232 - vrch) * m - 60 : 166;
-  const d = x => ` style="--d:${x.toFixed(2)}s"`, kEnd = t.koruna + koruna.length * t.krok;
-  const strom = o.stupen === 0
-    ? `<path d="M134 232 Q160 214 186 232Z" fill="#B5651D"/><g class="os-klicok"><path d="M160 226 V200" fill="none" stroke-width="4"/>
-       <path d="M160 210 C150 200 140 202 137 191 C150 188 158 197 160 207Z" fill="#5FDB8A"/><path d="M160 205 C170 195 181 197 185 186 C172 183 162 192 160 202Z" fill="#4CD07D"/></g>`
-    : `<g class="os-kmen"${d(t.kmen)}><path d="M148 232 C150 198 146 178 132 160 L146 154 C154 166 158 176 160 186 C164 172 172 162 186 154 L194 162 C178 174 172 194 174 232Z" fill="#B5651D"/>
-         <path d="M156 222 q4 -8 0 -16 M166 214 q-3 -6 1 -12" fill="none" stroke-width="2.5" opacity=".5"/></g>
-       <g class="os-koruna">
-         ${koruna.map(([x, y, r], i) => `<circle class="os-k"${d(t.koruna + i * t.krok)} cx="${x}" cy="${y}" r="${r + 4}" fill="${INK}" stroke="none"/>`).join('')}
-         ${koruna.map(([x, y, r, c], i) => `<circle class="os-k"${d(t.koruna + i * t.krok)} cx="${x}" cy="${y}" r="${r}" fill="${farba(c, i)}" stroke="none"/>`).join('')}
-         ${koruna.map(([x, y, r], i) => `<path class="os-k"${d(t.koruna + i * t.krok)} d="M${x - r * .55} ${y - r * .25} a${r * .6} ${r * .6} 0 0 1 ${r * .5} ${-r * .45}" fill="none" stroke="#fff" stroke-width="3.5" opacity=".45"/>`).join('')}
-         ${S0.kvety && !hn ? KVETY.map(([x, y], i) => `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(kEnd + i * .06)}>${[0, 72, 144, 216, 288].map(u => `<circle cy="-4.5" r="3.6" fill="${S0.zlaty ? '#FFF3B0' : '#FFB3D1'}" stroke-width="1.6" transform="rotate(${u})"/>`).join('')}<circle r="2.6" fill="${S0.zlaty ? '#FF9F1C' : '#FFD23F'}" stroke-width="1.4"/></g></g>`).join('') : ''}
-         ${PLODY.slice(0, o.plody).map(([x, y], i) => i === o.novy
-           ? `<g transform="translate(${x} ${y})"><circle class="os-kruh"${d(t.novy)} r="10" fill="none" stroke="#FFD23F" stroke-width="5"/><g class="os-novy"${d(t.novy)}><g class="os-hoj"${d(t.novy + 1)}>${plod(i, hn)}</g></g></g>`
-           : `<g transform="translate(${x} ${y})"><g class="os-plod"${d(t.plody + i * .07)}><g class="os-hoj"${d(t.plody + i * .07 + .6)}>${plod(i, hn)}</g></g></g>`).join('')}
-         ${hn >= 2 ? koruna.slice(0, hn === 2 ? 3 : 6).map(([x, y, r], i) => `<circle cx="${(x + r * (i % 2 ? .35 : -.3)).toFixed(1)}" cy="${(y + r * .25).toFixed(1)}" r="${(r * .2).toFixed(1)}" fill="#5E4A22" stroke="none" opacity=".7"/>`).join('') : ''}
-       </g>`;
-  return `<svg class="os-strom${hn ? ' hn' + hn : ''}" viewBox="0 -40 320 290" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-    ${S0.zlaty && !hn ? `<circle class="os-ziara" cx="160" cy="${232 - (232 - 100) * m}" r="${150 * m}" fill="#FFE27A" stroke="none"/>` : ''}
-    <path class="os-zem" d="M-200 250 V230 C40 202 280 202 520 230 V250Z" fill="#7ED957"/>
-    ${o.stupen >= 2 && hn < 2 ? [[70, 226, '#FF9EC7'], [96, 234, '#FFD23F'], [236, 232, '#fff'], [262, 224, '#B36BFF']].map(([x, y, c], i) => `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(t.kmen + .3 + i * .1)}>${[0, 72, 144, 216, 288].map(u => `<circle cy="-3.6" r="3" fill="${c}" stroke-width="1.5" transform="rotate(${u})"/>`).join('')}<circle r="2.2" fill="#FFD23F" stroke-width="1.2"/></g></g>`).join('') : ''}
-    <g transform="translate(160 232) scale(${m}) translate(-160 -232)"><g class="os-rast${o.z ? ' vyrast' : ''}"${o.z ? ` style="--z:${o.z.toFixed(3)};--d:${t.rast}s"` : ''}>${strom}</g></g>
-    ${S0.zlaty && !hn ? [[72, 70, .2], [250, 60, .9], [52, 150, 1.4], [270, 150, .5], [160, -20, 1.1]].map(p => stromIskra(...p)).join('') : ''}
-    ${hn ? [[96, 238, -20], [122, 245, 15], [150, 249, -8], [196, 243, 25], [222, 238, -15], [246, 246, 10], [70, 244, 30]].slice(0, hn * 2 + 1).map(([x, y, a], i) => `<ellipse cx="${x}" cy="${y}" rx="8" ry="3.8" transform="rotate(${a} ${x} ${y})" fill="${HN_FARBY[hn][i % 4]}" stroke-width="2.5"/>`).join('') : ''}
-    ${hn >= 3 ? [[118, 236, 1], [204, 238, .8]].map(([x, y, k]) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-3 0 V-8 H3 V0Z" fill="#F4E9D2" stroke-width="2.5"/><path d="M-10 -8 A10 8 0 0 1 10 -8Z" fill="#E4524F" stroke-width="2.5"/><circle cx="-4" cy="-12" r="1.8" fill="#fff" stroke="none"/><circle cx="3" cy="-14" r="1.6" fill="#fff" stroke="none"/></g>`).join('') : ''}
-    ${o.kos ? `<g transform="translate(250 212)"><g class="os-kos${o.novy === 'kos' ? ' novy' : ''}"${d(o.novy === 'kos' ? t.novy : t.plody)}><path d="M-14 -4 Q0 -26 14 -4" fill="none" stroke-width="3.5"/>
-      ${[[-8, -6, 0], [0, -9, 1], [8, -6, 2]].map(([x, y, i]) => `<g transform="translate(${x} ${y}) scale(.7)">${plod(i)}</g>`).join('')}<path d="M-20 -4 H20 L15 16 H-15Z" fill="#C98A4B"/><path d="M-17 4 H17 M-15 10 H15" fill="none" stroke-width="2" opacity=".5"/>
-      <text y="12" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" stroke="${INK}" stroke-width="3" paint-order="stroke" font-family="Baloo 2, sans-serif">+${o.kos}</text></g></g>` : ''}
-    ${o.sova ? `<g class="os-sova"${d(t.sova)}>${owl(hn >= 2 ? 'oops' : 'cheer').replace('<svg ', `<svg x="${sovaX}" y="${sovaY.toFixed(1)}" width="64" height="70" `)}</g>` : ''}</g></svg>`;
+  const st0 = o.stupen, hn = o.hn || 0, zl = st0 === 5 && !hn, T = hn ? ST_TON[hn] : zl ? ST_TON.zl : ST_TON.z, m = ST_VELK[st0];
+  const t = { kmen: .25, koruna: .6, krok: .08, plody: 1.2, novy: 2, sova: 2.4, rast: 3, ...(o.t || {}) }, d = x => ` style="--d:${x.toFixed(2)}s"`;
+  const zem = o.zem === undefined ? 'kopec' : o.zem;
+  let s = '';
+  if (st0 === 0) {
+    s = `<circle cx="120" cy="150" r="34" fill="none" stroke="var(--leaf-d)" stroke-width="3" stroke-dasharray=".1 9" opacity=".55"/>
+      <path d="M84 229C90 210 150 210 156 229Z" fill="#A66A3F"/><path d="M100 222h8M129 220h10M114 225h6" fill="none" stroke="#7E4A2A" stroke-width="2.5"/>
+      <g class="os-klicok"><path d="M120 214V190" fill="none" stroke-width="8"/><path d="M120 214V190" fill="none" stroke="var(--leaf-d)" stroke-width="3"/>
+      <path d="M120 191c-1-8-7-12-15-11c1 8 7 12 15 11z" fill="var(--leaf)" stroke-width="2.5"/><path d="M120 189c0-7 5-11 12-10c0 7-5 11-12 10z" fill="#8BDD90" stroke-width="2.5"/></g>`;
+  } else {
+    let k = '';
+    if (st0 === 1) k = `<path d="M120 226C117 206 123 186 120 158" fill="none" stroke-width="11"/><path d="M120 226C117 206 123 186 120 158" fill="none" stroke="#A66A3F" stroke-width="5.5"/>`;
+    else if (st0 === 2) k = `<path d="M105 228C113 216 114 190 113 138H127C126 190 127 216 135 228C128 225 112 225 105 228Z" fill="#A66A3F"/><path d="M123 150c0 40 1 62 8 74" fill="none" stroke="#7E4A2A" stroke-width="3" opacity=".7"/>`;
+    else k = `<path d="M92 229C105 218 108 196 106 140H134C132 196 135 218 148 229C138 224 130 224 120 228C110 224 102 224 92 229Z" fill="#A66A3F"/>
+      <path d="M127 146c0 44 1 62 12 78c-7-2-11-2-16 0z" fill="#8A5530" stroke="none"/><path d="M110 168q3 7 0 15M131 200q-2 6 1 11" fill="none" stroke="#7E4A2A" stroke-width="2.5"/>
+      <ellipse cx="119" cy="190" rx="8" ry="10.5" fill="#4E2C1C" stroke-width="2.5"/><path d="M114 186q5-6 10 0" fill="none" stroke="#7E4A2A" stroke-width="2"/>`;
+    if (st0 >= 2) { const w = st0 === 2 ? 9 : 16, y = st0 === 2 ? 176 : 162; k += `<g fill="var(--coral)" stroke-width="2.5"><path d="M${120 + w - 4} ${y + 9}l9 15l-10-4zM${120 + w - 8} ${y + 10}l-2 16l-7-9z"/><path d="M${120 - w} ${y}C${120 - w / 2} ${y + 5} ${120 + w / 2} ${y + 5} ${120 + w} ${y}L${120 + w + 1} ${y + 9}C${120 + w / 2} ${y + 14} ${120 - w / 2} ${y + 14} ${120 - w - 1} ${y + 9}Z"/><circle cx="${120 + w - 5}" cy="${y + 9}" r="4.5"/></g>`; }
+    // koruna: obláčiky sa nafúknu zdola nahor; najprv obrys celej siluety, potom plochy v troch tónoch, odlesky a jemné tiene
+    const kruhy = (st0 >= 3 ? [...(st0 === 5 ? [[45, 108, 19, 2], [195, 106, 19, 2]] : []), ...ST_KOR[3], ...(st0 === 5 ? [[120, 24, 17, 0]] : [])] : ST_KOR[st0])
+      .slice().sort((a, b) => b[1] - a[1]), dk = i => d(t.koruna + i * t.krok);
+    let kr = kruhy.map(([x, y, r], i) => `<circle class="os-k"${dk(i)} cx="${x}" cy="${y}" r="${r}" fill="${T[1]}" stroke-width="6"/>`).join('');
+    kr += kruhy.map(([x, y, r, c], i) => `<circle class="os-k"${dk(i)} cx="${x}" cy="${y}" r="${r}" fill="${T[c]}" stroke="none"/>`).join('');
+    kr += kruhy.map(([x, y, r, c], i) => c < 2 ? `<path class="os-k"${dk(i)} d="M${(x - r * .62).toFixed(1)} ${(y - r * .16).toFixed(1)}q${(r * .1).toFixed(1)} ${(-r * .42).toFixed(1)} ${(r * .48).toFixed(1)} ${(-r * .56).toFixed(1)}" fill="none" stroke="#fff" stroke-width="3.2" opacity=".6"/>` : '').join('');
+    kr += kruhy.map(([x, y, r], i) => r > 20 ? `<path class="os-k"${dk(i)} d="M${(x + r * .02).toFixed(1)} ${(y + r * .52).toFixed(1)}q${(r * .3).toFixed(1)} ${(r * .1).toFixed(1)} ${(r * .46).toFixed(1)} ${(-r * .22).toFixed(1)}" fill="none" stroke-width="2.4" opacity=".42"/>` : '').join('');
+    const kEnd = t.koruna + kruhy.length * t.krok, kv = st0 === 4 ? 7 : st0 === 5 ? 4 : 0;
+    if (kv && hn < 2) kr += ST_KVT.slice(0, kv).map(([x, y], i) => { let p = ''; for (let a = 0; a < 5; a++) { const u = a * 1.2566 - 1.57; p += `<circle cx="${(4.6 * Math.cos(u)).toFixed(1)}" cy="${(4.6 * Math.sin(u)).toFixed(1)}" r="3.6"/>`; }
+      return `<g transform="translate(${x} ${y})"><g class="os-kvet"${d(kEnd + i * .06)} fill="${zl ? '#fff' : '#FFD9E0'}" stroke-width="1.8">${p}<circle r="2.8" fill="${zl ? 'var(--coral)' : 'var(--sun)'}"/></g></g>`; }).join('');
+    const FC = zl ? ['var(--coral)', 'var(--violet)', 'var(--teal)'] : hn >= 2 ? ['#B4892B', '#A38F62', '#C29A57'] : ['var(--coral)', 'var(--sun)', 'var(--violet)'];
+    const jeden = (i, f = FC[i % 3]) => `<circle r="8.5" fill="${f}" stroke-width="2.5"/><path d="M0 -8.5q1-5 6.5-5.5q0 5-6.5 5.5z" fill="${hn >= 2 ? '#96B03C' : 'var(--leaf-d)'}" stroke-width="2"/><path d="M-4.6 -1.2a5 5 0 0 1 3.2-3.5" fill="none" stroke="#fff" stroke-width="2"/>`;
+    kr += ST_PLD[Math.min(st0, 3)].slice(0, o.plody || 0).map(([x, y], i) => i === o.novy
+      ? `<g transform="translate(${x} ${y})"><circle class="os-kruh"${d(t.novy)} r="11" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray=".1 7"/><g class="os-novy"${d(t.novy)}><g class="os-hoj"${d(t.novy + 1)}>${jeden(i)}</g></g></g>`
+      : `<g transform="translate(${x} ${y})"><g class="os-plod"${d(t.plody + i * .07)}><g class="os-hoj"${d(t.plody + i * .07 + .6)}>${jeden(i)}</g></g></g>`).join('');
+    if (zl) kr += [[34, 60, 9, '#fff', .2], [206, 54, 7, '#fff', .9], [176, 22, 6, '#FFE48C', 1.4], [58, 28, 5, '#FFE48C', .5]].map(([x, y, r, f, z]) => `<g transform="translate(${x} ${y})"><g class="os-iskra" style="--d:${z}s">${stHviezda(0, 0, r, f)}</g></g>`).join('');
+    s = `<g class="os-kmen"${d(t.kmen)}>${k}</g><g class="os-koruna">${kr}</g>`;
+  }
+  let v = '';
+  if (zem === 'kopec') v += `<path class="os-zem" d="M14 226C50 206 190 206 226 226C190 240 50 240 14 226Z" fill="${hn >= 2 ? '#BFD08A' : 'var(--sc-front, #5BC56B)'}" stroke-width="3"/>`;
+  else if (zem === 'tien') v += `<ellipse cx="120" cy="229" rx="${st0 ? 46 : 34}" ry="6" fill="#2A2356" opacity=".16" stroke="none"/>`;
+  v += `<g transform="translate(120 228) scale(${m}) translate(-120 -228)"><g class="os-rast${o.z ? ' vyrast' : ''}"${o.z ? ` style="--z:${o.z.toFixed(3)};--d:${t.rast}s"` : ''}>${s}</g></g>`;
+  if (hn) v += [[46, 220, 20], [196, 224, -30], [70, 229, 60], [178, 230, -10], [34, 226, -50], [206, 218, 40]].slice(0, hn * 2).map(([x, y, a]) => `<path d="M0 0q6-8 15-2q-6 9-15 2z" transform="translate(${x} ${y}) rotate(${a})" fill="${T[1]}" stroke-width="2"/>`).join('');
+  if (o.kos) { const FK = ['var(--coral)', 'var(--sun)', 'var(--violet)'];
+    v += `<g transform="translate(196 214)"><g class="os-kos${o.novy === 'kos' ? ' novy' : ''}"${d(o.novy === 'kos' ? t.novy : t.plody)}><path d="M-12 -7C-12 -27 12 -27 12 -7" fill="none" stroke-width="3"/>${[[-7, -9, 0], [7, -9, 1], [0, -16, 2]].slice(0, Math.min(3, o.kos)).map(([x, y, i]) => `<circle cx="${x}" cy="${y}" r="7" fill="${FK[i]}" stroke-width="2.5"/>`).join('')}<path d="M-18 -7H18L13 13H-13Z" fill="#E2A93C" stroke-width="3"/><path d="M-15 0H15M-14 6H14" fill="none" stroke="#B07A1C" stroke-width="2.2"/><g transform="translate(24 -22) rotate(8)"><rect x="-15" y="-10" width="30" height="19" rx="7" fill="#fff" stroke-width="2.5"/><text x="0" y="4.5" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="12.5" fill="#2A2356" stroke="none">+${o.kos}</text></g></g></g>`; }
+  if (o.sova) v += `<g class="os-sova"${d(t.sova)}>${mudra(hn >= 2 ? 'povzbudenie' : o.sovaVyraz || 'radost').replace('<svg ', '<svg x="-46" y="150" width="74" height="88" ')}</g>`;
+  return `<svg class="os-strom${hn ? ' hn' + hn : ''}" viewBox="${o.sova ? '-48 -26 286 268' : '8 -26 224 268'}" aria-hidden="true"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${v}</g></svg>`;
 }
 // padajúce listy (pri kvitnúcom strome lupene, pri zlatom zlaté)
 const stromListy = (n, stupen, jednorazove) => Array.from({ length: n }, (_, i) => `<i class="os-list${jednorazove ? ' raz' : ''}" style="--x:${Math.round(Math.random() * 92 + 2)}%;--t:${(6 + Math.random() * 5).toFixed(1)}s;--d:${(jednorazove ? Math.random() * .3 : Math.random() * 7).toFixed(1)}s;--c:${(STROM_STUPNE[stupen].zlaty ? ['#FFD23F', '#FFE27A'] : STROM_STUPNE[stupen].kvety ? ['#FFB3D1', '#FF9EC7', '#5FDB8A'] : ['#5FDB8A', '#4CD07D', '#FFB347'])[i % 3]}"></i>`).join('');
@@ -5433,26 +5692,55 @@ function tukniNaStrom(el, e) {
   if (box) { box.insertAdjacentHTML('beforeend', stromListy(4, stromStupen(), true)); setTimeout(() => box.querySelectorAll('.raz').forEach(x => x.remove()), 4000); }
   return true;
 }
-const stromStavHtml = (pocet, i) => {
-  const S0 = STROM_STUPNE[i], dalsi = STROM_STUPNE[i + 1];
-  return `<div class="os-stupen"><b>${S0.n}</b><small>Stupeň ${i + 1} zo ${STROM_STUPNE.length} · ${pocet} ${dni(pocet)} učenia</small>
-    ${dalsi ? `<span class="bar" style="--c:#2FBF71"><i style="width:${Math.max(6, Math.round((pocet - S0.od) / (dalsi.od - S0.od) * 100))}%"></i></span><small>Ešte ${dalsi.od - pocet} ${dni(dalsi.od - pocet)} učenia a vyrastie z neho ${dalsi.n.toLowerCase()}.</small>`
-      : '<small>Najvyšší stupeň! Strom je celý zlatý.</small>'}</div>`;
-};
-const tyzdenStromu = dnes => {
+/* 5.0: scéna stromu (obloha, kopce, cestička, strom, Múdra) pre okno stromu aj veľkú oslavu; pri vädnutí zbledne obloha a slnko zakryje oblak */
+const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}${o.luce ? ' luce' : ''}">
+  <svg class="so-pozadie" viewBox="0 0 360 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <rect width="360" height="300" fill="var(--so-sky)"/>
+    ${o.luce ? `<g class="so-luce">${Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180, b = (i * 30 + 14) * Math.PI / 180; return `<path d="M180 190L${(180 + 520 * Math.cos(a)).toFixed(0)} ${(190 + 520 * Math.sin(a)).toFixed(0)}L${(180 + 520 * Math.cos(b)).toFixed(0)} ${(190 + 520 * Math.sin(b)).toFixed(0)}Z"/>`; }).join('')}</g>` : ''}
+    <circle cx="312" cy="64" r="21" fill="var(--sc-sun)"/><circle class="len-noc" cx="302" cy="57" r="18" fill="var(--so-sky)"/>${o.hn ? '' : '<circle class="len-den" cx="312" cy="64" r="32" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12" stroke-linecap="round"/>'}
+    <g fill="var(--sc-cloud)">${o.hn ? '<ellipse cx="312" cy="78" rx="36" ry="12"/><circle cx="298" cy="68" r="14"/><circle cx="320" cy="62" r="18"/>' : ''}<ellipse cx="44" cy="120" rx="24" ry="9"/><circle cx="38" cy="113" r="11"/><circle cx="54" cy="110" r="13"/></g>
+    <path d="M0 214C50 188 110 192 160 206C210 188 300 186 360 202V300H0Z" fill="var(--so-far)"/>
+    <path d="M0 240C70 214 150 222 210 236C270 248 320 230 360 224V300H0Z" fill="var(--so-mid)"/>
+    <path d="M-10 304C30 272 110 282 150 262" fill="none" stroke="var(--sc-path)" stroke-width="20" stroke-linecap="round"/>
+    <path d="M-10 304C30 272 110 282 150 262" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
+    <path d="M-6 282C60 244 300 242 366 278V306H-6Z" fill="var(--so-front)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M30 284q3-9 6 0M306 272q3-9 6 0M322 276q3-8 6 0M250 262q3-8 6 0" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  ${o.bublina ? `<p class="odkaz so-bub">${o.bublina}</p>` : ''}
+  <div class="so-strom">${strom}</div>
+</div>`;
+// šesť stupňov na jednej bodkovanej čiare: prejdené s fajkou, terajší so stromčekom, budúce prerušovaným krúžkom
+const stromCesta = i => `<ol class="so-cesta" aria-label="Stupne stromu">${STROM_STUPNE.map((x, k) => `<li class="${k < i ? 'hot' : k === i ? 'tu' : ''}"><i>${k < i ? ikn('check') : k === i ? ikn('strom') : ''}</i><span class="cis">${x.od}</span></li>`).join('')}</ol>`;
+// týždeň v okne stromu a v oslave (rovnaké krúžky ako na Domove)
+const tyzdenStromu = (dnes, padne) => {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
-  return DNI.map((d, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x); return { d, dnes: k === dnes, h: st.dni.includes(k), c: PASTEL[i] }; });
+  return `<div class="dom-dni so-dni">${DNI.map((d, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x), je = k === dnes, h = st.dni.includes(k), bud = k > dnes;
+    const tr = je && padne != null ? 'tu' : h ? 'hot' : je ? 'tu' : bud ? 'bud' : 'zme';
+    return `<span class="dom-den ${tr}${je ? ' dnes' : ''}"><i>${je && padne != null ? `<span class="os-padne" style="--d:${padne}s">${ikn('hviezda')}</span>` : h ? ikn('check') : je ? ikn('hviezda') : ''}</i>${je ? 'Dnes' : d}</span>`; }).join('')}</div>`;
 };
+const spiaceHry = () => typeof HRY_VID === 'function' ? HRY_VID().filter(h => bodyHry() < h.cena && st.body >= h.cena).length : 0;
+const nadpisPismena = t => [...t].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
 /* 4.6: plán čísla série v oslave: od (čo je vidno na začiatku), do (uložená hodnota), pokojne (séria po prerušení začína znova od 1: bez počítania a ohňostroja) */
 const planSerie = (s, pocetDni) => {
   const pokojne = s <= 1 && pocetDni > 1;
   return { od: pokojne ? s : Math.max(0, s - 1), do: s, pokojne, zmena: !pokojne };
 };
+/* Oslavy sa neskladajú na seba: stredná oslava (pečiatka) počká, kým sa zavrie veľká oslava alebo okno stromu */
+const Oslavy = {
+  rad: [], cak: 0,
+  obsadene: () => !!document.querySelector('.oslava, .os-stredna'),
+  pridaj(fn) { this.rad.push(fn); this.dalsia(); },
+  dalsia() {
+    if (!this.rad.length) return;
+    if (this.obsadene()) { if (!this.cak) this.cak = setInterval(() => { if (!this.obsadene()) { clearInterval(this.cak); this.cak = 0; this.dalsia(); } }, 600); return; }
+    this.rad.shift()();
+  },
+};
 const Oslava = {
   kluc: () => 'oslava-' + (st.dietaId || 'x'),
   // 4.4: len záver dnešnej témy dňa (nie iná téma, kvíz, hra ani precvičovanie), raz za deň, pred misiou
   treba: f => !!f && !f.precvic && f.typ === 'tema' && !!f.id && f.id === temaDna().id && Object.values(f.odp || {}).some(o => o.ok) && S.get(Oslava.kluc(), '') !== key(new Date()),
-  // volá sa po dokonci(): dnešný deň je už zapísaný
+  // volá sa po dokonci(): dnešný deň je už zapísaný. Veľká oslava: celá obrazovka v krajine stromu (séria, téma dňa, rast stromu, ožitie)
   ukaz(dalej) {
     const dnes = key(new Date()); S.set(this.kluc(), dnes);
     const s = Math.max(1, seria()), pocet = Math.max(1, st.dni.length), i = stromStupen(pocet), iPred = stromStupen(pocet - 1), S0 = STROM_STUPNE[i];
@@ -5460,34 +5748,40 @@ const Oslava = {
     const ozil = hnPredDnes; hnPredDnes = 0;
     const plan = planSerie(s, pocet), rast = plan.zmena && !tiche, W = ozil && !tiche ? 2.6 : 0; // 4.6: W = ako dlho je strom vyschnutý, kým ho ožije vietor
     const pocetK = i === 1 ? 3 : i >= 3 ? 9 : 6, tPlody = .6 + pocetK * .08 + (S0.kvety ? .5 : .1), tNovy = tPlody + Math.max(0, naStrome - 1) * .07 + .35;
-    const tRast = tNovy + 1.1, tSova = (vyrastol ? tRast + .9 : tNovy + 1) , tHviezda = tSova + .5, tTlacidlo = tHviezda + .5;
+    const tRast = tNovy + 1.1, tSova = (vyrastol ? tRast + .9 : tNovy + 1), tHviezda = tSova + .5, tTlacidlo = tHviezda + .5;
+    const zPred = vyrastol ? ST_VYSKA[iPred] / ST_VYSKA[i] : 0, cerstvy = { stupen: i, plody: naStrome, kos, novy, z: zPred, sova: true, sovaVyraz: 'oslava', zem: false, t: { plody: tPlody, novy: tNovy, sova: tSova, rast: tRast } };
+    const odz = (st.flow && st.flow.noveOdznaky) || [];
     const el = document.createElement('div');
-    el.className = 'oslava' + (W ? ' ozil' : ''); el.style.setProperty('--w', W + 's'); el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', vyrastol ? 'Strom múdrosti vyrástol' : 'Séria rastie');
+    el.className = 'oslava os-velka' + (W ? ' ozil' : ''); el.style.setProperty('--w', W + 's'); el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', vyrastol ? 'Strom múdrosti vyrástol' : 'Séria rastie');
     const nadpis = ozil ? 'Strom ožil!' : vyrastol ? 'Strom vyrástol!' : s === 1 ? 'Skvelý začiatok!' : 'Séria rastie!';
-    el.innerHTML = `<div class="os-lucy"></div><div class="os-listy">${stromListy(9, i)}</div><div class="os-obsah">
-      ${W ? `<div class="os-dvojstrom">${stromSvg({ stupen: i, plody: Math.min(naStrome, 4), kos: 0, novy: -1, hn: ozil, sova: true, t: { kmen: .1, koruna: .2, krok: .03, plody: .5, sova: .8 } }).replace('class="os-strom', 'class="vyschnuty os-strom')}</div>` : stromSvg({ stupen: i, plody: naStrome, kos, novy, z: vyrastol ? STROM_STUPNE[iPred].m / S0.m : 0, sova: true, t: { plody: tPlody, novy: tNovy, sova: tSova, rast: tRast } })}
-      <h2 class="os-nadpis">${[...nadpis].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
-      ${vyrastol ? `<div class="os-novy-stupen" style="--d:${(tRast + .3 + W).toFixed(2)}s">${ii(STAR())} Teraz je to: <b>${S0.n}</b></div>` : ''}
-      <div class="os-seria${rast ? ' hrdina' : ''}"><span class="os-ohen">${IK.ohen}</span>${rast ? `<b id="os-cislo" class="os-roll"><span class="stara">${plan.od}</span><span class="nova">${plan.do}</span></b>` : `<b id="os-cislo">${plan.do}</b>`}<span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
-      <p class="os-dni">${plan.pokojne ? 'Nevadí, začíname odznova. Dnes si urobil prvý krok.' : `Učíš sa už <b id="os-dni">${rast ? pocet - 1 : pocet}</b> ${dni(pocet)}`}</p>
-      <p class="os-veta">${ozil ? 'Strom je zasa zelený, hviezdičky sú späť a hry sú odomknuté. Vitaj späť! ' : ''}${s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
-      <div class="os-tyzden">${tyzdenStromu(dnes).map(x => `<div class="os-den${x.h ? ' h' : ''}${x.dnes ? ' dnes' : ''}" style="--c:${x.c}"><i>${x.dnes ? `<span class="os-padne" style="--d:${tHviezda + W}s">${STAR()}</span>` : x.h ? STAR() : ''}</i>${x.d}</div>`).join('')}</div>
-      <button class="btn wide cta os-dalej" style="--d:${tTlacidlo + W}s" data-oslava-dalej>Pokračovať →</button></div>`;
+    const strom = W ? `<div class="os-dvojstrom">${stromSvg({ stupen: i, plody: Math.min(naStrome, 4), kos: 0, novy: -1, hn: ozil, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .03, plody: .5, sova: .8 } }).replace('class="os-strom', 'class="vyschnuty os-strom')}</div>` : stromSvg(cerstvy);
+    el.innerHTML = `<div class="os-listy">${stromListy(9, i)}</div><div class="os-obsah">
+      ${stromScena(strom, { luce: true })}
+      <section class="karta so-karta"><span class="zal">Stupeň ${i + 1} zo ${STROM_STUPNE.length}</span>
+        <h2 class="os-nadpis">${nadpisPismena(nadpis)}</h2>
+        <p class="os-veta">${ozil ? 'Strom je zasa zelený, hviezdičky sú späť a hry sú odomknuté. Vitaj späť! ' : ''}${vyrastol ? `Zo stromu je teraz <b>${S0.n.toLowerCase()}</b>. Unesie už ${S0.plody} ${slovoPlody(S0.plody)}.` : s === 1 ? 'Na strome múdrosti vyrástol prvý plod.' : `Strom múdrosti má už ${s} ${slovoPlody(s)}.`} Príď zajtra a pribudne ďalší!</p>
+        ${vyrastol ? `<div class="os-pred-po" style="--d:${(tRast + .3 + W).toFixed(2)}s"><span>${stromSvg({ stupen: iPred, plody: Math.min(s - 1, STROM_STUPNE[iPred].plody), zem: 'tien' })}</span>${ikn('sipka')}<span>${stromSvg({ stupen: i, plody: naStrome, zem: 'tien' })}</span></div>` : ''}
+        <div class="os-seria${rast ? ' hrdina' : ''}"><span class="os-ohen">${ikn('plamen')}</span>${rast ? `<b id="os-cislo" class="os-roll"><span class="stara">${plan.od}</span><span class="nova">${plan.do}</span></b>` : `<b id="os-cislo">${plan.do}</b>`}<span>${s === 1 ? 'Prvý deň série!' : dni(s) + ' po sebe'}</span></div>
+        <p class="os-dni">${plan.pokojne ? 'Nevadí, začíname odznova. Dnes si urobil prvý krok.' : `Učíš sa už <b id="os-dni">${rast ? pocet - 1 : pocet}</b> ${dni(pocet)}`}</p>
+        ${tyzdenStromu(dnes, tHviezda + W)}
+        ${odz.length ? `<p class="os-odznak">${peciatka(odz[0], 'ma')}<span>${odz.length === 1 ? 'Nový odznak' : 'Nové odznaky'}: <b>${odz.map(o => esc(o.n)).join(', ')}</b>. Pečiatka je v tvojom pase.</span></p>` : ''}
+      </section>
+      <button class="btn wide os-dalej" style="--d:${tTlacidlo + W}s" data-oslava-dalej>Pokračovať${ikn('sipka', 'za')}</button></div>`;
     document.body.appendChild(el);
     const o = (t, fn) => casy.push(setTimeout(fn, (t + W) * 1000));
     if (W) {
-      const dv = el.querySelector('.os-dvojstrom'), suchy = dv.querySelector('.vyschnuty'), pre = fn => casy.push(setTimeout(fn, 0)), at = (s, fn) => casy.push(setTimeout(fn, s * 1000));
-      const farby = ['#5FDB8A', '#4CD07D', '#9BE564', '#FFB347'];
+      const dv = el.querySelector('.os-dvojstrom'), suchy = dv.querySelector('.vyschnuty'), at = (s, fn) => casy.push(setTimeout(fn, s * 1000));
+      const farby = ['#8BDD90', '#62CB72', '#B9D154', '#FFB347'];
       at(.5, () => { Zvuk.play('whoosh'); suchy.classList.add('fuka'); Haptika.hraj('tuk');
-        dv.insertAdjacentHTML('beforeend', [0, 1, 2].map(n => `<i class="vs" style="top:${30 + n * 22}%;--d:${n * .22}s"></i>`).join('') + Array.from({ length: 24 }, (_, n) => `<i class="vl" style="--a:${Math.round(n * 15 + Math.random() * 20)}deg;--r:${Math.round(110 + Math.random() * 90)}px;--d:${(Math.random() * .6).toFixed(2)}s;--c:${farby[n % 4]}"><b></b></i>`).join('')); });
+        dv.insertAdjacentHTML('beforeend', [0, 1, 2].map(n => `<i class="vs" style="top:${30 + n * 22}%;--d:${n * .22}s"></i>`).join('') + Array.from({ length: 16 }, (_, n) => `<i class="vl" style="--a:${Math.round(n * 22 + Math.random() * 20)}deg;--r:${Math.round(100 + Math.random() * 80)}px;--d:${(Math.random() * .6).toFixed(2)}s;--c:${farby[n % 4]}"><b></b></i>`).join('')); });
       at(.9, () => Zvuk.play('whoosh'));
       at(1.4, () => Zvuk.play('whoosh'));
       at(W - .15, () => {
         suchy.classList.add('ustup'); dv.querySelectorAll('.vl, .vs').forEach(x => x.remove());
-        dv.insertAdjacentHTML('beforeend', stromSvg({ stupen: i, plody: naStrome, kos, novy, z: vyrastol ? STROM_STUPNE[iPred].m / S0.m : 0, sova: true, t: { plody: tPlody, novy: tNovy, sova: tSova, rast: tRast } }));
+        dv.insertAdjacentHTML('beforeend', stromSvg(cerstvy));
         setTimeout(() => suchy.remove(), 800);
         Zvuk.play('cink'); Haptika.hraj('hotovo');
-        const [x, y] = stred(dv); FX.burst(x, y - 20, 36, ['star', 'dot'], 8);
+        const [x, y] = stred(dv); FX.burst(x, y - 20, 24, ['star', 'dot'], 8);
       });
     }
     Zvuk.play('whoosh');
@@ -5497,23 +5791,22 @@ const Oslava = {
     o(tNovy, () => Zvuk.play('whoosh'));
     o(tNovy + .75, () => {
       Zvuk.play('dopad1'); setTimeout(() => Zvuk.play('cink'), 120); vibruj(30);
-      const p = el.querySelector('.os-novy, .os-kos.novy'); if (p) { const [x, y] = stred(p); FX.burst(x, y, 26, ['star', 'dot'], 7); }
+      const p = el.querySelector('.os-novy, .os-kos.novy'); if (p) { const [x, y] = stred(p); FX.burst(x, y, 18, ['star', 'dot'], 7); }
     });
-    if (vyrastol && !plan.pokojne) o(tRast, () => { Zvuk.play('win'); vibruj([40, 30, 40]); FX.ohnostroj(3); });
+    if (vyrastol && !plan.pokojne) o(tRast, () => { Zvuk.play('win'); vibruj([40, 30, 40]); FX.ohnostroj(2); });
     if (!plan.pokojne) o(tSova + .45, () => Zvuk.play('hoot'));
     if (rast) o(tHviezda, () => Zvuk.play('seria'));
     if (rast) o(tHviezda + .35, () => {
       Haptika.hraj('hotovo');
       const c = el.querySelector('#os-cislo'), r = el.querySelector('.os-seria'), d = el.querySelector('#os-dni');
-      if (c) { c.classList.add('roll'); const [x, y] = stred(c); FX.burst(x, y, 34, ['star', 'dot', 'rect'], 9); setTimeout(() => FX.burst(x, y, 22, ['star', 'dot'], 12), 250); }
-      const bl = document.createElement('div'); bl.className = 'os-blesk'; el.appendChild(bl); setTimeout(() => bl.remove(), 1000);
-      const ob = el.querySelector('.os-obsah'); if (ob) { ob.classList.add('tras'); setTimeout(() => ob.classList.remove('tras'), 600); }
+      if (c) { c.classList.add('roll'); const [x, y] = stred(c); FX.burst(x, y, 24, ['star', 'dot', 'rect'], 9); }
+      const ob = el.querySelector('.so-karta'); if (ob) { ob.classList.add('tras'); setTimeout(() => ob.classList.remove('tras'), 600); }
       if (r) r.classList.add('zap');
       if (d) { d.textContent = pocet; d.classList.add('bump'); }
-      const sv = el.querySelector('.os-strom'); if (sv) sv.classList.add('zari');
-      const sova = el.querySelector('.os-sova'); if (sova) sova.classList.add('skace');
+      const sv = el.querySelector('.so-strom .os-strom:not(.vyschnuty)'); if (sv) sv.classList.add('zari');
+      const sova = el.querySelector('.so-strom .os-sova'); if (sova) sova.classList.add('skace');
     });
-    if (!plan.pokojne) o(tHviezda + .6, () => { if (!rast) Zvuk.play('win'); FX.ohnostroj(vyrastol ? 2 : 3); });
+    if (!plan.pokojne) o(tHviezda + .6, () => { if (!rast) Zvuk.play('win'); FX.ohnostroj(vyrastol ? 1 : 2); });
     el.addEventListener('click', e => { if (tukniNaStrom(el, e)) e.stopPropagation(); });
     const b = el.querySelector('[data-oslava-dalej]');
     if (b) b.addEventListener('click', e => {
@@ -5522,38 +5815,57 @@ const Oslava = {
     });
   },
 };
-// okno po ťuknutí na kartu Tento týždeň: v akom stave je strom, koľko plodov a čo chýba do ďalšieho stupňa
+// okno stromu (z Domova: strom v krajine, tlačidlo Strom múdrosti): stupeň, plody, čo chýba, týždeň s okruhom
 const Strom = {
   ukaz() {
-    if (document.querySelector('.oslava')) return;
+    if (document.querySelector('.oslava, .os-stredna')) return;
     // 4.4: okná týždňa (pás, Prehľad týždňa, okruh) sa pri otvorení stromu zavrú, aby sa neprekrývali
     document.querySelectorAll('.okruh-okno').forEach(o => { o.classList.add('pryc'); setTimeout(() => o.remove(), 250); });
-    const dnes = key(new Date()), pocet = st.dni.length, i = stromStupen(pocet), S0 = STROM_STUPNE[i], s = seria(), hotovo = st.dni.includes(dnes);
+    const dnes = key(new Date()), pocet = st.dni.length, i = stromStupen(pocet), S0 = STROM_STUPNE[i], dalsi = STROM_STUPNE[i + 1], s = seria(), hotovo = st.dni.includes(dnes);
     const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), hn = hnStupen();
-    const veta = hn ? HN_TEXT[hn].n + '. ' + HN_TEXT[hn].p : !s ? 'Zatiaľ bez plodov. Preber tému dňa a vyrastie prvý!'
-      : `Na strome ${naStrome === 1 ? 'visí' : 'visia'} ${s} ${slovoPlody(s)}, jeden za každý deň série. ${hotovo ? 'Dnes už plod pribudol, príď zajtra!' : 'Dnes ešte plod chýba. Preber tému dňa a pribudne ďalší!'}`;
+    const bublina = hn ? (hn >= 2 ? 'Nič sa nestratilo. Stačí jedna téma!' : 'Strom je smädný. Jedna téma ho napojí!') : !pocet ? 'Tu raz vyrastie strom. Preber tému dňa a zasadíme ho!'
+      : hotovo ? 'Dnes plod pribudol. Príď zajtra a vyrastie ďalší!' : 'Dnes ešte plod chýba. Preber tému dňa a pribudne ďalší!';
+    const Ty = TY(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), u = bodyUbudlo(), sh = spiaceHry();
+    const seriaSt = `<span class="st" style="--c:var(--coral-l)">${ikn('plamen')}${s ? `${s} ${dni(s)} po sebe` : 'Séria začne dnes'}</span>`;
+    const karta = hn
+      ? `<h2 class="n0">${HN_TEXT[hn].n}</h2>${seriaSt}<p class="tx">${HN_TEXT[hn].p}</p>
+        <div class="so-chips"><span class="st cis">${ikn('hviezda')}${st.body}</span>${u ? `<span class="st" style="--c:var(--violet-l)">${ikn('mesiac')}${u} ${u === 1 ? 'hviezdička spí' : u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}</span>` : ''}${sh ? `<span class="st">${ikn('zamok')}${sh} ${sh === 1 ? 'hra spí' : sh <= 4 ? 'hry spia' : 'hier spí'}</span>` : ''}</div>`
+      : `<h2 class="n0">${S0.n}</h2>${seriaSt}
+        <p class="so-mal">${pocet} ${dni(pocet)} učenia · ${naStrome ? `na strome ${naStrome === 1 ? 'visí' : 'visia'} ${naStrome} ${slovoPlody(naStrome)}` : 'zatiaľ bez plodov'}${kos ? ` · v košíku ${kos}` : ''}</p>
+        ${stromCesta(i)}
+        <p class="tx">${dalsi ? `Ešte <b>${dalsi.od - pocet} ${dni(dalsi.od - pocet)} učenia</b> a vyrastie z neho ${dalsi.n.toLowerCase()}.` : 'Najvyšší stupeň! Strom je celý zlatý.'}</p>`;
     const el = document.createElement('div');
-    el.className = 'oslava strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Strom múdrosti');
-    el.innerHTML = `<div class="os-lucy"></div><div class="os-listy">${stromListy(7, i)}</div><div class="os-obsah">
-      <button class="ib os-x" data-strom-zavri aria-label="Zavrieť">${IKO.zavriet}</button>
-      ${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, t: { kmen: .1, koruna: .25, krok: .05, plody: .7, sova: 1.1 } })}
-      <h2 class="os-nadpis">${[...'Strom múdrosti'].map((ch, k) => `<span style="--k:${k}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('')}</h2>
-      ${stromStavHtml(pocet, i)}
-      <div class="os-seria"><span class="os-ohen">${IK.ohen}</span><b>${s}</b><span>${s ? dni(s) + ' po sebe' : 'Séria začne dnes'}</span></div>
-      <p class="os-veta">${veta}</p>
-      <div class="os-tyzden">${tyzdenStromu(dnes).map(x => `<div class="os-den${x.h ? ' h' : ''}${x.dnes ? ' dnes' : ''}" style="--c:${x.c}"><i>${x.h ? STAR() : ''}</i>${x.d}</div>`).join('')}</div>
-      <small class="os-tip">Ťukni na strom a zatrasie sa. Ťukni na sovičku a zahúka.</small>
-      ${hotovo ? '' : `<button class="btn wide cta" data-strom-tema>Poďme na tému dňa →</button>`}
-      <button class="btn wide ghost" data-strom-zavri>Zavrieť</button></div>`;
+    el.className = 'oslava strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Strom múdrosti');
+    el.innerHTML = `<div class="os-listy">${hn ? '' : stromListy(5, i)}</div><div class="os-obsah">
+      <div class="so-hlava"><h1 class="n1">Strom múdrosti</h1><button class="btn kruh dve" data-strom-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
+      ${stromScena(stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6, sova: .9 } }), { hn, bublina })}
+      <section class="karta so-karta"><span class="zal">Stupeň ${i + 1} zo ${STROM_STUPNE.length}</span>${karta}</section>
+      <div class="so-tyz"><h3 class="n2">Tento týždeň</h3><button class="btn maly dve" data-so-okruh>${okruhIk(vyb) ? `<span class="okruh-tl-ik">${okruhIk(vyb)}</span>` : ikn('kompas')}Okruh: ${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</button></div>
+      ${tyzdenStromu(dnes)}
+      ${hotovo ? '' : `<button class="btn wide" data-strom-tema>Poďme na tému dňa${ikn('sipka', 'za')}</button>`}
+      <p class="dop so-tip">${hn ? 'Rodič môže vädnutie vypnúť vo svojom paneli.' : 'Ťukni na strom a zatrasie sa. Ťukni na Múdru a zahúka.'}</p></div>`;
     document.body.appendChild(el);
     Zvuk.play('whoosh'); setTimeout(() => Zvuk.play('pop'), 300);
-    const zavri = () => { el.classList.add('pryc'); setTimeout(() => el.remove(), 320); };
+    const kl = e => { if (e.key === 'Escape') zavri(); };
+    const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 320); };
+    document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
       e.stopPropagation();
       if (e.target.closest('[data-strom-zavri]')) { Zvuk.play('tap'); zavri(); return; }
       if (e.target.closest('[data-strom-tema]')) { zavri(); startTema(temaDna().id); return; }
+      if (e.target.closest('[data-so-okruh]')) { Zvuk.play('tap'); zavri(); setTimeout(() => Okruh.ukaz(), 200); return; }
       tukniNaStrom(el, e);
     });
+    const x = el.querySelector('[data-strom-zavri]'); if (x && x.focus) x.focus({ preventScroll: true });
+  },
+};
+// strom v krajine Domova (variant B): stojí na kopci vpravo od cesty; ťuknutím sa otvorí okno stromu
+const StromKrajina = {
+  html() {
+    if (!st.dietaId) return '';
+    const pocet = st.dni.length, i = stromStupen(pocet), s = seria(), S0 = STROM_STUPNE[i], hn = hnStupen(), naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody);
+    const popis = `Strom múdrosti: ${S0.n.toLowerCase()}${hn ? ', ' + HN_TEXT[hn].n.toLowerCase() : ''}, ${naStrome} ${slovoPlody(naStrome)}. Otvoriť`;
+    return `<span class="kr-strom st${i}${hn ? ' schne' : ''}" data-strom role="button" tabindex="0" aria-label="${popis}">${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, zem: 'tien' })}</span>`;
   },
 };
 const MINI_STROM = `<svg viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 36 V24 H23 V36Z" fill="#B5651D"/><circle cx="20" cy="17" r="13" fill="#4CD07D"/><circle cx="15" cy="15" r="3" fill="#FF5A5F" stroke-width="1.8"/><circle cx="25" cy="19" r="3" fill="#FFD23F" stroke-width="1.8"/></g></svg>`;

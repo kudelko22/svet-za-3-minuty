@@ -6,7 +6,7 @@ const views = {
     return `${Domov.krajina(t, hot)}
       <section class="dom-start" aria-label="Dnes">
         <div class="dom-hore"><p class="odkaz dom-rec">${Domov.odkaz(t, hot)}</p>
-          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button></div>
+          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button>${StromKrajina.html()}</div>
         <article class="listok dom-listok hero${hot ? ' hotovy' : ''}">
           <div class="dl-hore">
             <div class="dl-rad"><span class="pec">Téma dňa</span><span class="dop">${datum}</span></div>
