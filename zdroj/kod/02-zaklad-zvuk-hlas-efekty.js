@@ -419,16 +419,19 @@ const Hlas = {
 const FX = (() => {
   const cv = document.getElementById('fx'), g = cv.getContext('2d');
   const COL = ['#FFD23F', '#2FBF71', '#4C7DFF', '#FF9F1C', '#FF6FA8', '#B36BFF', '#16BFAE', '#FF5A5F'];
-  let P = [], beh = false, dpr = 1;
+  let P = [], beh = false, dpr = 1, posl = 0, velkaDo = 0;
   function size() { dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
   size(); addEventListener('resize', size);
   function hviezda(r) { g.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } g.closePath(); }
   function srdce(r) { g.beginPath(); g.moveTo(0, r * .9); g.bezierCurveTo(-r * 1.4, -r * .1, -r * .7, -r * 1.2, 0, -r * .45); g.bezierCurveTo(r * .7, -r * 1.2, r * 1.4, -r * .1, 0, r * .9); g.closePath(); }
-  function tick() {
+  // život a pohyb sa rátajú v čase (1 = 1/60 s), nie v snímkach: pomalý telefón ani skryté okno konfety nepredĺžia
+  function tick(ted) {
+    const k = posl ? Math.min(4, Math.max(0, (ted - posl) / (1000 / 60))) : 1; posl = ted;
     g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, innerWidth, innerHeight);
-    P = P.filter(p => p.t < p.life);
+    P = P.filter(p => p.t < p.life && p.y < innerHeight + 60);
+    const tr = Math.pow(.985, k);
     for (const p of P) {
-      p.t++; p.vy += p.g; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      p.t += k; p.vy += p.g * k; p.vx *= tr; p.vy *= tr; p.x += p.vx * k; p.y += p.vy * k; p.rot += p.vr * k;
       g.save(); g.globalAlpha = Math.min(1, (p.life - p.t) / 20); g.translate(p.x, p.y); g.rotate(p.rot);
       g.fillStyle = p.c; g.strokeStyle = '#2A2356'; g.lineWidth = 2;
       if (p.k === 'star') { hviezda(p.s); g.fill(); g.stroke(); }
@@ -437,18 +440,22 @@ const FX = (() => {
       else { g.scale(1, Math.cos(p.t * .25 + p.ph)); g.fillRect(-p.s * .5, -p.s * .7, p.s, p.s * 1.4); g.strokeRect(-p.s * .5, -p.s * .7, p.s, p.s * 1.4); }
       g.restore();
     }
-    if (P.length) requestAnimationFrame(tick); else { beh = false; g.clearRect(0, 0, innerWidth, innerHeight); }
+    if (P.length) requestAnimationFrame(tick); else { beh = false; posl = 0; g.clearRect(0, 0, innerWidth, innerHeight); }
   }
   function add(p) {
-    if (tiche || P.length > 400) return;
+    if (tiche || P.length > 320) return;
     P.push(Object.assign({ t: 0, rot: Math.random() * 6, vr: (Math.random() - .5) * .3, ph: Math.random() * 6, g: .25, life: 70 + Math.random() * 40, c: COL[Math.floor(Math.random() * COL.length)], s: 7 + Math.random() * 6, k: 'rect' }, p));
-    if (!beh) { beh = true; requestAnimationFrame(tick); }
+    if (!beh) { beh = true; posl = 0; requestAnimationFrame(tick); }
   }
+  // skryté okno: rozpršané konfety sa nedokončia neskôr nad inou obrazovkou
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { P = []; posl = 0; } });
+  // kým beží veľký dážď konfiet, ďalšie efekty sú len malé
+  const velka = () => performance.now() < velkaDo;
   return {
-    burst(x, y, n = 28, kinds = ['star', 'rect', 'dot'], sila = 9) { for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = sila * (.4 + Math.random() * .8); add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3, k: kinds[i % kinds.length] }); } },
-    rain(n = 120) { for (let i = 0; i < n; i++) add({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .7, vx: (Math.random() - .5) * 2, vy: 2 + Math.random() * 3, g: .05, life: 220 + Math.random() * 80 }); },
+    burst(x, y, n = 28, kinds = ['star', 'rect', 'dot'], sila = 9) { if (velka()) n = Math.min(n, 8); for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = sila * (.4 + Math.random() * .8); add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3, k: kinds[i % kinds.length] }); } },
+    rain(n = 120) { if (velka()) return; velkaDo = performance.now() + 4500; for (let i = 0; i < n; i++) add({ x: Math.random() * innerWidth, y: -20 - Math.random() * innerHeight * .7, vx: (Math.random() - .5) * 2, vy: 2 + Math.random() * 3, g: .05, life: 220 + Math.random() * 80 }); },
     hearts(x, y) { for (let i = 0; i < 14; i++) { const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, v = 4 + Math.random() * 5; add({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, k: 'heart', c: i % 2 ? '#FF5A5F' : '#FF6FA8', g: .12, s: 8 + Math.random() * 5 }); } },
-    ohnostroj(n = 5) { for (let i = 0; i < n; i++) setTimeout(() => { this.burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.12 + Math.random() * .35), 34, ['star', 'dot', 'rect'], 8); Zvuk.play('iskra'); }, i * 420); },
+    ohnostroj(n = 5) { if (velka()) n = Math.min(n, 1); for (let i = 0; i < n; i++) setTimeout(() => { this.burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.12 + Math.random() * .35), 34, ['star', 'dot', 'rect'], 8); Zvuk.play('iskra'); }, i * 420); },
   };
 })();
 const stred = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
