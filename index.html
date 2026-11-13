@@ -4350,7 +4350,7 @@ function hryZoznam() {
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">
       <span class="zal" style="--c:var(--card)">${hore.id === st.hraPosledna ? 'Hrané naposledy' : r0 != null ? 'Tvoja hra' : 'Najnovšia hra'}</span>
       <span class="hr-obr">${OBR_HRY[hore.id]}</span>
-      <span class="inf"><b>${hore.n}</b>${r0 != null ? `<span class="st">${ikn('pohar')}Rekord ${rekordText(hore.id, r0)}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}</span>
+      <span class="inf"><b>${hore.n}</b>${r0 != null ? `<span class="st">${ikn("pohar")}${rekordText(hore.id, r0).replace(" hneď správne", "").replace(" správne", "")}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}</span>
       <span class="hraj-v">${ikn('hraj')}</span></button>` : ''}
     ${ok.length > 1 ? `<div class="dlazdice">${ok.filter(h => h !== hore).map(dlazdica).join('')}</div>` : ''}
     ${dalsia ? `<button class="karta dalsia-hra" data-hra="${dalsia.id}" aria-label="Ďalšia hra ${esc(dalsia.n)}, chýba ${dalsia.cena - st.body}"><span class="zal">Ďalšia hra</span>
