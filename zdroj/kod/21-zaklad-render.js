@@ -76,7 +76,7 @@ function paintHead() {
   }
   const b = document.getElementById('body');
   if (b.textContent !== String(st.body)) { b.textContent = st.body; const s = document.getElementById('stars'); s.classList.remove('bump'); void s.offsetWidth; s.classList.add('bump'); }
-  document.body.classList.toggle('domov-v', st.view === 'domov' && st.faza === 'appka'); // 5.0: hlavička nad krajinou Domova
+  document.body.classList.toggle('domov-v', st.view === 'domov' && st.faza === 'appka' && !st.flow && !st.hra && !st.auto); // 5.0: hlavička nad krajinou Domova
   const z = document.getElementById('snd'), zk = Zvuk.on ? 'on' : 'off';
   if (z.dataset.k !== zk) { z.dataset.k = zk; z.innerHTML = Zvuk.on ? ikn('zvuk') : ikn('zvuk').replace('</g>', '<path d="M3.5 4.5l17 15" stroke-width="2.6"/></g>'); } z.setAttribute('aria-pressed', Zvuk.on); z.hidden = st.view === 'domov' && st.faza === 'appka'; // na Domove tlačidlo zvuku nezavadzia
   const av = document.getElementById('av'), k = JSON.stringify(st.avatar);
@@ -137,6 +137,7 @@ function render(tichy) {
   document.body.classList.toggle('auto-rezim', auto);
   document.body.classList.toggle('dm-rezim', dm);
   document.body.classList.toggle('hra-rezim', hra);
+  if (brana || auto || hra || flow) document.body.classList.remove('domov-v'); // 5.0: trieda Domova nesmie ostať v téme, kvíze, hre a aute
   if (brana) { renderBrana(); return; }
   if (auto) { renderAuto(); return; }
   if (hra) { renderHra(); return; }
