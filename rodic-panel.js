@@ -95,7 +95,7 @@ const RodicPanel = (() => {
           ${C.deti.map(d => `<button class="rd-riadok" data-rp-dieta="${esc(d.id)}">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small>priatelia a správy</small></span><span class="rd-akc">Prehľad</span></button>`).join('')}
           <p class="rd-pozn">Priateľov každého dieťaťa zapnete alebo vypnete v jeho prehľade.</p></section>
         <section class="rd-blok"><h2 class="rd-h">Toto zariadenie</h2>
-          <div class="rd-riadok rd-stlpec">${ikn('zvuk')}<span class="rd-t"><b>Hlas na čítanie</b><small>Ťuknite na hlas a vypočujte si ho</small></span></div>
+          <div class="rd-riadok rd-stlpec">${ikn('zvuk')}<span class="rd-t"><b>Hlas na čítanie</b></span></div>
           <div class="rd-hlasy" id="hlasy">${hlasyHtml()}</div>
           <div class="rd-riadok">${ikn('vibr')}<span class="rd-t"><b>Vibrácie</b><small>Na Androide, na iPhone nie</small></span>${prep(Haptika.zapnute(), 'data-vibracie', 'Vibrácie')}</div>
           ${Plocha.naPloche() ? '' : `<button class="rd-riadok" data-plocha>${ikn('domov')}<span class="rd-t"><b>Pridať appku na plochu</b></span>${sip()}</button>`}</section>

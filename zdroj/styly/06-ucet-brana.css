@@ -16,21 +16,8 @@
 .dieta .plus { width: min(118px, 100%); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; border: 3px dashed var(--line); background: var(--soft); font: 700 3.6rem/1 var(--f-display); }
 .tvorba { justify-items: stretch; text-align: left; }
 .tvorba > .h1 { text-align: center; }
-.av-wrap { position: relative; justify-self: center; }
-.av-nahlad { width: 210px; aspect-ratio: 1; border-width: 4px; box-shadow: 0 6px 0 var(--shc); transition: background-color .3s; }
-.av-nahlad.hopni #av-velky { animation: jelly .5s; }
-.kocka { position: absolute; right: -10px; top: 6px; width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--line); background: var(--sun); box-shadow: 0 4px 0 var(--shc); font-size: 1.7rem; padding: 0; }
-.kocka:active { transform: translateY(3px) rotate(90deg); box-shadow: 0 1px 0 var(--shc); }
-.av-tabs { justify-content: center; }
-.av-moznosti { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.av-opt { aspect-ratio: 1; padding: 0; box-shadow: 0 3px 0 var(--shc); }
-.av-opt.farba { border-radius: 50%; border: 3px solid var(--line); background: var(--f); display: grid; place-items: center; }
-.av-opt[aria-pressed="true"] { outline: 4px solid var(--blue); outline-offset: 3px; }
-.av-opt.farba[aria-pressed="true"]::after { content: "✓"; color: #fff; font: 700 1.5rem/1 var(--f-display); text-shadow: 0 2px 0 var(--dk); }
 .btn.red { background: var(--coral); }
 .link.center { justify-self: center; }
 .potvrd { border-color: var(--coral); }
-.prof-meno { display: grid; gap: 6px; justify-items: start; }
-.av-ja { flex: none; width: 104px; aspect-ratio: 1; padding: 0; box-shadow: 0 4px 0 var(--shc); }
 .av.kruh-av { border-width: 2.5px; height: 58px; }
 

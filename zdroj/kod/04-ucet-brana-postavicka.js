@@ -75,10 +75,10 @@ const vstupNadpis = (dop, h, p) => `<div class="vs-nadp">${dop ? `<span class="d
 const sipkaTl = text => `${text}${ikn('sipka', 'ikn-po')}`;
 
 const brany = {
-  nacitava: () => `<div class="brana vs vs-stred"><div class="brana-owl">${owl('hi')}</div>${logo()}<p class="podtitul">${PODTITUL}</p><p class="tx vs-muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
-  bezNetu: () => `<div class="brana vs vs-stred"><div class="brana-owl">${owl('oops')}</div><h1 class="n0">Treba internet</h1>
+  nacitava: () => `<div class="brana vstup vs-stred"><div class="brana-owl">${owl('hi')}</div>${logo()}<p class="podtitul">${PODTITUL}</p><p class="tx vs-muted"><span class="koliesko"></span>${st.sprava || 'Načítava sa…'}</p></div>`,
+  bezNetu: () => `<div class="brana vstup vs-stred"><div class="brana-owl">${owl('oops')}</div><h1 class="n0">Treba internet</h1>
       <p class="tx vs-muted">Na prvé prihlásenie potrebuje appka internet. Potom už pôjde aj bez neho.</p><button class="btn wide" data-reload>${ikn('znova')}Skúsiť znova</button></div>`,
-  chybaNacitania: () => `<div class="brana vs vs-stred"><div class="brana-owl">${owl('oops')}</div><h1 class="n0">Nepodarilo sa načítať</h1>
+  chybaNacitania: () => `<div class="brana vstup vs-stred"><div class="brana-owl">${owl('oops')}</div><h1 class="n0">Nepodarilo sa načítať</h1>
       <p class="tx vs-muted">${esc((window.Cloud && window.Cloud.chybaNacitania) || 'Chýba internet alebo je spojenie pomalé.')}</p>
       <button class="btn wide" data-reload>${ikn('znova')}Skúsiť znova</button><button class="btn dve wide" data-ucet="odhlas">Odhlásiť sa</button></div>`,
   prihlasenie: () => {
@@ -94,7 +94,7 @@ const brany = {
     const spat = `data-uvod="volba"${zam}`;
     const google = text => `<div class="vs-alebo"><span>alebo</span></div>
         <button type="button" class="btn dve wide google" data-ucet="google"${zam}>${napis('google', `<span class="g">G</span>${text}`, 'Otvára sa Google…')}</button>`;
-    if (krok === 'mam') return `<div class="brana vs">${vstupHlava(-1, 0, spat)}<div class="vs-telo">
+    if (krok === 'mam') return `<div class="brana vstup">${vstupHlava(-1, 0, spat)}<div class="vs-telo">
       ${vstupNadpis('Prihlásenie', 'Vitajte späť', 'Prihláste sa a nájdete svoje deti aj ich body.')}
       <form id="prihlas-form" class="vs-form" data-forma="prihlas" novalidate>
         ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
@@ -104,7 +104,7 @@ const brany = {
       </form>
       ${google('Prihlásiť sa cez Google')}
       ${vseobecna}</div></div>`;
-    if (krok === 'novy') return `<div class="brana vs">${vstupHlava(0, 3, spat)}<div class="vs-telo">
+    if (krok === 'novy') return `<div class="brana vstup">${vstupHlava(0, 3, spat)}<div class="vs-telo">
       ${vstupNadpis('Krok 1 z 3 · pre rodiča', 'Vytvoríme váš účet', 'Účet je pre rodiča. Deti pridáte v ďalšom kroku a každé má svoje body.')}
       <form id="prihlas-form" class="vs-form" data-forma="registruj" novalidate>
         ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
@@ -114,7 +114,7 @@ const brany = {
       </form>
       ${google('Pokračovať cez Google')}
       ${vseobecna}</div></div>`;
-    return `<div class="brana vs vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div><p class="odkaz vs-rec">Ahoj! Poďme spolu objavovať svet.</p></div>
+    return `<div class="brana vstup vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div><p class="odkaz vs-rec">Ahoj! Poďme spolu objavovať svet.</p></div>
       <div class="vs-telo vs-stred">${logo()}<p class="podtitul">${PODTITUL}</p>
       <p class="tx vs-muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
       <button type="button" class="btn wide" data-uvod="novy">${sipkaTl('Som tu nový')}</button>
@@ -126,11 +126,11 @@ const brany = {
   // <!--rodic--> nahradí RodicBrana.vyber kartou pre rodiča (PIN a prehľad)
   vyberPovodny: () => {
     const C = window.Cloud, deti = C ? C.deti : [];
-    return `<div class="brana vs vs-vyber">${vstupHlava(-1, 0, '')}<div class="vs-telo">
+    return `<div class="brana vstup vs-vyber">${vstupHlava(-1, 0, '')}<div class="vs-telo">
       ${vstupNadpis('', 'Kto sa dnes učí?', 'Ťukni na svoju postavičku.')}
       <div class="deti">${deti.map(d => `<button class="dieta" data-dieta="${d.id}"><span class="kruh-av" style="--bg:${d.avatar.pozadie}">${postavicka(d.avatar)}</span>
           <b>${esc(d.meno)}</b><small>${vekText(d.vek)}</small><span class="st cis">${ikn('hviezda')}${d.body || 0}</span></button>`).join('')}
-        ${deti.length < 4 ? `<button class="dieta nove" data-nove-dieta><span class="plus">${ikn('plus')}</span><b>Pridať dieťa</b><small>najviac 4 deti</small></button>` : ''}</div>
+        ${deti.length < 4 ? `<button class="dieta nove" data-nove-dieta><span class="dieta-plus">${ikn('plus')}</span><b>Pridať dieťa</b><small>najviac 4 deti</small></button>` : ''}</div>
       <!--rodic-->
       <div class="vs-ucet"><p class="tx vs-muted">Účet rodiča: <b>${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}</b></p>
       <button class="btn dve maly" data-ucet="odhlas">${ikn('odhlas')}Odhlásiť sa</button></div></div></div>`;
@@ -143,16 +143,16 @@ const brany = {
           <div class="tests"><button class="btn zle" data-zmazat-ano>Áno, odstrániť</button><button class="btn dve" data-zmazat-nie>Nie</button></div></div>`
       : '<button class="link center" data-zmazat>Odstrániť tento profil</button>';
     const odhlas = maDeti ? '' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>';
-    const vek = `<div class="seg2" role="group" aria-label="Vek"><button data-uvek="mladsi" aria-pressed="${u.vek === 'mladsi'}">5–8 rokov</button><button data-uvek="starsi" aria-pressed="${u.vek === 'starsi'}">9–12 rokov</button></div>`;
+    const vek = (r = ' rokov') => `<div class="seg2" role="group" aria-label="Vek"><button data-uvek="mladsi" aria-pressed="${u.vek === 'mladsi'}" aria-label="5 až 8 rokov">5–8${r}</button><button data-uvek="starsi" aria-pressed="${u.vek === 'starsi'}" aria-label="9 až 12 rokov">9–12${r}</button></div>`;
     const meno = `<input id="meno-dietata" class="input" maxlength="20" placeholder="Napríklad Emka" autocomplete="off" enterkeyhint="done">`;
-    if (krok === 1) return `<div class="brana vs tvorba">${vstupHlava(z, n, maDeti ? 'data-spat' : '')}<div class="vs-telo">
+    if (krok === 1) return `<div class="brana vstup tvorba">${vstupHlava(z, n, maDeti ? 'data-spat' : '')}<div class="vs-telo">
       ${vstupNadpis(`Krok ${z + 1} z ${n}`, u.prve ? 'Kto sa bude učiť?' : 'Nové dieťa', 'Podľa veku vyberieme témy a hry. Ďalšie deti pridáte neskôr, najviac štyri.')}
       <div class="pole"><label class="vs-lbl" for="meno-dietata">Meno dieťaťa</label>${meno}</div>
-      <div class="pole"><span class="vs-lbl">Vek</span>${vek}</div>
+      <div class="pole"><span class="vs-lbl">Vek</span>${vek()}</div>
       <div class="vs-info">${ikn('stit')}<p>Meno uvidia len priatelia, a to iba vtedy, keď ich neskôr zapnete. E-mail nevidí nikto.</p></div>
       <button class="btn wide" data-tvorba-dalej>${sipkaTl('Ďalej: postavička')}</button>
       ${odhlas}</div></div>`;
-    if (krok === 2) return `<div class="brana vs tvorba up">${vstupHlava(z + 1, n, 'data-tvorba-spat')}<div class="vs-telo">
+    if (krok === 2) return `<div class="brana vstup tvorba up">${vstupHlava(z + 1, n, 'data-tvorba-spat')}<div class="vs-telo">
       ${vstupNadpis(`Krok ${z + 2} z ${n} · ${esc(u.meno)}`, 'Postavička', 'Vyberte spolu účes, oči a farby. Kto sa nechce hrať, ťukne na kocku.')}
       ${satnik()}
       <button class="btn wide" data-ulozit-dieta>${ikn('check')}Hotovo, poďme na to!</button>
@@ -160,18 +160,18 @@ const brany = {
     // úprava postavičky dieťaťa, ktoré už existuje: šatník
     return `<div class="brana tvorba up up-uprava">
       <div class="up-hl"><button class="btn kruh dve" data-spat aria-label="Späť">${ikn('spat')}</button><h1 class="n1">Moja postavička</h1><span class="st cis">${ikn('hviezda')}${u.body || 0}</span></div>
-      ${satnik(true)}
-      <div class="up-zakl"><div class="pole"><label class="vs-lbl" for="meno-dietata">Meno</label>${meno}</div><div class="pole"><span class="vs-lbl">Vek</span>${vek}</div></div>
+      ${satnik(true, `<div class="up-zakl"><div class="pole"><label class="vs-lbl" for="meno-dietata">Meno</label>${meno}</div><div class="pole"><span class="vs-lbl">Vek</span>${vek('')}</div></div>`)}
       <div class="up-spodok"><button class="btn wide" data-ulozit-dieta>${ikn('check')}Uložiť</button>${zmaz}</div>
       ${maDeti ? '' : odhlas}</div>`;
   },
 };
 // šatník: busta v kruhu na žltom javisku, kategórie, veci s rovnako vysokým pásikom dole (cena, Mám, Na sebe), najbližšia odmena
-function satnik(uprava) {
+function satnik(uprava, vlozka = '') {
   const u = st.upravuje;
   return `<div class="up-javisko"><svg class="up-luce" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<path d="M100 100L${(100 + 160 * Math.cos((i * 30 - 6) * Math.PI / 180)).toFixed(1)} ${(100 + 160 * Math.sin((i * 30 - 6) * Math.PI / 180)).toFixed(1)}L${(100 + 160 * Math.cos((i * 30 + 6) * Math.PI / 180)).toFixed(1)} ${(100 + 160 * Math.sin((i * 30 + 6) * Math.PI / 180)).toFixed(1)}Z"/>`).join('')}</svg>
       <div class="av-nahlad kruh-av" id="av-nahlad" style="--bg:${u.avatar.pozadie}"><div id="av-velky">${postavicka(u.avatar)}</div></div>
       <button class="btn kruh dve kocka" data-nahodne aria-label="Náhodná postavička">${ikn('kocka')}</button></div>
+    ${vlozka}
     <div class="up-taby" id="av-tabs">${avTaby()}</div>
     <div class="veci" id="av-moznosti">${avMoznosti()}</div>
     ${uprava ? `<div id="up-najblizsia">${najblizsiaVec()}</div>` : ''}`;
@@ -194,7 +194,7 @@ function avMoznosti() {
     // pri účese bez čiapky, inak by pod ňou všetky účesy vyzerali rovnako
     const obr = farba ? `<i class="vec-farba" style="--f:${v}"></i>`
       : `<span class="kruh-av" style="--bg:${u.avatar.pozadie}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</span>`;
-    return `<button class="vec av-opt${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam zamknute' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} bodoch` : ''}">
+    return `<button class="vec${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} bodoch` : ''}">
       ${zam ? `<span class="zmk">${ikn('zamok')}</span>` : ''}<span class="vec-obr">${obr}</span><span class="dolu">${dolu}</span></button>`;
   }).join('');
   const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za body z tém.</span></div>` : '';
