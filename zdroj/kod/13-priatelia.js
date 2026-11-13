@@ -103,13 +103,13 @@ Object.assign(views, {
     const priatelia = Object.keys(So.priatelia).filter(f => So.profily[f]).sort((a, b) => posl(b) - posl(a) || So.profily[a].meno.localeCompare(So.profily[b].meno));
     const taby = [['spravy', 'Správy', socNove()], ['rebricek', 'Rebríček', 0], ['pridat', 'Pridať', 0]];
     const hori = f => (So.profily[f].seria || 0) > 0;
-    const pribehy = tab === 'spravy' && priatelia.length ? `<div class="pribehy"><button class="pribeh plus" data-soc-tab="pridat"><span class="pr-av">${ikn('plus')}</span><small>Pridať</small></button>${priatelia.map((f, i) => `<button class="pribeh${hori(f) ? ' hori' : ''}" data-soc-otvor="${f}" style="--i:${i}">${prAv(So.profily[f].avatar, f)}<small>${esc(So.profily[f].meno)}</small>${hori(f) ? `<i class="pr-ohn" aria-label="Má sériu">${ikn('plamen')}</i>` : ''}</button>`).join('')}</div>` : '';
+    const pribehy = tab === 'spravy' && priatelia.length ? `<div class="pribehy"><button class="pribeh pribeh-plus" data-soc-tab="pridat"><span class="pr-av">${ikn('plus')}</span><small>Pridať</small></button>${priatelia.map((f, i) => `<button class="pribeh${hori(f) ? ' hori' : ''}" data-soc-otvor="${f}" style="--i:${i}">${prAv(So.profily[f].avatar, f)}<small>${esc(So.profily[f].meno)}</small>${hori(f) ? `<i class="pr-ohn" aria-label="Má sériu">${ikn('plamen')}</i>` : ''}</button>`).join('')}</div>` : '';
     let telo = '';
     if (tab === 'spravy') telo = `${So.ziadosti.map(z => `<div class="karta pr-ziadost"><span class="zal" style="--c:var(--coral)">Nová žiadosť</span>${prAv(z.avatar, z.id)}<b>${esc(z.meno)} sa chce s tebou kamarátiť</b>
         <div class="pr-tl"><button class="btn maly ok" data-soc-prijmi="${z.id}">${ikn('check')}Prijať</button><button class="btn maly dve" data-soc-odmietni="${z.id}">Nie</button></div></div>`).join('')}
       ${priatelia.length ? `<div class="pr-konv">${priatelia.map((f, i) => { const n = neprecitane(f); return `<button class="pr-k${n ? ' nova' : ''}" data-soc-otvor="${f}" style="--i:${i}">${prAv(So.profily[f].avatar, f)}
         <span class="odkaz"><b>${esc(So.profily[f].meno)}</b>${nahladSpravy(f)}</span>${n ? `<i class="pr-poc" aria-label="Nové správy: ${n}">${n}</i>` : ''}</button>`; }).join('')}</div>`
-        : `<div class="pr-prazdne"><div class="pr-kruhy" aria-hidden="true"><span></span><span></span><span></span></div>${prMudra('zvedava', 'Zatiaľ tu nikto nie je. Pošli kamarátovi svoj kód a budete si posielať nálepky!')}
+        : `<div class="pr-prazdne"><div class="pr-kruhy" aria-hidden="true"><span>?</span><span>${ikn('plus')}</span><span>?</span></div>${prMudra('zvedava', 'Zatiaľ tu nikto nie je. Pošli kamarátovi svoj kód a budete si posielať nálepky!')}
           <button class="btn wide" data-soc-tab="pridat">${ikn('plus')}Pridať priateľa</button></div>`}`;
     else if (tab === 'rebricek') telo = rebricekHtml();
     else telo = `<div class="listok soc-kod"><div class="pr-kod-h"><span class="dop">Môj kód priateľa</span><b class="kod">${esc(So.profil.kod)}</b><p>Povedz ho kamarátovi alebo mu ho pošli. S kódom ti pošle žiadosť.</p></div>

@@ -25,8 +25,8 @@
 .pribeh .pr-av { --s: 60px; transition: transform .2s var(--spring); }
 .pribeh:active .pr-av { transform: scale(.92); }
 .pribeh small { max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 .8rem/1.1 var(--fb); }
-.pribeh.plus .pr-av { place-items: center; border-style: dashed; background: var(--card); }
-.pribeh.plus .ikn { width: 28px; height: 28px; color: var(--text); }
+.pribeh-plus .pr-av { place-items: center; border-style: dashed; background: var(--card); }
+.pribeh-plus .ikn { width: 28px; height: 28px; color: var(--text); }
 .pr-ohn { position: absolute; right: -1px; top: 38px; display: grid; place-items: center; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
 .pr-ohn .ikn { width: 16px; height: 16px; }
 
@@ -67,7 +67,8 @@
 .pr-prazdne { display: grid; justify-items: center; gap: 18px; padding-top: 6px; }
 .pr-prazdne > .btn { max-width: 340px; }
 .pr-kruhy { display: flex; align-items: end; }
-.pr-kruhy span { width: 58px; height: 58px; margin: 0 -7px; border: 2.5px dashed var(--ink); border-radius: 50%; background: var(--card); animation: prBob 3s ease-in-out infinite; }
+.pr-kruhy span { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 -7px; border: 2.5px dashed var(--ink); border-radius: 50%; background: var(--card); font: 900 1.5rem/1 var(--fd); color: var(--muted); animation: prBob 3s ease-in-out infinite; }
+.pr-kruhy .ikn { width: 30px; height: 30px; color: var(--text); }
 .pr-kruhy span:nth-child(2) { width: 72px; height: 72px; position: relative; z-index: 1; background: var(--sun-l); animation-delay: -1s; }
 .pr-kruhy span:nth-child(3) { animation-delay: -2s; }
 @keyframes prBob { 50% { transform: translateY(-5px); } }
@@ -125,12 +126,11 @@
 .soc-pridaj label.pr-mala { text-align: left; }
 .soc-riadok { display: flex; gap: 8px; }
 .kod-vstup { flex: 1; min-width: 0; text-transform: uppercase; font: 800 1.15rem var(--fd); letter-spacing: .05em; }
-.kod-vstup::placeholder { color: var(--muted); opacity: .6; }
+.kod-vstup::placeholder { color: var(--muted); opacity: .45; font-weight: 600; }
 .soc-riadok .btn { flex: none; }
 .pr-caka { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .pr-caka .pr-mala { width: 100%; text-align: left; }
-.pr-bezp { display: flex; align-items: center; justify-content: center; gap: 6px; }
-.pr-bezp .ikn { width: 20px; height: 20px; }
+.pr-bezp .ikn { display: inline-block; width: 20px; height: 20px; margin-right: 5px; vertical-align: -5px; }
 
 /* priatelia ešte nie sú zapnutí (pre rodiča) */
 .soc-intro { display: grid; gap: 12px; }
@@ -199,6 +199,8 @@
 .msg-nal > svg { width: 100%; height: 100%; }
 .dm .msg-nal { animation: pop .5s var(--spring) both; }
 .msg.odosiela { opacity: .6; }
+/* správa s nálepkou alebo témou má triedu .nalepka (pomenovanú v 4.9); nesmie dostať vzhľad dlaždice .nalepka zo 40-system.css */
+.dm .msg.nalepka { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
 .dm-chat > .msg:last-child, .dm-chat > .msg:has(+ .dm-videne:last-child) { animation: prBub .5s var(--spring) both; }
 @keyframes prBub { 0% { opacity: 0; transform: translateY(16px) scale(.9); } 60% { opacity: 1; transform: scale(1.04); } }
 .msg-r { position: absolute; right: -6px; bottom: -9px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); animation: pop .4s var(--spring) both; }
