@@ -259,8 +259,8 @@ function zbierkaOdznakov() {
 // blok Pasu pre kartu Ja: obal pasu, počet a posledné pečiatky; otvorí celý Pas
 function pasKarta() {
   const k = nevybrate(), vsetky = odznakyVek(), ma = vsetky.filter(o => st.odznaky.includes(o.id)).length;
-  const posledne = st.odznaky.slice(-4).reverse().map(id => vsetky.find(o => o.id === id)).filter(Boolean);
-  return `<button class="karta odznaky-karta pas-karta${k ? ' novinka' : ''}" data-go="odznaky"><span class="zal" style="--c:var(--violet-l)">Pas objaviteľa</span>
+  const posledne = st.odznaky.map(id => vsetky.find(o => o.id === id)).filter(Boolean).slice(-4).reverse();
+  return `<button class="karta odznaky-karta pas-karta${k ? ' novinka' : ''}" data-go="odznaky"><span class="zal">Pas objaviteľa</span>
     <span class="pas-obal" aria-hidden="true"><svg viewBox="0 0 64 80"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="4" width="52" height="72" rx="7" fill="var(--violet)"/><path d="M14 4v72" stroke="var(--violet-d)" stroke-width="2"/><circle cx="34" cy="34" r="13" fill="none" stroke="var(--sun)" stroke-width="2.6"/><path d="M21 34h26M34 21c-6 8-6 18 0 26M34 21c6 8 6 18 0 26" fill="none" stroke="var(--sun)" stroke-width="2"/><path d="M24 58h20" stroke="var(--sun)" stroke-width="2.6"/></g></svg></span>
     <span class="ok-info"><b class="n1">${ma} z ${vsetky.length} pečiatok</b>
       <span class="posledne pas-posl">${posledne.map(o => peciatka(o, 'ma')).join('') || '<small>Prvú pečiatku dostaneš za prvú tému.</small>'}</span>

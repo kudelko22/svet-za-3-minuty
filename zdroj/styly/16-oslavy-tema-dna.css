@@ -91,3 +91,6 @@
   .so-luce, .os-listy, .os-nadpis span, .os-veta, .os-seria, .os-ohen .ikn, .os-pred-po, .so-dni, .os-padne, .oslava .btn.os-dalej { animation: none !important; }
   .os-listy { display: none; }
 }
+.so-scena .len-noc { display: none; }
+:root[data-rezim="mesacny"] .so-scena .len-noc { display: inline; }
+:root[data-rezim="mesacny"] .so-scena .len-den { display: none; }

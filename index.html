@@ -959,6 +959,9 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
   .so-luce, .os-listy, .os-nadpis span, .os-veta, .os-seria, .os-ohen .ikn, .os-pred-po, .so-dni, .os-padne, .oslava .btn.os-dalej { animation: none !important; }
   .os-listy { display: none; }
 }
+.so-scena .len-noc { display: none; }
+:root[data-rezim="mesacny"] .so-scena .len-noc { display: inline; }
+:root[data-rezim="mesacny"] .so-scena .len-den { display: none; }
 /* priatelia */
 .nav button { font-size: .8rem; }
 .soc-intro { display: flex; gap: 12px; align-items: flex-start; }
@@ -3056,8 +3059,8 @@ function zbierkaOdznakov() {
 // blok Pasu pre kartu Ja: obal pasu, počet a posledné pečiatky; otvorí celý Pas
 function pasKarta() {
   const k = nevybrate(), vsetky = odznakyVek(), ma = vsetky.filter(o => st.odznaky.includes(o.id)).length;
-  const posledne = st.odznaky.slice(-4).reverse().map(id => vsetky.find(o => o.id === id)).filter(Boolean);
-  return `<button class="karta odznaky-karta pas-karta${k ? ' novinka' : ''}" data-go="odznaky"><span class="zal" style="--c:var(--violet-l)">Pas objaviteľa</span>
+  const posledne = st.odznaky.map(id => vsetky.find(o => o.id === id)).filter(Boolean).slice(-4).reverse();
+  return `<button class="karta odznaky-karta pas-karta${k ? ' novinka' : ''}" data-go="odznaky"><span class="zal">Pas objaviteľa</span>
     <span class="pas-obal" aria-hidden="true"><svg viewBox="0 0 64 80"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="4" width="52" height="72" rx="7" fill="var(--violet)"/><path d="M14 4v72" stroke="var(--violet-d)" stroke-width="2"/><circle cx="34" cy="34" r="13" fill="none" stroke="var(--sun)" stroke-width="2.6"/><path d="M21 34h26M34 21c-6 8-6 18 0 26M34 21c6 8 6 18 0 26" fill="none" stroke="var(--sun)" stroke-width="2"/><path d="M24 58h20" stroke="var(--sun)" stroke-width="2.6"/></g></svg></span>
     <span class="ok-info"><b class="n1">${ma} z ${vsetky.length} pečiatok</b>
       <span class="posledne pas-posl">${posledne.map(o => peciatka(o, 'ma')).join('') || '<small>Prvú pečiatku dostaneš za prvú tému.</small>'}</span>
@@ -5283,7 +5286,7 @@ const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}$
   <svg class="so-pozadie" viewBox="0 0 360 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <rect width="360" height="300" fill="var(--so-sky)"/>
     ${o.luce ? `<g class="so-luce">${Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180, b = (i * 30 + 14) * Math.PI / 180; return `<path d="M180 190L${(180 + 520 * Math.cos(a)).toFixed(0)} ${(190 + 520 * Math.sin(a)).toFixed(0)}L${(180 + 520 * Math.cos(b)).toFixed(0)} ${(190 + 520 * Math.sin(b)).toFixed(0)}Z"/>`; }).join('')}</g>` : ''}
-    <circle cx="312" cy="64" r="21" fill="var(--sc-sun)"/>${o.hn ? '' : '<circle class="len-den" cx="312" cy="64" r="32" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12" stroke-linecap="round"/>'}
+    <circle cx="312" cy="64" r="21" fill="var(--sc-sun)"/><circle class="len-noc" cx="302" cy="57" r="18" fill="var(--so-sky)"/>${o.hn ? '' : '<circle class="len-den" cx="312" cy="64" r="32" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12" stroke-linecap="round"/>'}
     <g fill="var(--sc-cloud)">${o.hn ? '<ellipse cx="312" cy="78" rx="36" ry="12"/><circle cx="298" cy="68" r="14"/><circle cx="320" cy="62" r="18"/>' : ''}<ellipse cx="44" cy="120" rx="24" ry="9"/><circle cx="38" cy="113" r="11"/><circle cx="54" cy="110" r="13"/></g>
     <path d="M0 214C50 188 110 192 160 206C210 188 300 186 360 202V300H0Z" fill="var(--so-far)"/>
     <path d="M0 240C70 214 150 222 210 236C270 248 320 230 360 224V300H0Z" fill="var(--so-mid)"/>

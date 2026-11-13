@@ -116,7 +116,7 @@ const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}$
   <svg class="so-pozadie" viewBox="0 0 360 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <rect width="360" height="300" fill="var(--so-sky)"/>
     ${o.luce ? `<g class="so-luce">${Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180, b = (i * 30 + 14) * Math.PI / 180; return `<path d="M180 190L${(180 + 520 * Math.cos(a)).toFixed(0)} ${(190 + 520 * Math.sin(a)).toFixed(0)}L${(180 + 520 * Math.cos(b)).toFixed(0)} ${(190 + 520 * Math.sin(b)).toFixed(0)}Z"/>`; }).join('')}</g>` : ''}
-    <circle cx="312" cy="64" r="21" fill="var(--sc-sun)"/>${o.hn ? '' : '<circle class="len-den" cx="312" cy="64" r="32" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12" stroke-linecap="round"/>'}
+    <circle cx="312" cy="64" r="21" fill="var(--sc-sun)"/><circle class="len-noc" cx="302" cy="57" r="18" fill="var(--so-sky)"/>${o.hn ? '' : '<circle class="len-den" cx="312" cy="64" r="32" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12" stroke-linecap="round"/>'}
     <g fill="var(--sc-cloud)">${o.hn ? '<ellipse cx="312" cy="78" rx="36" ry="12"/><circle cx="298" cy="68" r="14"/><circle cx="320" cy="62" r="18"/>' : ''}<ellipse cx="44" cy="120" rx="24" ry="9"/><circle cx="38" cy="113" r="11"/><circle cx="54" cy="110" r="13"/></g>
     <path d="M0 214C50 188 110 192 160 206C210 188 300 186 360 202V300H0Z" fill="var(--so-far)"/>
     <path d="M0 240C70 214 150 222 210 236C270 248 320 230 360 224V300H0Z" fill="var(--so-mid)"/>
