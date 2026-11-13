@@ -53,9 +53,9 @@ const TyzStrom = {
     document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
       if (e.target.closest('[data-tyz-den]')) { zavri(); return; } // ďalej sa postará bežné ťuknutie na deň
-      if (e.target === el || e.target.closest('[data-tyzs-zavri]')) { Zvuk.play('tap'); zavri(); }
+      if (e.target === el || e.target.closest('[data-tyzs-zavri]')) { Zvuk.play('zavri'); zavri(); }
     });
-    Zvuk.play('whoosh'); Haptika.hraj('tuk');
+    Zvuk.play('okno'); Haptika.hraj('tuk');
     const p = el.querySelector('.day.today') || el.querySelector('.day:not([disabled])'); if (p) p.focus({ preventScroll: true });
   },
 };
@@ -98,9 +98,9 @@ const Okruh = {
       e.stopPropagation();
       const v = e.target.closest('[data-okruh-id]');
       if (v) { Zvuk.play('pop'); Ty.nastav(v.dataset.okruhId); zavri(); if (st.view === 'domov') render(true); TyzPrehlad.obnov(); TyzStrom.obnov(); return; }
-      if (e.target === el || e.target.closest('[data-okruh-zavri]')) { Zvuk.play('tap'); zavri(); }
+      if (e.target === el || e.target.closest('[data-okruh-zavri]')) { Zvuk.play('zavri'); zavri(); }
     });
-    Zvuk.play('whoosh'); const p = el.querySelector('.okruh-volba[aria-pressed="true"]') || el.querySelector('.okruh-volba'); if (p) p.focus({ preventScroll: true });
+    Zvuk.play('okno'); const p = el.querySelector('.okruh-volba[aria-pressed="true"]') || el.querySelector('.okruh-volba'); if (p) p.focus({ preventScroll: true });
   },
 };
 /* Prehľad týždňa (verzia 4.1 C): okno s dňami, stavmi, súčtami a prechodom na minulé týždne. */
@@ -170,9 +170,9 @@ const TyzPrehlad = {
       if (an) { zavri(); Ang.klik(an, { angPrec: an.dataset.tpAng }); return; }
       if (den) { Zvuk.play('pop'); zavri(); Tyzden.otvor(den.dataset.tpDen); return; }
       if (e.target.closest('[data-tp-okruh]')) { Zvuk.play('tap'); Okruh.ukaz(); return; }
-      if (e.target === el || e.target.closest('[data-tp-zavri]')) { Zvuk.play('tap'); zavri(); }
+      if (e.target === el || e.target.closest('[data-tp-zavri]')) { Zvuk.play('zavri'); zavri(); }
     });
-    Zvuk.play('whoosh');
+    Zvuk.play('okno');
   },
 };
 /* ===== Domov 5.0: kreslená krajina, odkaz Múdrej, týždeň na Domove, odmena =====

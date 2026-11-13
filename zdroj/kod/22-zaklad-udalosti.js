@@ -145,13 +145,13 @@ document.addEventListener('click', e => {
     const nove = TV().filter(t => !st.done.includes(t.id) && t.id !== (f && f.id));
     startTema(pick(nove.length ? nove : TV().filter(t => t.id !== (f && f.id))).id);
   } else if (d.skupina !== undefined) {
-    Zvuk.play('boing');
+    Zvuk.play('karta');
     // druhé ťuknutie na vybranú oblasť ju zavrie
     st.skupina = st.view === 'temy' && st.skupina === d.skupina && !st.kat ? '' : d.skupina; st.kat = ''; st.q = '';
     const inp = document.getElementById('hladaj'); if (inp) inp.value = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
   } else if (d.kat !== undefined) {
-    Zvuk.play('boing');
+    Zvuk.play('karta');
     st.kat = d.kat; st.q = '';
     if (d.kat && d.kat !== 'fav') st.skupina = (skupinaKat(d.kat) || {}).id || ''; else if (d.kat === 'fav') st.skupina = '';
     if (st.view === 'temy' && !f) fillTemy(); else go('temy');
@@ -210,7 +210,7 @@ document.addEventListener('click', e => {
       const oslava = Oslava.treba(f); dokonci(f);
       // téma dňa: najprv veľká oslava, výsledok až po ťuknutí na Pokračovať
       if (oslava) { Oslava.ukaz(() => { f.i++; renderFlow(); window.scrollTo(0, 0); }); return; }
-    } else Zvuk.play('whoosh');
+    } else Zvuk.play(f.kroky[f.i + 1].t === 'q' && f.kroky[f.i].t !== 'q' ? 'start' : 'whoosh'); // začiatok kvízu: lístok
     f.i++; renderFlow(); window.scrollTo(0, 0);
   } else {
     Zvuk.play('tap');
