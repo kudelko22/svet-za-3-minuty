@@ -914,142 +914,11 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 @keyframes osPrilet { from { transform: translate(190px, -150px) rotate(25deg) scale(.6); } 60% { transform: translate(-6px, 6px) rotate(-6deg); } }
 @keyframes osPismeno { from { opacity: 0; transform: translateY(26px) scale(.4); } }
 @keyframes osPadne { from { opacity: 0; transform: translateY(-120px) scale(1.6); } 70% { opacity: 1; transform: translateY(0) scale(.85); } }
-/* priatelia */
+/* priatelia: zo 4.9 tu ostali len pravidlá, ktoré používajú iné časti appky. Vzhľad Priateľov 5.0 je v 54-priatelia.css. */
 .nav button { font-size: .8rem; }
-.soc-intro { display: flex; gap: 12px; align-items: flex-start; }
-.soc-intro .owl { flex: none; width: 76px; height: auto; }
-.soc-intro p { margin: 6px 0; font-weight: 700; line-height: 1.4; }
-.soc-kod { display: grid; justify-items: center; gap: 6px; text-align: center; background: var(--grad-warm); }
-.soc-kod .kod { font: 700 2.2rem/1 var(--f-display); letter-spacing: .06em; padding: 8px 16px; border: 3px dashed var(--line); border-radius: 16px; background: var(--paper); }
-.soc-pridaj { display: grid; gap: 8px; }
-.soc-riadok { display: flex; gap: 8px; }
-.kod-vstup { flex: 1; min-width: 0; padding-left: 16px; background-image: none; text-transform: uppercase; font: 700 1.2rem var(--f-display); letter-spacing: .05em; }
-.soc-av { flex: none; display: grid; width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2.5px solid var(--line); background: var(--p-E3F4FF,#E3F4FF); }
-.soc-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
-.soc-av.velky { width: 120px; height: 120px; border-width: 3px; }
-.soc-ziadost { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-.soc-ziadost b { flex: 1; min-width: 0; overflow-wrap: anywhere; font: 700 1.1rem var(--f-display); }
-.soc-ziadost .btn, .soc-ziadost .soc-av { flex: none; }
-.soc-zoznam { display: grid; gap: 10px; }
-.soc-priatel { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; }
-.soc-priatel > span:nth-child(2) { flex: 1; display: grid; }
-.soc-priatel b { font: 700 1.15rem var(--f-display); }
-.soc-priatel small { font-weight: 800; color: var(--muted); }
-.soc-nove { padding: 3px 10px; border: 2px solid var(--line); border-radius: 999px; background: var(--coral); color: #fff; font: 700 .85rem var(--f-display); animation: pulse 1.4s ease-in-out infinite; }
-.rebricek { display: grid; gap: 8px; }
-.reb { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 16px; }
-.reb.ja { background: var(--t-yel); }
-.reb b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 1.05rem var(--f-display); }
-.reb-m { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid var(--line); font: 700 1rem var(--f-display); background: var(--off); }
-.reb-m.m1 { background: var(--sun); } .reb-m.m2 { background: var(--p-D9DCE6,#D9DCE6); } .reb-m.m3 { background: #E8A86A; }
-.reb .soc-av { width: 40px; height: 40px; }
-.reb-s, .reb-b { font-weight: 800; white-space: nowrap; }
-.soc-hlava { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.soc-hlava b { font: 700 1.6rem var(--f-display); }
-.soc-profil { display: grid; justify-items: center; gap: 10px; text-align: center; }
-.soc-staty { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-.soc-strom { display: grid; justify-items: center; }
-.strom-mini { width: 170px; height: auto; }
-.chat { display: grid; gap: 8px; max-height: 340px; overflow-y: auto; background: var(--p-F4F8FF,#F4F8FF); }
-.chat-prazdny { text-align: center; }
-.msg { justify-self: start; display: grid; gap: 2px; max-width: 80%; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 18px 18px 18px 4px; background: var(--paper); }
-.msg.moja { justify-self: end; border-radius: 18px 18px 4px 18px; background: var(--p-DFF7E8,#DFF7E8); }
-.msg small { color: var(--muted); font-weight: 800; font-size: .72rem; }
-.msg-t { font: 700 1.1rem/1.25 var(--f-display); }
-.msg-nal { display: block; width: 72px; height: 72px; }
-.msg-nal > svg { width: 100%; height: 100%; }
-.soc-nalepky { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
-.nal { display: grid; place-items: center; aspect-ratio: 1; padding: 8px; border: 2.5px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: 0 3px 0 var(--shc); }
-.nal > svg { width: 100%; height: 100%; }
-.nal:active { transform: translateY(2px) scale(.95); box-shadow: 0 1px 0 var(--shc); }
-.soc-vety { margin-top: 12px; }
-.soc-odober { margin-top: 18px; }
-/* správy ako na Instagrame */
-body.dm-rezim::before { display: none; }
-.soc-taby { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin-bottom: 14px; border: 2.5px solid var(--line); border-radius: 999px; background: var(--paper); }
-.soc-taby button { padding: 8px 4px; border: 0; border-radius: 999px; background: none; font: 700 1rem var(--f-display); color: var(--muted); }
-.soc-taby button[aria-pressed="true"] { background: var(--taby-on); color: #fff; }
-.soc-taby i { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--coral); color: #fff; font-style: normal; font-size: .8rem; }
-.pribehy { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px; margin-bottom: 6px; scrollbar-width: none; }
-.pribeh { position: relative; flex: none; display: grid; justify-items: center; gap: 4px; width: 70px; border: 0; background: none; font: inherit; }
-.pribeh .soc-av { width: 62px; height: 62px; border-width: 3px; box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--off2); }
-.pribeh.hori .soc-av { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--sun-d); }
-.pribeh.plus .soc-av { display: grid; place-items: center; background: var(--paper); padding: 12px; }
-.pribeh small { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; }
-.pribeh-ohen { position: absolute; top: 40px; right: 2px; width: 24px; height: 24px; }
-.konverzacie { display: grid; }
-.konv { display: flex; align-items: center; gap: 12px; padding: 10px 4px; border: 0; border-bottom: 2px solid rgb(43 34 64 / .08); background: none; text-align: left; font: inherit; color: inherit; }
-.konv .soc-av { width: 56px; height: 56px; }
-.konv-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.konv-t b { font: 600 1.1rem var(--f-display); }
-.konv-t small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-weight: 700; }
-.konv.nova .konv-t b, .konv.nova .konv-t small { color: var(--text); font-weight: 900; }
-.bodka { flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--violet); }
-.dm { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; background: linear-gradient(var(--p-F7F4FF,#F7F4FF), var(--p-FFF8EE,#FFF8EE)); }
-.dm-hlava { display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px; border-bottom: 2.5px solid var(--line); background: var(--paper); }
-.dm-spat { display: grid; place-items: center; width: 44px; height: 44px; border: 0; background: none; color: var(--text); }
-.dm-spat svg { width: 28px; height: 28px; }
-.dm-kto { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; border: 0; background: none; text-align: left; font: inherit; color: inherit; }
-.dm-kto .soc-av { width: 44px; height: 44px; }
-.dm-kto b { display: block; font: 700 1.2rem var(--f-display); }
-.dm-kto small { color: var(--muted); font-weight: 800; }
-.dm-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0; padding: 14px 12px; overscroll-behavior: contain; }
-.dm-prazdny { margin: auto; display: grid; justify-items: center; gap: 8px; text-align: center; }
-.dm-prazdny b { font: 700 1.4rem var(--f-display); }
-.dm-cas { align-self: center; margin: 10px 0 4px; color: var(--muted); font: 800 .78rem var(--f-body); }
-.dm .msg { align-self: flex-start; display: flex; align-items: flex-end; gap: 6px; max-width: 78%; padding: 0; border: 0; background: none; }
-.dm .msg.moja { align-self: flex-end; }
-.dm .msg { margin-bottom: 4px; flex: none; }
-.dm-chat > * { flex-shrink: 0; }
-.dm .msg.posl { margin-bottom: 9px; }
-.msg-av { flex: none; width: 28px; height: 28px; border-radius: 50%; overflow: hidden; }
-.msg-av .postavicka { width: 100%; height: auto; }
-.dm .msg-t { display: block; padding: 9px 14px; border-radius: 22px; background: var(--p-EAE4F7,#EAE4F7); font: 600 1.1rem/1.25 var(--f-display); }
-.dm .msg.moja .msg-t { background: linear-gradient(135deg, var(--violet), var(--violet)); color: #fff; }
-.msg-x { font-family: var(--f-body) !important; font-weight: 700 !important; overflow-wrap: anywhere; white-space: pre-wrap; }
 .hn-info { margin: 8px 0; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 16px; background: var(--t-yel); font-weight: 700; line-height: 1.35; }
-.dm-text { display: flex; gap: 8px; }
-.dm-text .search { flex: 1; min-width: 0; }
-.dm .msg-nal { width: 96px; height: 96px; animation: pop .5s var(--spring) both; }
-.msg.odosiela { opacity: .6; }
-.dm-pisanie { display: grid; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)); border-top: 2.5px solid var(--line); background: var(--paper); }
-.dm-nalepky, .dm-vety { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
-@media (min-width: 600px) { .dm-nalepky, .dm-vety { flex-wrap: wrap; overflow: visible; } }
-/* pri písaní (klávesnica) alebo nízkom okne sa rady nálepiek a viet schovajú, aby ostalo miesto na rozhovor */
-.dm-pisanie:has(#soc-text:focus) .dm-nalepky, .dm-pisanie:has(#soc-text:focus) .dm-vety { display: none; }
-@media (max-height: 460px) { .dm-nalepky, .dm-vety { display: none; } }
-.dm-vety .chip, .chips button.chip { min-height: 44px; }
-.dm-nalepky .nal { flex: none; width: 60px; height: 60px; padding: 6px; border-radius: 16px; }
-.dm-vety .chip { flex: none; padding: 7px 13px; color: var(--dk); text-shadow: none; background: var(--p-F2EEFB,#F2EEFB); font-size: .95rem; }
-/* priatelia 2.2: téma v správe, srdiečko, Videné, upozornenie */
-.msg-obal { position: relative; display: block; }
-.msg-r { position: absolute; right: -6px; bottom: -8px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--line); border-radius: 50%; background: var(--paper); animation: pop .4s var(--spring) both; }
-.dm .msg.srdce { margin-bottom: 18px; }
-.msg-tema { display: grid; gap: 4px; width: 200px; padding: 8px; border: 2.5px solid var(--line); border-radius: 20px; background: var(--paper); box-shadow: 0 3px 0 var(--shc); }
-.msg-tema-obr { display: block; height: 100px; overflow: hidden; border-radius: 14px; border: 2px solid var(--line); }
-.msg-tema-obr > svg { width: 100%; height: 100%; }
-.msg-tema small { color: var(--muted); font-weight: 800; }
-.msg-tema b { font: 700 1rem/1.2 var(--f-display); }
-.msg-hv { display: flex; gap: 2px; }
-.msg-hv svg { width: 20px; height: 20px; }
-.msg-tema .btn { padding: 8px 12px; font-size: .95rem; }
-.dm-videne { align-self: flex-end; margin: -2px 4px 6px; color: var(--muted); font: 800 .78rem var(--f-body); }
-.dm-temy { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
-.dm-tema { flex: none; display: grid; gap: 3px; width: 108px; padding: 4px; border: 2.5px solid var(--line); border-radius: 14px; background: var(--paper); text-align: left; font: inherit; }
-.dm-tema > span { display: block; height: 56px; overflow: hidden; border-radius: 10px; }
-.dm-tema > span > svg { width: 100%; height: 100%; }
-.dm-tema small { font-weight: 800; font-size: .72rem; line-height: 1.2; }
-.dm-temy-btn { background: var(--p-DCEBFF,#DCEBFF) !important; }
-.dm-temy-btn.on { background: var(--sun) !important; }
 .soc-pochval { margin: 6px 0; }
-.soc-ozn { position: fixed; z-index: 58; top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 auto; padding: 8px 14px 8px 8px;
-  border: 3px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: 0 6px 0 var(--shc); text-align: left; font: inherit; color: inherit; animation: ozn .45s var(--spring) both; }
-.soc-ozn > span:nth-child(2) { flex: 1; min-width: 0; display: grid; }
-.soc-ozn b { font: 700 1.05rem var(--f-display); }
-.soc-ozn small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-weight: 800; }
-.soc-ozn.pryc { animation: oznPryc .4s ease-in both; }
-@keyframes ozn { from { transform: translateY(-140%); } }
-@keyframes oznPryc { to { transform: translateY(-140%); opacity: 0; } }
+body.dm-rezim::before { display: none; }
 /* oblasti tém */
 .skupiny { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .tile.skupina { min-height: 150px; }
@@ -2108,8 +1977,260 @@ body:has(main > .ihrisko) .blobs { display: none; }
 }
 /* 5.0: Profil (Ja), postavička, sprievodca. Sem patria nové štýly tejto sekcie (smer: preukaz objaviteľa, ceny pri veciach v jednom pásiku).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
-/* 5.0: Priatelia, správy, rebríček. Sem patria nové štýly tejto sekcie (smer: lístok s kódom, stupne víťazov).
-   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+/* 5.0: Priatelia, správy, rebríček. Smer z druhého kola: teplý koralový pás s tvárami priateľov, správy ako bubliny,
+   stupne víťazov (koruna len pre prvé miesto), lístok s kódom. Rozhovor a profil priateľa sú v tom istom štýle. */
+
+.pr { display: grid; gap: 22px; }
+.pr > .karta:has(> .zal) { margin-top: 8px; }
+
+/* Koralový pás hore: siaha od vrchu obrazovky (za hlavičkou) po karty, na celú šírku okna.
+   Farba je tieň (box-shadow), takže pás nezväčší stránku do šírky; spodná hrana je atramentová čiara. */
+.pr-vrch { position: relative; display: grid; gap: 14px; padding-bottom: 18px; background: var(--coral-l);
+  box-shadow: 0 0 0 100vmax var(--coral-l), 0 3px 0 100vmax var(--ink); clip-path: inset(-100vmax -100vmax -3px -100vmax); transition: background-color .35s, box-shadow .35s; }
+:root:root body:has(.pr-vrch)::before { background: var(--coral-l); }
+.pr-hl { display: flex; align-items: center; gap: 10px; min-height: 46px; }
+.pr-hl .n0 { margin-right: auto; }
+.pr-hl .st.cis { background: var(--card); }
+
+/* tváre priateľov (postavička v kruhu, podklad podľa priateľa) */
+.pr-av { --s: 52px; flex: none; display: grid; place-items: start center; width: var(--s); height: var(--s); border-radius: 50%; overflow: hidden; border: var(--obrys-m); background: var(--c, var(--sky-l)); }
+.pr-av .postavicka { width: 100%; height: auto; margin-top: 3px; }
+.pr-av.velky { --s: 116px; border-width: 3px; box-shadow: 0 5px 0 var(--shc); }
+
+/* rad priateľov v páse */
+.pribehy { display: flex; gap: 10px; overflow-x: auto; margin-inline: -16px; padding: 2px 16px 4px; scrollbar-width: none; }
+.pribehy::-webkit-scrollbar { display: none; }
+.pribeh { position: relative; flex: none; display: grid; justify-items: center; gap: 5px; width: 66px; padding: 0; border: 0; background: none; font: inherit; color: var(--text); }
+.pribeh .pr-av { --s: 60px; transition: transform .2s var(--spring); }
+.pribeh:active .pr-av { transform: scale(.92); }
+.pribeh small { max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 .8rem/1.1 var(--fb); }
+.pribeh-plus .pr-av { place-items: center; border-style: dashed; background: var(--card); }
+.pribeh-plus .ikn { width: 28px; height: 28px; color: var(--text); }
+.pr-ohn { position: absolute; right: -1px; top: 38px; display: grid; place-items: center; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.pr-ohn .ikn { width: 16px; height: 16px; }
+
+/* karty Správy, Rebríček, Pridať */
+.pr-taby { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--obrys); border-radius: 18px 20px 18px 22px; overflow: hidden; background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.pr-taby button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 50px; padding: 6px 4px 9px; border: 0; background: none; font: 800 1rem/1 var(--fd); color: var(--muted); }
+.pr-taby button + button { border-left: var(--obrys-m); }
+.pr-taby button[aria-pressed="true"] { background: var(--sun); color: var(--dk); box-shadow: inset 0 -5px 0 var(--sun-d); }
+.pr-poc { display: inline-grid; place-items: center; min-width: 23px; height: 23px; padding: 2px 6px 0; border: 2px solid var(--ink); border-radius: 999px; background: var(--coral); font: 800 .8rem/1 var(--fd); font-style: normal; color: #2A2356; }
+
+/* žiadosť o priateľstvo */
+.pr-ziadost { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+.pr-ziadost .pr-av { --s: 56px; }
+.pr-ziadost b { font: 800 1.06rem/1.25 var(--fd); overflow-wrap: anywhere; }
+.pr-tl { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.anim .pr-ziadost { animation: prIn .5s var(--spring) both; }
+.anim .pr-ziadost .zal { animation: prZal 1.2s ease-in-out .5s 2; }
+@keyframes prZal { 25% { rotate: -6deg; } 75% { rotate: 2deg; } }
+
+/* rozhovory ako bubliny */
+.pr-konv { display: grid; gap: 14px; }
+.pr-k { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: end; width: 100%; padding: 0; border: 0; background: none; text-align: left; font: inherit; color: inherit; }
+.pr-k .odkaz { display: grid; gap: 3px; min-width: 0; padding: 9px 13px 10px; box-shadow: 0 3px 0 var(--shc); transition: transform .15s; }
+.pr-k .odkaz b { font: 800 1.03rem/1.1 var(--fd); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr-k .odkaz small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 .94rem/1.3 var(--fb); color: var(--text); }
+.pr-k .odkaz small.muted { color: var(--muted); }
+.pr-k .odkaz small svg { display: inline-block; width: 18px; height: 18px; vertical-align: -4px; }
+.pr-k.nova .odkaz { background: var(--sun-l); }
+.pr-k.nova .odkaz small { font-weight: 700; }
+.pr-k .pr-poc { align-self: center; }
+.pr-k:active .odkaz { transform: translateY(2px); }
+.anim .pr-k, .anim .pribeh { animation: prIn .45s var(--spring) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.pr-k.nova .odkaz { animation: prNadych .7s ease-in-out .5s 1; }
+@keyframes prIn { from { opacity: 0; transform: translateY(14px); } }
+@keyframes prNadych { 40% { transform: scale(1.04); } }
+
+/* prázdny stav, Múdra s odkazom */
+.pr-prazdne { display: grid; justify-items: center; gap: 18px; padding-top: 6px; }
+.pr-prazdne > .btn { max-width: 340px; }
+.pr-kruhy { display: flex; align-items: end; }
+.pr-kruhy span { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 -7px; border: 2.5px dashed var(--ink); border-radius: 50%; background: var(--card); font: 900 1.5rem/1 var(--fd); color: var(--muted); animation: prBob 3s ease-in-out infinite; }
+.pr-kruhy .ikn { width: 30px; height: 30px; color: var(--text); }
+.pr-kruhy span:nth-child(2) { width: 72px; height: 72px; position: relative; z-index: 1; background: var(--sun-l); animation-delay: -1s; }
+.pr-kruhy span:nth-child(3) { animation-delay: -2s; }
+@keyframes prBob { 50% { transform: translateY(-5px); } }
+.pr-povz { display: grid; grid-template-columns: 82px 1fr; gap: 6px; align-items: end; width: 100%; }
+.pr-m svg { display: block; width: 100%; height: auto; }
+.pr-povz .odkaz { background: var(--sun-l); margin-bottom: 8px; }
+.pr-mala { margin: 0; font: 500 .86rem/1.4 var(--fb); color: var(--muted); text-align: center; }
+
+/* rebríček: stupne víťazov a riadky pod nimi */
+.pr-nh { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.pr-podium-o { display: grid; }
+.pr-podium { display: grid; grid-template-columns: 1fr 1.16fr 1fr; align-items: end; padding: 14px 4px 0; }
+.pr-podium.dvaja { grid-template-columns: 1fr 1.16fr; padding-inline: 12% 12%; }
+.pr-stup { position: relative; display: grid; justify-items: center; gap: 5px; min-width: 0; }
+.pr-stup .pr-av { --s: 62px; }
+.pr-stup.prvy .pr-av { --s: 78px; border-width: 3px; }
+.pr-stup.ja .pr-av { box-shadow: 0 0 0 3px var(--sun), 0 0 0 5.5px var(--ink); }
+.pr-stup > b { max-width: 100%; padding-inline: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 800 .98rem/1.1 var(--fd); }
+.pr-koruna { position: relative; z-index: 1; margin-bottom: -14px; rotate: -8deg; }
+.pr-koruna .ikn { width: 38px; height: 38px; }
+.pr-ty { position: absolute; left: 0; top: -4px; z-index: 2; padding: 4px 7px 2px; border: var(--obrys-m); border-radius: 9px; background: var(--sun); font: 800 .75rem/1 var(--fd); color: var(--dk); rotate: -8deg; }
+.pr-blok { display: grid; justify-items: center; align-content: start; gap: 6px; width: 100%; height: var(--h); margin-top: 3px; padding-top: 8px; border: var(--obrys); border-bottom: 0; border-radius: 14px 16px 0 0; background: var(--c); color: var(--text); transform-origin: bottom; }
+.pr-stup + .pr-stup .pr-blok { border-left: 0; }
+.pr-stup.prvy .pr-blok { color: var(--dk); }
+.pr-miesto { font: 900 1.8rem/1 var(--fd); }
+.pr-blok .st.cis { height: 28px; padding-inline: 7px 9px; font-size: .88rem; background: var(--card); color: var(--text); }
+.pr-blok .st.cis .ikn { width: 17px; height: 17px; }
+.anim .pr-blok { animation: prRast .55s var(--spring) both; animation-delay: calc(var(--i) * 110ms); }
+.anim .pr-stup > .pr-av, .anim .pr-koruna { animation: prSkok .6s var(--spring) both; animation-delay: calc(var(--i) * 110ms + 260ms); }
+.pr-koruna .ikn { animation: prKoruna 3.2s ease-in-out 1.2s infinite; }
+@keyframes prRast { from { transform: scaleY(0); } }
+@keyframes prSkok { 0% { opacity: 0; transform: translateY(-34px); } 60% { opacity: 1; } }
+@keyframes prKoruna { 0%, 80%, 100% { transform: none; } 88% { transform: translateY(-4px) rotate(6deg); } }
+.pr-reb { border: var(--obrys); border-radius: 0 0 18px 20px; background: var(--card); overflow: hidden; box-shadow: 0 5px 0 var(--shc); }
+.pr-r { display: grid; grid-template-columns: 24px 40px minmax(0, 1fr) 50px 56px; align-items: center; gap: 8px; padding: 8px 12px; border-top: 2px dashed var(--sand); }
+.pr-r.hlav { border-top: 0; padding-block: 9px 0; font: 700 .69rem/1 var(--fb); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-align: right; }
+.pr-r.hlav + .pr-r { border-top: 0; }
+.pr-r.ja { background: var(--sun-l); }
+.pr-por { font: 900 1.06rem/1 var(--fd); text-align: center; color: var(--muted); }
+.pr-r .pr-av { --s: 40px; }
+.pr-r b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 800 .97rem/1.1 var(--fd); }
+.pr-r .pr-ty { position: static; display: inline-block; margin-left: 4px; font-size: .7rem; vertical-align: 1px; }
+.pr-cs { display: flex; align-items: center; justify-content: flex-end; gap: 4px; font: 800 .94rem/1 var(--fd); font-variant-numeric: tabular-nums; }
+.pr-cs .ikn { width: 18px; height: 18px; margin-top: -2px; }
+.pr-zem { height: 14px; border: var(--obrys); border-radius: 0 0 12px 14px; background: var(--sand); box-shadow: 0 4px 0 var(--shc); }
+
+/* Pridať: lístok s mojím kódom a pole na kód kamaráta */
+.soc-kod .pr-kod-h { display: grid; gap: 7px; padding: 16px 16px 14px; }
+.soc-kod .kod { font: 900 2rem/1 var(--fd); letter-spacing: .06em; color: var(--link); overflow-wrap: anywhere; user-select: all; }
+.soc-kod p { margin: 0; font: 400 .94rem/1.4 var(--fb); color: var(--muted); }
+.soc-kod .pr-kod-d { padding: 14px 16px 16px; }
+.anim .soc-kod { animation: prListok .6s var(--spring) both; }
+@keyframes prListok { from { opacity: 0; transform: translateY(18px) rotate(-3deg); } }
+.soc-pridaj { display: grid; gap: 10px; }
+.soc-pridaj label.pr-mala { text-align: left; }
+.soc-riadok { display: flex; gap: 8px; }
+.kod-vstup { flex: 1; min-width: 0; text-transform: uppercase; font: 800 1.15rem var(--fd); letter-spacing: .05em; }
+.kod-vstup::placeholder { color: var(--muted); opacity: .45; font-weight: 600; }
+.soc-riadok .btn { flex: none; }
+.pr-caka { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.pr-caka .pr-mala { width: 100%; text-align: left; }
+.pr-bezp .ikn { display: inline-block; width: 20px; height: 20px; margin-right: 5px; vertical-align: -5px; }
+
+/* priatelia ešte nie sú zapnutí (pre rodiča) */
+.soc-intro { display: grid; gap: 12px; }
+.soc-intro p { margin: 0; font: 500 .97rem/1.45 var(--fb); }
+.soc-intro p.pr-mala { font-size: .86rem; text-align: left; }
+
+/* načítavanie: siluety namiesto textu */
+.pr-tien { flex: none; width: 60px; height: 60px; border-radius: 50%; border: 2.5px dashed var(--ink); background: var(--card); animation: prPulz 1.2s ease-in-out infinite alternate; }
+.pr-kostra { display: grid; gap: 14px; }
+.pr-kostra span { height: 62px; border: 2.5px dashed var(--sand); border-radius: 16px 18px 18px 5px; margin-left: 60px; background: var(--card); animation: prPulz 1.2s ease-in-out infinite alternate; }
+.pr-kostra span:nth-child(2) { animation-delay: .2s; margin-right: 40px; }
+.pr-kostra span:nth-child(3) { animation-delay: .4s; }
+@keyframes prPulz { to { opacity: .45; } }
+
+/* profil priateľa */
+.pr-profil .pr-vrch { gap: 6px; }
+.pr-ja { display: grid; justify-items: center; gap: 8px; text-align: center; margin-top: -40px; }
+.pr-ja .n0 { overflow-wrap: anywhere; }
+.anim .pr-ja .pr-av { animation: prSkok .6s var(--spring) both; }
+.pr-staty { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pr-stat { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 10px; padding: 12px; border: var(--obrys); border-radius: 18px 20px 22px 18px; background: var(--c); box-shadow: 0 4px 0 var(--shc); color: var(--text); }
+.pr-stat .ikb { grid-row: span 2; margin: 0; }
+.pr-stat b { font: 900 1.5rem/1 var(--fd); }
+.pr-stat small { font: 600 .82rem/1.2 var(--fb); }
+.pr-strom { display: grid; justify-items: center; gap: 4px; }
+.strom-mini { width: 170px; height: auto; }
+.pr-odz .posledne { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.soc-odober { color: var(--muted); }
+@media (min-width: 520px) { .pr-staty { grid-template-columns: repeat(4, 1fr); } .pr-stat { grid-template-columns: 1fr; justify-items: center; text-align: center; row-gap: 4px; } .pr-stat .ikb { grid-row: auto; } }
+
+/* rozhovor na celú obrazovku */
+.dm { --dm-o: max(12px, calc((100% - 640px) / 2)); position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; background: var(--fon); }
+.dm-hlava { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top, 0px)) var(--dm-o) 12px; border-bottom: var(--obrys); background: var(--coral-l); }
+.dm-spat { flex: none; width: 44px; height: 44px; }
+.dm-kto { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 2px; border: 0; border-radius: 16px; background: none; text-align: left; font: inherit; color: inherit; }
+.dm-kto .pr-av { --s: 48px; }
+.dm-meno { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.dm-meno b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 800 1.2rem/1.1 var(--fd); }
+.dm-staty { display: flex; gap: 10px; font: 800 .88rem/1 var(--fd); }
+.dm-staty span { display: inline-flex; align-items: center; gap: 3px; }
+.dm-staty .ikn { width: 17px; height: 17px; }
+.dm-profil { flex: none; display: inline-flex; align-items: center; gap: 1px; padding: 5px 6px 5px 10px; border: var(--obrys-m); border-radius: 999px; background: var(--card); font: 700 .8rem/1 var(--fb); }
+.dm-profil .ikn { width: 16px; height: 16px; }
+.dm-nacit { font: 800 1.1rem var(--fd); }
+.dm-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding: 16px var(--dm-o); overscroll-behavior: contain; }
+.dm-chat > * { flex-shrink: 0; }
+.dm-kostra { margin-top: 10px; }
+.dm-prazdny { margin: auto; display: grid; justify-items: center; gap: 10px; max-width: 300px; text-align: center; }
+.dm-prazdny b { font: 900 1.5rem/1.1 var(--fd); }
+.dm-prazdny .odkaz { border-radius: 18px; background: var(--sun-l); }
+.dm-dole .ikn { width: 30px; height: 30px; color: var(--muted); animation: prBob 1.6s ease-in-out infinite; }
+.dm-cas { align-self: center; margin: 12px 0 8px; padding: 4px 10px 3px; border-radius: 999px; background: var(--sand); font: 700 .75rem/1.2 var(--fb); color: var(--muted); }
+.dm .msg { align-self: flex-start; display: flex; align-items: flex-end; gap: 6px; max-width: 80%; margin-bottom: 5px; }
+.dm .msg.moja { align-self: flex-end; }
+.dm .msg.posl { margin-bottom: 11px; }
+.msg-av { flex: none; width: 30px; height: 30px; border-radius: 50%; overflow: hidden; }
+.msg-av:not(:empty) { border: 2px solid var(--ink); background: var(--c, var(--sky-l)); }
+.msg-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
+.msg-obal { position: relative; display: block; min-width: 0; }
+.dm .msg-t { display: block; padding: 9px 14px 8px; border: var(--obrys-m); border-radius: 18px 20px 20px 6px; background: var(--card); box-shadow: 0 3px 0 var(--shc); font: 600 1.06rem/1.3 var(--fd); color: var(--text); }
+.dm .msg.moja .msg-t { border-radius: 20px 18px 6px 20px; background: var(--sky-l); }
+.dm .msg:not(.posl) .msg-t { box-shadow: none; }
+.msg-x { font-family: var(--fb) !important; font-weight: 500 !important; overflow-wrap: anywhere; white-space: pre-wrap; }
+.msg-x i { color: var(--muted); }
+.msg-nal { display: block; width: 96px; height: 96px; }
+.msg-nal > svg { width: 100%; height: 100%; }
+.dm .msg-nal { animation: pop .5s var(--spring) both; }
+.msg.odosiela { opacity: .6; }
+/* správa s nálepkou alebo témou má triedu .nalepka (pomenovanú v 4.9); nesmie dostať vzhľad dlaždice .nalepka zo 40-system.css */
+.dm .msg.nalepka { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.dm-chat > .msg:last-child, .dm-chat > .msg:has(+ .dm-videne:last-child) { animation: prBub .5s var(--spring) both; }
+@keyframes prBub { 0% { opacity: 0; transform: translateY(16px) scale(.9); } 60% { opacity: 1; transform: scale(1.04); } }
+.msg-r { position: absolute; right: -6px; bottom: -9px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); animation: pop .4s var(--spring) both; }
+.dm .msg.srdce { margin-bottom: 18px; }
+.msg-tema { display: grid; gap: 5px; width: 210px; padding: 8px; border: var(--obrys); border-radius: 18px 20px 20px 16px; background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.msg-tema-obr { display: block; height: 100px; overflow: hidden; border: var(--obrys-m); border-radius: 13px; }
+.msg-tema-obr > svg { width: 100%; height: 100%; }
+.msg-tema small { font: 700 .75rem/1.2 var(--fb); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.msg-tema b { font: 800 1rem/1.2 var(--fd); }
+.msg-hv { display: flex; gap: 2px; }
+.msg-hv svg { width: 20px; height: 20px; }
+.msg-tema .btn { padding: 8px 12px 11px; font-size: .95rem; }
+.dm-videne { align-self: flex-end; display: flex; align-items: center; gap: 3px; margin: -4px 4px 8px; font: 700 .75rem/1 var(--fb); color: var(--muted); }
+.dm-videne .ikn { width: 15px; height: 15px; color: var(--ok-t); }
+.dm-pisanie { display: grid; gap: 10px; padding: 10px var(--dm-o) calc(12px + env(safe-area-inset-bottom, 0px)); border-top: var(--obrys); background: var(--card); }
+.dm-nalepky, .dm-vety, .dm-temy { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 5px; scrollbar-width: none; }
+.dm-nalepky::-webkit-scrollbar, .dm-vety::-webkit-scrollbar, .dm-temy::-webkit-scrollbar { display: none; }
+@media (min-width: 600px) { .dm-nalepky, .dm-vety { flex-wrap: wrap; overflow: visible; } }
+.dm-pisanie:has(#soc-text:focus) .dm-nalepky, .dm-pisanie:has(#soc-text:focus) .dm-vety { display: none; }
+@media (max-height: 460px) { .dm-nalepky, .dm-vety { display: none; } }
+.nal { flex: none; display: grid; place-items: center; width: 58px; height: 58px; padding: 6px; border: var(--obrys-m); border-radius: 16px 18px 15px 17px; background: var(--fon); box-shadow: 0 3px 0 var(--shc); }
+.nal > svg { width: 100%; height: 100%; }
+.nal:active { transform: translateY(2px) scale(.95); box-shadow: 0 1px 0 var(--shc); }
+.dm-temy-btn { background: var(--sky-l); }
+.dm-temy-btn.on { background: var(--sun); }
+.veta { flex: none; min-height: 44px; padding: 8px 14px 10px; border: var(--obrys-m); border-radius: 999px; background: var(--card); box-shadow: inset 0 -4px 0 var(--sand), 0 2px 0 var(--shc); font: 700 .95rem/1 var(--fd); color: var(--text); white-space: nowrap; }
+.veta:active { transform: translateY(2px); box-shadow: inset 0 -2px 0 var(--sand); }
+.dm-text { display: flex; gap: 8px; }
+.dm-text .search { flex: 1; min-width: 0; }
+.dm-tema { flex: none; display: grid; gap: 3px; width: 108px; padding: 4px; border: var(--obrys-m); border-radius: 14px; background: var(--fon); text-align: left; font: inherit; color: var(--text); }
+.dm-tema > span { display: block; height: 56px; overflow: hidden; border-radius: 10px; }
+.dm-tema > span > svg { width: 100%; height: 100%; }
+.dm-tema small { font: 700 .72rem/1.2 var(--fb); }
+
+/* bublina hore pri novej správe, kým je dieťa inde v appke */
+.soc-ozn { position: fixed; z-index: 58; top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 auto; padding: 8px 14px 8px 8px;
+  border: var(--obrys); border-radius: 22px 24px 24px 8px; background: var(--sun-l); box-shadow: 0 5px 0 var(--shc); text-align: left; font: inherit; color: var(--text); animation: ozn .5s var(--spring) both; }
+.soc-ozn .soc-av { flex: none; display: grid; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; border: var(--obrys-m); background: var(--card); }
+.soc-ozn .soc-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
+.soc-ozn > span:nth-child(2) { flex: 1; min-width: 0; display: grid; }
+.soc-ozn b { font: 800 1.05rem var(--fd); }
+.soc-ozn small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 .9rem var(--fb); }
+.soc-ozn small svg { display: inline-block; width: 18px; height: 18px; vertical-align: -4px; }
+.soc-ozn.pryc { animation: oznPryc .4s ease-in both; }
+@keyframes ozn { from { transform: translateY(-140%); } }
+@keyframes oznPryc { to { transform: translateY(-140%); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim .pr-k, .anim .pribeh, .anim .pr-ziadost, .anim .pr-ziadost .zal, .pr-k.nova .odkaz, .pr-kruhy span, .anim .pr-blok, .anim .pr-stup > .pr-av, .anim .pr-koruna, .pr-koruna .ikn,
+  .anim .soc-kod, .pr-tien, .pr-kostra span, .anim .pr-ja .pr-av, .dm-dole .ikn, .dm .msg-nal, .dm-chat > .msg, .msg-r, .soc-ozn, .soc-ozn.pryc { animation: none !important; }
+}
 /* 5.0: Rodičovská časť, prihlásenie, vytváranie účtu, pridanie na plochu. Sem patria nové štýly tejto sekcie (smer: pokojné: obrys 2 px, bez nakrivo položených prvkov, prepínače).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
 /* 5.0: Režim do auta. Sem patria nové štýly tejto sekcie (smer: tmavá plocha (--noc-*), postup ako cesta s autíčkom).
@@ -4795,7 +4916,6 @@ const stromMaly = n => `<svg class="strom-mini" viewBox="56 20 208 222" aria-hid
   ${KORUNA.map(([x, y, rr]) => `<circle cx="${x}" cy="${y}" r="${rr + 4}" fill="${INK}" stroke="none"/>`).join('')}${KORUNA.map(([x, y, rr, c]) => `<circle cx="${x}" cy="${y}" r="${rr}" fill="${c}" stroke="none"/>`).join('')}
   ${PLODY.slice(0, Math.min(n, PLODY.length)).map(([x, y], i) => `<g transform="translate(${x} ${y})">${plod(i)}</g>`).join('')}</g></svg>`;
 const casSpravy = t => { const d = new Date(t), dnes = key(new Date()) === key(d); return (dnes ? '' : d.getDate() + '. ' + (d.getMonth() + 1) + '. ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
-const SIPKA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 /* Filter pre voľné písanie (slovenčina, čeština): jednoduchý zoznam zjavných nadávok, aj keď sú písané s bodkami, číslami alebo opakovanými písmenami,
    a údaje, ktoré deti nemajú posielať (telefón, e-mail, odkaz). Nie je dokonalý: hlavná poistka je, že písanie zapína rodič a vidí všetky správy. */
 const NEVH_PREDPONY = ['kokot', 'kurv', 'jeb', 'pojeb', 'chuj', 'buzer', 'buzik', 'hovn', 'hovado', 'srack', 'debil', 'idiot', 'kreten', 'blbec', 'blbc', 'zmrd', 'dopic', 'zasran', 'cigan', 'hitl', 'zdochn', 'zomri', 'sprost', 'nigg'];
@@ -4813,14 +4933,21 @@ function socKontrola(txt) {
 const socZablokovane = (pid, txt) => { const k = 'soc-zablok-' + pid, v = S.get(k, []); v.push({ k: Date.now(), t: String(txt).slice(0, 200) }); S.set(k, v.slice(-10)); };
 const spravaObsah = (x, moja) => x.t ? (t => t ? `<span class="msg-tema"><span class="msg-tema-obr">${svg(t)}</span><small>${moja ? 'Poslal si tému' : 'Mám hotovú tému'}</small><b>${esc(t.t)}</b><span class="msg-hv">${[0, 1, 2].map(i => STAR(i < (x.h || 0) ? '#FFD23F' : '#E4E0EE')).join('')}</span>${moja ? '' : `<button class="btn blue" data-start="${t.id}">Skúsiť tiež</button>`}</span>` : '')(byId(x.t))
   : x.n ? `<span class="msg-nal">${NALEPKY[x.n] ? NALEPKY[x.n]() : ''}</span>` : (x.x ? (!moja && socKontrola(x.x) === 'slova' ? '<span class="msg-t msg-x"><i>Správa je skrytá, lebo obsahuje nevhodné slová.</i></span>' : `<span class="msg-t msg-x">${esc(x.x)}</span>`) : `<span class="msg-t">${esc(VETY[x.k] || '')}</span>`);
+/* 5.0: vzhľad Priateľov (logika a údaje sú rovnaké ako v 4.9). Každý priateľ má podklad postavičky v inej farbe podľa svojho id. */
+const PR_FARBY = ['sky', 'sun', 'leaf', 'violet', 'teal', 'coral'];
+const prFarba = id => { let h = 0; for (const c of String(id || '')) h = (h * 31 + c.charCodeAt(0)) >>> 0; return 'var(--' + PR_FARBY[h % PR_FARBY.length] + '-l)'; };
+const prAv = (a, id, tr = '') => `<span class="pr-av${tr ? ' ' + tr : ''}" style="--c:${prFarba(id)}">${avatarMaly(a)}</span>`;
+const prPl = (n, a, b, c) => n === 1 ? a : n >= 2 && n <= 4 ? b : c;
+const prBody = n => n + ' ' + prPl(n, 'bod', 'body', 'bodov');
+const prHlava = n => `<div class="pr-hl"><h1 class="n0">Priatelia</h1>${n ? `<span class="st cis" aria-label="Počet priateľov: ${n}">${ikn('priatelia')}${n}</span>` : ''}</div>`;
 function chatHtml(fid) {
   const So = socC(), m = (So && So.spravy[fid]) || [], p = So && So.profily[fid];
-  if (!m.length) return `<div class="dm-prazdny"><span class="soc-av velky">${avatarMaly(p && p.avatar)}</span><b>${esc(p ? p.meno : '')}</b><small class="muted">Pošli prvú nálepku alebo vetu dole!</small></div>`;
+  if (!m.length) return `<div class="dm-prazdny">${prAv(p && p.avatar, fid, 'velky')}<b>${esc(p ? p.meno : '')}</b><div class="odkaz">Pošli prvú nálepku alebo vetu. Sú dole.</div><span class="dm-dole">${ikn('dole')}</span></div>`;
   return m.map((x, i) => {
     const moja = x.od === So.pid, dalsia = m[i + 1], posledna = !dalsia || dalsia.od !== x.od, cas = i === 0 || x.kedy - m[i - 1].kedy > 30 * 60000;
     return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n || x.t ? ' nalepka' : ''}${posledna ? ' posl' : ''}${x.r ? ' srdce' : ''}"${moja ? '' : ` data-soc-msg="${x.id}"`}>
-      ${!moja ? `<span class="msg-av">${posledna ? avatarMaly(p && p.avatar) : ''}</span>` : ''}<span class="msg-obal">${spravaObsah(x, moja)}${x.r ? `<i class="msg-r">${IK.srdce}</i>` : ''}</span></div>`;
-  }).join('') + (vid => vid ? '<div class="dm-videne">Videné</div>' : '')((ja => ja && (So.citane[fid] || 0) >= ja.kedy && m[m.length - 1] === ja)(m.filter(x => x.od === So.pid).slice(-1)[0]));
+      ${!moja ? `<span class="msg-av" style="--c:${prFarba(fid)}">${posledna ? avatarMaly(p && p.avatar) : ''}</span>` : ''}<span class="msg-obal">${spravaObsah(x, moja)}${x.r ? `<i class="msg-r">${IK.srdce}</i>` : ''}</span></div>`;
+  }).join('') + (vid => vid ? `<div class="dm-videne">${ikn('check')}Videné</div>` : '')((ja => ja && (So.citane[fid] || 0) >= ja.kedy && m[m.length - 1] === ja)(m.filter(x => x.od === So.pid).slice(-1)[0]));
 }
 // náhľad poslednej správy v zozname rozhovorov
 function nahladSpravy(f) {
@@ -4828,63 +4955,89 @@ function nahladSpravy(f) {
   if (!m) return '<small class="muted">Napíš prvú správu</small>';
   return `<small>${m.od === So.pid ? 'Ty: ' : ''}${m.t ? `${ii(IK.kniha)} téma: ${esc((byId(m.t) || {}).t || '')}` : m.n ? `${NALEPKY[m.n] ? ii(NALEPKY[m.n]()) : ''} nálepka` : m.x ? esc(m.x.slice(0, 40)) : esc(VETY[m.k] || '')} · ${casSpravy(m.kedy)}</small>`;
 }
+// rebríček: stupne víťazov pre prvých troch (koruna len pre prvé miesto), ostatní v riadkoch pod nimi
 function rebricekHtml() {
-  const So = socC(), ja = { pid: So.pid, meno: 'Ty', avatar: st.avatar, b: tyzBody(So.profil && { ...So.profil, body: st.body }), s: seria(), ja: true };
+  const So = socC(), ja = { pid: So.pid, meno: st.meno || 'Ty', avatar: st.avatar, b: tyzBody(So.profil && { ...So.profil, body: st.body }), s: seria(), ja: true };
   const z = [ja, ...Object.keys(So.priatelia).map(f => So.profily[f] && { pid: f, meno: So.profily[f].meno, avatar: So.profily[f].avatar, b: tyzBody(So.profily[f]), s: So.profily[f].seria || 0 }).filter(Boolean)]
     .sort((a, b) => b.b - a.b || b.s - a.s);
-  return `<div class="card rebricek">${z.map((x, i) => `<div class="reb${x.ja ? ' ja' : ''}"><span class="reb-m m${Math.min(i + 1, 4)}">${i + 1}</span><span class="soc-av">${avatarMaly(x.avatar)}</span><b>${esc(x.meno)}</b>
-    <span class="reb-s">${ii(IK.ohen)} ${x.s}</span><span class="reb-b">${ii(STAR())} ${x.b}</span></div>`).join('')}</div>${z.length < 2 ? '<p class="muted">Pridaj si priateľov a súťažte, kto získa za týždeň viac bodov.</p>' : '<p class="muted">Body za tento týždeň, v pondelok sa začína odznova.</p>'}`;
+  const den = new Date().getDay(), konci = den === 0 ? 'končí dnes' : den === 6 ? 'končí zajtra' : 'končí v nedeľu';
+  const hl = `<div class="pr-nh"><h2 class="n1">Tento týždeň</h2><span class="st">${ikn('kalendar')}${konci}</span></div>`;
+  if (z.length < 2) return `${hl}<div class="pr-prazdne">${prMudra('zvedava', 'Rebríček je zatiaľ len tvoj. Pridaj si priateľov a súťažte, kto získa za týždeň viac bodov.')}
+    <button class="btn wide" data-soc-tab="pridat">${ikn('plus')}Pridať priateľa</button></div>`;
+  const VYS = [118, 88, 70], FAR = ['var(--sun)', 'var(--sky-l)', 'var(--coral-l)'];
+  const stup = (x, i) => `<div class="pr-stup${i === 0 ? ' prvy' : ''}${x.ja ? ' ja' : ''}" style="--h:${VYS[i]}px;--c:${FAR[i]};--i:${i}">
+      ${i === 0 ? `<span class="pr-koruna">${ikn('koruna')}</span>` : ''}${x.ja ? '<span class="pr-ty">Ty</span>' : ''}${prAv(x.avatar, x.pid)}<b>${esc(x.meno)}</b>
+      <div class="pr-blok"><span class="pr-miesto">${i + 1}</span><span class="st cis">${ikn('hviezda')}${x.b}</span></div></div>`;
+  const top = z.slice(0, 3), poradie = top.length === 3 ? [1, 0, 2] : [1, 0];
+  const ostatni = z.slice(3), moje = z.findIndex(x => x.ja), pred = z[moje - 1];
+  const chyba = pred ? Math.max(1, pred.b - ja.b + (pred.s >= ja.s ? 1 : 0)) : 0;
+  const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Super, len tak ďalej!' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
+    : `Na ${moje === 1 ? 'prvé' : moje + '.'} miesto ti chýba ${prBody(chyba)}. Zvládneš to!`;
+  return `${hl}<div class="pr-podium-o"><div class="pr-podium${top.length === 2 ? ' dvaja' : ''}">${poradie.map(i => stup(top[i], i)).join('')}</div>
+    ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">body</span></div>
+      ${ostatni.map((x, i) => `<div class="pr-r${x.ja ? ' ja' : ''}" role="row"><span class="pr-por">${i + 4}</span>${prAv(x.avatar, x.pid)}<b>${esc(x.meno)}${x.ja ? ' <span class="pr-ty">Ty</span>' : ''}</b>
+        <span class="pr-cs">${ikn('plamen')}${x.s}</span><span class="pr-cs">${ikn('hviezda')}${x.b}</span></div>`).join('')}</div>` : '<div class="pr-zem"></div>'}</div>
+    ${prMudra(moje === 0 ? 'radost' : 'povzbudenie', povz)}
+    <p class="pr-mala">Body za tento týždeň. V pondelok sa začína odznova.</p>`;
 }
+const prMudra = (vyraz, text) => `<div class="pr-povz"><span class="pr-m">${mudra(vyraz)}</span><div class="odkaz">${text}</div></div>`;
 Object.assign(views, {
   priatelia() {
     const So = socC();
-    if (!So || !So.nacitane) return `<h1 class="h1">Priatelia</h1><p class="muted">Načítava sa…</p>`;
-    if (!So.zapnute) return `<h1 class="h1">Priatelia</h1>
-      <section class="card soc-intro">${owl('hi')}<div><span class="lbl">${ii(IK.rodina)} Pre rodiča</span>
+    if (!So || !So.nacitane) return `<div class="pr pr-nacitava" aria-busy="true"><div class="pr-vrch">${prHlava(0)}<div class="pribehy">${'<span class="pr-tien"></span>'.repeat(4)}</div></div>
+      <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p></div>`;
+    if (!So.zapnute) return `<div class="pr"><div class="pr-vrch">${prHlava(0)}</div>
+      <section class="karta soc-intro"><span class="zal" style="--c:var(--sun)">${ikn('stit')}Pre rodiča</span>${prMudra('ahoj', 'S priateľmi si budeš posielať nálepky a vety. Zapne ich rodič.')}
         <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
         <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidí rodič v paneli rodiča a dá sa to kedykoľvek vypnúť.</p>
         <p><b>Priateľov zapína rodič.</b> ${maRodica() ? 'Poproste rodiča, nech ich zapne vo svojom paneli.' : 'Rodič si najprv vytvorí účet rodiča a v ňom ich zapne.'}</p>
-        <p class="muted">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p>${maRodica() ? '' : '<button class="btn wide cta" data-rodic-novy>Vytvoriť účet rodiča</button>'}</div></section>`;
+        <p class="pr-mala">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p>${maRodica() ? '' : '<button class="btn wide cta" data-rodic-novy>Vytvoriť účet rodiča</button>'}</section></div>`;
     const tab = st.socTab || 'spravy', caka = S.get('soc-caka-' + So.pid, []);
     const posl = f => ((So.spravy[f] || []).slice(-1)[0] || {}).kedy || 0;
     const priatelia = Object.keys(So.priatelia).filter(f => So.profily[f]).sort((a, b) => posl(b) - posl(a) || So.profily[a].meno.localeCompare(So.profily[b].meno));
     const taby = [['spravy', 'Správy', socNove()], ['rebricek', 'Rebríček', 0], ['pridat', 'Pridať', 0]];
+    const hori = f => (So.profily[f].seria || 0) > 0;
+    const pribehy = tab === 'spravy' && priatelia.length ? `<div class="pribehy"><button class="pribeh pribeh-plus" data-soc-tab="pridat"><span class="pr-av">${ikn('plus')}</span><small>Pridať</small></button>${priatelia.map((f, i) => `<button class="pribeh${hori(f) ? ' hori' : ''}" data-soc-otvor="${f}" style="--i:${i}">${prAv(So.profily[f].avatar, f)}<small>${esc(So.profily[f].meno)}</small>${hori(f) ? `<i class="pr-ohn" aria-label="Má sériu">${ikn('plamen')}</i>` : ''}</button>`).join('')}</div>` : '';
     let telo = '';
-    if (tab === 'spravy') telo = `${So.ziadosti.length ? `<section class="sec"><h2 class="h2" style="--hc:#FF6FA8">Chcú byť tvoji priatelia</h2>${So.ziadosti.map(z => `<div class="card soc-ziadost"><span class="soc-av">${avatarMaly(z.avatar)}</span><b>${esc(z.meno)}</b>
-        <button class="btn blue" data-soc-prijmi="${z.id}">Prijať</button><button class="btn ghost" data-soc-odmietni="${z.id}">Nie</button></div>`).join('')}</section>` : ''}
-      <div class="pribehy"><button class="pribeh plus" data-soc-tab="pridat"><span class="soc-av">${IK.plus}</span><small>Pridať</small></button>${priatelia.map(f => `<button class="pribeh${(So.profily[f].seria || 0) > 0 ? ' hori' : ''}" data-soc-otvor="${f}"><span class="soc-av">${avatarMaly(So.profily[f].avatar)}</span><small>${esc(So.profily[f].meno)}</small>${(So.profily[f].seria || 0) > 0 ? `<i class="pribeh-ohen">${IK.ohen}</i>` : ''}</button>`).join('')}</div>
-      ${priatelia.length ? `<div class="konverzacie">${priatelia.map(f => { const n = neprecitane(f); return `<button class="konv${n ? ' nova' : ''}" data-soc-otvor="${f}"><span class="soc-av">${avatarMaly(So.profily[f].avatar)}</span>
-        <span class="konv-t"><b>${esc(So.profily[f].meno)}</b>${nahladSpravy(f)}</span>${n ? '<i class="bodka"></i>' : ''}</button>`; }).join('')}</div>`
-        : `<div class="empty">${owl('happy')}<span>Zatiaľ nemáš priateľov. Ťukni na Pridať a pošli kamarátovi svoj kód!</span></div>`}`;
-    else if (tab === 'rebricek') telo = `<section class="sec"><h2 class="h2" style="--hc:#FFC233">Tento týždeň</h2>${rebricekHtml()}</section>`;
-    else telo = `<section class="card soc-kod"><span class="lbl">Môj kód priateľa</span><b class="kod">${esc(So.profil.kod)}</b><small class="muted">Povedz ho kamarátovi alebo mu ho pošli. S kódom ti pošle žiadosť.</small>
-        <button class="btn ghost" data-soc-zdielaj>Poslať môj kód</button></section>
-      <section class="card soc-pridaj"><span class="lbl">Pridať priateľa</span><div class="soc-riadok"><input id="soc-kod" class="search bez-lupy kod-vstup" placeholder="SOVA-K7M2" maxlength="24" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Kód priateľa"><button class="btn blue" data-soc-pridaj>Pridať</button></div>
-        ${caka.length ? `<small class="muted">Čaká sa, kým prijme: ${caka.map(x => esc(x.meno)).join(', ')}</small>` : ''}</section>`;
-    return `<h1 class="h1">Priatelia</h1><div class="soc-taby">${taby.map(([id, n, poc]) => `<button data-soc-tab="${id}" aria-pressed="${tab === id}">${n}${poc ? ` <i>${poc}</i>` : ''}</button>`).join('')}</div>${telo}`;
+    if (tab === 'spravy') telo = `${So.ziadosti.map(z => `<div class="karta pr-ziadost"><span class="zal" style="--c:var(--coral)">Nová žiadosť</span>${prAv(z.avatar, z.id)}<b>${esc(z.meno)} sa chce s tebou kamarátiť</b>
+        <div class="pr-tl"><button class="btn maly ok" data-soc-prijmi="${z.id}">${ikn('check')}Prijať</button><button class="btn maly dve" data-soc-odmietni="${z.id}">Nie</button></div></div>`).join('')}
+      ${priatelia.length ? `<div class="pr-konv">${priatelia.map((f, i) => { const n = neprecitane(f); return `<button class="pr-k${n ? ' nova' : ''}" data-soc-otvor="${f}" style="--i:${i}">${prAv(So.profily[f].avatar, f)}
+        <span class="odkaz"><b>${esc(So.profily[f].meno)}</b>${nahladSpravy(f)}</span>${n ? `<i class="pr-poc" aria-label="Nové správy: ${n}">${n}</i>` : ''}</button>`; }).join('')}</div>`
+        : `<div class="pr-prazdne"><div class="pr-kruhy" aria-hidden="true"><span>?</span><span>${ikn('plus')}</span><span>?</span></div>${prMudra('zvedava', 'Zatiaľ tu nikto nie je. Pošli kamarátovi svoj kód a budete si posielať nálepky!')}
+          <button class="btn wide" data-soc-tab="pridat">${ikn('plus')}Pridať priateľa</button></div>`}`;
+    else if (tab === 'rebricek') telo = rebricekHtml();
+    else telo = `<div class="listok soc-kod"><div class="pr-kod-h"><span class="dop">Môj kód priateľa</span><b class="kod">${esc(So.profil.kod)}</b><p>Povedz ho kamarátovi alebo mu ho pošli. S kódom ti pošle žiadosť.</p></div>
+        <div class="perf"></div><div class="pr-kod-d"><button class="btn maly dve wide" data-soc-zdielaj>${ikn('obalka')}Poslať môj kód</button></div></div>
+      <section class="karta soc-pridaj"><span class="zal" style="--c:var(--teal)">Mám kód kamaráta</span><label class="pr-mala" for="soc-kod">Napíš jeho kód a pošli mu žiadosť.</label>
+        <div class="soc-riadok"><input id="soc-kod" class="search bez-lupy kod-vstup" placeholder="SOVA-K7M2" maxlength="24" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Kód priateľa"><button class="btn" data-soc-pridaj>Pridať</button></div>
+        ${caka.length ? `<div class="pr-caka"><span class="pr-mala">Čaká sa, kým prijme:</span>${caka.map(x => `<span class="st">${ikn('kalendar')}${esc(x.meno)}</span>`).join('')}</div>` : ''}</section>
+      <p class="pr-mala pr-bezp">${ikn('stit')}Kód dávaj len kamarátom, ktorých naozaj poznáš.</p>`;
+    return `<div class="pr pr-${tab}"><div class="pr-vrch">${prHlava(priatelia.length)}${pribehy}
+      <div class="pr-taby">${taby.map(([id, n, poc]) => `<button data-soc-tab="${id}" aria-pressed="${tab === id}">${n}${poc ? `<i class="pr-poc" aria-label="Nové: ${poc}">${poc}</i>` : ''}</button>`).join('')}</div></div>${telo}</div>`;
   },
   priatel() {
     const So = socC(), f = st.priatel, p = So && So.profily[f];
-    return `<div class="dm"><header class="dm-hlava"><button class="dm-spat" data-go="priatelia" aria-label="Späť na správy">${SIPKA}</button>
-      ${p ? `<button class="dm-kto" data-soc-profil="${f}"><span class="soc-av">${avatarMaly(p.avatar)}</span><span><b>${esc(p.meno)}</b><small>${ii(IK.ohen)} ${p.seria || 0} · ${ii(STAR())} ${p.body || 0} · pozrieť profil</small></span></button>` : '<b>Načítava sa…</b>'}</header>
-      <div class="dm-chat" id="chat">${p ? chatHtml(f) : ''}</div>
-      <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="muted">Najprv preber nejakú tému.</small>'}</div>` : ''}
-        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
-        ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search bez-lupy" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn blue" type="submit">Poslať</button></form>` : ''}
-        <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="chip" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
+    return `<div class="dm"><header class="dm-hlava"><button class="btn kruh dve dm-spat" data-go="priatelia" aria-label="Späť na správy">${ikn('spat')}</button>
+      ${p ? `<button class="dm-kto" data-soc-profil="${f}">${prAv(p.avatar, f)}<span class="dm-meno"><b>${esc(p.meno)}</b><span class="dm-staty"><span>${ikn('plamen')}${p.seria || 0}</span><span>${ikn('hviezda')}${p.body || 0}</span></span></span><span class="dm-profil">Profil${ikn('sipka')}</span></button>` : '<b class="dm-nacit">Načítava sa…</b>'}</header>
+      <div class="dm-chat" id="chat">${p ? chatHtml(f) : '<div class="pr-kostra dm-kostra"><span></span><span></span><span></span></div>'}</div>
+      <footer class="dm-pisanie">${st.socTemy ? `<div class="dm-temy">${st.done.slice(-12).reverse().map(byId).filter(Boolean).map(t => `<button class="dm-tema" data-soc-tema="${t.id}"><span>${svg(t)}</span><small>${esc(t.t)}</small></button>`).join('') || '<small class="pr-mala">Najprv preber nejakú tému.</small>'}</div>` : ''}
+        <div class="dm-nalepky"><button class="nal dm-temy-btn${st.socTemy ? ' on' : ''}" data-soc-temy aria-label="Poslať tému" aria-pressed="${!!st.socTemy}">${IK.kniha}</button>${Object.keys(NALEPKY).map(k => `<button class="nal" data-soc-nal="${k}" aria-label="Poslať nálepku">${NALEPKY[k]()}</button>`).join('')}</div>
+        ${p && So.profil && So.profil.pisanie && p.pisanie ? `<form class="dm-text" data-soc-text-form><input id="soc-text" class="search bez-lupy" maxlength="200" placeholder="Napíš správu…" autocomplete="off" aria-label="Správa"><button class="btn" type="submit">Poslať</button></form>` : ''}
+        <div class="dm-vety">${Object.entries(VETY).map(([k, t]) => `<button class="veta" data-soc-veta="${k}">${esc(t)}</button>`).join('')}</div></footer></div>`;
   },
   priatelProfil() {
     const So = socC(), f = st.priatel, p = So && So.profily[f];
-    if (!p) return `<div class="soc-hlava"><button class="ib" data-go="priatelia" aria-label="Späť">${SIPKA}</button><b>Priateľ</b></div><p class="muted">Načítava sa…</p>`;
+    if (!p) return `<div class="pr pr-profil"><div class="pr-vrch"><div class="pr-hl"><button class="btn kruh dve" data-go="priatelia" aria-label="Späť">${ikn('spat')}</button></div></div><div class="pr-kostra"><span></span><span></span></div><p class="pr-mala">Načítava sa…</p></div>`;
     const odz = (p.posledne || []).map(id => ODZNAKY.find(o => o.id === id)).filter(Boolean);
-    return `<div class="soc-hlava"><button class="ib" data-soc-otvor="${f}" aria-label="Späť na rozhovor">${SIPKA}</button><b>${esc(p.meno)}</b></div>
-      <section class="card soc-profil"><span class="soc-av velky">${avatarMaly(p.avatar)}</span>
-        <div class="soc-staty"><span class="chip tmavy" style="--c:#FFE7C2">${ii(IK.ohen)} ${p.seria || 0} ${dni(p.seria || 0)} po sebe</span><span class="chip tmavy" style="--c:#FFF0B3">${ii(STAR())} ${p.body || 0} bodov</span>
-          <span class="chip tmavy" style="--c:#D6E6FF">${ii(IK.kniha)} ${p.temy || 0} tém</span><span class="chip tmavy" style="--c:#EBDDFF">${ii(IK.medaila)} ${p.odznaky || 0} odznakov</span></div>
-        <div class="soc-strom">${stromMaly(p.seria || 0)}<small class="muted">Strom múdrosti: plod za každý deň série</small></div>
-        ${odz.length ? `<div class="posledne">${odz.map(o => `<span class="medaila mala" title="${esc(o.n)}">${ikOdznaku(o)}</span>`).join('')}</div>` : ''}
-        <button class="btn wide cta" data-soc-otvor="${f}">Napísať správu</button></section>
-      <button class="btn ghost wide soc-odober" data-soc-odober="${f}">Odstrániť ${esc(p.meno)} z priateľov</button>`;
+    const sr = p.seria || 0, bo = p.body || 0, te = p.temy || 0, od = p.odznaky || 0;
+    const stat = (ik, c, n, t) => `<div class="pr-stat" style="--c:var(--${c}-l)"><span class="ikb">${ikn(ik)}</span><b class="cis">${n}</b><small>${t}</small></div>`;
+    return `<div class="pr pr-profil"><div class="pr-vrch"><div class="pr-hl"><button class="btn kruh dve" data-soc-otvor="${f}" aria-label="Späť na rozhovor">${ikn('spat')}</button></div>
+        <div class="pr-ja">${prAv(p.avatar, f, 'velky')}<h1 class="n0">${esc(p.meno)}</h1>${sr > 0 ? `<span class="st" style="--c:var(--sun)">${ikn('plamen')}séria ${sr} ${dni(sr)}</span>` : ''}</div></div>
+      <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'bod', 'body', 'bodov'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
+      <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromMaly(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
+      ${odz.length ? `<section class="karta pr-odz"><span class="zal" style="--c:var(--sun)">${ikn('odznak')}Posledné odznaky</span><div class="posledne">${odz.map(o => `<span class="medaila mala" title="${esc(o.n)}">${ikOdznaku(o)}</span>`).join('')}</div></section>` : ''}
+      <button class="btn wide cta" data-soc-otvor="${f}">${ikn('bublina')}Napísať správu</button>
+      <button class="btn dve wide soc-odober" data-soc-odober="${f}">${ikn('kos')}Odstrániť ${esc(p.meno)} z priateľov</button></div>`;
   },
 });
 // zmena z cloudu (nová správa, žiadosť, pokrok priateľa): prekresliť bez straty rozpísaného kódu

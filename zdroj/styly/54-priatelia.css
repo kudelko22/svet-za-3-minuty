@@ -1,2 +1,254 @@
-/* 5.0: Priatelia, správy, rebríček. Sem patria nové štýly tejto sekcie (smer: lístok s kódom, stupne víťazov).
-   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+/* 5.0: Priatelia, správy, rebríček. Smer z druhého kola: teplý koralový pás s tvárami priateľov, správy ako bubliny,
+   stupne víťazov (koruna len pre prvé miesto), lístok s kódom. Rozhovor a profil priateľa sú v tom istom štýle. */
+
+.pr { display: grid; gap: 22px; }
+.pr > .karta:has(> .zal) { margin-top: 8px; }
+
+/* Koralový pás hore: siaha od vrchu obrazovky (za hlavičkou) po karty, na celú šírku okna.
+   Farba je tieň (box-shadow), takže pás nezväčší stránku do šírky; spodná hrana je atramentová čiara. */
+.pr-vrch { position: relative; display: grid; gap: 14px; padding-bottom: 18px; background: var(--coral-l);
+  box-shadow: 0 0 0 100vmax var(--coral-l), 0 3px 0 100vmax var(--ink); clip-path: inset(-100vmax -100vmax -3px -100vmax); transition: background-color .35s, box-shadow .35s; }
+:root:root body:has(.pr-vrch)::before { background: var(--coral-l); }
+.pr-hl { display: flex; align-items: center; gap: 10px; min-height: 46px; }
+.pr-hl .n0 { margin-right: auto; }
+.pr-hl .st.cis { background: var(--card); }
+
+/* tváre priateľov (postavička v kruhu, podklad podľa priateľa) */
+.pr-av { --s: 52px; flex: none; display: grid; place-items: start center; width: var(--s); height: var(--s); border-radius: 50%; overflow: hidden; border: var(--obrys-m); background: var(--c, var(--sky-l)); }
+.pr-av .postavicka { width: 100%; height: auto; margin-top: 3px; }
+.pr-av.velky { --s: 116px; border-width: 3px; box-shadow: 0 5px 0 var(--shc); }
+
+/* rad priateľov v páse */
+.pribehy { display: flex; gap: 10px; overflow-x: auto; margin-inline: -16px; padding: 2px 16px 4px; scrollbar-width: none; }
+.pribehy::-webkit-scrollbar { display: none; }
+.pribeh { position: relative; flex: none; display: grid; justify-items: center; gap: 5px; width: 66px; padding: 0; border: 0; background: none; font: inherit; color: var(--text); }
+.pribeh .pr-av { --s: 60px; transition: transform .2s var(--spring); }
+.pribeh:active .pr-av { transform: scale(.92); }
+.pribeh small { max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 .8rem/1.1 var(--fb); }
+.pribeh-plus .pr-av { place-items: center; border-style: dashed; background: var(--card); }
+.pribeh-plus .ikn { width: 28px; height: 28px; color: var(--text); }
+.pr-ohn { position: absolute; right: -1px; top: 38px; display: grid; place-items: center; width: 26px; height: 26px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); }
+.pr-ohn .ikn { width: 16px; height: 16px; }
+
+/* karty Správy, Rebríček, Pridať */
+.pr-taby { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--obrys); border-radius: 18px 20px 18px 22px; overflow: hidden; background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.pr-taby button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 50px; padding: 6px 4px 9px; border: 0; background: none; font: 800 1rem/1 var(--fd); color: var(--muted); }
+.pr-taby button + button { border-left: var(--obrys-m); }
+.pr-taby button[aria-pressed="true"] { background: var(--sun); color: var(--dk); box-shadow: inset 0 -5px 0 var(--sun-d); }
+.pr-poc { display: inline-grid; place-items: center; min-width: 23px; height: 23px; padding: 2px 6px 0; border: 2px solid var(--ink); border-radius: 999px; background: var(--coral); font: 800 .8rem/1 var(--fd); font-style: normal; color: #2A2356; }
+
+/* žiadosť o priateľstvo */
+.pr-ziadost { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+.pr-ziadost .pr-av { --s: 56px; }
+.pr-ziadost b { font: 800 1.06rem/1.25 var(--fd); overflow-wrap: anywhere; }
+.pr-tl { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.anim .pr-ziadost { animation: prIn .5s var(--spring) both; }
+.anim .pr-ziadost .zal { animation: prZal 1.2s ease-in-out .5s 2; }
+@keyframes prZal { 25% { rotate: -6deg; } 75% { rotate: 2deg; } }
+
+/* rozhovory ako bubliny */
+.pr-konv { display: grid; gap: 14px; }
+.pr-k { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: end; width: 100%; padding: 0; border: 0; background: none; text-align: left; font: inherit; color: inherit; }
+.pr-k .odkaz { display: grid; gap: 3px; min-width: 0; padding: 9px 13px 10px; box-shadow: 0 3px 0 var(--shc); transition: transform .15s; }
+.pr-k .odkaz b { font: 800 1.03rem/1.1 var(--fd); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr-k .odkaz small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 .94rem/1.3 var(--fb); color: var(--text); }
+.pr-k .odkaz small.muted { color: var(--muted); }
+.pr-k .odkaz small svg { display: inline-block; width: 18px; height: 18px; vertical-align: -4px; }
+.pr-k.nova .odkaz { background: var(--sun-l); }
+.pr-k.nova .odkaz small { font-weight: 700; }
+.pr-k .pr-poc { align-self: center; }
+.pr-k:active .odkaz { transform: translateY(2px); }
+.anim .pr-k, .anim .pribeh { animation: prIn .45s var(--spring) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.pr-k.nova .odkaz { animation: prNadych .7s ease-in-out .5s 1; }
+@keyframes prIn { from { opacity: 0; transform: translateY(14px); } }
+@keyframes prNadych { 40% { transform: scale(1.04); } }
+
+/* prázdny stav, Múdra s odkazom */
+.pr-prazdne { display: grid; justify-items: center; gap: 18px; padding-top: 6px; }
+.pr-prazdne > .btn { max-width: 340px; }
+.pr-kruhy { display: flex; align-items: end; }
+.pr-kruhy span { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 -7px; border: 2.5px dashed var(--ink); border-radius: 50%; background: var(--card); font: 900 1.5rem/1 var(--fd); color: var(--muted); animation: prBob 3s ease-in-out infinite; }
+.pr-kruhy .ikn { width: 30px; height: 30px; color: var(--text); }
+.pr-kruhy span:nth-child(2) { width: 72px; height: 72px; position: relative; z-index: 1; background: var(--sun-l); animation-delay: -1s; }
+.pr-kruhy span:nth-child(3) { animation-delay: -2s; }
+@keyframes prBob { 50% { transform: translateY(-5px); } }
+.pr-povz { display: grid; grid-template-columns: 82px 1fr; gap: 6px; align-items: end; width: 100%; }
+.pr-m svg { display: block; width: 100%; height: auto; }
+.pr-povz .odkaz { background: var(--sun-l); margin-bottom: 8px; }
+.pr-mala { margin: 0; font: 500 .86rem/1.4 var(--fb); color: var(--muted); text-align: center; }
+
+/* rebríček: stupne víťazov a riadky pod nimi */
+.pr-nh { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.pr-podium-o { display: grid; }
+.pr-podium { display: grid; grid-template-columns: 1fr 1.16fr 1fr; align-items: end; padding: 14px 4px 0; }
+.pr-podium.dvaja { grid-template-columns: 1fr 1.16fr; padding-inline: 12% 12%; }
+.pr-stup { position: relative; display: grid; justify-items: center; gap: 5px; min-width: 0; }
+.pr-stup .pr-av { --s: 62px; }
+.pr-stup.prvy .pr-av { --s: 78px; border-width: 3px; }
+.pr-stup.ja .pr-av { box-shadow: 0 0 0 3px var(--sun), 0 0 0 5.5px var(--ink); }
+.pr-stup > b { max-width: 100%; padding-inline: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 800 .98rem/1.1 var(--fd); }
+.pr-koruna { position: relative; z-index: 1; margin-bottom: -14px; rotate: -8deg; }
+.pr-koruna .ikn { width: 38px; height: 38px; }
+.pr-ty { position: absolute; left: 0; top: -4px; z-index: 2; padding: 4px 7px 2px; border: var(--obrys-m); border-radius: 9px; background: var(--sun); font: 800 .75rem/1 var(--fd); color: var(--dk); rotate: -8deg; }
+.pr-blok { display: grid; justify-items: center; align-content: start; gap: 6px; width: 100%; height: var(--h); margin-top: 3px; padding-top: 8px; border: var(--obrys); border-bottom: 0; border-radius: 14px 16px 0 0; background: var(--c); color: var(--text); transform-origin: bottom; }
+.pr-stup + .pr-stup .pr-blok { border-left: 0; }
+.pr-stup.prvy .pr-blok { color: var(--dk); }
+.pr-miesto { font: 900 1.8rem/1 var(--fd); }
+.pr-blok .st.cis { height: 28px; padding-inline: 7px 9px; font-size: .88rem; background: var(--card); color: var(--text); }
+.pr-blok .st.cis .ikn { width: 17px; height: 17px; }
+.anim .pr-blok { animation: prRast .55s var(--spring) both; animation-delay: calc(var(--i) * 110ms); }
+.anim .pr-stup > .pr-av, .anim .pr-koruna { animation: prSkok .6s var(--spring) both; animation-delay: calc(var(--i) * 110ms + 260ms); }
+.pr-koruna .ikn { animation: prKoruna 3.2s ease-in-out 1.2s infinite; }
+@keyframes prRast { from { transform: scaleY(0); } }
+@keyframes prSkok { 0% { opacity: 0; transform: translateY(-34px); } 60% { opacity: 1; } }
+@keyframes prKoruna { 0%, 80%, 100% { transform: none; } 88% { transform: translateY(-4px) rotate(6deg); } }
+.pr-reb { border: var(--obrys); border-radius: 0 0 18px 20px; background: var(--card); overflow: hidden; box-shadow: 0 5px 0 var(--shc); }
+.pr-r { display: grid; grid-template-columns: 24px 40px minmax(0, 1fr) 50px 56px; align-items: center; gap: 8px; padding: 8px 12px; border-top: 2px dashed var(--sand); }
+.pr-r.hlav { border-top: 0; padding-block: 9px 0; font: 700 .69rem/1 var(--fb); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); text-align: right; }
+.pr-r.hlav + .pr-r { border-top: 0; }
+.pr-r.ja { background: var(--sun-l); }
+.pr-por { font: 900 1.06rem/1 var(--fd); text-align: center; color: var(--muted); }
+.pr-r .pr-av { --s: 40px; }
+.pr-r b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 800 .97rem/1.1 var(--fd); }
+.pr-r .pr-ty { position: static; display: inline-block; margin-left: 4px; font-size: .7rem; vertical-align: 1px; }
+.pr-cs { display: flex; align-items: center; justify-content: flex-end; gap: 4px; font: 800 .94rem/1 var(--fd); font-variant-numeric: tabular-nums; }
+.pr-cs .ikn { width: 18px; height: 18px; margin-top: -2px; }
+.pr-zem { height: 14px; border: var(--obrys); border-radius: 0 0 12px 14px; background: var(--sand); box-shadow: 0 4px 0 var(--shc); }
+
+/* Pridať: lístok s mojím kódom a pole na kód kamaráta */
+.soc-kod .pr-kod-h { display: grid; gap: 7px; padding: 16px 16px 14px; }
+.soc-kod .kod { font: 900 2rem/1 var(--fd); letter-spacing: .06em; color: var(--link); overflow-wrap: anywhere; user-select: all; }
+.soc-kod p { margin: 0; font: 400 .94rem/1.4 var(--fb); color: var(--muted); }
+.soc-kod .pr-kod-d { padding: 14px 16px 16px; }
+.anim .soc-kod { animation: prListok .6s var(--spring) both; }
+@keyframes prListok { from { opacity: 0; transform: translateY(18px) rotate(-3deg); } }
+.soc-pridaj { display: grid; gap: 10px; }
+.soc-pridaj label.pr-mala { text-align: left; }
+.soc-riadok { display: flex; gap: 8px; }
+.kod-vstup { flex: 1; min-width: 0; text-transform: uppercase; font: 800 1.15rem var(--fd); letter-spacing: .05em; }
+.kod-vstup::placeholder { color: var(--muted); opacity: .45; font-weight: 600; }
+.soc-riadok .btn { flex: none; }
+.pr-caka { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.pr-caka .pr-mala { width: 100%; text-align: left; }
+.pr-bezp .ikn { display: inline-block; width: 20px; height: 20px; margin-right: 5px; vertical-align: -5px; }
+
+/* priatelia ešte nie sú zapnutí (pre rodiča) */
+.soc-intro { display: grid; gap: 12px; }
+.soc-intro p { margin: 0; font: 500 .97rem/1.45 var(--fb); }
+.soc-intro p.pr-mala { font-size: .86rem; text-align: left; }
+
+/* načítavanie: siluety namiesto textu */
+.pr-tien { flex: none; width: 60px; height: 60px; border-radius: 50%; border: 2.5px dashed var(--ink); background: var(--card); animation: prPulz 1.2s ease-in-out infinite alternate; }
+.pr-kostra { display: grid; gap: 14px; }
+.pr-kostra span { height: 62px; border: 2.5px dashed var(--sand); border-radius: 16px 18px 18px 5px; margin-left: 60px; background: var(--card); animation: prPulz 1.2s ease-in-out infinite alternate; }
+.pr-kostra span:nth-child(2) { animation-delay: .2s; margin-right: 40px; }
+.pr-kostra span:nth-child(3) { animation-delay: .4s; }
+@keyframes prPulz { to { opacity: .45; } }
+
+/* profil priateľa */
+.pr-profil .pr-vrch { gap: 6px; }
+.pr-ja { display: grid; justify-items: center; gap: 8px; text-align: center; margin-top: -40px; }
+.pr-ja .n0 { overflow-wrap: anywhere; }
+.anim .pr-ja .pr-av { animation: prSkok .6s var(--spring) both; }
+.pr-staty { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pr-stat { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 10px; padding: 12px; border: var(--obrys); border-radius: 18px 20px 22px 18px; background: var(--c); box-shadow: 0 4px 0 var(--shc); color: var(--text); }
+.pr-stat .ikb { grid-row: span 2; margin: 0; }
+.pr-stat b { font: 900 1.5rem/1 var(--fd); }
+.pr-stat small { font: 600 .82rem/1.2 var(--fb); }
+.pr-strom { display: grid; justify-items: center; gap: 4px; }
+.strom-mini { width: 170px; height: auto; }
+.pr-odz .posledne { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.soc-odober { color: var(--muted); }
+@media (min-width: 520px) { .pr-staty { grid-template-columns: repeat(4, 1fr); } .pr-stat { grid-template-columns: 1fr; justify-items: center; text-align: center; row-gap: 4px; } .pr-stat .ikb { grid-row: auto; } }
+
+/* rozhovor na celú obrazovku */
+.dm { --dm-o: max(12px, calc((100% - 640px) / 2)); position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; background: var(--fon); }
+.dm-hlava { display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top, 0px)) var(--dm-o) 12px; border-bottom: var(--obrys); background: var(--coral-l); }
+.dm-spat { flex: none; width: 44px; height: 44px; }
+.dm-kto { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 2px; border: 0; border-radius: 16px; background: none; text-align: left; font: inherit; color: inherit; }
+.dm-kto .pr-av { --s: 48px; }
+.dm-meno { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.dm-meno b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 800 1.2rem/1.1 var(--fd); }
+.dm-staty { display: flex; gap: 10px; font: 800 .88rem/1 var(--fd); }
+.dm-staty span { display: inline-flex; align-items: center; gap: 3px; }
+.dm-staty .ikn { width: 17px; height: 17px; }
+.dm-profil { flex: none; display: inline-flex; align-items: center; gap: 1px; padding: 5px 6px 5px 10px; border: var(--obrys-m); border-radius: 999px; background: var(--card); font: 700 .8rem/1 var(--fb); }
+.dm-profil .ikn { width: 16px; height: 16px; }
+.dm-nacit { font: 800 1.1rem var(--fd); }
+.dm-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding: 16px var(--dm-o); overscroll-behavior: contain; }
+.dm-chat > * { flex-shrink: 0; }
+.dm-kostra { margin-top: 10px; }
+.dm-prazdny { margin: auto; display: grid; justify-items: center; gap: 10px; max-width: 300px; text-align: center; }
+.dm-prazdny b { font: 900 1.5rem/1.1 var(--fd); }
+.dm-prazdny .odkaz { border-radius: 18px; background: var(--sun-l); }
+.dm-dole .ikn { width: 30px; height: 30px; color: var(--muted); animation: prBob 1.6s ease-in-out infinite; }
+.dm-cas { align-self: center; margin: 12px 0 8px; padding: 4px 10px 3px; border-radius: 999px; background: var(--sand); font: 700 .75rem/1.2 var(--fb); color: var(--muted); }
+.dm .msg { align-self: flex-start; display: flex; align-items: flex-end; gap: 6px; max-width: 80%; margin-bottom: 5px; }
+.dm .msg.moja { align-self: flex-end; }
+.dm .msg.posl { margin-bottom: 11px; }
+.msg-av { flex: none; width: 30px; height: 30px; border-radius: 50%; overflow: hidden; }
+.msg-av:not(:empty) { border: 2px solid var(--ink); background: var(--c, var(--sky-l)); }
+.msg-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
+.msg-obal { position: relative; display: block; min-width: 0; }
+.dm .msg-t { display: block; padding: 9px 14px 8px; border: var(--obrys-m); border-radius: 18px 20px 20px 6px; background: var(--card); box-shadow: 0 3px 0 var(--shc); font: 600 1.06rem/1.3 var(--fd); color: var(--text); }
+.dm .msg.moja .msg-t { border-radius: 20px 18px 6px 20px; background: var(--sky-l); }
+.dm .msg:not(.posl) .msg-t { box-shadow: none; }
+.msg-x { font-family: var(--fb) !important; font-weight: 500 !important; overflow-wrap: anywhere; white-space: pre-wrap; }
+.msg-x i { color: var(--muted); }
+.msg-nal { display: block; width: 96px; height: 96px; }
+.msg-nal > svg { width: 100%; height: 100%; }
+.dm .msg-nal { animation: pop .5s var(--spring) both; }
+.msg.odosiela { opacity: .6; }
+/* správa s nálepkou alebo témou má triedu .nalepka (pomenovanú v 4.9); nesmie dostať vzhľad dlaždice .nalepka zo 40-system.css */
+.dm .msg.nalepka { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.dm-chat > .msg:last-child, .dm-chat > .msg:has(+ .dm-videne:last-child) { animation: prBub .5s var(--spring) both; }
+@keyframes prBub { 0% { opacity: 0; transform: translateY(16px) scale(.9); } 60% { opacity: 1; transform: scale(1.04); } }
+.msg-r { position: absolute; right: -6px; bottom: -9px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); animation: pop .4s var(--spring) both; }
+.dm .msg.srdce { margin-bottom: 18px; }
+.msg-tema { display: grid; gap: 5px; width: 210px; padding: 8px; border: var(--obrys); border-radius: 18px 20px 20px 16px; background: var(--card); box-shadow: 0 4px 0 var(--shc); }
+.msg-tema-obr { display: block; height: 100px; overflow: hidden; border: var(--obrys-m); border-radius: 13px; }
+.msg-tema-obr > svg { width: 100%; height: 100%; }
+.msg-tema small { font: 700 .75rem/1.2 var(--fb); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.msg-tema b { font: 800 1rem/1.2 var(--fd); }
+.msg-hv { display: flex; gap: 2px; }
+.msg-hv svg { width: 20px; height: 20px; }
+.msg-tema .btn { padding: 8px 12px 11px; font-size: .95rem; }
+.dm-videne { align-self: flex-end; display: flex; align-items: center; gap: 3px; margin: -4px 4px 8px; font: 700 .75rem/1 var(--fb); color: var(--muted); }
+.dm-videne .ikn { width: 15px; height: 15px; color: var(--ok-t); }
+.dm-pisanie { display: grid; gap: 10px; padding: 10px var(--dm-o) calc(12px + env(safe-area-inset-bottom, 0px)); border-top: var(--obrys); background: var(--card); }
+.dm-nalepky, .dm-vety, .dm-temy { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 5px; scrollbar-width: none; }
+.dm-nalepky::-webkit-scrollbar, .dm-vety::-webkit-scrollbar, .dm-temy::-webkit-scrollbar { display: none; }
+@media (min-width: 600px) { .dm-nalepky, .dm-vety { flex-wrap: wrap; overflow: visible; } }
+.dm-pisanie:has(#soc-text:focus) .dm-nalepky, .dm-pisanie:has(#soc-text:focus) .dm-vety { display: none; }
+@media (max-height: 460px) { .dm-nalepky, .dm-vety { display: none; } }
+.nal { flex: none; display: grid; place-items: center; width: 58px; height: 58px; padding: 6px; border: var(--obrys-m); border-radius: 16px 18px 15px 17px; background: var(--fon); box-shadow: 0 3px 0 var(--shc); }
+.nal > svg { width: 100%; height: 100%; }
+.nal:active { transform: translateY(2px) scale(.95); box-shadow: 0 1px 0 var(--shc); }
+.dm-temy-btn { background: var(--sky-l); }
+.dm-temy-btn.on { background: var(--sun); }
+.veta { flex: none; min-height: 44px; padding: 8px 14px 10px; border: var(--obrys-m); border-radius: 999px; background: var(--card); box-shadow: inset 0 -4px 0 var(--sand), 0 2px 0 var(--shc); font: 700 .95rem/1 var(--fd); color: var(--text); white-space: nowrap; }
+.veta:active { transform: translateY(2px); box-shadow: inset 0 -2px 0 var(--sand); }
+.dm-text { display: flex; gap: 8px; }
+.dm-text .search { flex: 1; min-width: 0; }
+.dm-tema { flex: none; display: grid; gap: 3px; width: 108px; padding: 4px; border: var(--obrys-m); border-radius: 14px; background: var(--fon); text-align: left; font: inherit; color: var(--text); }
+.dm-tema > span { display: block; height: 56px; overflow: hidden; border-radius: 10px; }
+.dm-tema > span > svg { width: 100%; height: 100%; }
+.dm-tema small { font: 700 .72rem/1.2 var(--fb); }
+
+/* bublina hore pri novej správe, kým je dieťa inde v appke */
+.soc-ozn { position: fixed; z-index: 58; top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 auto; padding: 8px 14px 8px 8px;
+  border: var(--obrys); border-radius: 22px 24px 24px 8px; background: var(--sun-l); box-shadow: 0 5px 0 var(--shc); text-align: left; font: inherit; color: var(--text); animation: ozn .5s var(--spring) both; }
+.soc-ozn .soc-av { flex: none; display: grid; width: 46px; height: 46px; border-radius: 50%; overflow: hidden; border: var(--obrys-m); background: var(--card); }
+.soc-ozn .soc-av .postavicka { width: 100%; height: auto; margin-top: 2px; }
+.soc-ozn > span:nth-child(2) { flex: 1; min-width: 0; display: grid; }
+.soc-ozn b { font: 800 1.05rem var(--fd); }
+.soc-ozn small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 .9rem var(--fb); }
+.soc-ozn small svg { display: inline-block; width: 18px; height: 18px; vertical-align: -4px; }
+.soc-ozn.pryc { animation: oznPryc .4s ease-in both; }
+@keyframes ozn { from { transform: translateY(-140%); } }
+@keyframes oznPryc { to { transform: translateY(-140%); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim .pr-k, .anim .pribeh, .anim .pr-ziadost, .anim .pr-ziadost .zal, .pr-k.nova .odkaz, .pr-kruhy span, .anim .pr-blok, .anim .pr-stup > .pr-av, .anim .pr-koruna, .pr-koruna .ikn,
+  .anim .soc-kod, .pr-tien, .pr-kostra span, .anim .pr-ja .pr-av, .dm-dole .ikn, .dm .msg-nal, .dm-chat > .msg, .msg-r, .soc-ozn, .soc-ozn.pryc { animation: none !important; }
+}
