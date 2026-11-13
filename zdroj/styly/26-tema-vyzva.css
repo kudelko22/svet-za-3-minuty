@@ -1,10 +1,12 @@
-/* Výzva: 3 životy */
-.zivoty { display: inline-flex; gap: 3px; }
-.zivoty i { display: grid; width: 28px; height: 28px; }
-.zivoty i svg { width: 100%; height: 100%; }
-.zivoty i.strata { opacity: .4; filter: grayscale(1); }
+/* Životy v kvíze (2 až 3 srdcia), stratené srdce je prázdne */
+.zivoty { display: inline-flex; gap: 2px; }
+.zivoty i { display: grid; width: 26px; height: 26px; }
+.zivoty i .ikn { width: 100%; height: 100%; }
+.zivoty i.ma .ikn g { stroke: var(--dk); }
+.zivoty i.strata .ikn g { stroke: currentColor; opacity: .6; }
+.zivoty i.strata .ikn path:first-child { fill: none; } .zivoty i.strata .ikn path + path { display: none; }
 .zivoty i.prave { animation: zivotStrata .8s ease-out both; }
-@keyframes zivotStrata { 0% { transform: scale(1.6); opacity: 1; filter: none; } 30% { transform: scale(1.25) rotate(-16deg); opacity: 1; filter: none; } 60% { transform: rotate(12deg); } }
-.zivoty.velke { justify-content: center; gap: 8px; }
+@keyframes zivotStrata { 0% { transform: scale(1.6); } 30% { transform: scale(1.25) rotate(-16deg); } 60% { transform: rotate(12deg); } }
+.zivoty.velke { justify-content: center; gap: 8px; color: var(--muted); }
 .zivoty.velke i { width: 46px; height: 46px; }
 .act.cas { opacity: .62; }

@@ -185,20 +185,17 @@ document.addEventListener('click', e => {
     if (pridat) { Zvuk.play('heart'); const [x, y] = stred(b); FX.hearts(x, y); toast('Uložené medzi obľúbené'); } else Zvuk.play('tap');
     oznamOdznaky(noveOdznaky());
     renderFlow(false);
+  } else if (d.hlbka !== undefined && f) {
+    Zvuk.play('tap'); f.hlbka = !f.hlbka; renderFlow(false); // odsek Do hĺbky: rozbaliť a zbaliť
   } else if (d.ans !== undefined && f) {
-    const v = Number(d.ans), [x, y] = stred(b);
+    if (f.odp[f.i]) return; // na otázku sa odpovedá raz
+    const v = Number(d.ans);
     Hlas.stop();
     const ok = odpovedz(f, v);
     zapisChybu(f.kroky[f.i], ok);
-    renderFlow(false);
-    if (ok) {
-      Zvuk.play('ok'); setTimeout(() => Zvuk.play('coin'), 260); Haptika.hraj(f.precvic ? 'spravne' : 'hotovo');
-      FX.burst(x, y, 30); letiText(x, y - 20, 'Správne!'); zablesk('rgb(47 191 113 / .35)');
-    } else {
-      Zvuk.play('bad'); vibruj([80, 50, 80]); zablesk('rgb(255 90 95 / .35)');
-      const s = main.querySelector('.step'); if (s) s.classList.add('shake');
-      if (f.prehra) { kvizZamkni(druhKvizu(f)); setTimeout(() => { Zvuk.play('bum'); vibruj([60, 40, 60]); }, 450); }
-    }
+    renderFlow(false); // zmení len odpovede, lištu a pridá reakciu (bez prekreslenia celej obrazovky)
+    if (!ok && f.prehra) kvizZamkni(druhKvizu(f));
+    reakciaOdpovede(f, ok, v);
   } else if (d.znova !== undefined && f) {
     // téma bez správnej odpovede: otázky (alebo celá téma) odznova, odpovede v inom poradí
     f.odp = {}; f.zle = false; f.kroky.forEach(k => { if (k.t === 'q') k.poradie = mix(k.q.a.length); });
