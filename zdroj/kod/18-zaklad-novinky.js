@@ -1,5 +1,14 @@
-/* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane */
+/* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane.
+   Pri prechode na 5.0 (PREMENA_V v 23-premena.js) sa namiesto okna hrá úvodná premena a na jej konci sú novinky s v >= PREMENA_V. */
 const NOVINKY = [
+  // DOČASNÉ vety 5.0 (návrhy zo sekcií): záverečná session ich prepíše a nastaví VERZIA_APPKY = PREMENA_V
+  { v: 67, docasne: true, obr: () => logoGlobus(), n: 'Appka sa volá Svetom', p: 'Každý deň objav niečo nové. Celá appka vyzerá ako papierový atlas a má nové písmo, ktoré sa číta ľahšie.' },
+  { v: 67, docasne: true, obr: () => mudra('radost'), n: 'Múdra vyrástla', p: 'Má šatku objaviteľky a vie sa tešiť, čudovať aj premýšľať.' },
+  { v: 67, docasne: true, obr: () => ikn('kompas'), n: 'Domov je krajina', p: 'Cesta každý deň vedie inam: k sopke, do hôr, k hradu, ku hvezdárni alebo k domčeku. Strom múdrosti rastie priamo pri ceste.' },
+  { v: 67, docasne: true, obr: () => ikn('zalozka'), n: 'Téma ako kniha, kvíz ako javisko', p: 'Po správnej odpovedi vyjde slnko a Múdra sa teší s tebou.' },
+  { v: 67, docasne: true, obr: () => ikn('hry'), n: 'Hry sú ihrisko', p: 'Každá hra má nový obrázok a karta Ďalšia hra ukáže, koľko chýba.' },
+  { v: 67, docasne: true, obr: () => ikn('odznak'), n: 'Pas objaviteľa', p: 'Odznaky sú teraz pečiatky v Pase objaviteľa a karta Ja je preukaz s fotkou postavičky.' },
+  { v: 67, docasne: true, obr: () => ikn('priatelia'), n: 'Priatelia a rodič', p: 'Správy v bublinách, rebríček so stupňami víťazov a pokojnejší panel pre rodiča.' },
   { v: 66, obr: () => IK.mozog, n: 'Verzia 4.8.2: opravy', p: 'Okruh týždňa sa dá znova zmeniť aj z okna so stromom. V niektorých nových témach chýbal obrázok pri odpovedi, často práve pri správnej. Teraz majú všetky odpovede jednej otázky obrázok, alebo všetky písmená A, B, C.' },
   { v: 65, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.8.1: oslava série a ožitie stromu', p: 'Keď dohráš tému dňa, číslo série sa prevalí a zväčší, zažiari plameň a zaznie fanfára. Ak strom zvädol, vietor ho rozkýve, listy sa zatočia a strom múdrosti zasa ožije.' },
   { v: 64, obr: () => IK.mesiac, n: 'Verzia 4.8: Mesačný režim', p: 'V profile Ja v karte Mesačný režim prepneš appku na nočnú oblohu s mesiacom a hviezdičkami. Môžeš si vybrať Svetlý, Mesačný alebo Podľa telefónu. Večer je to príjemnejšie pre oči.' },
@@ -62,11 +71,17 @@ const Novinky = {
   // verzia sa zapíše až keď sa okno naozaj ukáže, takže ho dieťa nestratí, ak appku zavrie skôr
   skontroluj() {
     if (this.bolo || this.caka || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto || Sprievodca.el) return;
+    // skúška premeny: adresa s ?premena (celá) alebo ?premena=tichy (len koniec); nič sa nezapisuje
+    const skuska = typeof Premena !== 'undefined' ? Premena.skuska() : '';
     const videl = S.get('videl-verziu', 0);
-    if (videl >= VERZIA_APPKY) { this.bolo = true; return; }
+    if (!skuska && videl >= VERZIA_APPKY) { this.bolo = true; return; }
+    // nový používateľ (bez uloženej verzie a bez pokroku) novinky ani premenu nedostane: starú appku nepoznal
     const odkedy = videl || (st.done.length || st.body ? 21 : VERZIA_APPKY);
-    const z = NOVINKY.filter(n => n.v > odkedy);
-    if (!z.length) { S.set('videl-verziu', VERZIA_APPKY); this.bolo = true; return; }
+    const z = NOVINKY.filter(n => n.v > odkedy && n.v <= VERZIA_APPKY);
+    // premena 5.0: kto naposledy videl verziu pred 5.0 (alebo skúška); na konci len novinky 5.0
+    const premena = skuska || (typeof PREMENA_V !== 'undefined' && VERZIA_APPKY >= PREMENA_V && odkedy < PREMENA_V);
+    const z5 = premena ? NOVINKY.filter(n => n.v >= PREMENA_V) : [];
+    if (!z.length && !premena) { S.set('videl-verziu', VERZIA_APPKY); this.bolo = true; return; }
     this.caka = true;
     // okno sa ukáže až keď úplne zmizne úvodná obrazovka so sovičkou (najneskôr po 6 s ju zavrie samo)
     const t0 = Date.now();
@@ -75,19 +90,23 @@ const Novinky = {
       if (u && u.isConnected && Date.now() - t0 < 6000) { if (Date.now() - t0 > 4500) Uvod.skry(); setTimeout(skus, 120); return; }
       setTimeout(() => {
         this.caka = false;
-        if (this.bolo || document.querySelector('.novinky')) return;
-        try { this.ukaz(z); this.bolo = true; S.set('videl-verziu', VERZIA_APPKY); } catch (e) { console.error('Čo je nové:', e); }
+        if (this.bolo || document.querySelector('.novinky, .pm')) return;
+        if (premena && Premena.spusti(z5, { tichy: skuska === 'tichy' })) { this.bolo = true; if (!skuska) S.set('videl-verziu', VERZIA_APPKY); return; }
+        // premena zlyhala alebo nebola: obyčajné okno noviniek
+        try { const zz = z.length ? z : z5; if (zz.length) this.ukaz(zz); this.bolo = true; if (!skuska) S.set('videl-verziu', VERZIA_APPKY); } catch (e) { console.error('Čo je nové:', e); }
       }, 350);
     };
     setTimeout(skus, 300);
   },
   ukaz(z) {
     const el = document.createElement('div');
-    el.className = 'novinky'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Čo je nové');
-    el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('cheer')}<div><small>Verzia ${VERZIA_NAZOV}</small><h2>Čo je nové?</h2></div></div>
+    // 5.0: rovnaké okno v štýle papierového atlasu (.nov-50 v 58-premena.css)
+    el.className = 'novinky nov-50'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Čo je nové');
+    el.innerHTML = `<div class="nov-karta listok"><div class="nov-hlava">${mudra('radost')}<div><small>Verzia ${VERZIA_NAZOV}</small><h2>Čo je nové?</h2></div></div>
       <div class="nov-zoznam">${z.map((n, i) => `<div class="nov-polozka" style="--i:${i}"><span class="nov-obr${n.siroky ? ' siroky' : ''}">${n.obr()}</span><div><b>${n.n}</b><small>${n.p}</small></div></div>`).join('')}</div>
-      ${z.some(n => n.v >= 55) ? '<button class="btn wide ghost" data-novinky-tour style="margin-bottom:8px">Ukáž mi novinky</button>' : ''}
-      <button class="btn wide cta" data-novinky-ok>Super, poďme na to!</button></div>`;
+      <div class="perf"></div>
+      <div class="nov-dole">${z.some(n => n.v >= 55 && n.v < 67) ? '<button class="btn wide dve" data-novinky-tour>Ukáž mi novinky</button>' : ''}
+      <button class="btn wide" data-novinky-ok>Super, poďme na to!</button></div></div>`;
     document.body.appendChild(el);
     Zvuk.play('cink'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .25, 24, ['star', 'dot']), 300);
     const b = el.querySelector('[data-novinky-ok]');
