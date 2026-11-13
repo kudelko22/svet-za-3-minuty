@@ -27,29 +27,39 @@ const RodicPanel = (() => {
     return Object.entries(d.kedy || {}).filter(([id, k]) => k >= od && byId(id)).length;
   };
   const slovoTem = n => n === 1 ? 'téma' : n >= 2 && n <= 4 ? 'témy' : 'tém';
-  const hlava = (nadpis, spat) => `<div class="rp-hlava">
-      <button class="ib rp-spat" data-rp-${spat} aria-label="Späť">‹</button><h1 class="h1">${nadpis}</h1></div>`;
   const avatar = d => `<span class="kruh-av" style="--bg:${d.avatar.pozadie}">${postavicka(d.avatar)}</span>`;
-  const zamykaci = () => `<div class="rp-spodok"><button class="btn blue" data-rp-zamknut>Zamknúť</button><button class="btn ghost" data-rp-vyber>Späť na výber</button></div>`;
+  const sip = () => ikn('sipka', 'rd-sip');
+  // prepínač: vyzerá ako prepínač, správa sa ako tlačidlo (atribút data-* nesie akciu)
+  const prep = (zap, attr, popis) => `<button type="button" class="rd-prep" aria-pressed="${zap}" aria-label="${popis}" ${attr}><i></i></button>`;
+  // dni tohto týždňa (Po až Ne): hotový deň je plný, dnes má žltý krúžok
+  const tyzdenBodky = d => {
+    const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
+    const dnes = key(new Date()), dni = d.dni || [];
+    return Array.from({ length: 7 }, (_, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x);
+      return `<i class="${dni.includes(k) ? 'h' : ''}${k === dnes ? ' dn' : ''}" title="${DNI[i]}"></i>`; }).join('');
+  };
 
   const views = {
     rodic() {
       if (brana()) return '';
-      const C = cloud(), p = C.rodic.profil;
+      const C = cloud(), p = C.rodic.profil, dnes = key(new Date());
       if (!prevzate) { prevzate = true; Rodic.prevezmiLokalne().catch(() => {}); }
       stav().potvrd = null;
-      return `<div class="brana rp"><h1 class="h1">${esc(p.meno || 'Rodič')}</h1><p class="muted">Tu vidíte, ako sa darí vašim deťom.</p>
-        <div class="deti">${C.deti.map(d => {
-          const t = tyzdenTem(d), s = serieDni(d.dni || []), ch = (d.chyby || []).length;
-          return `<button class="dieta" data-rp-dieta="${esc(d.id)}">${avatar(d)}<b>${esc(d.meno)}</b>
-            <small>${ii(STAR())} ${d.body || 0} bodov</small>
-            <small>${t} ${slovoTem(t)} tento týždeň</small>
-            <small>${ii(IK.ohen)} ${s} ${dni(s)} po sebe</small>
-            <small>${ch ? ch + ' na zopakovanie' : 'bez chýb'}</small></button>`;
-        }).join('')}</div>
-        ${C.deti.length ? '' : '<p class="muted">Zatiaľ tu nie je žiadne dieťa. Pridajte ho v Nastaveniach.</p>'}
-        <button class="btn wide" data-rp-nastavenia>Nastavenia</button>
-        ${zamykaci()}</div>`;
+      return `<div class="brana rd">${rodicHlava('', 'Pre rodiča', true)}<div class="rd-telo">
+        <div><h1 class="rd-n">Dobrý deň${p.meno && p.meno !== 'Rodič' ? ', ' + esc(p.meno) : ''}</h1><p class="rd-p">Tu vidíte, ako sa darí vašim deťom.</p></div>
+        ${C.deti.map(d => {
+          const t = tyzdenTem(d), s = serieDni(d.dni || []), ch = (d.chyby || []).length, hot = (d.dni || []).includes(dnes);
+          return `<button class="rd-blok rd-dieta" data-rp-dieta="${esc(d.id)}">
+            <span class="rd-dieta-h">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small>${vekText(d.vek)} · ${hot ? 'dnes hotovo' : 'dnes ešte bez témy'}</small></span>${sip()}</span>
+            <span class="rd-cisla"><span><b class="cis">${d.body || 0}</b><small>bodov spolu</small></span><span><b class="cis">${t}</b><small>${slovoTem(t)} tento týždeň</small></span>
+              <span><b class="cis">${s} ${dni(s)}</b><small>po sebe</small></span><span><b class="cis">${ch}</b><small>${ch ? 'na zopakovanie' : 'bez chýb'}</small></span></span>
+            <span class="rd-tyzd"><span>Týždeň</span>${tyzdenBodky(d)}</span></button>`;
+        }).join('')}
+        ${C.deti.length ? '' : '<p class="rd-p">Zatiaľ tu nie je žiadne dieťa. Pridajte ho v Nastaveniach.</p>'}
+        <div class="rd-blok">
+          <button class="rd-riadok" data-rp-nastavenia>${ikn('nastav')}<span class="rd-t"><b>Nastavenia</b><small>PIN, deti, vädnutie stromu, hlas</small></span>${sip()}</button>
+          <button class="rd-riadok" data-rp-vyber>${ikn('priatelia')}<span class="rd-t"><b>Späť na výber dieťaťa</b><small>Panel sa pritom zamkne</small></span>${sip()}</button>
+        </div></div></div>`;
     },
     rodicDieta() {
       if (brana()) return '';
@@ -57,56 +67,46 @@ const RodicPanel = (() => {
       if (!d) { setTimeout(() => Rodic.chod('rodic')); return ''; }
       if (C.rodicDietaOtvor) C.rodicDietaOtvor(d.id); // priatelia a správy tohto dieťaťa (idempotentné)
       const s = serieDni(d.dni || []);
-      return `<div class="brana rp">${hlava(esc(d.meno), 'panel')}
-        <div class="rp-dieta">${avatar(d)}<div><b>${ii(STAR())} ${d.body || 0} bodov</b><br><small>${ii(IK.ohen)} ${s} ${dni(s)} po sebe · ${vekText(d.vek)}</small></div></div>
-        ${prehladRodica(d)}
-        ${zamykaci()}</div>`;
+      return `<div class="brana rd">${rodicHlava('data-rp-panel', 'Prehľad dieťaťa', true)}<div class="rd-telo">
+        <div class="rd-dieta-h rd-vel">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small><span class="cis">${d.body || 0}</span> bodov · <span class="cis">${s}</span> ${dni(s)} po sebe · ${vekText(d.vek)}</small></span></div>
+        ${prehladRodica(d)}</div></div>`;
     },
     rodicNastavenia() {
       if (brana()) return '';
-      const C = cloud(), p = C.rodic.profil, rp = stav();
-      return `<div class="brana rp">${hlava('Nastavenia', 'panel')}
-        <section class="card prof"><span class="lbl">PIN rodiča</span>
-          <p class="muted">PIN má 4 číslice a chráni tento panel.</p>
-          <input id="rp-pin-star" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Terajší PIN">
-          <input id="rp-pin-nov" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Nový PIN">
-          <button class="btn blue" data-rp-zmen-pin>Zmeniť PIN</button></section>
-        <section class="card prof"><span class="lbl">${ii(IK.rodina)} Účet</span>
-          <p class="muted">E-mail účtu: <b>${esc(C.pouzivatel && C.pouzivatel.email || '')}</b></p>
-          <button class="btn ghost" data-rp-odhlas>Odhlásiť sa</button></section>
-        <section class="card prof"><span class="lbl">Deti</span>
-          ${C.deti.map(d => `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ghost" data-rp-uprav="${esc(d.id)}">Upraviť</button>
-              ${rp.potvrd === d.id
-                ? `<span class="rp-ano"><button class="btn red" data-rp-odstran-ano="${esc(d.id)}">Áno, odstrániť</button><button class="btn ghost" data-rp-nie>Nie</button></span>`
-                : `<button class="btn ghost" data-rp-odstran="${esc(d.id)}">Odstrániť</button>`}</div>
-            ${rp.potvrd === d.id ? '<p class="muted">Body a prebraté témy tohto dieťaťa sa stratia.</p>' : ''}`).join('') || '<p class="muted">Zatiaľ žiadne dieťa.</p>'}
-          ${C.deti.length < 4 ? '<button class="btn" data-rp-pridaj>Pridať dieťa</button>' : '<p class="muted">Najviac 4 deti.</p>'}</section>
-        <section class="card prof"><span class="lbl">Vädnutie stromu</span>
-          <p class="muted">Ak dieťa dlho nehrá, jeho strom múdrosti pomaly vädne. Platí na všetkých zariadeniach.</p>
-          ${C.deti.map(d => { const z = hnitieZapnute(d.id); return `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ${z ? 'blue' : 'ghost'}" data-rp-hnitie="${esc(d.id)}" aria-pressed="${z}">${z ? 'Zapnuté' : 'Vypnuté'}</button></div>`; }).join('')}</section>
-        <section class="card prof"><span class="lbl">Priatelia</span>
-          <p class="muted">Priateľov a správy každého dieťaťa vidíte v jeho prehľade. Tam ich môžete aj zapnúť alebo vypnúť.</p>
-          ${C.deti.map(d => `<div class="rp-riadok">${avatar(d)}<b>${esc(d.meno)}</b><button class="btn ghost" data-rp-dieta="${esc(d.id)}">Prehľad</button></div>`).join('')}</section>
-        <section class="card prof"><span class="lbl">${ii(IK.bublina)} Hlas na čítanie</span><div id="hlasy">${hlasyHtml()}</div></section>
-        <section class="card prof"><span class="lbl">Vibrácie na tomto zariadení</span><div class="hlasy" id="vibracie">${vibraciePrepinac()}</div><p class="muted">Jemné bzučanie pri odpovediach a odmenách. Funguje na Androide, na iPhone nie.</p></section>
-        ${Plocha.naPloche() ? '' : '<button class="btn wide" data-plocha>Pridať appku na plochu</button>'}
-        <section class="card prof potvrd"><span class="lbl">Zmazať profil rodiča</span>
-          <p class="muted">Panel a PIN zmiznú. Deti, ich pokrok a priatelia ostanú. Appka sa vráti do stavu bez účtu rodiča.</p>
+      const C = cloud(), rp = stav();
+      return `<div class="brana rd">${rodicHlava('data-rp-panel', 'Nastavenia', true)}<div class="rd-telo">
+        <section class="rd-blok"><h2 class="rd-h">Bezpečnosť a účet</h2>
+          <div class="rd-riadok">${ikn('kluc')}<span class="rd-t"><b>PIN rodiča</b><small>4 číslice, chráni tento panel</small></span><button class="rd-akc" data-rp-pin-otvor aria-expanded="${!!rp.pin}">${rp.pin ? 'Zavrieť' : 'Zmeniť'}</button></div>
+          ${rp.pin ? `<div class="rd-form rd-vnutri">
+            <div class="pole"><label class="vs-lbl" for="rp-pin-star">Terajší PIN</label><input id="rp-pin-star" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+            <div class="pole"><label class="vs-lbl" for="rp-pin-nov">Nový PIN</label><input id="rp-pin-nov" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+            <button class="btn" data-rp-zmen-pin>Zmeniť PIN</button></div>` : ''}
+          <div class="rd-riadok">${ikn('obalka')}<span class="rd-t"><b>Účet</b><small>${esc(C.pouzivatel && C.pouzivatel.email || '')}</small></span><button class="rd-akc" data-rp-odhlas>Odhlásiť</button></div></section>
+        <section class="rd-blok"><h2 class="rd-h">Deti · najviac 4</h2>
+          ${C.deti.map(d => `<div class="rd-riadok">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b></span>
+              ${rp.potvrd === d.id ? '' : `<button class="rd-akc" data-rp-uprav="${esc(d.id)}">Upraviť</button><button class="rd-akc cerv" data-rp-odstran="${esc(d.id)}">Odstrániť</button>`}</div>
+            ${rp.potvrd === d.id ? `<div class="rd-potvrd"><p class="rd-p">Odstrániť profil ${esc(d.meno)}? Body a prebraté témy tohto dieťaťa sa stratia.</p>
+              <div class="rd-ano"><button class="btn zle" data-rp-odstran-ano="${esc(d.id)}">Áno, odstrániť</button><button class="btn dve" data-rp-nie>Nie</button></div></div>` : ''}`).join('') || '<p class="rd-pozn">Zatiaľ žiadne dieťa.</p>'}
+          ${C.deti.length < 4 ? `<button class="rd-riadok" data-rp-pridaj>${ikn('plus')}<span class="rd-t"><b>Pridať dieťa</b></span></button>` : ''}</section>
+        <section class="rd-blok"><h2 class="rd-h">Vädnutie stromu</h2>
+          ${C.deti.map(d => { const z = hnitieZapnute(d.id); return `<div class="rd-riadok">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b></span>${prep(z, `data-rp-hnitie="${esc(d.id)}"`, 'Vädnutie stromu: ' + esc(d.meno))}</div>`; }).join('')}
+          <p class="rd-pozn">Ak dieťa dlho nehrá, jeho strom múdrosti pomaly vädne. Platí na všetkých zariadeniach.</p></section>
+        <section class="rd-blok"><h2 class="rd-h">Priatelia</h2>
+          ${C.deti.map(d => `<button class="rd-riadok" data-rp-dieta="${esc(d.id)}">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small>priatelia a správy</small></span><span class="rd-akc">Prehľad</span></button>`).join('')}
+          <p class="rd-pozn">Priateľov každého dieťaťa zapnete alebo vypnete v jeho prehľade.</p></section>
+        <section class="rd-blok"><h2 class="rd-h">Toto zariadenie</h2>
+          <div class="rd-riadok rd-stlpec">${ikn('zvuk')}<span class="rd-t"><b>Hlas na čítanie</b><small>Ťuknite na hlas a vypočujte si ho</small></span></div>
+          <div class="rd-hlasy" id="hlasy">${hlasyHtml()}</div>
+          <div class="rd-riadok">${ikn('vibr')}<span class="rd-t"><b>Vibrácie</b><small>Na Androide, na iPhone nie</small></span>${prep(Haptika.zapnute(), 'data-vibracie', 'Vibrácie')}</div>
+          ${Plocha.naPloche() ? '' : `<button class="rd-riadok" data-plocha>${ikn('domov')}<span class="rd-t"><b>Pridať appku na plochu</b></span>${sip()}</button>`}</section>
+        <section class="rd-blok rd-nebez"><h2 class="rd-h">Zmazať profil rodiča</h2>
+          <p class="rd-pozn">Panel a PIN zmiznú. Deti, ich pokrok a priatelia ostanú. Appka sa vráti do stavu bez účtu rodiča.</p>
           ${rp.potvrd === 'zmaz'
-            ? '<div class="tests"><button class="btn red" data-rp-zmaz-ano>Áno, zmazať</button><button class="btn ghost" data-rp-nie>Nie</button></div>'
-            : '<button class="btn ghost" data-rp-zmaz>Zmazať profil rodiča</button>'}</section>
-        <p class="muted" style="font-size:.85rem">Verzia appky ${VERZIA_NAZOV}</p>
-        ${zamykaci()}</div>`;
+            ? '<div class="rd-ano rd-vnutri"><button class="btn zle" data-rp-zmaz-ano>Áno, zmazať</button><button class="btn dve" data-rp-nie>Nie</button></div>'
+            : '<div class="rd-vnutri rd-vpravo"><button class="rd-akc cerv" data-rp-zmaz>Zmazať profil rodiča</button></div>'}</section>
+        <p class="rd-verzia">Svetom ${VERZIA_NAZOV}</p></div></div>`;
     },
   };
-
-  const css = document.createElement('style');
-  css.textContent = `.rp-hlava{display:flex;align-items:center;gap:10px;width:100%}.rp-hlava .h1{margin:0;flex:1;text-align:left}
-.rp-spat{font-size:1.8rem;line-height:1}.rp-spodok{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:6px}
-.rp-dieta{display:flex;align-items:center;gap:14px;width:100%}.rp-dieta .kruh-av{width:72px;aspect-ratio:1;flex:none}
-.rp-riadok{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rp-riadok .kruh-av{width:44px;aspect-ratio:1;flex:none}.rp-riadok b{flex:1;min-width:80px}
-.rp-ano{display:flex;gap:8px;flex-wrap:wrap}.rp .prehlad{text-align:left}.rp .sec{width:100%}.rp .card{width:100%;text-align:left}`;
-  if (document.head) document.head.appendChild(css);
 
   function klik(b, d) {
     const k = Object.keys(d).find(x => x.startsWith('rp'));
@@ -131,10 +131,11 @@ const RodicPanel = (() => {
     else if (d.rpSocvypni !== undefined) {
       if (C.soc && confirm('Vypnúť priateľov pre ' + (C.dieta(st.rodicDieta) || {}).meno + '? Kód prestane platiť a priatelia nebudú môcť posielať správy.')) socAkcia(C.soc.vypni(), () => { toast('Priatelia sú vypnutí.'); render(); });
     }
+    else if (d.rpPinOtvor !== undefined) { Zvuk.play('tap'); rp.pin = !rp.pin; renderTicho(); }
     else if (d.rpZmenPin !== undefined) {
       const s = (document.getElementById('rp-pin-star') || {}).value || '', n = (document.getElementById('rp-pin-nov') || {}).value || '';
       if (!/^\d{4}$/.test(s) || !/^\d{4}$/.test(n)) { Zvuk.play('bad'); toast('PIN má mať 4 číslice.'); return true; }
-      C.rodicZmenPin(s, n).then(() => { Zvuk.play('ok'); toast('PIN je zmenený.'); render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
+      C.rodicZmenPin(s, n).then(() => { Zvuk.play('ok'); toast('PIN je zmenený.'); rp.pin = false; render(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });
     }
     else if (d.rpOdhlas !== undefined) { Zvuk.play('whoosh'); zavri(); C.akcia('odhlas', '', ''); }
     else if (d.rpUprav) {

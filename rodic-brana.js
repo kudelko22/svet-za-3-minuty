@@ -1,5 +1,9 @@
 // Účet rodiča (3.5), úloha B: obrazovky pred panelom (rodicTvorba, rodicPin, karta rodiča vo výbere).
 // Používa len API z úlohy A: Cloud.rodic, Cloud.rodicVytvor/OverPin/PrepotvrdHeslom/ObnovPin, Rodic.odomkni/chod/jeOdomknute.
+// lišta rodičovskej časti: vľavo späť (alebo malé logo), v strede kde som, vpravo Zamknúť (len v odomknutom paneli)
+function rodicHlava(spat, kde, zamk) {
+  return `<div class="rd-hl">${spat ? `<button type="button" class="rd-tl rd-stv" ${spat} aria-label="Späť">${ikn('spat')}</button>` : logo()}<span class="rd-kde">${kde}</span>${zamk ? `<button type="button" class="rd-tl" data-rp-zamknut>${ikn('zamok')}Zamknúť</button>` : ''}</div>`;
+}
 const RodicBrana = (() => {
   const IKONY = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6'];
   const IKON_FARBA = { r1: '#FFE9A0', r2: '#CFD8FF', r3: '#C9F2D6', r4: '#FFD0DC', r5: '#FFE0B8', r6: '#D8F0FF' };
@@ -26,35 +30,7 @@ const RodicBrana = (() => {
   const S2 = { pin: '', chyb: 0, do: 0, kolo: 0, zab: null, tv: null, pracuje: false, chyba: '', tik: 0 };
   const tvorba = () => S2.tv || (S2.tv = { meno: '', ikona: 'r1', krok: 'profil', pin1: '' });
 
-  const stylInit = () => {
-    if (document.getElementById('rodic-brana-css')) return;
-    const s = document.createElement('style'); s.id = 'rodic-brana-css';
-    s.textContent = `/* rodic-brana */
-.dieta.rodic-novy { border-style: dashed; background: rgb(255 255 255 / .6); box-shadow: none; }
-.rodic-kruh { display: grid; place-items: center; align-items: center; }
-.rodic-kruh .ik { width: 62%; height: auto; }
-.dieta .rodic-kruh { width: min(118px, 100%); aspect-ratio: 1; animation: tileBob 3s ease-in-out infinite; }
-.rodic-ikony { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-.rodic-ikony button { aspect-ratio: 1; border: 3px solid var(--text); border-radius: 22px; background: var(--paper); display: grid; place-items: center; padding: 8px; box-shadow: var(--sh); transition: transform .1s; }
-.rodic-ikony button[aria-pressed="true"] { background: var(--sun); transform: translateY(-3px) rotate(-3deg); }
-.rodic-ikony button .ik { width: 100%; height: auto; }
-.pin-bodky { display: flex; gap: 14px; justify-content: center; padding: 6px 0; }
-.pin-bodky i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--text); background: var(--paper); transition: transform .12s, background .12s; }
-.pin-bodky i.plna { background: var(--blue); transform: scale(1.15); }
-.pin-bodky.trasie { animation: shake .45s; }
-.pin-bodky.trasie i { background: var(--bad-bg); border-color: var(--coral); }
-.pin-klavesnica { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(300px, 100%); margin: 0 auto; }
-.pin-klavesnica button { aspect-ratio: 1.25; border: 3px solid var(--text); border-radius: 20px; background: var(--paper); box-shadow: var(--sh); font: 700 1.9rem/1 var(--f-display); color: var(--text); display: grid; place-items: center; }
-.pin-klavesnica button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--text); background: var(--sun); }
-.pin-klavesnica button:disabled { opacity: .45; }
-.pin-klavesnica button .ik { width: 34px; height: 34px; }
-.pin-klavesnica .prazdne { visibility: hidden; }
-.rodic-pauza { margin: 0; color: #B4232A; font-weight: 800; }
-.rodic-brana-kruh { width: 104px; }
-.rodic-brana-kruh .rodic-kruh { width: 100%; aspect-ratio: 1; animation: tileBob 3s ease-in-out infinite; }
-`;
-    document.head.appendChild(s);
-  };
+  const stylInit = () => {}; // 5.0: štýly sú v zdroj/styly/55-rodic-ucet.css
 
   const bodky = () => `<div class="pin-bodky" id="pin-bodky" aria-label="Zadané číslice: ${S2.pin.length} z 4">${[0, 1, 2, 3].map(i => `<i class="${i < S2.pin.length ? 'plna' : ''}"></i>`).join('')}</div>`;
   const klavesnica = zam => {
@@ -80,75 +56,70 @@ const RodicBrana = (() => {
   const ulozPokusy = () => S.set(kluc(), { chyb: S2.chyb, do: S2.do, kolo: S2.kolo });
   const zostava = () => Math.max(0, Math.ceil((S2.do - Date.now()) / 1000));
 
-  // ---- obrazovky ----
+  // 5.0: rodičovská časť má pokojný vzhľad: lišta hore (späť alebo logo, kde som, Zamknúť), obrys 2 px, nadpisy Atkinson
+  const ikn2 = n => (typeof ikn === 'function' ? ikn(n) : '');
+  const pinObr = (nadpis, text, stav = '') => `<div class="rd-pin-hl"><div class="rodic-brana-kruh">${kruh((window.Cloud && window.Cloud.rodic && window.Cloud.rodic.profil || {}).ikona || tvorba().ikona)}</div>
+      <h1 class="rd-n">${nadpis}</h1><p class="rd-p" id="pin-pop">${text}</p>${stav}</div>`;
   const rodicTvorba = () => {
     stylInit(); kresli();
     const t = tvorba();
     if (t.krok === 'profil') {
-      return `<div class="brana">${sovicka('hi')}<h1 class="h1">Účet rodiča</h1>
-        <p class="muted">Za PIN-om budú nastavenia a prehľad všetkých detí. Deti sa budú učiť ako doteraz.</p>
-        <div class="card prof">
-          <label class="lbl" for="rodic-meno">Meno (nepovinné)</label>
-          <input id="rodic-meno" class="input" maxlength="20" placeholder="Rodič" autocomplete="off" value="${esc2(t.meno)}">
-          <span class="lbl">Ikona</span>
-          <div class="rodic-ikony">${IKONY.map(k => `<button type="button" data-rodic-ikona="${k}" aria-pressed="${t.ikona === k}" aria-label="${IKON_MENO[k]}">${ikona(k)}</button>`).join('')}</div>
+      return `<div class="brana rd">${rodicHlava('data-rodic-spat', 'Pre rodiča')}<div class="rd-telo">
+        <div><h1 class="rd-n">Panel pre rodiča</h1><p class="rd-p">Za PIN-om bude prehľad všetkých detí a nastavenia. Deti sa budú učiť ako doteraz.</p></div>
+        <div class="rd-blok rd-form">
+          <div class="pole"><label class="vs-lbl" for="rodic-meno">Vaše meno (nepovinné)</label>
+          <input id="rodic-meno" class="input" maxlength="20" placeholder="Rodič" autocomplete="off" value="${esc2(t.meno)}"></div>
+          <div class="pole"><span class="vs-lbl">Obrázok na zamknutý panel</span>
+          <div class="rodic-ikony">${IKONY.map(k => `<button type="button" data-rodic-ikona="${k}" aria-pressed="${t.ikona === k}" aria-label="${IKON_MENO[k]}">${ikona(k)}</button>`).join('')}</div></div>
         </div>
-        <button class="btn wide cta" data-rodic-dalej>Ďalej: vymyslieť PIN</button>
-        <button class="btn ghost wide" data-rodic-spat>Späť</button></div>`;
+        <button class="btn wide" data-rodic-dalej>Ďalej: vymyslieť PIN${ikn2('sipka')}</button></div></div>`;
     }
     const druhy = t.krok === 'pin2';
-    return `<div class="brana"><div class="rodic-brana-kruh">${kruh(t.ikona)}</div>
-      <h1 class="h1">${druhy ? 'Ešte raz ten istý PIN' : 'Vymyslite si PIN'}</h1>
-      <p class="muted">${druhy ? 'Zadajte ho znova, aby sme vedeli, že sedí.' : '4 číslice. Deti ho nesmú poznať.'}</p>
-      ${bodky()}${chybaP()}${klavesnica(S2.pracuje)}
-      <button class="btn ghost wide" data-rodic-spat>Späť</button></div>`;
+    return `<div class="brana rd rd-pin">${rodicHlava('data-rodic-spat', 'Nový PIN')}<div class="rd-telo rd-stred">
+      ${pinObr(druhy ? 'Ešte raz ten istý PIN' : 'Vymyslite si PIN', druhy ? 'Zadajte ho znova, aby sme vedeli, že sedí.' : '4 číslice. Deti ho nesmú poznať.')}
+      ${bodky()}${chybaP()}${klavesnica(S2.pracuje)}</div></div>`;
   };
 
   const rodicPin = () => {
     stylInit(); kresli();
     const C = window.Cloud, p = C && C.rodic.profil;
-    if (!p) return `<div class="brana">${sovicka('oops')}<h1 class="h1">Účet rodiča ešte nie je</h1><button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button><button class="btn ghost wide" data-rodic-spat>Späť</button></div>`;
+    if (!p) return `<div class="brana rd">${rodicHlava('data-rodic-spat', 'Pre rodiča')}<div class="rd-telo rd-stred">${sovicka('oops')}<h1 class="rd-n">Panel rodiča ešte nie je</h1><button class="btn wide" data-rodic-novy>Vytvoriť účet rodiča</button></div></div>`;
     const z = S2.zab;
     if (z) {
       const google = !!(C.pouzivatel && C.pouzivatel.providerData && C.pouzivatel.providerData.some(x => x.providerId === 'google.com'));
       if (z.krok === 'heslo') {
-        return `<div class="brana">${sovicka('think')}<h1 class="h1">Zabudnutý PIN</h1>
-          <p class="muted">${google ? 'Potvrďte cez Google, že ste to vy. Potom si vymyslíte nový PIN.' : 'Potvrďte heslom účtu <b>' + esc2(C.pouzivatel ? C.pouzivatel.email || '' : '') + '</b>. Potom si vymyslíte nový PIN.'}</p>
-          <div class="card prof">${google ? '' : '<input id="rodic-heslo" class="input" type="password" placeholder="Heslo účtu" autocomplete="new-password" enterkeyhint="go">'}
+        return `<div class="brana rd">${rodicHlava('data-rodic-spat', 'Zabudnutý PIN')}<div class="rd-telo">
+          <div><h1 class="rd-n">Zabudnutý PIN</h1>
+          <p class="rd-p">${google ? 'Potvrďte cez Google, že ste to vy. Potom si vymyslíte nový PIN.' : 'Potvrďte heslom účtu <b>' + esc2(C.pouzivatel ? C.pouzivatel.email || '' : '') + '</b>. Potom si vymyslíte nový PIN.'}</p></div>
+          <div class="rd-blok rd-form">${google ? '' : '<div class="pole"><label class="vs-lbl" for="rodic-heslo">Heslo účtu</label><input id="rodic-heslo" class="input" type="password" autocomplete="new-password" enterkeyhint="go"></div>'}
             ${chybaP()}
-            <button class="btn blue" data-rodic-over${S2.pracuje ? ' disabled' : ''}>${S2.pracuje ? '<span class="koliesko"></span>Chvíľku…' : google ? 'Potvrdiť cez Google' : 'Potvrdiť heslom'}</button></div>
-          <button class="btn ghost wide" data-rodic-spat>Späť</button></div>`;
+            <button class="btn wide" data-rodic-over${S2.pracuje ? ' disabled' : ''}>${S2.pracuje ? '<span class="koliesko"></span>Chvíľku…' : google ? 'Potvrdiť cez Google' : 'Potvrdiť heslom'}</button></div></div></div>`;
       }
-      return `<div class="brana"><div class="rodic-brana-kruh">${kruh(p.ikona)}</div>
-        <h1 class="h1">${z.krok === 'novy2' ? 'Ešte raz ten istý PIN' : 'Nový PIN'}</h1>
-        <p class="muted">${z.krok === 'novy2' ? 'Zadajte ho znova.' : '4 číslice, ktoré si zapamätáte.'}</p>
-        ${bodky()}${chybaP()}${klavesnica(S2.pracuje)}
-        <button class="btn ghost wide" data-rodic-spat>Zrušiť</button></div>`;
+      return `<div class="brana rd rd-pin">${rodicHlava('data-rodic-spat', 'Nový PIN')}<div class="rd-telo rd-stred">
+        ${pinObr(z.krok === 'novy2' ? 'Ešte raz ten istý PIN' : 'Nový PIN', z.krok === 'novy2' ? 'Zadajte ho znova.' : '4 číslice, ktoré si zapamätáte.')}
+        ${bodky()}${chybaP()}${klavesnica(S2.pracuje)}</div></div>`;
     }
     nacitajPokusy();
     const rem = zostava(), zam = rem > 0;
-    return `<div class="brana"><div class="rodic-brana-kruh">${kruh(p.ikona)}</div>
-      <h1 class="h1">${esc2(p.meno || 'Rodič')}</h1>
-      <p class="muted" id="pin-pop">${zam ? '' : 'Zadajte PIN'}</p>
-      <p class="rodic-pauza" id="pin-pauza"${zam ? '' : ' hidden'}>Príliš veľa omylov. Skúste to o ${rem} s.</p>
+    return `<div class="brana rd rd-pin">${rodicHlava('data-rodic-spat', 'Pre rodiča')}<div class="rd-telo rd-stred">
+      ${pinObr(esc2(p.meno || 'Rodič'), zam ? '' : 'Zadajte PIN', `<p class="rodic-pauza" id="pin-pauza"${zam ? '' : ' hidden'}>Príliš veľa omylov. Skúste to o ${rem} s.</p>`)}
       ${bodky()}${chybaP()}${klavesnica(zam)}
-      <button class="link center" data-rodic-zabudol>Zabudol som PIN</button>
-      <button class="btn ghost wide" data-rodic-spat>Späť na výber</button></div>`;
+      <button class="link center" data-rodic-zabudol>Zabudol som PIN</button></div></div>`;
   };
 
-  // ---- výber dieťaťa ----
+  // ---- výber dieťaťa: karta pre rodiča pod deťmi ----
   const vyber = povodny => {
     const html = povodny();
     const C = window.Cloud;
-    if (!C || !C.rodic || !C.rodic.nacitane) return html;
+    if (!C || !C.rodic || !C.rodic.nacitane) return html.replace('<!--rodic-->', '');
     stylInit(); kresli();
     const p = C.rodic.profil;
     const karta = p
-      ? `<button class="dieta rodic-karta" data-rodic-vstup>${kruh(p.ikona)}<b>${esc2(p.meno || 'Rodič')}</b><small>PIN a prehľad</small></button>`
-      : `<button class="dieta nove rodic-novy" data-rodic-novy><span class="plus">+</span><b>Vytvoriť účet rodiča</b><small>PIN a prehľad detí</small></button>`;
-    let r = html.replace(/(<\/div>)(\s*<p class="muted">Účet rodiča)/, karta + '$1$2');
+      ? `<button class="vs-rodic" data-rodic-vstup>${kruh(p.ikona)}<span><b>${esc2(p.meno || 'Rodič')}</b><small>Pre rodiča · PIN, prehľad a nastavenia</small></span>${ikn2('zamok')}</button>`
+      : `<button class="vs-rodic rodic-novy" data-rodic-novy><span class="vs-rodic-plus">${ikn2('kluc')}</span><span><b>Pre rodiča</b><small>Nastavte PIN a uvidíte prehľad detí</small></span>${ikn2('sipka')}</button>`;
+    let r = html.replace('<!--rodic-->', karta);
     if (r === html) r = html.replace('</h1>', '</h1>' + karta);
-    if (p) r = r.replace(/\s*<button class="btn ghost wide" data-ucet="odhlas">Odhlásiť sa<\/button>/, ''); // odhlásenie je v rodičovskej zóne
+    if (p) r = r.replace(/\s*<button class="btn dve maly" data-ucet="odhlas">[\s\S]*?<\/button>/, ''); // odhlásenie je v rodičovskej zóne
     return r;
   };
 

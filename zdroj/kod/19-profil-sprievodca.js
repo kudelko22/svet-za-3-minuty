@@ -31,11 +31,8 @@ const SPR_UCET = [
   { id: 'ucet', n: 'Ako funguje účet', nalada: 'happy', p: 'Pod jedným účtom rodiča môžu byť profily viacerých detí. Každé dieťa má vlastnú postavičku, body a pokrok. Všetko sa ukladá do cloudu, takže sa nič nestratí ani pri výmene telefónu a prihlásiť sa dá aj na ďalšom zariadení.' },
   { cil: '#meno-dietata', n: 'Meno dieťaťa', p: 'Sem napíšte meno alebo prezývku. Appka ním dieťa oslovuje a uvidia ho aj priatelia, ak ich neskôr zapnete.' },
   { cil: '.tvorba .seg2', n: 'Vek', p: '5 – 8 rokov: jednoduchšie otázky s obrázkami. 9 – 12 rokov: ťažšie otázky, časť Do hĺbky a navyše ťažký kvíz a výzva. Vek sa dá kedykoľvek zmeniť.' },
-  { cil: '#av-nahlad', n: 'Postavička', nalada: 'cheer', p: 'Toto je postavička dieťaťa. Bude hore v appke, v profile aj u priateľov.' },
-  { cil: '#av-tabs', n: 'Účes, oblečenie, doplnky', p: 'Tu si dieťa vyberá účes, oči, tričko, okuliare, doplnky aj zvieratko. Veci so zámkom sa odomknú za body z tém.' },
-  { cil: '[data-nahodne]', n: 'Náhodná postavička', p: 'Ťuknutím na kocku appka vymyslí postavičku sama. Ťukať sa dá, koľkokrát chcete.' },
-  { cil: '[data-ulozit-dieta]', n: 'Uložiť profil', p: 'Keď je meno vyplnené, ťuknite na Uložiť. Potom vám ukážem celú appku.' },
-  { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Vyplňte meno, vyberte vek a postavičku a profil uložte. Hneď potom pokračujeme prehliadkou appky.' },
+  { cil: '[data-tvorba-dalej]', n: 'Potom postavička', nalada: 'cheer', p: 'V ďalšom kroku si dieťa vyberie postavičku: účes, oči, tričko aj doplnky. Kto sa nechce hrať, ťukne na kocku. Veci so zámkom sa odomknú za body z tém.' },
+  { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Napíšte meno, vyberte vek a ťuknite na Ďalej. Postavičku si potom vyberiete spolu s dieťaťom. Hneď po nej pokračujeme prehliadkou appky.' },
 ];
 const SPR_RODIC = [
   { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko →', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
