@@ -16,7 +16,7 @@ const Mudra = (() => {
   const TUK = ['hop', 'tocka', 'tras', 'skrc', 'hop2'];
   const SPANOK_MS = 30000;
   const sledovane = new Set(), nastupy = new Map();
-  let io = null, naplanovane = false, tukPosl = -1, spi = false, casSpanku = 0;
+  let io = null, tukPosl = -1, spi = false, casSpanku = 0;
 
   const svgZ = el => !el ? null : el.matches && el.matches('svg.mudra') ? el : el.querySelector ? el.querySelector('svg.mudra') : null;
   const vyrazy = () => (typeof VYRAZY === 'object' ? VYRAZY : {});
@@ -142,13 +142,12 @@ const Mudra = (() => {
 
   // ---------- sledovanie: nové Múdry, obrazovka, skryté okno ----------
   function skenuj() {
-    naplanovane = false;
     for (const s of sledovane) if (!s.isConnected) { sledovane.delete(s); if (io) io.unobserve(s); }
     document.querySelectorAll('svg.mudra:not([data-mz])').forEach(s => priprav(s, !s.dataset.mzr));
   }
   function start() {
     if (typeof IntersectionObserver === 'function') io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('mz-mimo', !e.isIntersecting)));
-    if (typeof MutationObserver === 'function') new MutationObserver(() => { if (!naplanovane) { naplanovane = true; requestAnimationFrame(skenuj); } }).observe(document.body, { childList: true, subtree: true });
+    if (typeof MutationObserver === 'function') new MutationObserver(skenuj).observe(document.body, { childList: true, subtree: true });
     document.addEventListener('visibilitychange', () => document.documentElement.classList.toggle('mz-pauza', document.hidden));
     for (const t of ['pointerdown', 'keydown']) document.addEventListener(t, () => { if (spi) zobud(); else budik(); }, { passive: true, capture: true });
     if (mm.addEventListener) mm.addEventListener('change', () => { if (ticho()) { zobud(); document.querySelectorAll('svg.mudra').forEach(s => s.classList.remove('mz-zije')); } });
