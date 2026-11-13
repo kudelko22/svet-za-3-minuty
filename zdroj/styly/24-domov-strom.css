@@ -1,61 +1,76 @@
-/* Strom múdrosti (verzia 2.8): stupne, kývanie, nový plod z oblohy, vyrastenie, padajúce listy, okno stromu */
-.oslava { overflow-y: auto; }
-.os-strom { width: min(100%, 340px, 46vh); }
-.os-kmen { animation-delay: var(--d, .15s); }
-.os-zem { transform-box: fill-box; animation: osZem .5s cubic-bezier(.3, 1.4, .5, 1) both; }
-@keyframes osZem { from { transform: translateY(60px); } }
-.os-koruna, .os-klicok { transform-box: fill-box; transform-origin: 50% 100%; animation: osKyv 4.5s ease-in-out 2.5s infinite; }
-@keyframes osKyv { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.5deg); } 70% { transform: rotate(-1.2deg); } }
+/* Strom múdrosti 5.0: kresba (stromSvg), pohyb, strom v krajine Domova, okno stromu. Veľká oslava je v 16-oslavy-tema-dna.css. */
+.os-strom { display: block; width: 100%; height: auto; overflow: visible; }
+.os-zem { transform-box: fill-box; transform-origin: 50% 100%; animation: osZem .5s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes osZem { from { transform: scaleY(0); } }
+.os-kmen { transform-box: fill-box; transform-origin: 50% 100%; animation: osRast .6s cubic-bezier(.3, 1.4, .5, 1) var(--d, .15s) both; }
+.os-k { transform-box: fill-box; transform-origin: 50% 80%; animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
+.os-koruna, .os-klicok { transform-box: fill-box; transform-origin: 50% 100%; animation: osKyv 5s ease-in-out 2.5s infinite; }
+@keyframes osKyv { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(1.2deg); } 70% { transform: rotate(-1deg); } }
 .os-koruna.tras, .os-klicok.tras { animation: osTras .7s ease-out; }
 @keyframes osTras { 15% { transform: rotate(-4.5deg); } 40% { transform: rotate(4deg); } 65% { transform: rotate(-2.5deg); } 85% { transform: rotate(1deg); } }
-.os-hoj { transform-box: fill-box; transform-origin: 50% 0; animation: osHoj 2.6s ease-in-out var(--d) infinite; }
+.os-plod { transform-box: fill-box; transform-origin: center; animation: osPlod .5s cubic-bezier(.3, 1.8, .5, 1) var(--d) both; }
+.os-hoj { transform-box: fill-box; transform-origin: 50% 0; animation: osHoj 2.8s ease-in-out var(--d) infinite; }
 @keyframes osHoj { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-.os-kvet, .os-iskra { transform-box: fill-box; transform-origin: center; animation: osPop .45s cubic-bezier(.3, 1.6, .5, 1) var(--d) both, osTrblie 2.4s ease-in-out calc(var(--d) + .5s) infinite; }
-@keyframes osTrblie { 50% { transform: scale(1.18) rotate(12deg); } }
+.os-kvet, .os-iskra { transform-box: fill-box; transform-origin: center; animation: osPop .45s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
+.os-iskra { animation: osPop .45s cubic-bezier(.3, 1.6, .5, 1) var(--d) both, osTrblie 2.4s ease-in-out calc(var(--d) + .5s) infinite; }
+@keyframes osTrblie { 50% { transform: scale(1.25) rotate(12deg); } }
 .os-novy { transform-box: fill-box; transform-origin: center; animation: osNovy .85s cubic-bezier(.3, 1.3, .5, 1) var(--d) both; }
-@keyframes osNovy { 0% { transform: translateY(-300px) scale(.5) rotate(-60deg); opacity: 0; } 15% { opacity: 1; } 75% { transform: translateY(8px) scale(1.25, .85); } 100% { transform: none; } }
+@keyframes osNovy { 0% { transform: translateY(-260px) scale(.5) rotate(-60deg); opacity: 0; } 15% { opacity: 1; } 75% { transform: translateY(6px) scale(1.2, .85); } 100% { transform: none; } }
 .os-kruh { transform-box: fill-box; transform-origin: center; animation: osKruh .9s ease-out calc(var(--d) + .7s) both; }
-@keyframes osKruh { 0% { transform: scale(.4); opacity: 0; } 5% { opacity: 1; } 100% { transform: scale(3.4); opacity: 0; } }
-.os-rast.vyrast { transform-box: fill-box; transform-origin: 50% 100%; animation: osVyrast 1.2s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
+@keyframes osKruh { 0% { transform: scale(.4); opacity: 0; } 5% { opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+.os-rast.vyrast { transform-box: fill-box; transform-origin: 50% 100%; animation: osVyrast 1.1s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
 @keyframes osVyrast { from { transform: scale(var(--z)); } }
-.os-ziara { transform-box: fill-box; transform-origin: center; opacity: .45; animation: osZiara 3s ease-in-out infinite; }
-@keyframes osZiara { 50% { transform: scale(1.06); opacity: .65; } }
 .os-kos { transform-box: fill-box; transform-origin: 50% 100%; animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) var(--d) both; }
 .os-kos.novy { animation: osPop .5s cubic-bezier(.3, 1.6, .5, 1) var(--d) both, jelly .7s calc(var(--d) + .75s); }
-.os-novy-stupen { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 3px solid var(--line); border-radius: 999px; background: var(--p-D9F8E6,#D9F8E6); box-shadow: 0 4px 0 var(--shc); font: 700 1.05rem/1.2 var(--f-display); animation: osPop .6s cubic-bezier(.3, 1.8, .5, 1) var(--d) both; }
-.os-novy-stupen .ii svg { width: 22px; height: 22px; }
-.os-stupen { display: grid; gap: 4px; width: min(100%, 320px); padding: 8px 12px; border: 3px solid var(--line); border-radius: 18px; background: var(--t-grn); box-shadow: 0 4px 0 var(--shc); text-align: left; animation: osIn .4s ease-out .9s both; }
-.os-stupen b { font: 700 1.15rem/1.2 var(--f-display); }
-.os-stupen small { color: var(--muted); font-weight: 800; line-height: 1.3; }
-.os-stupen .bar { grid-column: auto; }
-.os-listy { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.os-list { position: absolute; top: -24px; left: var(--x); width: 15px; height: 10px; border: 2px solid var(--line); border-radius: 0 90% 0 90%; background: var(--c); animation: osList var(--t) linear var(--d) infinite both; }
-.os-list.raz { animation-iteration-count: 1; }
-/* 4.6: strom ožije: vyschnutý strom, vietor, špirála listov, strom sa vráti k životu */
-.os-dvojstrom { position: relative; display: grid; justify-items: center; }
-.os-dvojstrom > svg { grid-area: 1 / 1; }
-.os-dvojstrom .vyschnuty { transition: opacity .7s ease-out; }
-.os-dvojstrom .vyschnuty.ustup { opacity: 0; }
-.os-strom.fuka { transform-origin: 50% 85%; animation: osFuka 2.2s ease-in-out; }
-.vl { position: absolute; left: 50%; top: 40%; width: 0; height: 0; pointer-events: none; animation: vlKrut 1.9s linear var(--d) both; }
-.vl b { position: absolute; display: block; width: 24px; height: 15px; margin: -8px -12px; border: 2px solid var(--text); border-radius: 0 90% 0 90%; background: var(--c); animation: vlDnu 1.9s cubic-bezier(.4, 0, .7, 1) var(--d) both; }
-.vs { position: absolute; left: -10%; width: 60%; height: 28px; border-top: 4px solid rgba(255, 255, 255, .9); border-radius: 50% 50% 0 0 / 100% 100% 0 0; pointer-events: none; opacity: 0; animation: vsFuk 1.2s ease-in var(--d) both; }
-.oslava.ozil .os-nadpis span { animation-delay: calc(var(--w) + .9s + var(--k) * .04s); }
-.oslava.ozil .os-seria { animation-delay: calc(var(--w) + 1.2s); }
-.oslava.ozil .os-veta { animation-delay: calc(var(--w) + 1.5s); }
-.oslava.ozil .os-tyzden { animation-delay: calc(var(--w) + 1.6s); }
-@keyframes osFuka { 0%, 100% { transform: none; } 20% { transform: rotate(-3deg) skewX(-3deg); } 40% { transform: rotate(4deg) skewX(4deg); } 60% { transform: rotate(-5deg) skewX(-4deg); } 80% { transform: rotate(3deg) skewX(2deg); } }
-@keyframes vlKrut { from { transform: rotate(var(--a)); } to { transform: rotate(calc(var(--a) + 620deg)); } }
-@keyframes vlDnu { 0% { transform: translateX(var(--r)) scale(.5); opacity: 0; } 18% { opacity: 1; transform: translateX(calc(var(--r) * .85)) scale(1); } 100% { transform: translateX(0) scale(.5); opacity: 0; } }
-@keyframes vsFuk { 0% { transform: translateX(-20%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(190%); opacity: 0; } }
-@keyframes osList { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 6% { opacity: 1; } 35% { transform: translate(34px, 38vh) rotate(160deg); } 70% { transform: translate(-22px, 78vh) rotate(320deg); } 100% { transform: translate(18px, 115vh) rotate(480deg); opacity: 1; } }
-.strom-okno .os-x { position: absolute; top: 0; right: 0; z-index: 1; }
-.os-tip { color: var(--muted); font-weight: 800; animation: osIn .4s ease-out 1.4s both; }
-.strom-okno .os-nadpis span { animation-delay: calc(.3s + var(--k) * .04s); }
-.strom-okno .os-veta, .strom-okno .os-tyzden, .strom-okno .os-seria { animation-delay: .8s; }
-/* karta Tento týždeň otvára strom */
-.tyzden[data-strom] { cursor: pointer; }
-.tyzden-strom { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 10px; border: 2.5px dashed var(--line); border-radius: 16px; background: var(--t-grn); font: 700 .95rem/1.25 var(--f-display); }
-.tyzden-strom svg { flex: none; width: 34px; height: 34px; }
-.tyzden-strom span { flex: 1; }
-.tyzden-strom i { font-style: normal; font-size: 1.5rem; line-height: 1; }
+.os-sova { transform-box: fill-box; transform-origin: 50% 100%; animation: osSovaIn .6s cubic-bezier(.3, 1.5, .5, 1) var(--d) both; }
+@keyframes osSovaIn { from { transform: translateY(40px) scale(.6); opacity: 0; } }
+.os-sova.skace .owl { animation: osSkok .6s ease-out 2; }
+@keyframes osSkok { 40% { transform: translateY(-14px) rotate(-6deg); } }
+.os-strom.zari { animation: osZari 1.5s ease-out; }
+@keyframes osZari { 40% { filter: drop-shadow(0 0 14px var(--sun)); } }
+@keyframes osRast { from { transform: scaleY(0); } }
+@keyframes osPlod { from { transform: scale(0); } 70% { transform: scale(1.25); } }
+
+/* strom v krajine Domova: stojí vpravo na prednom kopci, ťuknutím otvorí okno stromu */
+.kr-strom { position: absolute; right: -4px; bottom: 2px; z-index: 1; width: var(--krs, 128px); padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 30px; }
+.kr-strom.st0 { --krs: 84px; } .kr-strom.st1 { --krs: 100px; } .kr-strom.st2 { --krs: 114px; }
+.kr-strom:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.kr-strom:active .os-koruna { animation: osTras .5s ease-out; }
+.kr-strom .os-zem, .kr-strom .os-kmen, .kr-strom .os-k, .kr-strom .os-plod, .kr-strom .os-kvet, .kr-strom .os-kos { animation: none; }
+.anim .kr-strom { animation: krStromIn .6s var(--spring) .45s both; }
+@keyframes krStromIn { from { transform: translateY(14px) scale(.7); opacity: 0; } }
+@media (min-width: 420px) { .kr-strom { right: 6px; } }
+
+/* okno stromu: krajina hore, karta so stupňom, týždeň s okruhom */
+.strom-okno { place-items: start center; padding: 0; background: var(--bg); }
+.strom-okno .os-obsah { gap: 12px; padding: 0 16px 20px; }
+.so-hlava { position: absolute; z-index: 2; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(env(safe-area-inset-top) + 12px) 16px 0; }
+.so-hlava .n1 { margin: 0; }
+.strom-okno .so-scena { height: min(46vh, 340px); }
+.so-bub { position: absolute; z-index: 2; left: 12px; top: calc(env(safe-area-inset-top) + 64px); max-width: min(190px, 52%); margin: 0; font-size: .92rem; animation: recIn .45s var(--spring) .5s both; transform-origin: 10% 100%; }
+.so-mal { margin: 0; font: 800 .75rem/1.3 var(--fb); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.so-karta { display: grid; justify-items: start; gap: 8px; width: 100%; margin-top: -34px; text-align: left; }
+.so-karta .n0, .so-karta .tx { margin: 0; }
+.so-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.so-cesta { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); width: 100%; margin: 2px 0; padding: 0; list-style: none; }
+.so-cesta::before { content: ""; position: absolute; left: 8%; right: 8%; top: 15px; border-top: 4px dotted var(--sc-pathdot); }
+.so-cesta li { position: relative; display: grid; justify-items: center; gap: 4px; font: 700 .78rem/1 var(--fd); color: var(--muted); }
+.so-cesta i { display: grid; place-items: center; width: 30px; height: 30px; border: 2.5px dashed var(--muted); border-radius: 50%; background: var(--card); color: #fff; }
+.so-cesta .hot i { border: var(--obrys-m); background: var(--teal); box-shadow: inset 0 -3px 0 var(--teal-d); }
+.so-cesta .tu i { width: 36px; height: 36px; margin-top: -3px; border: var(--obrys-m); background: var(--sun); box-shadow: inset 0 -4px 0 var(--sun-d); }
+.so-cesta .tu { color: var(--text); }
+.so-cesta .ikn { width: 18px; height: 18px; }
+.so-cesta .tu .ikn { width: 24px; height: 24px; }
+.so-tyz { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
+.so-tyz .n2 { margin: 0; }
+.so-tyz .btn { max-width: 62%; overflow: hidden; }
+.so-tyz .okruh-tl-ik { display: inline-grid; width: 20px; height: 20px; }
+.so-tyz .okruh-tl-ik svg { width: 100%; height: 100%; }
+.so-dni { width: 100%; }
+.so-dni .dom-den { cursor: default; }
+.so-tip { margin: 0; text-align: center; }
+.strom-okno .btn.wide { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .os-strom *, .kr-strom, .so-bub { animation: none !important; }
+}

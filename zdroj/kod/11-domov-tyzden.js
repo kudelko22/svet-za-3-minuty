@@ -219,7 +219,7 @@ const Domov = {
           <path d="M596 334C606 300 690 300 696 280C702 262 646 258 650 242${koniec}" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
           <g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M${fx} ${fy}V${fy - 26}"/><path d="M${fx} ${fy - 26}l17 6.5-17 6.5z" fill="var(--coral)"/></g>
           ${hot ? `<path class="kr-ciel-hv" d="${hv5(fx + 26, fy - 36, 11)}" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>` : ''}</g>
-        <g class="kr-vz" style="--v:2" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M-6 290C150 268 300 276 414 298C460 268 530 272 590 290C650 306 720 280 786 272C900 258 1060 264 1206 280V336H-6Z" fill="var(--sc-front)"/>${strom(738, 286)}${strom(764, 280, .7)}${strom(300, 278, .9)}${strom(150, 282, .7)}${strom(1010, 266, .8)}${strom(1040, 270, .6)}</g>
+        <g class="kr-vz" style="--v:2" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M-6 290C150 268 300 276 414 298C460 268 530 272 590 290C650 306 720 280 786 272C900 258 1060 264 1206 280V336H-6Z" fill="var(--sc-front)"/>${strom(300, 278, .9)}${strom(150, 282, .7)}${strom(1010, 266, .8)}${strom(1040, 270, .6)}</g>
       </svg>
       ${mrak(-30, 190, 58, 22)}${mrak(158, 186, 48, 27)}${mrak(-340, 110, 60, 31)}${mrak(360, 96, 52, 25)}${mrak(500, 170, 44, 29)}${mrak(-510, 180, 50, 24)}${dym}<span class="len-noc">${hviezdy}</span>
     </div>`;
