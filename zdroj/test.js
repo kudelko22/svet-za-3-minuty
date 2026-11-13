@@ -670,7 +670,18 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
     const kd = st.kedy; st.kedy = {}; if (TyzStrom.jeHotovo()) chyby.push("strom: nema byt hotovo"); st.kedy = { [temaDna().id]: key(new Date()) }; if (!TyzStrom.jeHotovo()) chyby.push("strom: ma byt hotovo"); st.kedy = kd;
     const ok = TyzStrom.html(); if (!ok.includes("tyzden-strom") || !ok.includes("data-tyz-den") || !ok.includes("data-tyz-prehlad") || !ok.includes("data-okruh-otvor") || !ok.includes("data-tyzs-zavri")) chyby.push("okno tyzdna"); }
   const dniPred = st.dni; for (const n of [0, 1, 5, 20, 40]) { st.dni = Array.from({ length: n }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz(); Oslava.ukaz(() => {}); }
-  if (!stromStavHtml(5, 2).includes("Ešte 2 dni")) chyby.push("strom stav text " + stromStavHtml(5, 2));
+  /* 5.0: okno stromu, strom v krajine Domova, pečiatky, Pas objaviteľa, stredná oslava (falošný DOM: zachytíme vytvorené prvky) */
+  { const zaz = [], ce = document.createElement, qs = document.querySelector; document.createElement = () => { const e = ce(); zaz.push(e); return e; }; document.querySelector = () => null;
+    st.dni = Array.from({ length: 5 }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz();
+    const o = zaz.find(e => /strom-okno/.test(e.className || ''));
+    if (!o || !o.innerHTML.includes('Ešte <b>2 dni učenia</b>') || !o.innerHTML.includes('so-cesta') || !o.innerHTML.includes('data-so-okruh') || !o.innerHTML.includes('so-dni')) chyby.push('okno stromu 5.0');
+    const z = st.odznaky, v = st.vybrate; st.odznaky = ['prva', 'temy3']; st.vybrate = ['prva'];
+    oslavaOdznaku([ODZNAKY[0], ODZNAKY[1]]); const sr = zaz.find(e => e.className === 'os-stredna'); if (!sr || !sr.innerHTML.includes('osr-pec') || !sr.innerHTML.includes('Prvý krok')) chyby.push('stredna oslava');
+    document.createElement = ce; document.querySelector = qs;
+    const h = zbierkaOdznakov(); if (!h.includes('pas-str') || !h.includes('data-vyber="temy3"') || !h.includes('pas-pol nie') || !pasKarta().includes('data-go="odznaky"') || !kartaOdznakov().includes('odznaky-karta')) chyby.push('pas objavitela');
+    st.odznaky = z; st.vybrate = v; }
+  st.view = 'domov'; render(); if (!main.innerHTML.includes('class="kr-strom')) chyby.push('strom v krajine Domova');
+  for (const o of ODZNAKY) for (const s2 of ['nie', 'ma', 'cerstva']) { const p = peciatka(o, s2); if (!p.startsWith('<svg') || /undefined|NaN/.test(p)) chyby.push('peciatka ' + o.id + ' ' + s2); }
   st.dni = dniPred; render(); }
 /* AUTO_TEST */
 Object.assign(st, { dietaId: "d1", vek: "starsi", body: 0, done: [], fav: [], dni: [], odznaky: [], avatar: nahodnyAvatar(0), flow: null, faza: "appka", view: "domov" });

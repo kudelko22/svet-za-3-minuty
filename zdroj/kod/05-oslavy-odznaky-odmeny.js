@@ -281,7 +281,7 @@ function oslavaOdznaku(nove) {
         <div class="osr-list"><span class="pec osr-stitok">Nový odznak</span><span class="osr-pec">${peciatka(o, 'ma')}</span></div>
         <span class="osr-mud">${mudra('oslava')}</span>
         <section class="karta osr-karta"><h2 class="n0">${esc(o.n)}!</h2><p class="tx">${esc(o.p)}: hotovo. Pečiatka je v tvojom pase.</p>
-          ${ini.length ? `<p class="dop">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
+          ${ini.length ? `<p class="osr-ini">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
           <span class="cena osr-cena">${ikn('hviezda')}+${nove.length * 2} čaká v pase</span>
           ${mozno ? `<button class="btn wide" data-osr="pas">Do pasu${ikn('sipka', 'za')}</button><button class="btn wide dve" data-osr="zavri">Neskôr</button>` : '<button class="btn wide" data-osr="zavri">Super!</button>'}</section></div>`;
     document.body.appendChild(el);
@@ -295,6 +295,6 @@ function oslavaOdznaku(nove) {
       Zvuk.play('tap'); zavri();
       if (b.dataset.osr === 'pas') go('odznaky');
     });
-    const b = el.querySelector('[data-osr]'); if (b) b.focus({ preventScroll: true });
+    const b = el.querySelector('[data-osr]'); if (b && b.focus) b.focus({ preventScroll: true });
   });
 }

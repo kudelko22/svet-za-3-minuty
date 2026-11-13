@@ -95,7 +95,7 @@ function stromSvg(o) {
   if (hn) v += [[46, 220, 20], [196, 224, -30], [70, 229, 60], [178, 230, -10], [34, 226, -50], [206, 218, 40]].slice(0, hn * 2).map(([x, y, a]) => `<path d="M0 0q6-8 15-2q-6 9-15 2z" transform="translate(${x} ${y}) rotate(${a})" fill="${T[1]}" stroke-width="2"/>`).join('');
   if (o.kos) { const FK = ['var(--coral)', 'var(--sun)', 'var(--violet)'];
     v += `<g transform="translate(196 214)"><g class="os-kos${o.novy === 'kos' ? ' novy' : ''}"${d(o.novy === 'kos' ? t.novy : t.plody)}><path d="M-12 -7C-12 -27 12 -27 12 -7" fill="none" stroke-width="3"/>${[[-7, -9, 0], [7, -9, 1], [0, -16, 2]].slice(0, Math.min(3, o.kos)).map(([x, y, i]) => `<circle cx="${x}" cy="${y}" r="7" fill="${FK[i]}" stroke-width="2.5"/>`).join('')}<path d="M-18 -7H18L13 13H-13Z" fill="#E2A93C" stroke-width="3"/><path d="M-15 0H15M-14 6H14" fill="none" stroke="#B07A1C" stroke-width="2.2"/><g transform="translate(24 -22) rotate(8)"><rect x="-15" y="-10" width="30" height="19" rx="7" fill="#fff" stroke-width="2.5"/><text x="0" y="4.5" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="12.5" fill="#2A2356" stroke="none">+${o.kos}</text></g></g></g>`; }
-  if (o.sova) v += `<g class="os-sova"${d(t.sova)}>${mudra(hn >= 2 ? 'povzbudenie' : o.sovaVyraz || 'radost').replace('<svg ', '<svg x="-46" y="146" width="74" height="88" ')}</g>`;
+  if (o.sova) v += `<g class="os-sova"${d(t.sova)}>${mudra(hn >= 2 ? 'povzbudenie' : o.sovaVyraz || 'radost').replace('<svg ', '<svg x="-46" y="150" width="74" height="88" ')}</g>`;
   return `<svg class="os-strom${hn ? ' hn' + hn : ''}" viewBox="${o.sova ? '-48 -26 286 268' : '8 -26 224 268'}" aria-hidden="true"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${v}</g></svg>`;
 }
 // padajúce listy (pri kvitnúcom strome lupene, pri zlatom zlaté)
@@ -275,7 +275,7 @@ const Strom = {
       if (e.target.closest('[data-so-okruh]')) { Zvuk.play('tap'); zavri(); setTimeout(() => Okruh.ukaz(), 200); return; }
       tukniNaStrom(el, e);
     });
-    const x = el.querySelector('[data-strom-zavri]'); if (x) x.focus({ preventScroll: true });
+    const x = el.querySelector('[data-strom-zavri]'); if (x && x.focus) x.focus({ preventScroll: true });
   },
 };
 // strom v krajine Domova (variant B): stojí na kopci vpravo od cesty; ťuknutím sa otvorí okno stromu

@@ -72,7 +72,8 @@
 .osr-mud { position: absolute; left: -6px; top: min(190px, 52vw); width: 96px; z-index: 2; animation: mudIn .5s var(--spring) .7s both; }
 .osr-mud .owl { display: block; width: 100%; height: auto; }
 .osr-karta { display: grid; justify-items: center; gap: 8px; width: 100%; padding-top: 34px; text-align: center; animation: osIn .4s ease-out .5s both; }
-.osr-karta .n0, .osr-karta .tx, .osr-karta .dop { margin: 0; }
+.osr-karta .n0, .osr-karta .tx, .osr-ini { margin: 0; }
+.osr-ini { font: 500 .85rem/1.35 var(--fb); color: var(--muted); }
 .osr-cena { height: 32px; font-size: 1rem; background: var(--sun); color: var(--dk); }
 .osr-cena .ikn { width: 20px; height: 20px; }
 .osr-karta .btn { width: 100%; }

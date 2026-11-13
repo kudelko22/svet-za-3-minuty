@@ -880,15 +880,15 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 :root[data-rezim="mesacny"] .so-luce { fill: var(--sun); opacity: .1; }
 .so-strom { position: absolute; left: 50%; bottom: 4px; width: min(86%, 340px, 40vh); translate: -44% 0; }
 .so-strom .os-strom { width: 100%; }
-.os-velka .so-scena { height: min(52vh, 400px); }
-.os-velka .so-strom { width: min(88%, 360px, 46vh); }
+.os-velka .so-scena { height: min(40vh, 330px); }
+.os-velka .so-strom { width: min(84%, 330px, 37vh); }
 /* karta pod scénou */
 .os-velka .so-karta { justify-items: center; text-align: center; }
 .os-nadpis { margin: 0; font: 800 clamp(1.7rem, 7.5vw, 2.2rem)/1.1 var(--fd); color: var(--text); }
 .os-nadpis span { display: inline-block; animation: osPismeno .5s cubic-bezier(.3, 1.8, .5, 1) calc(.9s + var(--k) * .04s) both; }
 .os-veta { margin: 0; max-width: 34ch; font: 500 1rem/1.4 var(--fb); color: var(--text); animation: osIn .4s ease-out 1.4s both; }
 .os-pred-po { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 8px; border: 2.5px dashed var(--muted); border-radius: 18px; animation: osIn .45s ease-out var(--d) both; }
-.os-pred-po > span { width: 92px; }
+.os-pred-po > span { width: 70px; }
 .os-pred-po .ikn { width: 26px; height: 26px; flex: none; }
 .os-pred-po .os-strom *, .os-pred-po .os-strom { animation: none !important; }
 /* séria: plameň a číslo, ktoré sa pretočí */
@@ -897,8 +897,8 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .os-ohen .ikn { width: 100%; height: 100%; transform-origin: 50% 90%; animation: plamen 1.4s ease-in-out infinite; }
 .os-seria b { display: inline-block; font-size: 1.5rem; }
 .os-seria.hrdina { height: auto; flex-direction: column; gap: 0; padding: 6px 26px 10px; border-radius: 30px 34px 28px 32px; }
-.os-seria.hrdina .os-ohen { width: 64px; height: 64px; }
-.os-seria.hrdina b { font-size: 3rem; line-height: 1; }
+.os-seria.hrdina .os-ohen { width: 46px; height: 46px; }
+.os-seria.hrdina b { font-size: 2.4rem; line-height: 1; }
 .os-seria.zap { animation: osVelka 1.1s cubic-bezier(.3, 1.6, .5, 1); }
 .os-seria.zap .os-ohen { animation: osOhen 1.1s ease-out; }
 .os-roll { position: relative; display: inline-grid !important; overflow: hidden; height: 1.12em; line-height: 1.12; }
@@ -914,7 +914,7 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 .os-padne .ikn { width: 26px; height: 26px; }
 .os-odznak { display: flex; align-items: center; gap: 10px; margin: 2px 0 0; padding: 8px 10px; border: 2px dashed var(--line); border-radius: 14px; text-align: left; font: 500 .9rem/1.3 var(--fb); }
 .os-odznak .pec-svg { flex: none; width: 52px; height: 52px; }
-.oslava .btn.os-dalej { width: 100%; animation: osIn .4s ease-out var(--d) both; }
+.oslava .btn.os-dalej { position: sticky; bottom: calc(env(safe-area-inset-bottom) + 12px); z-index: 2; width: 100%; animation: osIn .4s ease-out var(--d) both; }
 .so-karta.tras { animation: osTras .5s ease-out; }
 /* padajúce listy a lupene */
 .os-listy { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
@@ -1316,7 +1316,7 @@ html[data-fon-styl="vzor"] .blobs::after { animation: none; opacity: .7; }
 .so-tyz { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
 .so-tyz .n2 { margin: 0; }
 .so-tyz .btn { max-width: 62%; overflow: hidden; }
-.so-tyz .okruh-tl-ik { display: inline-grid; width: 20px; height: 20px; }
+.so-tyz .okruh-tl-ik { display: inline-grid; flex: none; width: 20px; height: 20px; margin-right: 6px; }
 .so-tyz .okruh-tl-ik svg { width: 100%; height: 100%; }
 .so-dni { width: 100%; }
 .so-dni .dom-den { cursor: default; }
@@ -2027,7 +2027,8 @@ body.tinted .win .h1 { font-size: clamp(2rem, 8.6vw, 2.5rem); }
 .osr-mud { position: absolute; left: -6px; top: min(190px, 52vw); width: 96px; z-index: 2; animation: mudIn .5s var(--spring) .7s both; }
 .osr-mud .owl { display: block; width: 100%; height: auto; }
 .osr-karta { display: grid; justify-items: center; gap: 8px; width: 100%; padding-top: 34px; text-align: center; animation: osIn .4s ease-out .5s both; }
-.osr-karta .n0, .osr-karta .tx, .osr-karta .dop { margin: 0; }
+.osr-karta .n0, .osr-karta .tx, .osr-ini { margin: 0; }
+.osr-ini { font: 500 .85rem/1.35 var(--fb); color: var(--muted); }
 .osr-cena { height: 32px; font-size: 1rem; background: var(--sun); color: var(--dk); }
 .osr-cena .ikn { width: 20px; height: 20px; }
 .osr-karta .btn { width: 100%; }
@@ -3077,7 +3078,7 @@ function oslavaOdznaku(nove) {
         <div class="osr-list"><span class="pec osr-stitok">Nový odznak</span><span class="osr-pec">${peciatka(o, 'ma')}</span></div>
         <span class="osr-mud">${mudra('oslava')}</span>
         <section class="karta osr-karta"><h2 class="n0">${esc(o.n)}!</h2><p class="tx">${esc(o.p)}: hotovo. Pečiatka je v tvojom pase.</p>
-          ${ini.length ? `<p class="dop">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
+          ${ini.length ? `<p class="osr-ini">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
           <span class="cena osr-cena">${ikn('hviezda')}+${nove.length * 2} čaká v pase</span>
           ${mozno ? `<button class="btn wide" data-osr="pas">Do pasu${ikn('sipka', 'za')}</button><button class="btn wide dve" data-osr="zavri">Neskôr</button>` : '<button class="btn wide" data-osr="zavri">Super!</button>'}</section></div>`;
     document.body.appendChild(el);
@@ -3091,7 +3092,7 @@ function oslavaOdznaku(nove) {
       Zvuk.play('tap'); zavri();
       if (b.dataset.osr === 'pas') go('odznaky');
     });
-    const b = el.querySelector('[data-osr]'); if (b) b.focus({ preventScroll: true });
+    const b = el.querySelector('[data-osr]'); if (b && b.focus) b.focus({ preventScroll: true });
   });
 }
 /* Režim do auta: appka prečíta tému, príklad, otázky na rozhovor aj kvíz; rodič za volantom nemusí nič ťukať */
@@ -5261,7 +5262,7 @@ function stromSvg(o) {
   if (hn) v += [[46, 220, 20], [196, 224, -30], [70, 229, 60], [178, 230, -10], [34, 226, -50], [206, 218, 40]].slice(0, hn * 2).map(([x, y, a]) => `<path d="M0 0q6-8 15-2q-6 9-15 2z" transform="translate(${x} ${y}) rotate(${a})" fill="${T[1]}" stroke-width="2"/>`).join('');
   if (o.kos) { const FK = ['var(--coral)', 'var(--sun)', 'var(--violet)'];
     v += `<g transform="translate(196 214)"><g class="os-kos${o.novy === 'kos' ? ' novy' : ''}"${d(o.novy === 'kos' ? t.novy : t.plody)}><path d="M-12 -7C-12 -27 12 -27 12 -7" fill="none" stroke-width="3"/>${[[-7, -9, 0], [7, -9, 1], [0, -16, 2]].slice(0, Math.min(3, o.kos)).map(([x, y, i]) => `<circle cx="${x}" cy="${y}" r="7" fill="${FK[i]}" stroke-width="2.5"/>`).join('')}<path d="M-18 -7H18L13 13H-13Z" fill="#E2A93C" stroke-width="3"/><path d="M-15 0H15M-14 6H14" fill="none" stroke="#B07A1C" stroke-width="2.2"/><g transform="translate(24 -22) rotate(8)"><rect x="-15" y="-10" width="30" height="19" rx="7" fill="#fff" stroke-width="2.5"/><text x="0" y="4.5" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="12.5" fill="#2A2356" stroke="none">+${o.kos}</text></g></g></g>`; }
-  if (o.sova) v += `<g class="os-sova"${d(t.sova)}>${mudra(hn >= 2 ? 'povzbudenie' : o.sovaVyraz || 'radost').replace('<svg ', '<svg x="-46" y="146" width="74" height="88" ')}</g>`;
+  if (o.sova) v += `<g class="os-sova"${d(t.sova)}>${mudra(hn >= 2 ? 'povzbudenie' : o.sovaVyraz || 'radost').replace('<svg ', '<svg x="-46" y="150" width="74" height="88" ')}</g>`;
   return `<svg class="os-strom${hn ? ' hn' + hn : ''}" viewBox="${o.sova ? '-48 -26 286 268' : '8 -26 224 268'}" aria-hidden="true"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${v}</g></svg>`;
 }
 // padajúce listy (pri kvitnúcom strome lupene, pri zlatom zlaté)
@@ -5441,7 +5442,7 @@ const Strom = {
       if (e.target.closest('[data-so-okruh]')) { Zvuk.play('tap'); zavri(); setTimeout(() => Okruh.ukaz(), 200); return; }
       tukniNaStrom(el, e);
     });
-    const x = el.querySelector('[data-strom-zavri]'); if (x) x.focus({ preventScroll: true });
+    const x = el.querySelector('[data-strom-zavri]'); if (x && x.focus) x.focus({ preventScroll: true });
   },
 };
 // strom v krajine Domova (variant B): stojí na kopci vpravo od cesty; ťuknutím sa otvorí okno stromu
