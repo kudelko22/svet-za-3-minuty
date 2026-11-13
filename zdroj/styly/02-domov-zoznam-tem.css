@@ -32,12 +32,6 @@
 .chips .chip { color: var(--text); text-shadow: none; background: var(--paper); padding: 6px 13px; }
 .chips .chip[aria-pressed="true"] { background: var(--c, var(--text)); color: #fff; text-shadow: 0 1.5px 0 var(--dk); animation: jelly .5s; }
 .list { display: grid; gap: 14px; }
-.row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 10px; border-radius: 22px; border: 3px solid var(--line); background: color-mix(in srgb, var(--c) 13%, var(--paper)); box-shadow: var(--sh); }
-.thumb { flex: none; width: 88px; height: 64px; border-radius: 14px; border: 2.5px solid var(--line); overflow: hidden; }
-.thumb svg { display: block; width: 100%; height: 100%; }
-.row-main { display: grid; gap: 2px; min-width: 0; flex: 1; }
-.row-t { font: 600 1.1rem/1.2 var(--f-display); }
-.row-s { font-size: .85rem; font-weight: 800; color: color-mix(in srgb, var(--c) 75%, var(--text)); }
 .badge { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2.5px solid var(--line); font: 700 1rem/1 var(--f-display); }
 .badge.ok { background: var(--grass); color: #fff; text-shadow: 0 1.5px 0 var(--dk); }
 .badge.new { width: auto; padding: 0 10px; border-radius: 999px; background: var(--sun); font-size: .8rem; }

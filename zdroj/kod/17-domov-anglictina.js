@@ -75,14 +75,14 @@ const Ang = {
     let n = 1;
     return `<div class="hra-top"><button class="ib" data-go="domov" aria-label="Späť domov">${IKO.zavriet}</button><h1 class="h1 hra-nazov">Angličtina</h1></div>
       <p class="muted">Vyber si kvíz. Keď ho nestihneš, nič sa nestane, zajtra príde nový denný kvízik.</p>
-      <section class="sec"><h2 class="h2" style="--hc:#D6336C">Kvízy</h2><div class="ang-kvizy">
+      <section class="sec"><h2 class="h2">Kvízy</h2><div class="ang-kvizy">
         ${this.kvizKarta(IK_KAT.anglictina, 'Kvízik dňa', 6, ok, 'data-ang-start', n++, '#FFE0EC')}
         ${sk1.map((g, j) => this.kvizKarta(this.ikSkup(g), ANG_SKUPINY[g], 6, !!sk[g], `data-ang-skup="${g}"`, n++, this.farbaSkup[j % this.farbaSkup.length])).join('')}
       </div></section>
-      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Môj postup</h2>
+      <section class="sec"><h2 class="h2">Môj postup</h2>
         <div class="ang-stats"><div class="card mini" style="--c:#FFE0EC"><b>${s.n}</b><small>${s.n === 1 ? 'kvízik' : s.n > 1 && s.n < 5 ? 'kvíziky' : 'kvízikov'}</small></div>
         <div class="card mini" style="--c:#E7F9EC"><b>${s.bezChyby}</b><small>bez chyby</small></div></div></section>
-      <section class="sec"><h2 class="h2" style="--hc:#D6336C">Anglické lekcie</h2><p class="muted">Pôvodné anglické témy s kvízom, otvor si ktorúkoľvek.</p>
+      <section class="sec"><h2 class="h2">Anglické lekcie</h2><p class="muted">Pôvodné anglické témy s kvízom, otvor si ktorúkoľvek.</p>
         <div class="ang-kvizy">${lek.map(t => this.kvizKarta(IK_KAT.anglictina, t.t, (t.z || []).length, st.done.includes(t.id), `data-start="${t.id}"`, n++, '#FFE0EC')).join('')}</div></section>`;
   },
   render() {

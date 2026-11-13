@@ -139,15 +139,6 @@ body.tinted .win .h1 { font-size: clamp(2rem, 8.6vw, 2.5rem); }
   .vies { grid-template-columns: 110px 1fr; }
 }
 
-/* ---------- Zoznam tém: karty ladia s knihou ---------- */
-.row { background: var(--card); box-shadow: 0 4px 0 var(--shc); }
-.row .thumb { background: color-mix(in srgb, var(--c) 25%, var(--card)); border-radius: 12px 14px 12px 15px; }
-.row-t { font-weight: 800; }
-.row-s { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 700; }
-.row-s::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--line); border-radius: 50%; background: var(--c); }
-.badge.new { background: var(--sun); color: var(--dk); font-family: var(--fd); font-weight: 800; }
-.badge.ok { background: var(--teal); color: #06302B; }
-
 @media (prefers-reduced-motion: reduce) {
   .flow-dalej > .kniha, .slnko, .slnko .luce, .rk-mud, .reakcia.zle .rk-mud, .plus, .harok, .znak, .od.spravna, .od.trasie, .skore.bump,
   .btn.citaj.on .ikn, .btn.fav[aria-pressed="true"] .ikn, .zivoty i.prave, .burst { animation: none !important; }

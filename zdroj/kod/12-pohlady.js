@@ -43,14 +43,14 @@ const views = {
         ${st.vek === 'starsi' ? `<button class="act${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:#7C6CFF" data-kviz="tazky"><span class="act-e">${IK.mozog}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
         <button class="act${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:#E0533F" data-kviz="vyzva"><span class="act-e">${IK.pohar}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
       </div>
-      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Oblasti tém</h2>
+      <section class="sec"><h2 class="h2">Oblasti tém</h2>
         <div class="skupiny rad">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
       </section>
-      ${dalsie.length ? `<section class="sec"><h2 class="h2" style="--hc:#4C7DFF">Objavujte ďalej</h2>
+      ${dalsie.length ? `<section class="sec"><h2 class="h2">Objavujte ďalej</h2>
         <div class="carousel">${dalsie.map(x => `<button class="cc" data-start="${x.id}" style="--c:${KAT[x.k].c}">${scene(x)}<b>${x.t}</b></button>`).join('')}</div></section>` : ''}`;
   },
   temy() {
-    return `<h1 class="h1">Témy</h1>
+    return `<h1 class="n0">Témy</h1>
       <input id="hladaj" class="search" type="search" placeholder="Hľadať, napríklad srdce" aria-label="Hľadať tému">
       <div class="chips" id="filtre"></div>
       <div id="zoznam" class="list"></div>`;

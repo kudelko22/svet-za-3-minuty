@@ -268,7 +268,7 @@ function pasKarta() {
 }
 // v profile: Pas objaviteľa a odmeny pre postavičku (Ja môže volať aj samotné pasKarta())
 function kartaOdznakov() {
-  return `${pasKarta()}<section class="sec"><h2 class="h2" style="--hc:#16BFAE">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
+  return `${pasKarta()}<section class="sec"><h2 class="h2">Odmeny pre postavičku <span class="pocet">${ODMENY.filter(x => x.cena <= st.body).length} z ${ODMENY.length}</span></h2>${kartaDalsiaOdmena()}</section>`;
 }
 /* Stredná oslava: nová pečiatka dopadne na list pasu, žlté lúče, jedno tlačidlo. Ak príde naraz viac odznakov, ukáže sa prvý a ostatné jedným riadkom. */
 function oslavaOdznaku(nove) {

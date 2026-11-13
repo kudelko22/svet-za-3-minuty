@@ -183,15 +183,15 @@ function socAkcia(sl, ok, zle) { sl.then(x => { if (ok) ok(x); }, e => { Zvuk.pl
 function fillTemy() {
   const f = document.getElementById('filtre'), z = document.getElementById('zoznam');
   const kk = kats(), q = bez(st.q.trim()), g = q || st.kat === 'fav' ? null : SKUPINY.find(x => x.id === st.skupina);
-  const chip = k => `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}" style="--c:${k.c}">${ii(k.ikona || ikKat(k.id))} ${k.nazov}</button>`;
+  const chip = k => `<button class="chip" data-kat="${k.id}" aria-pressed="${st.kat === k.id}">${k.ikona || ''}${k.nazov}</button>`;
   const hf = `<div class="skupiny${g ? ' vybrana' : ''}">${SKUPINY.map((x, i) => skupinaKarta(x, kk, i)).join('')}</div>
-    <div class="chips">${g ? [{ id: '', nazov: 'Celá oblasť', ikona: g.ikona(), c: g.c }, ...g.kat.map(id => kk.find(k => k.id === id)).filter(Boolean)].map(chip).join('') : ''}${chip({ id: 'fav', nazov: 'Uložené', ikona: IK.srdce, c: '#FF5A5F' })}</div>`;
+    <div class="chips">${g ? [{ id: '', nazov: 'Celá oblasť', ikona: ikn(SK_IKN[g.id] || 'kompas') }, ...g.kat.map(id => kk.find(k => k.id === id)).filter(Boolean)].map(chip).join('') : ''}${chip({ id: 'fav', nazov: 'Uložené', ikona: ikn('srdce') })}</div>`;
   if (f._h !== hf) { f.innerHTML = hf; f._h = hf; } // nezmenený zoznam sa neprekreslí (nebliká, ostane scroll)
   const poradie = SKUPINY.flatMap(x => x.kat);
   const list = TV().sort((a, b) => poradie.indexOf(a.k) - poradie.indexOf(b.k))
     .filter(t => q ? bez(t.t + ' ' + t.m).includes(q) : st.kat === 'fav' ? st.fav.includes(t.id) : st.kat ? t.k === st.kat : !g || g.kat.includes(t.k));
   const html = q || !g ? (st.kat === 'fav' && !q ? list.map(row).join('')
-    : SKUPINY.map(x => (tt => tt.length ? `<h2 class="h2 skup-h" style="--hc:${x.c}">${ii(x.ikona())} ${x.nazov}</h2>${tt.map(row).join('')}` : '')(list.filter(t => x.kat.includes(t.k)))).join(''))
+    : SKUPINY.map(x => (tt => tt.length ? `<h2 class="n1 skup-h"><span class="ikb" style="background:${skFarba(x.id)}">${ikn(SK_IKN[x.id] || 'kompas')}</span>${x.nazov}<small class="cis">${tt.length}</small></h2>${tt.map(row).join('')}` : '')(list.filter(t => x.kat.includes(t.k)))).join(''))
     : list.map(row).join('');
   const hz = html || `<div class="empty">${owl('oops')}<span>${st.kat === 'fav' ? 'Zatiaľ nič uložené.' : 'Takú tému zatiaľ nemáme.'}</span></div>`;
   if (z._h !== hz) { z.innerHTML = hz; z._h = hz; }

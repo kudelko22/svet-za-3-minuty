@@ -802,7 +802,7 @@ function hryZoznam() {
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;
   const r0 = hore && rek(hore);
   return `<div class="ihrisko">
-    <h1 class="hry-titul">Hry</h1>
+    <h1 class="n0 hry-titul">Hry</h1>
     <p class="uvodka">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
     ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} bodov spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">

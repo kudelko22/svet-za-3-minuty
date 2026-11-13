@@ -55,9 +55,9 @@ const Misie = {
         ${this.chipy(m, u)}
         ${ok ? `<p class="misia-hotovo">${ii(IK.fajka)} Dnešnú misiu máš splnenú. ${esc(T.von)}</p>` : ''}
         <button class="btn wide ${ok ? 'ghost' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Začať misiu'}</button></section>
-      <section class="sec"><h2 class="h2" style="--hc:#FFC233">Náročnosť</h2>
+      <section class="sec"><h2 class="h2">Náročnosť</h2>
         <div class="chips">${MISIA_UROVNE.map((n, i) => `<button class="chip" data-mi-u="${i + 1}" aria-pressed="${u === i + 1}" style="--c:#7C6CFF">${n}</button>`).join('')}</div></section>
-      <section class="sec"><h2 class="h2" style="--hc:#2FBF71">Moje misie</h2><p class="muted">Tento týždeň: ${this.tyzden()}</p>
+      <section class="sec"><h2 class="h2">Moje misie</h2><p class="muted">Tento týždeň: ${this.tyzden()}</p>
         <div class="misia-typy">${MISIA_PORADIE.map(t => { const n = Object.values(h).filter(v => v.t === t).length, X = MISIA_TYPY[t];
           return `<div class="misia-typ-bunka${n ? ' ma' : ''}" style="--c:${X.c}"><span class="misia-ikona">${ik(X.ik)}</span><b>${n}×</b><small>${X.n}</small></div>`; }).join('')}</div>
         ${hist.length ? `<div class="list">${hist.map(([x, v]) => `<button class="row misia-riadok" data-mi-hist="${x.id}"><span class="misia-mini" style="--c:${MISIA_TYPY[x.t].c}">${ik(MISIA_TYPY[x.t].ik)}</span><span class="misia-riadok-t"><b>${esc(x.n)}</b><small>${datum(v.kedy)} · ${MISIA_TYPY[x.t].n}</small></span></button>`).join('')}</div>`
@@ -79,15 +79,15 @@ const Misie = {
   telo(q) {
     const m = q.m, a = q.anim; q.anim = '';
     if (m.t === 'detektiv') return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#7C6CFF">Indície</h2>${m.ind.slice(0, q.ind).map((x, i) => `<div class="card misia-ind${a === 'ind' && i === q.ind - 1 ? ' nova' : ''}"><span class="misia-cislo">${i + 1}</span><span>${esc(x)}</span></div>`).join('')}
+      <section class="sec"><h2 class="h2">Indície</h2>${m.ind.slice(0, q.ind).map((x, i) => `<div class="card misia-ind${a === 'ind' && i === q.ind - 1 ? ' nova' : ''}"><span class="misia-cislo">${i + 1}</span><span>${esc(x)}</span></div>`).join('')}
         ${!q.koniec && q.ind < m.ind.length ? `<button class="btn wide blue" data-mi-ind>${ii(IK.lupa)} Ďalšia indícia</button>` : ''}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#FF6FA8">${esc(m.q)}</h2>${this.chyba(q)}${this.moznosti(q, m.s)}</section>`;
+      <section class="sec"><h2 class="h2">${esc(m.q)}</h2>${this.chyba(q)}${this.moznosti(q, m.s)}</section>`;
     if (m.t === 'coak') return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#4C7DFF">${esc(m.q)}</h2>${this.chyba(q)}${this.moznosti(q, m.s)}</section>`;
+      <section class="sec"><h2 class="h2">${esc(m.q)}</h2>${this.chyba(q)}${this.moznosti(q, m.s)}</section>`;
     if (m.t === 'keby') {
       const r = q.videl.map(i => `<div class="card misia-reakcia">${esc(m.o[i].r)}</div>`).join('');
       return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#FF9F1C">Čo urobíš?</h2><p class="muted">Tu nie je zlá odpoveď. Ťukni na možnosť a uvidíš, čo sa môže stať. Môžeš skúsiť viac možností.</p>${this.moznosti(q, -1)}${r}
+      <section class="sec"><h2 class="h2">Čo urobíš?</h2><p class="muted">Tu nie je zlá odpoveď. Ťukni na možnosť a uvidíš, čo sa môže stať. Môžeš skúsiť viac možností.</p>${this.moznosti(q, -1)}${r}
         ${q.videl.length && !q.koniec ? '<button class="btn wide cta" data-mi-hotovo>Hotovo</button>' : ''}</section>`;
     }
     if (m.t === 'pravdy') {
@@ -98,9 +98,9 @@ const Misie = {
       }).join('')}</div>`;
     }
     return `<section class="card misia-pribeh">${esc(m.pribeh)}</section>
-      <section class="sec"><h2 class="h2" style="--hc:#E0533F">Tvoja úloha</h2>
+      <section class="sec"><h2 class="h2">Tvoja úloha</h2>
         <ol class="misia-kroky">${m.ulohy.map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="muted">${ii(IK.ziarovka)} ${esc(m.tip)}</p></section>
-      ${q.koniec ? '' : `<section class="sec"><h2 class="h2" style="--hc:#FFC233">Ako to dopadlo?</h2><div class="chips">${m.vysl.map((x, i) => `<button class="chip" data-mi-vysl="${i}" aria-pressed="${q.vysl === i}" style="--c:#E0533F">${esc(x)}</button>`).join('')}</div>
+      ${q.koniec ? '' : `<section class="sec"><h2 class="h2">Ako to dopadlo?</h2><div class="chips">${m.vysl.map((x, i) => `<button class="chip" data-mi-vysl="${i}" aria-pressed="${q.vysl === i}" style="--c:#E0533F">${esc(x)}</button>`).join('')}</div>
         <p class="muted">Najprv choď von a úlohu splň. Potom sa vráť a ťukni na Splnené.</p>
         <button class="btn wide cta" data-mi-hotovo>Splnené!</button>
         <button class="btn wide ghost" data-mi-spat>Idem na to, vrátim sa neskôr</button></section>`}`;

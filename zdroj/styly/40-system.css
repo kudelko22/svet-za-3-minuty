@@ -87,7 +87,6 @@ h1.logo { margin: .35em 0 0; }
 .chips .chip[aria-pressed="true"] { background: var(--sun); color: var(--dk); text-shadow: none; }
 .badge.ok { color: var(--dk); text-shadow: none; }
 .seg2 button[aria-pressed="true"] { text-shadow: none; }
-.row { border-radius: var(--r-karta); }
 .input, .search { border-radius: var(--r-pole); font-family: var(--fb); }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,16 +1,16 @@
-/* oblasti tém */
+/* 5.0 oblasti tém: nálepky na mape (farba z palety cez --c, tmavší odtieň --cd na pásik), ikona novej rodiny, pásik prebratých tém */
 .skupiny { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.tile.skupina { min-height: 150px; }
-.tile.skupina b { font-size: 1.08rem; }
-.mini-ik { display: flex; flex-wrap: wrap; gap: 3px; }
-.mini-ik i { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line); }
-.mini-ik .ik { width: 16px; height: 16px; }
-/* Domov: oblasti v jednom posúvacom riadku, kvízy a režim do auta menšie */
+.skupina { gap: 6px; min-height: 0; padding: 12px 12px 12px; transition: opacity .25s, transform .25s; }
+.skupina:nth-child(2n) { border-radius: 20px 18px 18px 24px; }
+.skupina .ikb { margin: 0 0 2px; }
+.skupina b { hyphens: manual; overflow-wrap: break-word; }
+.skupina .pruh { width: 100%; height: 12px; margin-top: auto; background: var(--card); }
+.skupina .pruh i { background: var(--cd); box-shadow: none; }
+.skupina small { font: 700 .81rem/1 var(--fd); color: var(--text); }
+/* Domov a Objavuj: oblasti v jednom posúvacom riadku */
 .skupiny.rad { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 2px 4px 12px; margin: -2px -4px 0; scrollbar-width: none; }
 .skupiny.rad::-webkit-scrollbar { display: none; }
-.skupiny.rad .tile.skupina { flex: none; width: 124px; min-height: 0; gap: 4px; padding: 10px 8px; scroll-snap-align: start; }
-.skupiny.rad .tile.skupina b { font-size: .95rem; }
-.skupiny.rad .mini-ik { display: none; }
+.skupiny.rad .skupina { flex: none; width: 132px; scroll-snap-align: start; }
 .acts.kompakt { gap: 10px; }
 .acts.kompakt .act { grid-template-columns: auto 1fr; align-items: center; column-gap: 8px; padding: 10px 12px; border-radius: 20px; }
 .acts.kompakt .act-e { grid-row: 1 / span 2; width: 40px; height: 40px; margin: 0; }
@@ -19,10 +19,30 @@
 .acts.kompakt .act:not(.cas) small { display: none; }
 .acts.kompakt .act.cas small { grid-column: 2; font-size: .75rem; line-height: 1.15; }
 .auto-karta { padding: 10px 14px; }
-.skupiny.vybrana .skupina[aria-pressed="false"] { opacity: .5; transform: scale(.96); }
-.skupina[aria-pressed="true"] { outline: 3px dashed var(--line); outline-offset: 3px; }
+.skupiny.vybrana .skupina[aria-pressed="false"] { opacity: .55; transform: scale(.96); }
+.skupina[aria-pressed="true"] { outline: 3px dashed var(--line); outline-offset: 4px; }
 #filtre { display: grid; gap: 12px; }
-#filtre .tile.skupina { min-height: 0; gap: 4px; padding: 8px 10px; }
-#filtre .tile-e { width: 34px; height: 34px; }
-#filtre .tile-e .ik { width: 24px; height: 24px; }
-.skup-h { margin: 10px 0 0; }
+#filtre .chip .ikn { width: 18px; height: 18px; }
+
+/* 5.0 karta témy: výstrižok z atlasu. Obrázok je nalepená pohľadnica (nakrivo, s tieňom), za ňou perforácia, kategória ako popisok mapy,
+   vpravo pečiatka Nová alebo tyrkysová fajka Prebraté. Farba oblasti ide cez --c (svetlá) a --cd (tmavá). */
+.list { display: grid; gap: 14px; }
+.row { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px 12px 10px; border: var(--obrys); border-radius: var(--r-karta); background: var(--card); color: var(--text); box-shadow: 0 4px 0 var(--shc); text-align: left; }
+.row:nth-child(2n) { border-radius: 22px 20px 24px 20px; }
+.row:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shc); }
+.thumb { flex: none; width: 84px; height: 64px; overflow: hidden; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--c); box-shadow: 0 3px 0 var(--shc); rotate: -3deg; }
+.row:nth-child(2n) .thumb { rotate: 2.5deg; }
+.thumb svg { display: block; width: 100%; height: 100%; }
+.row-main { flex: 1; display: grid; gap: 4px; align-self: stretch; align-content: center; min-width: 0; padding-left: 12px; border-left: 2.5px dashed var(--sand); }
+.row-s { display: inline-flex; align-items: center; gap: 6px; font: 700 .72rem/1.2 var(--fb); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.row-s::before { content: ""; flex: none; width: 10px; height: 10px; border: 2px solid var(--line); border-radius: 50%; background: var(--cd); }
+.row-s .ikn { width: 15px; height: 15px; }
+.row-t { font: 800 1.06rem/1.2 var(--fd); overflow-wrap: anywhere; }
+.row-nova { position: absolute; right: 12px; top: -11px; --pc: var(--link); background: var(--card); font-size: .7rem; rotate: 4deg; }
+.row-ok { position: absolute; right: -8px; top: -12px; display: grid; place-items: center; width: 34px; height: 34px; border: var(--obrys-m); border-radius: 50%; background: var(--teal); box-shadow: inset 0 -3px 0 var(--teal-d); color: #fff; rotate: -6deg; }
+.row-ok .ikn { width: 20px; height: 20px; }
+.row.hot .thumb { filter: saturate(.85); }
+.skup-h { display: flex; align-items: center; gap: 10px; margin: 14px 0 0; }
+.skup-h .ikb { width: 38px; height: 38px; margin: 0; }
+.skup-h .ikb .ikn { width: 24px; height: 24px; }
+.skup-h small { margin-left: auto; font: 700 .94rem/1 var(--fd); color: var(--muted); }

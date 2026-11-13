@@ -2,7 +2,7 @@
 const TY = () => Tyzden;
 const tD = () => temaDna();
 // 5.0: ikona okruhu z novej rodiny (ikn), nie stará farebná IK
-const OKRUH_IKN = { zmiesany: 'kompas', priroda: 'strom', ludia: 'priatelia', svet: 'mapa', veda: 'raketa' };
+const OKRUH_IKN = { zmiesany: 'kompas', ...SK_IKN };
 const okruhIk = o => o ? ikn(OKRUH_IKN[o.id] || 'kompas') : '';
 /* 5.0: okno týždňa (otvára ho stromček v hlavičke): séria, 7 dní ako na Domove, okruh, Prehľad a strom múdrosti */
 function kartaTyzden() {
