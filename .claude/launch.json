@@ -4,23 +4,9 @@
     {
       "name": "svet",
       "runtimeExecutable": "cmd.exe",
-      "runtimeArgs": [
-        "/c",
-        "zdroj\\spusti.cmd",
-        "emulator"
-      ],
+      "runtimeArgs": ["/c", "zdroj\\spusti.cmd", "emulator"],
       "port": 5050,
       "url": "http://127.0.0.1:5050"
-    },
-    {
-      "name": "hry5057",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "C:/Users/Admin/AppData/Local/Claude-Data/claude_pzs8sxrjxfjjc/side-session-notes/local_d90de033-d41a-4d2e-9b8b-54d1a292d2dc/zaklad-50-server.js",
-        ".",
-        "5057"
-      ],
-      "port": 5057
     }
   ]
 }
