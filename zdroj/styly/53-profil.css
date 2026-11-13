@@ -116,3 +116,5 @@
 @media (prefers-reduced-motion: reduce) {
   .up-luce, .av-nahlad.hopni #av-velky, .vec.trasie, .vec.trasie .dolu { animation: none !important; }
 }
+/* Mesačný režim: javisko ostáva žlté, lúče sú svetlé (nie tmavý -l podklad) */
+:root[data-rezim="mesacny"] .up-luce { fill: #FFE08A; opacity: .6; }
