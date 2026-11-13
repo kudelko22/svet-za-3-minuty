@@ -1,2 +1,221 @@
-/* 5.0: Hry. Sem patria nové štýly tejto sekcie (smer: ihrisko s dlaždicami a kartou Ďalšia hra).
-   Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
+/* 5.0: Hry. Ihrisko (zoznam hier) s dlaždicami, kartou Ďalšia hra a zamknutými hrami s cenou; obal hier, výsledok a Múdra v lište.
+   Súbor sa načíta po starých štýloch (11-, 13-, 20-hry) a po 40-system.css, preto ich prepíše. Farby len cez premenné. */
+:root {
+  /* farby kresieb hier (09-hry.js): biela papierová, obloha, drevo ceruzky, hlina, krtko */
+  --h-biela: #FFFDF8; --h-nebo: #D5EDFF; --h-drevo: #FFE7C7; --h-kopec: #A8E3A6; --h-burka: #8C8FA8;
+  --h-hlina: #7E4A2A; --h-krtko: #B98A6E; --h-brusko: #F3DCC6; --h-ruz: #FF8FA3; --h-zlato: #FFF0A8; --h-diera: #3D2410;
+  /* ihrisko: žltý piesok s bodkami */
+  --ihr: var(--sun-l); --ihr-b: rgb(255 197 51 / .55);
+}
+:root[data-rezim="mesacny"] { --ihr: #2B2468; --ihr-b: rgb(255 212 92 / .16); --h-nebo: #263F8A; }
+
+/* ---------- Ihrisko: pozadie (zoznam aj hra) ---------- */
+body:has(main > .ihrisko), body.hra-rezim { background-color: var(--ihr); background-image: radial-gradient(var(--ihr-b) 2.4px, transparent 3px); background-size: 22px 22px; }
+body:has(main > .ihrisko) .blobs { display: none; }
+.ihrisko { display: grid; gap: 22px; }
+.hry-titul { justify-self: start; margin: 4px 0 -6px 2px; font: 900 2.9rem/1 var(--fd); color: var(--h-biela); -webkit-text-stroke: 8px var(--ink); paint-order: stroke fill; text-shadow: 0 5px 0 var(--ink); rotate: -4deg; padding: 4px 6px 0; }
+.uvodka { margin: 0; font: 600 .95rem/1.4 var(--fd); background: var(--card); border: var(--obrys-m); border-radius: 14px 16px 14px 5px; padding: 8px 12px 7px; rotate: -1deg; }
+.hn-info { display: flex; gap: 10px; align-items: flex-start; margin: 0; background: var(--violet-l); rotate: .6deg; }
+.hn-info .ikn, .vsetko .ikn { flex: none; width: 26px; height: 26px; }
+.vsetko { display: flex; gap: 10px; align-items: center; margin: 0; background: var(--card); }
+
+/* obrázok hry v dlaždici */
+.dl-obr { display: block; }
+.dl-obr svg, .hra-kresba { display: block; width: 100%; height: 100%; overflow: visible; }
+.dlazdica .dl-obr { height: 78px; margin: 0 -2px; }
+
+/* hraná naposledy: veľká karta s okrúhlym tlačidlom */
+.naposledy { position: relative; display: grid; grid-template-columns: minmax(0, 46%) 1fr; gap: 6px; align-items: center; width: 100%; margin-top: 10px; padding: 22px 12px 14px 6px; text-align: left; border: var(--obrys); border-radius: 22px 24px 22px 26px; background: var(--c); box-shadow: 0 6px 0 var(--ink); rotate: 1deg; color: var(--text); animation: dlPadne .5s var(--spring) backwards; }
+.naposledy .zal { color: var(--text); }
+.naposledy .dl-obr { height: 96px; }
+.naposledy .inf { display: grid; gap: 8px; justify-items: start; align-self: start; padding: 4px 58px 0 0; min-width: 0; }
+.naposledy .inf b { font: 800 1.3rem/1.1 var(--fd); overflow-wrap: anywhere; }
+.naposledy .inf small { font: 500 .84rem/1.3 var(--fb); }
+.naposledy .st, .dlazdica .st { background: var(--card); }
+.hraj-v { position: absolute; right: 12px; bottom: 12px; display: grid; place-items: center; width: 58px; height: 58px; padding-left: 4px; border: var(--obrys); border-radius: 50%; background: var(--sun); box-shadow: inset 0 -5px 0 var(--sun-d), 0 3px 0 var(--ink); }
+.hraj-v .ikn { width: 28px; height: 28px; --iko: var(--dk); }
+.naposledy:active, .dlazdica:not(.zamknuta):active, .dalsia:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+
+/* dlaždice: odomknuté farebné a nakrivo, dopadnú jedna po druhej ako karty hodené na stôl */
+.dlazdice { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+.dlazdica { position: relative; display: grid; gap: 4px; align-content: start; min-width: 0; padding: 8px 10px 10px; text-align: left; border: var(--obrys); border-radius: 18px 20px 22px 18px; background: var(--c); box-shadow: 0 5px 0 var(--ink); color: var(--text); animation: dlPadne .5s calc(.06s * var(--i, 0)) var(--spring) backwards; }
+.dlazdica:nth-child(odd) { rotate: -1.6deg; }
+.dlazdica:nth-child(even) { rotate: 1.3deg; translate: 0 7px; }
+.dlazdica b { font: 800 1.03rem/1.15 var(--fd); overflow-wrap: anywhere; }
+.pata { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 32px; margin-top: auto; padding-top: 3px; }
+.pata .st { height: 26px; min-width: 0; padding: 0 8px 0 5px; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; }
+.pata small { font: 700 .75rem/1 var(--fb); color: var(--muted); white-space: nowrap; }
+.pata .pec { rotate: -3deg; background: var(--card); }
+.dl-hraj { flex: none; display: grid; place-items: center; width: 32px; height: 32px; padding-left: 2px; border: var(--obrys-m); border-radius: 50%; background: var(--sun); box-shadow: 0 2px 0 var(--ink); }
+.dl-hraj .ikn { width: 18px; height: 18px; --iko: var(--dk); }
+.dlazdica.ide, .naposledy.ide { rotate: 0deg; translate: 0 0; scale: 1.06; z-index: 2; box-shadow: 0 9px 0 var(--ink); transition: rotate .2s, scale .2s var(--spring), translate .2s, box-shadow .2s; }
+.dlazdica.ide .dl-obr svg, .naposledy.ide .dl-obr svg { animation: jelly .5s; }
+@keyframes dlPadne { 0% { opacity: 0; transform: translateY(-34px) rotate(7deg) scale(1.1); } 60% { opacity: 1; } }
+/* obrázok odomknutej hry sa jemne hýbe, keď je dlaždica na očiach */
+.dlazdica:not(.zamknuta) .dl-obr svg { animation: tileBob 3.2s calc(-.4s * var(--i, 0)) ease-in-out infinite; }
+
+/* zamknuté: pieskové, rovné, prerušovaný okraj, zámok vpravo hore, cena vľavo dole a vpravo koľko chýba */
+.zamk-n { margin: 8px 0 -6px 2px; }
+.dlazdice.zamk .dlazdica { rotate: 0deg; translate: none; background: var(--sand); border-style: dashed; box-shadow: none; }
+.zamknuta .dl-obr svg { filter: grayscale(.85); opacity: .62; animation: none; }
+.zamknuta b { color: var(--muted); }
+.zmk { position: absolute; right: -8px; top: -11px; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--card); border: var(--obrys-m); }
+.zmk .ikn { width: 20px; height: 20px; }
+.zamknuta.spi .zmk { background: var(--violet-l); }
+.dlazdica.trasie, .dalsia.trasie { animation: shake .45s; }
+.dlazdica.trasie .zmk { animation: zamokCink .5s; }
+@keyframes zamokCink { 25% { rotate: -18deg; } 50% { rotate: 14deg; } 75% { rotate: -8deg; } }
+
+/* Ďalšia hra: karta so záložkou, pásik postupu, cena */
+.karta.dalsia { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 24px 12px 14px 8px; margin-top: 18px; text-align: left; color: var(--text); box-shadow: 0 5px 0 var(--ink); animation: dlPadne .5s .2s var(--spring) backwards; }
+.dalsia .zal { color: var(--dk); }
+.dalsia .dl-obr { height: 58px; }
+.dalsia .inf { display: grid; gap: 6px; min-width: 0; }
+.dalsia .inf b { font: 800 1.03rem/1.2 var(--fd); }
+.dalsia .inf small { font: 700 .78rem/1 var(--fd); color: var(--muted); }
+.dalsia .pruh { height: 14px; }
+.dalsia .cena { align-self: start; margin-top: 4px; }
+
+/* ---------- Obal hry: lišta, Múdra, stav ---------- */
+.hra { gap: 16px; padding-top: 6px; }
+.hra-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: grid; grid-template-columns: 46px minmax(0, 1fr) 46px auto; align-items: center; gap: 8px; padding-block: 10px 8px; background: var(--ihr); box-shadow: 0 0 0 100vmax var(--ihr); clip-path: inset(0 -100vmax); }
+.hra-top .btn.kruh .ikn { width: 22px; height: 22px; }
+.hra-nazov { font: 900 1.3rem/1.1 var(--fd); overflow-wrap: anywhere; }
+.hra-mud { display: block; width: 46px; height: 52px; margin: -6px 0 -4px; }
+.hra-mud .owl { display: block; width: 100%; height: 100%; overflow: visible; }
+.hra-mud.reaguje { animation: mudraHop .55s var(--spring); }
+@keyframes mudraHop { 30% { transform: translateY(-9px) scale(1.12) rotate(-6deg); } }
+.hra-stav { gap: 5px; padding: 0 11px 0 8px; box-shadow: 0 3px 0 var(--ink); }
+.hra-stav b { font-weight: 900; }
+.hra-stav.bump { animation: jelly .5s; }
+.hs-cas { margin-left: 3px; padding: 3px 6px 1px; border-radius: 8px; background: var(--sand); font-weight: 800; font-size: .84rem; }
+.hs-cas.malo { background: var(--coral); color: #3A0E05; animation: pulse .5s ease-in-out infinite; }
+.hra-pomoc { margin: 0; text-align: center; font: 600 .92rem/1.4 var(--fd); color: var(--muted); }
+.hra-hviezdy .hra-pomoc { display: flex; justify-content: center; gap: 16px; font: 800 1.05rem/1 var(--fd); color: var(--text); }
+.hra-hviezdy .hra-pomoc span { display: inline-flex; align-items: center; gap: 5px; }
+.hra-pomoc svg { width: 24px; height: 24px; vertical-align: -5px; }
+.hra-hviezdy .hra-pomoc span:last-child svg { width: 28px; }
+
+/* veľké tlačidlo Štart v strede ihriska hry */
+.hv-start { inset: 0; display: grid; place-items: center; align-content: center; gap: 2px; width: 140px; height: 140px; margin: auto; padding: 0 0 8px; border: 4px solid var(--ink); border-radius: 50%; background: var(--sun); color: var(--dk); box-shadow: inset 0 -8px 0 var(--sun-d), 0 6px 0 var(--ink); font: 900 1.35rem/1 var(--fd); animation: startHupe 1.8s ease-in-out infinite; }
+.hv-start .ikn { width: 54px; height: 54px; margin-left: 8px; --iko: var(--dk); }
+.hv-start .ikn path, .hv-start .ikn polygon { fill: var(--h-biela); }
+.hv-start:active { transform: translateY(5px); box-shadow: inset 0 -3px 0 var(--sun-d), 0 1px 0 var(--ink); animation: none; }
+@keyframes startHupe { 50% { scale: 1.06; rotate: -3deg; } }
+
+/* otázka a odpovede (Koľko ich je?, Hádaj tému, Ktorý je iný?, Nájdi tieň, Zoraď čísla, Poskladaj slovo, Čo je iné?): tlačidlá ako odpovede kvízu */
+.hadaj-otazka { font: 900 1.4rem/1.2 var(--fd); text-wrap: balance; }
+.poc-pole, .kv-prompt { background: var(--card); border-radius: 22px 24px 22px 26px; box-shadow: 0 5px 0 var(--ink); rotate: -.8deg; }
+.kv-prompt.obraz, .hadaj-obr { padding: 8px; rotate: .8deg; }
+.hadaj-obr { border: var(--obrys); border-radius: 22px 24px 22px 26px; background: var(--card); box-shadow: 0 5px 0 var(--ink); overflow: hidden; }
+.hadaj-obr svg { border-radius: 14px; }
+.btn.poc-btn, .btn.hadaj-btn, .btn.kv-btn { --cta: var(--card); --cta-d: var(--sand); --cta-t: var(--text); box-shadow: inset 0 -6px 0 var(--cta-d), 0 4px 0 var(--ink); transition: background-color .3s, box-shadow .3s, transform .1s, opacity .25s; }
+.btn.poc-btn { min-height: 100px; font: 900 3.2rem/1 var(--fd); }
+.btn.hadaj-btn { padding: 14px 16px 18px; font: 800 1.15rem/1.2 var(--fd); }
+.btn.poc-btn.ok, .btn.hadaj-btn.ok, .btn.kv-btn.ok { --cta: var(--teal); --cta-d: var(--teal-d); --cta-t: #06302B; border-color: var(--ink); animation: okPop .5s var(--spring); }
+.btn.poc-btn.zle, .btn.hadaj-btn.zle, .btn.kv-btn.zle { --cta: var(--coral); --cta-d: var(--coral-d); --cta-t: #3A0E05; border-color: var(--ink); animation: shake .45s; }
+.btn.poc-btn.zle:disabled, .btn.kv-btn.zle:disabled { --cta: var(--coral-l); --cta-t: var(--muted); border-style: dashed; box-shadow: none; }
+.btn.kv-btn.vzata { opacity: .3; scale: .9; }
+.kv-moz.ine .kv-btn { min-height: 132px; }
+.kv-nap { font: 800 .95rem/1.1 var(--fb); }
+.kv-vysv.vid { margin-top: 2px; padding: 10px 14px; border: var(--obrys-m); border-radius: 16px 18px 18px 5px; background: var(--card); font: 600 1rem/1.4 var(--fd); }
+.kv-slot { border-color: var(--ink); border-radius: 12px 14px 12px 15px; background: var(--card); font-family: var(--fd); }
+.kv-slot.plny { background: var(--teal); color: #06302B; box-shadow: 0 3px 0 var(--ink); }
+.kv-it.otaznik { border-color: var(--ink); background: var(--card); font-family: var(--fd); }
+.kolo-nove { animation: koloIn .4s var(--spring) both; }
+@keyframes koloIn { from { opacity: 0; transform: translateX(36px) rotate(2deg); } }
+
+/* pexeso: rub fialový s hviezdou, líce papier */
+.pexeso { gap: 9px; }
+.pex { animation: dlPadne .45s calc(.03s * var(--i, 0)) var(--spring) backwards; }
+.pex-rub, .pex-lic { border: var(--obrys); border-radius: 14px 16px 14px 17px; box-shadow: 0 4px 0 var(--ink); }
+.pex-rub { background: var(--violet); background-image: radial-gradient(rgb(255 255 255 / .22) 2px, transparent 2.6px); background-size: 12px 12px; }
+.pex-rub svg { width: 52%; height: 52%; rotate: -8deg; }
+.pex:nth-child(even) .pex-rub svg { rotate: 10deg; }
+.pex-lic { background: var(--card); }
+.pex.najdena .pex-lic { box-shadow: 0 0 0 4px var(--teal), 0 4px 0 var(--ink); }
+
+/* chytaj hviezdičky: nočná obloha (vždy tmavá), hviezdy svietia */
+.nebo { border: var(--obrys); border-radius: 22px 24px 22px 26px; box-shadow: 0 6px 0 var(--ink); background: var(--noc-bg); background-image: radial-gradient(rgb(255 255 255 / .16) 1.6px, transparent 2.2px), radial-gradient(rgb(255 212 92 / .22) 2px, transparent 2.6px); background-size: 26px 26px, 61px 61px; background-position: 0 0, 13px 30px; }
+.hv.hviezda svg, .hv.velka svg { filter: drop-shadow(0 0 8px rgb(255 212 92 / .55)); }
+.hv-plus { font: 900 2rem/1 var(--fd); color: var(--sun); -webkit-text-stroke: 5px var(--ink); paint-order: stroke fill; text-shadow: none; }
+.hv-plus.minus { color: var(--coral); }
+
+/* ťukaj krtkov: lúka s kopčekmi */
+.luka { border: var(--obrys); border-radius: 22px 24px 22px 26px; box-shadow: 0 6px 0 var(--ink); background: var(--leaf-l); background-image: radial-gradient(rgb(47 154 73 / .25) 2px, transparent 2.6px); background-size: 20px 20px; }
+:root[data-rezim="mesacny"] .luka { background-image: radial-gradient(rgb(98 203 114 / .2) 2px, transparent 2.6px); }
+.diera-v { border-color: var(--ink); background: var(--h-diera); }
+.diera-p { border-color: var(--ink); background: var(--h-hlina); }
+.luka .hv-plus { color: var(--sun); }
+
+/* skladačka */
+.sklad { border: var(--obrys); border-radius: 18px 20px 18px 21px; background: var(--ink); box-shadow: 0 6px 0 var(--ink); }
+.diel.sedi::after, .diel.vybraty::before { box-shadow: inset 0 0 0 3px var(--teal); }
+.diel.vybraty::before { box-shadow: inset 0 0 0 5px var(--sun), inset 0 0 0 7px var(--ink); }
+
+/* bubliny s počtami: plochá obloha s bodkami, bubliny s odleskom */
+.priklad { border-radius: 22px 24px 22px 26px; box-shadow: 0 5px 0 var(--ink); font: 900 2.4rem/1.1 var(--fd); rotate: -1deg; }
+.bub-pole { border: var(--obrys); border-radius: 22px 24px 22px 26px; box-shadow: 0 6px 0 var(--ink); background: var(--h-nebo); background-image: radial-gradient(rgb(255 255 255 / .5) 2px, transparent 2.6px); background-size: 22px 22px; }
+:root[data-rezim="mesacny"] .bub-pole { background-image: radial-gradient(rgb(255 255 255 / .1) 2px, transparent 2.6px); }
+.bublina { border-color: var(--ink); color: var(--dk); background: var(--sky-l); box-shadow: 0 4px 0 var(--ink); font-family: var(--fd); font-weight: 900; }
+:root[data-rezim="mesacny"] .bublina { background: #CDE8FF; }
+.bublina::before { content: ""; position: absolute; left: 18%; top: 14%; width: 30%; height: 18%; border-top: 4px solid var(--h-biela); border-radius: 50% 50% 0 0; rotate: -30deg; }
+.bublina.zle { background: var(--coral-l); }
+:root[data-rezim="mesacny"] .bublina.zle { background: #FFC7BA; }
+
+/* Lietajúca sova */
+.sova-cv { border: var(--obrys); border-radius: 22px 24px 22px 26px; box-shadow: 0 6px 0 var(--ink); }
+
+/* Opakuj po mne (presunuté zo 14-oslavy-odznaky-zbierka.css, nič iné sa nemení) */
+.simon-stav { margin: 0; min-height: 1.4em; text-align: center; font: 900 1.4rem/1.2 var(--fd); }
+.simon { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 380px; aspect-ratio: 1; margin: 0 auto; }
+.pad { display: grid; place-items: center; padding: 0; border: 4px solid var(--ink); border-radius: 30px 34px 28px 36px; background: var(--c); box-shadow: inset 0 -8px 0 rgb(0 0 0 / .14), 0 6px 0 var(--ink); opacity: .55; transition: opacity .12s, transform .12s; }
+.pad:nth-child(2) { border-radius: 34px 30px 36px 28px; } .pad:nth-child(3) { border-radius: 28px 36px 30px 34px; } .pad:nth-child(4) { border-radius: 36px 28px 34px 30px; }
+.pad svg { width: 48%; height: 48%; }
+.pad.svieti { opacity: 1; transform: scale(1.06); box-shadow: 0 0 0 6px var(--h-biela), 0 0 0 9px var(--ink), 0 6px 0 var(--ink); }
+.simon .hv-start { z-index: 2; width: 124px; height: 124px; }
+
+/* ---------- Výsledok hry: slnko, Múdra, hárok ---------- */
+.vysl { position: fixed; inset: 0; z-index: 40; display: grid; align-content: end; justify-items: center; background: rgb(24 20 63 / .55); animation: zavojIn .3s ease-out both; overflow: auto; }
+.vysl-scena { position: relative; width: 100%; max-width: 560px; height: 210px; margin-bottom: -6px; }
+.vysl:not(.dobre) .vysl-scena { height: 150px; }
+.vysl-slnko { position: absolute; left: 0; right: 0; bottom: 0; height: 210px; overflow: hidden; animation: vyslSlnko .6s cubic-bezier(.2, .9, .3, 1.15) both; }
+.vysl-slnko svg { display: block; width: 100%; height: 100%; }
+.vysl-slnko .luce { transform-origin: 180px 250px; animation: spin 60s linear infinite; }
+.vysl-mud { position: absolute; left: 50%; bottom: -10px; z-index: 2; width: 150px; margin-left: -75px; animation: vyslMudra .7s .15s cubic-bezier(.3, 1.6, .5, 1) both; }
+.vysl:not(.dobre) .vysl-mud { width: 118px; margin-left: -59px; animation: up .45s ease-out both; }
+.vysl-mud .owl { display: block; width: 100%; height: auto; overflow: visible; }
+.vysl-cislo { position: absolute; right: max(18px, calc(50% - 160px)); top: 34px; z-index: 3; display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px 5px 10px; border: var(--obrys); border-radius: var(--r-maly); background: var(--sun); box-shadow: 0 4px 0 var(--ink); color: var(--dk); font: 900 1.6rem/1 var(--fd); rotate: 8deg; animation: pop .5s .5s var(--spring) both; }
+.vysl:not(.dobre) .vysl-cislo { top: 20px; background: var(--card); color: var(--text); }
+.vysl-cislo .ikn { width: 24px; height: 24px; --iko: var(--dk); }
+.vysl-harok { position: relative; z-index: 3; display: grid; justify-items: center; gap: 8px; width: 100%; max-width: 560px; padding: 22px 18px calc(22px + env(safe-area-inset-bottom, 0px)); text-align: center; background: var(--card); border-top: var(--obrys); border-radius: 28px 28px 0 0; animation: harokHore .45s .1s cubic-bezier(.2, .9, .3, 1) both; }
+.vysl-harok .n1 { font-size: 1.75rem; font-weight: 900; }
+.vysl-co { margin: 0; font: 800 1.15rem/1.3 var(--fd); }
+.vysl-t, .vysl-rek { margin: 0; color: var(--muted); font: 500 1rem/1.4 var(--fb); }
+.vysl-rek { display: inline-flex; align-items: center; gap: 6px; }
+.vysl-rek .ikn { width: 20px; height: 20px; }
+.vysl-pec { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px 5px; border-width: 3px; font-size: .95rem; --pc: var(--link); rotate: -5deg; animation: peciatka .5s .8s cubic-bezier(.3, 1.6, .5, 1) both; }
+.vysl-pec .ikn { width: 18px; height: 18px; --iko: var(--link); }
+.vysl-tl { display: grid; gap: 10px; width: 100%; margin-top: 8px; }
+.vysl-tl .btn { display: flex; justify-content: center; align-items: center; }
+@keyframes vyslSlnko { from { transform: translateY(70%); } }
+@keyframes vyslMudra { 0% { transform: translateY(90px) scale(.6); opacity: 0; } 60% { opacity: 1; } }
+@keyframes harokHore { from { transform: translateY(100%); } }
+@keyframes peciatka { from { opacity: 0; scale: 2.2; rotate: 8deg; } }
+
+/* širší displej: dlaždice v troch stĺpcoch, hárok výsledku má všetky rohy */
+@media (min-width: 600px) {
+  .dlazdice { grid-template-columns: repeat(3, 1fr); }
+  .dlazdice:not(.zamk) .dlazdica:nth-child(3n+2) { translate: 0 7px; }
+  .dlazdice:not(.zamk) .dlazdica:nth-child(even):not(:nth-child(3n+2)) { translate: none; }
+  .vysl { align-content: center; }
+  .vysl-harok { border: var(--obrys); border-radius: 28px; box-shadow: 0 5px 0 var(--ink); max-width: 460px; }
+  .vysl-scena { max-width: 460px; }
+  .vysl-tl { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .naposledy, .dlazdica, .dlazdica .dl-obr svg, .karta.dalsia, .pex, .hra-mud.reaguje, .hra-stav.bump, .hs-cas.malo, .hv-start, .kolo-nove,
+  .vysl, .vysl-slnko, .vysl-slnko .luce, .vysl-mud, .vysl-cislo, .vysl-harok, .vysl-pec, .dlazdica.trasie, .dlazdica.trasie .zmk { animation: none !important; }
+  .dlazdica.ide, .naposledy.ide { transition: none; }
+}

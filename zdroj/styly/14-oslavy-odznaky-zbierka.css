@@ -9,15 +9,6 @@
 .medaila.mala { width: 34px; height: 34px; font-size: 1.05rem; border-width: 2px; background: var(--t-yel); }
 .sipka { flex: none; font: 700 2.2rem/1 var(--f-display); color: var(--muted); }
 
-/* text na svetlých štítkoch hier a odznakov musí byť tmavý */
-.hra-info .chip, .hra-top .chip { color: var(--dk); text-shadow: none; }
-/* opakuj po mne */
-.simon-stav { margin: 0; min-height: 1.4em; text-align: center; font: 700 1.35rem/1.2 var(--f-display); }
-.simon { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px; aspect-ratio: 1; margin: 0 auto; }
-.pad { display: grid; place-items: center; padding: 0; border: 4px solid var(--line); border-radius: 30px; background: var(--c); box-shadow: 0 6px 0 var(--shc); opacity: .5; transition: opacity .12s, transform .12s; }
-.pad svg { width: 48%; height: 48%; }
-.pad.svieti { opacity: 1; transform: scale(1.05); box-shadow: 0 0 0 6px #fff, 0 0 34px var(--c), 0 6px 0 var(--shc); }
-.simon .hv-start { z-index: 2; width: 124px; height: 124px; }
 
 /* odznaky: vyzdvihnutie hviezdičiek */
 button.odznak { width: 100%; font: inherit; color: inherit; }

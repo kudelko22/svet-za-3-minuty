@@ -34,7 +34,7 @@ document.addEventListener('click', e => {
   if (d.tyzDen) { Zvuk.play('pop'); TY().otvor(d.tyzDen); return; }
   if (Misie.klik(b, d) || Ang.klik(b, d)) return;
   if (d.vyber) { vyberOdznak(d.vyber, b); return; }
-  if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra); return; }
+  if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra, b); return; }
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
   if (d.pex) { Hra.pex(+d.pex, b); return; }
   if (d.hv) { Hra.chyt(b); return; }

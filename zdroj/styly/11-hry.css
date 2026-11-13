@@ -1,26 +1,9 @@
 /* Hry */
-.hry { display: grid; gap: 14px; }
-.hra-karta { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px; text-align: left; border: 3px solid var(--line); border-radius: 24px; background: var(--paper); box-shadow: var(--sh); }
-.hra-karta:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--shc); }
-.hra-obr { flex: none; display: grid; place-items: center; width: 92px; height: 76px; border: 3px solid var(--line); border-radius: 18px; background: var(--c); }
-.hra-obr svg { width: 80px; height: 64px; }
-.hra-karta:not(.zamknuta) .hra-obr svg { animation: tileBob 2.6s ease-in-out infinite; }
-.hra-karta.zamknuta .hra-obr { filter: grayscale(1); opacity: .5; }
-.hra-info { display: grid; gap: 4px; flex: 1; min-width: 0; }
-.hra-info b { font: 700 1.3rem/1.15 var(--f-display); }
-.hra-info small { color: var(--muted); font-weight: 700; line-height: 1.3; }
-.hra-info .chip { justify-self: start; }
-.zamok { color: var(--muted); font-weight: 800; font-size: .92rem; }
 .hra-mini { flex: none; display: grid; place-items: center; width: 58px; height: 50px; border: 3px solid var(--line); border-radius: 14px; background: var(--c); }
 .hra-mini svg { width: 50px; height: 40px; }
 .hra { display: grid; gap: 14px; padding-top: 4px; }
-.hra-top { display: flex; align-items: center; gap: 10px; }
-.hra-nazov { flex: 1; min-width: 0; font: 700 1.35rem/1.1 var(--f-display); }
 .hra-pomoc { text-align: center; font-size: .92rem; }
 .hra-pomoc svg { width: 18px; height: 18px; vertical-align: -3px; }
-.hra-vysledok { display: grid; justify-items: center; gap: 10px; text-align: center; animation: up .5s var(--spring) both; }
-.hra-vysledok .win-owl { width: 120px; }
-.hra-vysledok .tests { width: 100%; }
 /* pexeso */
 .pexeso { display: grid; grid-template-columns: repeat(var(--st, 4), 1fr); gap: 8px; }
 .pex { aspect-ratio: 1; padding: 0; border: 0; background: none; perspective: 600px; }
