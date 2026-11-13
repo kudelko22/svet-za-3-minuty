@@ -66,11 +66,6 @@
 .oslava.ozil .os-veta { animation-delay: calc(var(--w) + 1.4s); }
 .oslava.ozil .so-dni { animation-delay: calc(var(--w) + 1.6s); }
 /* stará karta Tento týždeň (okno týždňa) otvára strom */
-.tyzden[data-strom] { cursor: pointer; }
-.tyzden-strom { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 10px; border: 2.5px dashed var(--line); border-radius: 16px; background: var(--leaf-l); font: 700 .95rem/1.25 var(--fd); }
-.tyzden-strom svg { flex: none; width: 34px; height: 34px; }
-.tyzden-strom span { flex: 1; }
-.tyzden-strom i { font-style: normal; font-size: 1.5rem; line-height: 1; }
 .prehlad .pr-ik { flex: none; width: 30px; height: 30px; }
 @keyframes osFuka { 0%, 100% { transform: none; } 20% { transform: rotate(-3deg) skewX(-3deg); } 40% { transform: rotate(4deg) skewX(4deg); } 60% { transform: rotate(-5deg) skewX(-4deg); } 80% { transform: rotate(3deg) skewX(2deg); } }
 @keyframes vlKrut { from { transform: rotate(var(--a)); } to { transform: rotate(calc(var(--a) + 620deg)); } }

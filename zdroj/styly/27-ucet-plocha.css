@@ -41,7 +41,7 @@
 @keyframes plHv { 0%, 100% { transform: scale(.4); opacity: 0; } 50% { transform: scale(1.3); opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .oslava *, .oslava, .streak .ik { animation: none !important; }
+  .oslava *, .oslava { animation: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

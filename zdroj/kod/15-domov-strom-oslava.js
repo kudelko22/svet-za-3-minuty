@@ -112,8 +112,9 @@ function tukniNaStrom(el, e) {
   return true;
 }
 /* 5.0: scéna stromu (obloha, kopce, cestička, strom, Múdra) pre okno stromu aj veľkú oslavu; pri vädnutí zbledne obloha a slnko zakryje oblak */
-const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}${o.luce ? ' luce' : ''}">
-  <svg class="so-pozadie" viewBox="0 0 360 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+// o.domov = true: pozadím je tá istá krajina ako na Domove (okno stromu), bez cieľa cesty; cestička vedie k stromu
+const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}${o.luce ? ' luce' : ''}${o.domov ? ' so-domov' : ''}">
+  ${o.domov ? Domov.krajina(temaDna(), false, true) : `  <svg class="so-pozadie" viewBox="0 0 360 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <rect width="360" height="300" fill="var(--so-sky)"/>
     ${o.luce ? `<g class="so-luce">${Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180, b = (i * 30 + 14) * Math.PI / 180; return `<path d="M180 190L${(180 + 520 * Math.cos(a)).toFixed(0)} ${(190 + 520 * Math.sin(a)).toFixed(0)}L${(180 + 520 * Math.cos(b)).toFixed(0)} ${(190 + 520 * Math.sin(b)).toFixed(0)}Z"/>`; }).join('')}</g>` : ''}
     <circle cx="312" cy="64" r="21" fill="var(--sc-sun)"/><circle class="len-noc" cx="302" cy="57" r="18" fill="var(--so-sky)"/>${o.hn ? '' : '<circle class="len-den" cx="312" cy="64" r="32" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12" stroke-linecap="round"/>'}
@@ -124,7 +125,7 @@ const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}$
     <path d="M-10 304C30 272 110 282 150 262" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
     <path d="M-6 282C60 244 300 242 366 278V306H-6Z" fill="var(--so-front)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
     <path d="M30 284q3-9 6 0M306 272q3-9 6 0M322 276q3-8 6 0M250 262q3-8 6 0" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>
-  </svg>
+  </svg>`}
   ${o.bublina ? `<p class="odkaz so-bub">${o.bublina}</p>` : ''}
   <div class="so-strom">${strom}</div>
 </div>`;
@@ -257,9 +258,9 @@ const Strom = {
     el.className = 'oslava strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Strom múdrosti');
     el.innerHTML = `<div class="os-listy">${hn ? '' : stromListy(5, i)}</div><div class="os-obsah">
       <div class="so-hlava"><h1 class="n1">Strom múdrosti</h1><button class="btn kruh dve" data-strom-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
-      ${stromScena(stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6, sova: .9 } }), { hn, bublina })}
+      ${stromScena(stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6, sova: .9 } }), { hn, bublina, domov: true })}
       <section class="karta so-karta"><span class="zal">Stupeň ${i + 1} zo ${STROM_STUPNE.length}</span>${karta}</section>
-      <div class="so-tyz"><h3 class="n2">Tento týždeň</h3><button class="btn maly dve" data-so-okruh>${okruhIk(vyb) ? `<span class="okruh-tl-ik">${okruhIk(vyb)}</span>` : ikn('kompas')}Okruh: ${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</button></div>
+      <div class="so-tyz"><h3 class="n2">Tento týždeň</h3><button class="btn maly dve" data-so-okruh>${okruhIk(vyb) || ikn('kompas')}Okruh: ${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</button></div>
       ${tyzdenStromu(dnes)}
       ${hotovo ? '' : `<button class="btn wide" data-strom-tema>Poďme na tému dňa${ikn('sipka', 'za')}</button>`}
       <p class="dop so-tip">${hn ? 'Rodič môže vädnutie vypnúť vo svojom paneli.' : 'Ťukni na strom a zatrasie sa. Ťukni na Múdru a zahúka.'}</p></div>`;

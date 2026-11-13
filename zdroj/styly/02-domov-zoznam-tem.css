@@ -1,14 +1,6 @@
 /* Domov */
 .tt { margin: 0; font: 700 1.85rem/1.08 var(--f-display); text-wrap: balance; }
 .row-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.streak { font: 700 .95rem/1.2 var(--f-display); padding: 4px 10px; border-radius: 999px; background: var(--p-FFE7C2,#FFE7C2); border: 2.5px solid var(--line); }
-.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
-.day { display: grid; justify-items: center; gap: 4px; font: 600 .85rem/1 var(--f-display); color: var(--muted); }
-.day i { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-style: normal; background: var(--d); border: 2.5px solid var(--line); color: var(--dk); font-size: .95rem; }
-.day i svg { width: 24px; height: 24px; animation: pop .8s var(--spring) both; }
-.day.done i { background: var(--sun); }
-.day.today { color: var(--link); }
-.day.today i { outline: 3px solid var(--blue); outline-offset: 2px; }
 .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .act.siroky { grid-column: 1 / -1; }
 .act { position: relative; overflow: hidden; display: grid; gap: 4px; justify-items: start; text-align: left; border: 3px solid var(--line); border-radius: 24px; padding: 14px; color: #fff; text-shadow: 0 2px 0 var(--dk); background: var(--c); box-shadow: var(--sh); }
