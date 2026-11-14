@@ -32,7 +32,8 @@ if ('serviceWorker' in navigator) {
   // Obnova sa nerobí pred očami: až keď dieťa appku opustí (karta sa skryje), alebo keď 30 s nič nerobí a nie je v hre ani v kvíze.
   const obnov = () => {
     let zaneprazdneny = false, hra = false;
-    try { hra = !!(st.hra || st.ang || st.flow); zaneprazdneny = !!(st.hra || st.ang || st.flow || st.auto || st.faza !== 'appka' || (document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName))); } catch (e) {}
+    // premena 5.0 sa nesmie prerušiť obnovou (verzia sa zapíše hneď pri jej začiatku, druhá šanca by nebola)
+    try { hra = !!(st.hra || st.ang || st.flow || document.querySelector('.pm')); zaneprazdneny = !!(st.hra || st.ang || st.flow || st.auto || st.faza !== 'appka' || (document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName))); } catch (e) {}
     if (!hra && (document.hidden || (!zaneprazdneny && Date.now() - posledne > 30000))) { location.reload(); return; }
     if (!caka) { caka = true; setInterval(obnov, 5000); document.addEventListener('visibilitychange', () => { if (document.hidden) obnov(); }); }
   };
