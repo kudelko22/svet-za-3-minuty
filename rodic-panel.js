@@ -51,7 +51,7 @@ const RodicPanel = (() => {
           const t = tyzdenTem(d), s = serieDni(d.dni || []), ch = (d.chyby || []).length, hot = (d.dni || []).includes(dnes);
           return `<button class="rd-blok rd-dieta" data-rp-dieta="${esc(d.id)}">
             <span class="rd-dieta-h">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small>${vekText(d.vek)} · ${hot ? 'dnes hotovo' : 'dnes ešte bez témy'}</small></span>${sip()}</span>
-            <span class="rd-cisla"><span><b class="cis">${d.body || 0}</b><small>bodov spolu</small></span><span><b class="cis">${t}</b><small>${slovoTem(t)} tento týždeň</small></span>
+            <span class="rd-cisla"><span><b class="cis">${d.body || 0}</b><small>hviezd spolu</small></span><span><b class="cis">${t}</b><small>${slovoTem(t)} tento týždeň</small></span>
               <span><b class="cis">${s} ${dni(s)}</b><small>po sebe</small></span><span><b class="cis">${ch}</b><small>${ch ? 'na zopakovanie' : 'bez chýb'}</small></span></span>
             <span class="rd-tyzd"><span>Týždeň</span>${tyzdenBodky(d)}</span></button>`;
         }).join('')}
@@ -68,7 +68,7 @@ const RodicPanel = (() => {
       if (C.rodicDietaOtvor) C.rodicDietaOtvor(d.id); // priatelia a správy tohto dieťaťa (idempotentné)
       const s = serieDni(d.dni || []);
       return `<div class="brana rd">${rodicHlava('data-rp-panel', 'Prehľad dieťaťa', true)}<div class="rd-telo">
-        <div class="rd-dieta-h rd-vel">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small><span class="cis">${d.body || 0}</span> bodov · <span class="cis">${s}</span> ${dni(s)} po sebe · ${vekText(d.vek)}</small></span></div>
+        <div class="rd-dieta-h rd-vel">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b><small><span class="cis">${d.body || 0}</span> hviezd · <span class="cis">${s}</span> ${dni(s)} po sebe · ${vekText(d.vek)}</small></span></div>
         ${prehladRodica(d)}</div></div>`;
     },
     rodicNastavenia() {
@@ -85,7 +85,7 @@ const RodicPanel = (() => {
         <section class="rd-blok"><h2 class="rd-h">Deti · najviac 4</h2>
           ${C.deti.map(d => `<div class="rd-riadok">${avatar(d)}<span class="rd-t"><b>${esc(d.meno)}</b></span>
               ${rp.potvrd === d.id ? '' : `<button class="rd-akc" data-rp-uprav="${esc(d.id)}">Upraviť</button><button class="rd-akc cerv" data-rp-odstran="${esc(d.id)}">Odstrániť</button>`}</div>
-            ${rp.potvrd === d.id ? `<div class="rd-potvrd"><p class="rd-p">Odstrániť profil ${esc(d.meno)}? Body a prebraté témy tohto dieťaťa sa stratia.</p>
+            ${rp.potvrd === d.id ? `<div class="rd-potvrd"><p class="rd-p">Odstrániť profil ${esc(d.meno)}? Hviezdy a prebraté témy tohto dieťaťa sa stratia.</p>
               <div class="rd-ano"><button class="btn zle" data-rp-odstran-ano="${esc(d.id)}">Áno, odstrániť</button><button class="btn dve" data-rp-nie>Nie</button></div></div>` : ''}`).join('') || '<p class="rd-pozn">Zatiaľ žiadne dieťa.</p>'}
           ${C.deti.length < 4 ? `<button class="rd-riadok" data-rp-pridaj>${ikn('plus')}<span class="rd-t"><b>Pridať dieťa</b></span></button>` : ''}</section>
         <section class="rd-blok"><h2 class="rd-h">Vädnutie stromu</h2>

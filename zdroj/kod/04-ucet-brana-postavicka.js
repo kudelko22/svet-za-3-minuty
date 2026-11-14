@@ -194,7 +194,7 @@ function avMoznosti() {
     // pri účese bez čiapky, inak by pod ňou všetky účesy vyzerali rovnako
     const obr = farba ? `<i class="vec-farba" style="--f:${v}"></i>`
       : `<span class="kruh-av" style="--bg:${u.avatar.pozadie}">${postavicka({ ...u.avatar, [k]: v, ...(k === 'vlasy' ? { doplnok: 'ziadny' } : {}) })}</span>`;
-    return `<button class="vec${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} bodoch` : ''}">
+    return `<button class="vec${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} hviezdach` : ''}">
       ${zam ? `<span class="zmk">${ikn('zamok')}</span>` : ''}<span class="vec-obr">${obr}</span><span class="dolu">${dolu}</span></button>`;
   }).join('');
   const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za hviezdy z tém.</span></div>` : '';
@@ -260,7 +260,7 @@ function tvorbaKlik(b, d) {
   if (d.avvol) {
     const cena = cenaDielu(u.kat, d.avvol);
     if (cena > (u.body || 0) && u.avatar[u.kat] !== d.avvol) {
-      Zvuk.play('tap'); toast(`Odomkne sa pri ${cena} bodoch. Chýba ešte ${cena - (u.body || 0)} bodov.`);
+      Zvuk.play('tap'); toast(`Odomkne sa pri ${cena} hviezdach. Chýba ešte ${cena - (u.body || 0)} hviezd.`);
       b.classList.remove('trasie'); void b.offsetWidth; b.classList.add('trasie'); return true;
     }
     u.avatar[u.kat] = d.avvol; Zvuk.play('pop'); obnovTvorbu(); return true;
