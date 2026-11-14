@@ -92,9 +92,9 @@ const Ang = {
     const pokrok = `<div class="ang-pokrok" aria-label="Otázka ${q.i + 1} z ${q.qs.length}">${q.qs.map((_, i) => `<i class="${i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''}"></i>`).join('')}</div>`;
     const top = `<div class="hra-top"><button class="btn kruh dve" data-ang-spat aria-label="Späť na angličtinu">${ikn('zavriet')}</button><b class="hra-nazov">${q.skup ? esc(ANG_SKUPINY[q.skup]) : 'Kvízik z angličtiny'}</b></div>`;
     if (k) return `${top}<section class="card misia-pribeh ang-koniec" style="text-align:center">${q.precvic ? '<div>' + Precvic.stitok() + '</div>' : ''}<b class="misia-typ">${q.precvic ? 'Dobre si si to zopakoval' : 'Hotovo!'}</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} ${q.precvic ? '' : q.skup ? 'Môžeš si ho zahrať znova, otázky sa menia.' : 'Zajtra príde nový kvízik.'}</p></section>
-      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
+      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Hviezdy za dnes už máš. Tu ide hlavne o učenie.</p>'}
       ${odmenyHtml(k)}<button class="btn wide cta" data-ang-spat>Späť na angličtinu</button>`;
-    return `${top}${pokrok}${q.precvic ? Precvic.stitok() + Precvic.poznamka() : q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
+    return `${top}${pokrok}${q.precvic ? Precvic.stitok() + Precvic.poznamka() : q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez hviezd.</p>' : ''}
       <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
       <div class="ang-rea">${this.reakcia(q)}</div>
       <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:var(--coral-l)"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>

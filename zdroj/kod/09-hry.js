@@ -803,8 +803,8 @@ function hryZoznam() {
   const r0 = hore && rek(hore);
   return `<div class="ihrisko">
     <h1 class="n0 hry-titul">Hry</h1>
-    <p class="uvodka">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
-    ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} bodov spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
+    <p class="uvodka">Za hviezdy z tém sa odomykajú hry. Hraním sa hviezdy neminú.</p>
+    ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} hviezd spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">
       <span class="zal" style="--c:var(--card)">${hore.id === st.hraPosledna ? 'Hrané naposledy' : r0 != null ? 'Tvoja hra' : 'Najnovšia hra'}</span>
       <span class="hr-obr">${OBR_HRY[hore.id]}</span>
@@ -813,7 +813,7 @@ function hryZoznam() {
     ${ok.length > 1 ? `<div class="dlazdice">${ok.filter(h => h !== hore).map(dlazdica).join('')}</div>` : ''}
     ${dalsia ? `<button class="karta dalsia-hra" data-hra="${dalsia.id}" aria-label="Ďalšia hra ${esc(dalsia.n)}, chýba ${dalsia.cena - st.body}"><span class="zal">Ďalšia hra</span>
       <span class="hr-obr">${OBR_HRY[dalsia.id]}</span>
-      <span class="inf"><b>${dalsia.n}</b><span class="pruh"><i style="width:${Math.max(6, Math.min(100, Math.round(st.body / dalsia.cena * 100)))}%"></i></span><small>Chýba ${dalsia.cena - st.body} ${slovoBody(dalsia.cena - st.body)}</small></span>
+      <span class="inf"><b>${dalsia.n}</b><span class="pruh"><i style="width:${Math.max(6, Math.min(100, Math.round(st.body / dalsia.cena * 100)))}%"></i></span><small>Chýba ${dalsia.cena - st.body} ${slovoHviezdy(dalsia.cena - st.body)}</small></span>
       <span class="cena">${ikn('hviezda')}${dalsia.cena}</span></button>` : !zamk.length ? `<p class="odkaz vsetko">${ikn('koruna')}<span>Máš odomknuté všetky hry. Si majster ihriska!</span></p>` : ''}
     ${ostatne.length ? `<h2 class="n2 zamk-n">Ešte zamknuté</h2><div class="dlazdice zamk">${ostatne.map(zamknuta).join('')}</div>` : ''}
   </div>`;

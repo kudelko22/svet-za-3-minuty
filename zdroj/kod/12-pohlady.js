@@ -38,10 +38,10 @@ const views = {
     const t = tD(), v = TV(), dalsie = [...Array(v.length).keys()].map(i => v[(denCislo() + 1 + i) % v.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
     return `<div class="hra-top"><button class="btn kruh dve" data-go="domov" aria-label="Späť domov">${ikn('zavriet')}</button><h1 class="h1 hra-nazov">Objavuj</h1></div>
       <div class="obj-akty">
-        <button class="nalepka obj-akt${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:var(--sun-l)" data-kviz><span class="ikb">${ikn('blesk')}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
-        <button class="nalepka obj-akt" style="--c:var(--sky-l)" data-nahodna><span class="ikb">${ikn('kocka')}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 bodov</small></button>
-        ${st.vek === 'starsi' ? `<button class="nalepka obj-akt${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:var(--violet-l)" data-kviz="tazky"><span class="ikb">${ikn('terc')}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
-        <button class="nalepka obj-akt${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:var(--coral-l)" data-kviz="vyzva"><span class="ikb">${ikn('pohar')}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
+        <button class="nalepka obj-akt${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:var(--sun-l)" data-kviz><span class="ikb">${ikn('blesk')}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, hviezdy raz za deň')}</small></button>
+        <button class="nalepka obj-akt" style="--c:var(--sky-l)" data-nahodna><span class="ikb">${ikn('kocka')}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 hviezd</small></button>
+        ${st.vek === 'starsi' ? `<button class="nalepka obj-akt${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:var(--violet-l)" data-kviz="tazky"><span class="ikb">${ikn('terc')}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 hviezd za každú, hviezdy raz za deň')}</small></button>
+        <button class="nalepka obj-akt${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:var(--coral-l)" data-kviz="vyzva"><span class="ikb">${ikn('pohar')}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 hviezd za každú, hviezdy raz za deň')}</small></button>` : ''}
       </div>
       <section class="sec"><h2 class="h2">Oblasti tém</h2>
         <div class="skupiny rad">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
@@ -72,7 +72,7 @@ const views = {
         <button class="btn dve maly wide ja-uprav" data-upravit>${ikn('ceruzka')}Upraviť postavičku, meno a vek</button></section>
       <section class="ja-kruh">
         <div class="ja-ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--sand)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--leaf)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}" transform="rotate(-90 50 50)"/></svg><b class="cis">${h}</b></div>
-        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá body a kúsok kruhu.`}</p></div>
+        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá hviezdy a kúsok kruhu.`}</p></div>
       </section>
       ${kartaOdznakov()}
       <div class="ja-vzhlad">${Rezim.karta()}${Pozadie.karta()}</div>

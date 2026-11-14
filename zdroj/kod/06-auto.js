@@ -121,7 +121,7 @@ const Auto = {
     const bezHlasu = a.stav === 'rucne', v = a.vysledok, gen = ++a.gen;
     a.stav = 'koniec'; a.zostava = null; renderAuto();
     Zvuk.play('win'); FX.rain(80);
-    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} bodov.` : '')
+    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} hviezd.` : '')
       + v.noveOdznaky.map(o => ` Nový odznak: ${o.n}.`).join('') + v.noveOdmeny.map(r => ` Pre postavičku máš ${NAZVY_ODMIEN[r.kluc]}.`).join('') + (v.noveHry || []).map(x => ` Odomkla sa nová hra ${x.n}.`).join('')
       + (a.pokracovat && a.dalsia && !a.precvic ? ' O chvíľu pokračujeme ďalšou témou.' : '');
     const pokracuj = () => {
@@ -215,7 +215,7 @@ function renderAuto() {
         <div class="au-mudra">${mudra('oslava', { extra: true, tien: false })}</div></div>
       <h1 class="au-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
       <p class="au-pod">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
-      ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> bodov</div>` : ''}
+      ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> hviezd</div>` : ''}
       ${odmenyHtml(v)}
       ${d && !a.precvic ? `<button class="au-btn au-dalsia" data-auto="dalsia"><span class="dop">Ďalšia téma</span><b>${esc(d.t)}</b>
         <small id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek" class="cis">10</b> s</small></button>` : ''}

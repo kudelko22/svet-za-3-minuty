@@ -136,7 +136,7 @@ document.addEventListener('click', e => {
     // hneď ukázať a zahrať, cloud to dopošle v pozadí
     Zvuk.play(d.socNal ? 'pop' : 'tap'); vibruj(15); const [x, y] = stred(b); FX.burst(x, y, 10, ['star', 'dot'], 5);
     const ch = document.getElementById('chat');
-    if (ch) { const pr = ch.querySelector('.dm-prazdny'); if (pr) pr.remove(); ch.insertAdjacentHTML('beforeend', `<div class="msg moja posl odosiela${m.n ? ' nalepka' : ''}">${spravaObsah(m)}</div>`); ch.scrollTop = ch.scrollHeight; }
+    if (ch) { const pr = ch.querySelector('.dm-prazdny'); if (pr) pr.remove(); ch.insertAdjacentHTML('beforeend', `<div class="msg moja posl odosiela${m.n ? ' msg-nalepka' : ''}">${spravaObsah(m)}</div>`); ch.scrollTop = ch.scrollHeight; }
     socAkcia(C.soc.posli(st.priatel, m), null, () => socZmena());
   }
   else if (d.socOdober) { const C = window.Cloud, p = socC().profily[d.socOdober]; if (confirm('Naozaj odstrániť ' + (p ? p.meno : 'priateľa') + ' z priateľov?')) socAkcia(C.soc.odober(d.socOdober), () => { toast('Odstránené z priateľov.'); go('priatelia'); }); }

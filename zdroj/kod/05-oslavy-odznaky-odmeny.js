@@ -28,13 +28,13 @@ const ODZNAKY = [
   { g: 'Dni a séria', id: 'rano', e: '🐦', n: 'Ranné vtáča', p: 'Preber tému pred ôsmou ráno', ok: x => x.uci && x.hodina < 8 },
   { g: 'Dni a séria', id: 'vecer', e: '🌙', n: 'Nočná sova', p: 'Preber tému po ôsmej večer', ok: x => x.uci && x.hodina >= 20 },
   { g: 'Dni a séria', id: 'vikend', e: '🎈', n: 'Víkendový objaviteľ', p: 'Preber tému cez víkend', ok: x => x.uci && x.vikend },
-  { g: 'Body', id: 'body50', e: '🔸', n: 'Prvé body', p: 'Získaj 50 bodov', ok: x => x.body >= 50 },
-  { g: 'Body', id: 'body100', e: '⭐', n: 'Hviezdička', p: 'Získaj 100 bodov', ok: x => x.body >= 100 },
-  { g: 'Body', id: 'body250', e: '🍀', n: 'Štvorlístok', p: 'Získaj 250 bodov', ok: x => x.body >= 250 },
-  { g: 'Body', id: 'body500', e: '🌟', n: 'Superhviezda', p: 'Získaj 500 bodov', ok: x => x.body >= 500 },
-  { g: 'Body', id: 'body1000', e: '💫', n: 'Galaxia', p: 'Získaj 1000 bodov', ok: x => x.body >= 1000 },
-  { g: 'Body', id: 'body1500', e: '🪐', n: 'Planéta', p: 'Získaj 1500 bodov', ok: x => x.body >= 1500 },
-  { g: 'Body', id: 'body2000', e: '🌌', n: 'Vesmír', p: 'Získaj 2000 bodov', ok: x => x.body >= 2000 },
+  { g: 'Hviezdy', id: 'body50', e: '🔸', n: 'Prvé hviezdy', p: 'Získaj 50 hviezd', ok: x => x.body >= 50 },
+  { g: 'Hviezdy', id: 'body100', e: '⭐', n: 'Hviezdička', p: 'Získaj 100 hviezd', ok: x => x.body >= 100 },
+  { g: 'Hviezdy', id: 'body250', e: '🍀', n: 'Štvorlístok', p: 'Získaj 250 hviezd', ok: x => x.body >= 250 },
+  { g: 'Hviezdy', id: 'body500', e: '🌟', n: 'Superhviezda', p: 'Získaj 500 hviezd', ok: x => x.body >= 500 },
+  { g: 'Hviezdy', id: 'body1000', e: '💫', n: 'Galaxia', p: 'Získaj 1000 hviezd', ok: x => x.body >= 1000 },
+  { g: 'Hviezdy', id: 'body1500', e: '🪐', n: 'Planéta', p: 'Získaj 1500 hviezd', ok: x => x.body >= 1500 },
+  { g: 'Hviezdy', id: 'body2000', e: '🌌', n: 'Vesmír', p: 'Získaj 2000 hviezd', ok: x => x.body >= 2000 },
   { g: 'Hry', id: 'hra1', e: '🎮', n: 'Hráč', p: 'Dohraj prvú hru', ok: x => x.hier >= 1 },
   { g: 'Hry', id: 'hry10', e: '🎲', n: 'Hravý', p: 'Dohraj 10 hier', ok: x => x.hier >= 10 },
   { g: 'Hry', id: 'hry50', e: '🕹️', n: 'Herný maratón', p: 'Dohraj 50 hier', ok: x => x.hier >= 50 },
@@ -58,7 +58,7 @@ const ODZNAKY = [
   { g: 'Rôzne', id: 'fav10', e: '💝', n: 'Zbierka sŕdc', p: 'Ulož si 10 obľúbených tém', ok: x => x.fav >= 10 },
   { g: 'Rôzne', id: 'stylista', e: '👗', n: 'Módny návrhár', p: 'Obleč postavičke odomknutú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) > 0) },
   { g: 'Rôzne', id: 'zvieratko', e: '🐾', n: 'Najlepší kamarát', p: 'Daj postavičke zvieratko', ok: x => !!x.avatar.zvieratko && x.avatar.zvieratko !== 'ziadne' },
-  { g: 'Body', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 bodov', ok: x => x.body >= 5000 },
+  { g: 'Hviezdy', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 hviezd', ok: x => x.body >= 5000 },
   { g: 'Misie', id: 'misia1', n: 'Prvá misia', p: 'Splň prvú misiu v téme dňa', ok: x => x.mis.n >= 1 },
   { g: 'Misie', id: 'misia5', n: 'Pátrač', p: 'Splň 5 misií', ok: x => x.mis.n >= 5 },
   { g: 'Misie', id: 'misia15', n: 'Majster misií', p: 'Splň 15 misií', ok: x => x.mis.n >= 15 },
@@ -73,7 +73,7 @@ const ODZNAKY = [
   { g: 'Rôzne', id: 'myticke', e: '🦄', n: 'Mýtický hrdina', p: 'Obleč postavičke mýtickú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) >= 1600) },
   ...Object.entries(KAT).map(([k, c]) => ({
     g: 'Majster kategórie', id: 'kat-' + k, vek: c.vek, e: c.e, n: 'Majster: ' + bezSpojovnika(c.nazov),
-    p: 'Preber všetky témy: ' + bezSpojovnika(c.nazov).toLowerCase(), ok: x => T.filter(t => t.k === k && preVek(t)).every(t => x.done.includes(t.id)),
+    p: 'Preber všetky témy: ' + bezSpojovnika(c.nazov).toLowerCase(), ok: x => { const z = T.filter(t => t.k === k && preVek(t)); return z.length > 0 && z.every(t => x.done.includes(t.id)); }, // kategória bez tém pre vek sa nedá dokončiť
   })),
 ];
 // kreslená ikona odznaku; odznak za kategóriu má ikonu kategórie, odznaky za hry obrázok hry
@@ -103,7 +103,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
     hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
-  const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
+  const nove = ODZNAKY.filter(o => (!o.vek || o.vek === st.vek) && !st.odznaky.includes(o.id) && o.ok(x));
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
 }
@@ -185,7 +185,7 @@ const nevybrate = () => st.dietaId ? odznakyVek().filter(o => st.odznaky.include
 const PEC_SKUP = {
   'Témy': { tv: ['kruh', 'osem'], f: ['leaf', 'sky', 'coral', 'violet'], ik: 'temy' },
   'Dni a séria': { tv: ['stit'], f: ['coral'], ik: 'kalendar' },
-  'Body': { tv: ['zubky'], f: ['sun'], ik: 'hviezda' },
+  'Hviezdy': { tv: ['zubky'], f: ['sun'], ik: 'hviezda' },
   'Hry': { tv: ['sest'], f: ['teal'], ik: 'hry' },
   'Misie': { tv: ['osem'], f: ['sky'], ik: 'lupa' },
   'Angličtina': { tv: ['kruh'], f: ['violet'], ik: 'bublina' },
@@ -202,7 +202,7 @@ const pecVelke = s => s.toLocaleUpperCase('sk');
 // tvar, farba, ikona alebo číslo v strede, texty po obvode
 function pecInfo(o) {
   const sk = PEC_SKUP[o.g] || PEC_SKUP['Rôzne'], zoz = ODZNAKY.filter(x => x.g === o.g), i = Math.max(0, zoz.indexOf(o));
-  const cislo = (o.p.match(/\d+/) || [])[0], seria = /^seria\d/.test(o.id), spolu = /^dni\d/.test(o.id), body = o.g === 'Body';
+  const cislo = (o.p.match(/\d+/) || [])[0], seria = /^seria\d/.test(o.id), spolu = /^dni\d/.test(o.id), body = o.g === 'Hviezdy';
   const dole = seria ? 'SÉRIA' : spolu ? 'SPOLU' : cislo ? pecVelke(o.p.slice(o.p.indexOf(cislo)).split(' ').slice(0, 2).join(' ')) : pecVelke(o.g === 'Majster kategórie' ? 'majster' : o.g);
   return { tv: sk.tv[i % sk.tv.length], f: sk.f[i % sk.f.length], ik: o.id.startsWith('kat-') ? 'koruna' : PEC_IK[o.id] || sk.ik,
     cislo: seria || spolu || body ? cislo : '', hore: pecVelke(seria ? 'dni po sebe' : spolu ? 'dni učenia' : o.n.replace(/^Majster: /, '')), dole, rot: pecHash(o.id) % 13 - 6 };

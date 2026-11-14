@@ -720,11 +720,11 @@ button.odznak { width: 100%; font: inherit; color: inherit; }
 /* novinka: nevyzdvihnuté hviezdičky za odznaky (bliká Ja v menu a karta odznakov) */
 .nav button { position: relative; }
 .nav button.novinka .ni { border-color: var(--ink); border-radius: 50%; animation: novinka 1.1s ease-in-out infinite; }
-.nav button.novinka::after { content: "Nové!"; position: absolute; top: -6px; left: calc(50% + 10px); padding: 1px 6px; border: 2px solid var(--ink); border-radius: 999px; background: var(--coral); color: #fff; font: 800 .68rem/1.2 var(--fd); animation: novinka-stitok 1.1s ease-in-out infinite; }
-.nav button.novinka:last-child::after { left: auto; right: 0; } /* Ja je posledné: štítok nesmie vyjsť z obrazovky */
-.nav button.novinka::after { z-index: 2; } /* štítok Priateľov nezakryje vyvýšený kruh Ja */
-@keyframes novinka { 50% { background: #FFE27A; scale: 1.15; } }
-@keyframes novinka-stitok { 50% { scale: 1.15; } }
+/* 5.0: malá nálepka nad ikonou (v strede tlačidla, takže susedné štítky sa nebijú a pri Ja nevyjde z obrazovky) */
+.nav button.novinka::after { content: "Nové!"; position: absolute; z-index: 2; top: -13px; left: 50%; padding: 2px 7px 1px; border: 2px solid var(--ink); border-radius: 8px; background: var(--coral); box-shadow: 0 2px 0 var(--ink); color: #fff; font: 800 .66rem/1.2 var(--fd); letter-spacing: .02em; white-space: nowrap; translate: -50% 0; rotate: -6deg; animation: novinka-stitok 1.6s ease-in-out infinite; }
+.nav button.novinka[aria-current="page"]::after { top: -36px; }
+@keyframes novinka { 50% { background: var(--sun-l); scale: 1.12; } }
+@keyframes novinka-stitok { 50% { scale: 1.1; rotate: 4deg; } }
 .odznaky-karta { position: relative; }
 .odznaky-karta.novinka { animation: karta-blik 1.4s ease-in-out infinite; }
 @keyframes karta-blik { 50% { background: var(--sun-l); box-shadow: 0 0 0 5px #FFE27A, var(--sh); } }
@@ -1659,10 +1659,10 @@ body.tinted.javisko main.gut { padding-bottom: 0; }
 .rk-mud { position: absolute; left: 50%; top: 0; width: 140px; margin-left: -70px; padding: 0; border: 0; background: none; z-index: 2; animation: mudraSkok .65s .15s cubic-bezier(.3, 1.6, .5, 1) both; }
 .reakcia.zle .rk-mud { width: 108px; margin-left: -54px; top: 0; animation: up .45s ease-out both; }
 .rk-mud .owl { display: block; width: 100%; height: auto; overflow: visible; }
-.plus { position: absolute; right: max(26px, calc(50% - 150px)); top: 30px; z-index: 3; display: inline-flex; align-items: center; gap: 4px; padding: 6px 11px 4px 9px; border: var(--obrys); border-radius: var(--r-maly); background: var(--sun); box-shadow: 0 4px 0 var(--ink); color: var(--dk); font-weight: 900; font-size: 1.25rem; line-height: 1; rotate: 8deg; animation: pop .45s .45s var(--spring) both; }
-.plus .ikn { width: 22px; height: 22px; margin-top: -3px; }
-.plus .ikn path { fill: #fff; }
-.plus-let { position: fixed; z-index: 62; margin: 0; pointer-events: none; animation: none; rotate: 0deg; }
+.reakcia .plus, .plus.plus-let { position: absolute; right: max(26px, calc(50% - 150px)); top: 30px; z-index: 3; display: inline-flex; align-items: center; gap: 4px; padding: 6px 11px 4px 9px; border: var(--obrys); border-radius: var(--r-maly); background: var(--sun); box-shadow: 0 4px 0 var(--ink); color: var(--dk); font-weight: 900; font-size: 1.25rem; line-height: 1; rotate: 8deg; animation: pop .45s .45s var(--spring) both; }
+.reakcia .plus .ikn, .plus-let .ikn { width: 22px; height: 22px; margin-top: -3px; }
+.reakcia .plus .ikn path, .plus-let .ikn path { fill: #fff; }
+.plus.plus-let { position: fixed; z-index: 62; margin: 0; pointer-events: none; animation: none; rotate: 0deg; }
 .harok { position: relative; z-index: 3; display: grid; gap: 6px; width: 100%; padding: 20px 18px calc(22px + env(safe-area-inset-bottom, 0px)); text-align: center; background: var(--card); border-top: var(--obrys); border-radius: 28px 28px 0 0; animation: harokVyjde .45s .1s cubic-bezier(.2, .9, .3, 1) both; }
 .harok .n1 { font-size: 1.65rem; font-weight: 900; }
 .reakcia.ok .harok .n1 { color: var(--text); }
@@ -1684,7 +1684,7 @@ body.tinted .win .h1 { font-size: clamp(2rem, 8.6vw, 2.5rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flow-dalej > .kniha, .slnko, .slnko .luce, .rk-mud, .reakcia.zle .rk-mud, .plus, .harok, .znak, .od.spravna, .od.trasie, .skore.bump,
+  .flow-dalej > .kniha, .slnko, .slnko .luce, .rk-mud, .reakcia.zle .rk-mud, .reakcia .plus, .harok, .znak, .od.spravna, .od.trasie, .skore.bump,
   .btn.citaj.on .ikn, .btn.fav[aria-pressed="true"] .ikn, .zivoty i.prave, .burst { animation: none !important; }
   .od, .pis, .kroky i, .postup i, .viac .ikn { transition: none; }
 }
@@ -2230,8 +2230,6 @@ body:has(main > .ihrisko) .blobs { display: none; }
 .msg-nal > svg { width: 100%; height: 100%; }
 .dm .msg-nal { animation: pop .5s var(--spring) both; }
 .msg.odosiela { opacity: .6; }
-/* správa s nálepkou alebo témou má triedu .nalepka (pomenovanú v 4.9); nesmie dostať vzhľad dlaždice .nalepka zo 40-system.css */
-.dm .msg.nalepka { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
 .dm-chat > .msg:last-child, .dm-chat > .msg:has(+ .dm-videne:last-child) { animation: prBub .5s var(--spring) both; }
 @keyframes prBub { 0% { opacity: 0; transform: translateY(16px) scale(.9); } 60% { opacity: 1; transform: scale(1.04); } }
 .msg-r { position: absolute; right: -6px; bottom: -9px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); animation: pop .4s var(--spring) both; }
@@ -2934,7 +2932,7 @@ svg.mudra { overflow: visible; }
 <header class="top" id="top">
   <div class="gut">
     <div class="hi"><button class="av" id="av" data-deti aria-label="Zmeniť dieťa"></button><div><small>Svetom</small><b id="pozdrav">Ahoj!</b></div></div>
-    <div class="top-r"><button class="tyz-strom spi" id="tyz-strom" data-tyz-strom hidden aria-haspopup="dialog" aria-label="Tento týždeň"></button><button class="snd" id="snd" aria-label="Zvuky" aria-pressed="true"></button><span class="stars" id="stars" aria-label="Body"><span id="star-ico"></span><span id="body">0</span></span></div>
+    <div class="top-r"><button class="tyz-strom spi" id="tyz-strom" data-tyz-strom hidden aria-haspopup="dialog" aria-label="Tento týždeň"></button><button class="snd" id="snd" aria-label="Zvuky" aria-pressed="true"></button><span class="stars" id="stars" aria-label="Hviezdy"><span id="star-ico"></span><span id="body">0</span></span></div>
   </div>
 </header>
 
@@ -3657,7 +3655,7 @@ const brany = {
     const google = text => `<div class="vs-alebo"><span>alebo</span></div>
         <button type="button" class="btn dve wide google" data-ucet="google"${zam}>${napis('google', `<span class="g">G</span>${text}`, 'Otvára sa Google…')}</button>`;
     if (krok === 'mam') return `<div class="brana vstup">${vstupHlava(-1, 0, spat)}<div class="vs-telo">
-      ${vstupNadpis('Prihlásenie', 'Vitajte späť', 'Prihláste sa a nájdete svoje deti aj ich body.')}
+      ${vstupNadpis('Prihlásenie', 'Vitajte späť', 'Prihláste sa a nájdete svoje deti aj ich hviezdy.')}
       <form id="prihlas-form" class="vs-form" data-forma="prihlas" novalidate>
         ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
         ${pole('heslo', 'password', 'Heslo', '', 'current-password', 'go', 'heslo')}
@@ -3667,7 +3665,7 @@ const brany = {
       ${google('Prihlásiť sa cez Google')}
       ${vseobecna}</div></div>`;
     if (krok === 'novy') return `<div class="brana vstup">${vstupHlava(0, 3, spat)}<div class="vs-telo">
-      ${vstupNadpis('Krok 1 z 3 · pre rodiča', 'Vytvoríme váš účet', 'Účet je pre rodiča. Deti pridáte v ďalšom kroku a každé má svoje body.')}
+      ${vstupNadpis('Krok 1 z 3 · pre rodiča', 'Vytvoríme váš účet', 'Účet je pre rodiča. Deti pridáte v ďalšom kroku a každé má svoje hviezdy.')}
       <form id="prihlas-form" class="vs-form" data-forma="registruj" novalidate>
         ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
         ${pole('heslo', 'password', 'Heslo (aspoň 6 znakov)', '', 'new-password', 'next', 'heslo')}
@@ -3701,7 +3699,7 @@ const brany = {
     const u = st.upravuje, maDeti = window.Cloud && window.Cloud.deti.length;
     const n = u.novy ? (u.prve ? 3 : 2) : 0, z = n === 3 ? 1 : 0, krok = u.novy ? (u.krok || 1) : 0;
     const zmaz = u.novy || (maRodica() && !Rodic.jeOdomknute()) ? '' : u.potvrd
-      ? `<div class="up-potvrd" role="alert"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="tx">Body a prebraté témy tohto dieťaťa sa stratia.</p>
+      ? `<div class="up-potvrd" role="alert"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="tx">Hviezdy a prebraté témy tohto dieťaťa sa stratia.</p>
           <div class="tests"><button class="btn zle" data-zmazat-ano>Áno, odstrániť</button><button class="btn dve" data-zmazat-nie>Nie</button></div></div>`
       : '<button class="link center" data-zmazat>Odstrániť tento profil</button>';
     const odhlas = maDeti ? '' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>';
@@ -3742,7 +3740,7 @@ function najblizsiaVec() {
   const u = st.upravuje, b = u.body || 0, o = ODMENY.find(x => x.cena > b);
   if (!o) return '';
   const pred = ODMENY.filter(x => x.cena <= b).pop(), od = pred ? pred.cena : 0;
-  return `<div class="up-najblizsia"><p class="tx">Najbližšie odomkneš <b>${esc(NAZVY_ODMIEN[o.kluc] || 'novú vec')}</b>. Chýba ešte <b class="cis">${o.cena - b}</b> bodov.</p>
+  return `<div class="up-najblizsia"><p class="tx">Najbližšie odomkneš <b>${esc(NAZVY_ODMIEN[o.kluc] || 'novú vec')}</b>. Chýba ešte <b class="cis">${o.cena - b}</b> hviezd.</p>
     <div class="pruh" aria-hidden="true"><i style="width:${Math.max(4, Math.round((b - od) / (o.cena - od) * 100))}%"></i></div></div>`;
 }
 function avTaby() { return AV_KAT.map(([k, n]) => `<button class="up-tab" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}">${n}</button>`).join(''); }
@@ -3759,7 +3757,7 @@ function avMoznosti() {
     return `<button class="vec${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} bodoch` : ''}">
       ${zam ? `<span class="zmk">${ikn('zamok')}</span>` : ''}<span class="vec-obr">${obr}</span><span class="dolu">${dolu}</span></button>`;
   }).join('');
-  const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za body z tém.</span></div>` : '';
+  const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za hviezdy z tém.</span></div>` : '';
   return veci + viac;
 }
 Object.assign(brany, RodicBrana.brany, RodicPanel.views); // obrazky rodiča z rodic-brana.js a rodic-panel.js
@@ -3892,13 +3890,13 @@ const ODZNAKY = [
   { g: 'Dni a séria', id: 'rano', e: '🐦', n: 'Ranné vtáča', p: 'Preber tému pred ôsmou ráno', ok: x => x.uci && x.hodina < 8 },
   { g: 'Dni a séria', id: 'vecer', e: '🌙', n: 'Nočná sova', p: 'Preber tému po ôsmej večer', ok: x => x.uci && x.hodina >= 20 },
   { g: 'Dni a séria', id: 'vikend', e: '🎈', n: 'Víkendový objaviteľ', p: 'Preber tému cez víkend', ok: x => x.uci && x.vikend },
-  { g: 'Body', id: 'body50', e: '🔸', n: 'Prvé body', p: 'Získaj 50 bodov', ok: x => x.body >= 50 },
-  { g: 'Body', id: 'body100', e: '⭐', n: 'Hviezdička', p: 'Získaj 100 bodov', ok: x => x.body >= 100 },
-  { g: 'Body', id: 'body250', e: '🍀', n: 'Štvorlístok', p: 'Získaj 250 bodov', ok: x => x.body >= 250 },
-  { g: 'Body', id: 'body500', e: '🌟', n: 'Superhviezda', p: 'Získaj 500 bodov', ok: x => x.body >= 500 },
-  { g: 'Body', id: 'body1000', e: '💫', n: 'Galaxia', p: 'Získaj 1000 bodov', ok: x => x.body >= 1000 },
-  { g: 'Body', id: 'body1500', e: '🪐', n: 'Planéta', p: 'Získaj 1500 bodov', ok: x => x.body >= 1500 },
-  { g: 'Body', id: 'body2000', e: '🌌', n: 'Vesmír', p: 'Získaj 2000 bodov', ok: x => x.body >= 2000 },
+  { g: 'Hviezdy', id: 'body50', e: '🔸', n: 'Prvé hviezdy', p: 'Získaj 50 hviezd', ok: x => x.body >= 50 },
+  { g: 'Hviezdy', id: 'body100', e: '⭐', n: 'Hviezdička', p: 'Získaj 100 hviezd', ok: x => x.body >= 100 },
+  { g: 'Hviezdy', id: 'body250', e: '🍀', n: 'Štvorlístok', p: 'Získaj 250 hviezd', ok: x => x.body >= 250 },
+  { g: 'Hviezdy', id: 'body500', e: '🌟', n: 'Superhviezda', p: 'Získaj 500 hviezd', ok: x => x.body >= 500 },
+  { g: 'Hviezdy', id: 'body1000', e: '💫', n: 'Galaxia', p: 'Získaj 1000 hviezd', ok: x => x.body >= 1000 },
+  { g: 'Hviezdy', id: 'body1500', e: '🪐', n: 'Planéta', p: 'Získaj 1500 hviezd', ok: x => x.body >= 1500 },
+  { g: 'Hviezdy', id: 'body2000', e: '🌌', n: 'Vesmír', p: 'Získaj 2000 hviezd', ok: x => x.body >= 2000 },
   { g: 'Hry', id: 'hra1', e: '🎮', n: 'Hráč', p: 'Dohraj prvú hru', ok: x => x.hier >= 1 },
   { g: 'Hry', id: 'hry10', e: '🎲', n: 'Hravý', p: 'Dohraj 10 hier', ok: x => x.hier >= 10 },
   { g: 'Hry', id: 'hry50', e: '🕹️', n: 'Herný maratón', p: 'Dohraj 50 hier', ok: x => x.hier >= 50 },
@@ -3922,7 +3920,7 @@ const ODZNAKY = [
   { g: 'Rôzne', id: 'fav10', e: '💝', n: 'Zbierka sŕdc', p: 'Ulož si 10 obľúbených tém', ok: x => x.fav >= 10 },
   { g: 'Rôzne', id: 'stylista', e: '👗', n: 'Módny návrhár', p: 'Obleč postavičke odomknutú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) > 0) },
   { g: 'Rôzne', id: 'zvieratko', e: '🐾', n: 'Najlepší kamarát', p: 'Daj postavičke zvieratko', ok: x => !!x.avatar.zvieratko && x.avatar.zvieratko !== 'ziadne' },
-  { g: 'Body', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 bodov', ok: x => x.body >= 5000 },
+  { g: 'Hviezdy', id: 'body5000', e: '🐲', n: 'Legenda', p: 'Získaj 5000 hviezd', ok: x => x.body >= 5000 },
   { g: 'Misie', id: 'misia1', n: 'Prvá misia', p: 'Splň prvú misiu v téme dňa', ok: x => x.mis.n >= 1 },
   { g: 'Misie', id: 'misia5', n: 'Pátrač', p: 'Splň 5 misií', ok: x => x.mis.n >= 5 },
   { g: 'Misie', id: 'misia15', n: 'Majster misií', p: 'Splň 15 misií', ok: x => x.mis.n >= 15 },
@@ -3937,7 +3935,7 @@ const ODZNAKY = [
   { g: 'Rôzne', id: 'myticke', e: '🦄', n: 'Mýtický hrdina', p: 'Obleč postavičke mýtickú vec', ok: x => Object.entries(x.avatar).some(([k, v]) => cenaDielu(k, v) >= 1600) },
   ...Object.entries(KAT).map(([k, c]) => ({
     g: 'Majster kategórie', id: 'kat-' + k, vek: c.vek, e: c.e, n: 'Majster: ' + bezSpojovnika(c.nazov),
-    p: 'Preber všetky témy: ' + bezSpojovnika(c.nazov).toLowerCase(), ok: x => T.filter(t => t.k === k && preVek(t)).every(t => x.done.includes(t.id)),
+    p: 'Preber všetky témy: ' + bezSpojovnika(c.nazov).toLowerCase(), ok: x => { const z = T.filter(t => t.k === k && preVek(t)); return z.length > 0 && z.every(t => x.done.includes(t.id)); }, // kategória bez tém pre vek sa nedá dokončiť
   })),
 ];
 // kreslená ikona odznaku; odznak za kategóriu má ikonu kategórie, odznaky za hry obrázok hry
@@ -3967,7 +3965,7 @@ function noveOdznaky(udalost = '', navyse = {}) {
   const x = { temy: prebrate.length, seria: najdlhsiaSeria(st.dni), dni: st.dni.length, body: st.body, fav: st.fav.length, done: st.done, udalost,
     kat: new Set(prebrate.map(id => byId(id).k)).size, hodina: teraz.getHours(), vikend: [0, 6].includes(teraz.getDay()), avatar: st.avatar || {},
     hier: S.get('hry-pocet-' + st.dietaId, 0), mis: Misie.sucet(), ang: Ang.sucet(), hrane: HRY_VID().filter(h => S.get(rekordKluc(h.id), null) != null).length, ...navyse };
-  const nove = ODZNAKY.filter(o => !st.odznaky.includes(o.id) && o.ok(x));
+  const nove = ODZNAKY.filter(o => (!o.vek || o.vek === st.vek) && !st.odznaky.includes(o.id) && o.ok(x));
   if (nove.length) { st.odznaky = [...st.odznaky, ...nove.map(o => o.id)]; S.set('odznaky', st.odznaky); }
   return nove;
 }
@@ -4049,7 +4047,7 @@ const nevybrate = () => st.dietaId ? odznakyVek().filter(o => st.odznaky.include
 const PEC_SKUP = {
   'Témy': { tv: ['kruh', 'osem'], f: ['leaf', 'sky', 'coral', 'violet'], ik: 'temy' },
   'Dni a séria': { tv: ['stit'], f: ['coral'], ik: 'kalendar' },
-  'Body': { tv: ['zubky'], f: ['sun'], ik: 'hviezda' },
+  'Hviezdy': { tv: ['zubky'], f: ['sun'], ik: 'hviezda' },
   'Hry': { tv: ['sest'], f: ['teal'], ik: 'hry' },
   'Misie': { tv: ['osem'], f: ['sky'], ik: 'lupa' },
   'Angličtina': { tv: ['kruh'], f: ['violet'], ik: 'bublina' },
@@ -4066,7 +4064,7 @@ const pecVelke = s => s.toLocaleUpperCase('sk');
 // tvar, farba, ikona alebo číslo v strede, texty po obvode
 function pecInfo(o) {
   const sk = PEC_SKUP[o.g] || PEC_SKUP['Rôzne'], zoz = ODZNAKY.filter(x => x.g === o.g), i = Math.max(0, zoz.indexOf(o));
-  const cislo = (o.p.match(/\d+/) || [])[0], seria = /^seria\d/.test(o.id), spolu = /^dni\d/.test(o.id), body = o.g === 'Body';
+  const cislo = (o.p.match(/\d+/) || [])[0], seria = /^seria\d/.test(o.id), spolu = /^dni\d/.test(o.id), body = o.g === 'Hviezdy';
   const dole = seria ? 'SÉRIA' : spolu ? 'SPOLU' : cislo ? pecVelke(o.p.slice(o.p.indexOf(cislo)).split(' ').slice(0, 2).join(' ')) : pecVelke(o.g === 'Majster kategórie' ? 'majster' : o.g);
   return { tv: sk.tv[i % sk.tv.length], f: sk.f[i % sk.f.length], ik: o.id.startsWith('kat-') ? 'koruna' : PEC_IK[o.id] || sk.ik,
     cislo: seria || spolu || body ? cislo : '', hore: pecVelke(seria ? 'dni po sebe' : spolu ? 'dni učenia' : o.n.replace(/^Majster: /, '')), dole, rot: pecHash(o.id) % 13 - 6 };
@@ -4285,7 +4283,7 @@ const Auto = {
     const bezHlasu = a.stav === 'rucne', v = a.vysledok, gen = ++a.gen;
     a.stav = 'koniec'; a.zostava = null; renderAuto();
     Zvuk.play('win'); FX.rain(80);
-    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} bodov.` : '')
+    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} hviezd.` : '')
       + v.noveOdznaky.map(o => ` Nový odznak: ${o.n}.`).join('') + v.noveOdmeny.map(r => ` Pre postavičku máš ${NAZVY_ODMIEN[r.kluc]}.`).join('') + (v.noveHry || []).map(x => ` Odomkla sa nová hra ${x.n}.`).join('')
       + (a.pokracovat && a.dalsia && !a.precvic ? ' O chvíľu pokračujeme ďalšou témou.' : '');
     const pokracuj = () => {
@@ -4379,7 +4377,7 @@ function renderAuto() {
         <div class="au-mudra">${mudra('oslava', { extra: true, tien: false })}</div></div>
       <h1 class="au-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
       <p class="au-pod">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
-      ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> bodov</div>` : ''}
+      ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> hviezd</div>` : ''}
       ${odmenyHtml(v)}
       ${d && !a.precvic ? `<button class="au-btn au-dalsia" data-auto="dalsia"><span class="dop">Ďalšia téma</span><b>${esc(d.t)}</b>
         <small id="auto-odpocet" hidden>Spustí sa sama o <b id="auto-dalsia-sek" class="cis">10</b> s</small></button>` : ''}
@@ -5461,8 +5459,8 @@ function hryZoznam() {
   const r0 = hore && rek(hore);
   return `<div class="ihrisko">
     <h1 class="n0 hry-titul">Hry</h1>
-    <p class="uvodka">Za body z tém sa odomykajú hry. Hraním sa body neminú.</p>
-    ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} bodov spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
+    <p class="uvodka">Za hviezdy z tém sa odomykajú hry. Hraním sa hviezdy neminú.</p>
+    ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} hviezd spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">
       <span class="zal" style="--c:var(--card)">${hore.id === st.hraPosledna ? 'Hrané naposledy' : r0 != null ? 'Tvoja hra' : 'Najnovšia hra'}</span>
       <span class="hr-obr">${OBR_HRY[hore.id]}</span>
@@ -5471,7 +5469,7 @@ function hryZoznam() {
     ${ok.length > 1 ? `<div class="dlazdice">${ok.filter(h => h !== hore).map(dlazdica).join('')}</div>` : ''}
     ${dalsia ? `<button class="karta dalsia-hra" data-hra="${dalsia.id}" aria-label="Ďalšia hra ${esc(dalsia.n)}, chýba ${dalsia.cena - st.body}"><span class="zal">Ďalšia hra</span>
       <span class="hr-obr">${OBR_HRY[dalsia.id]}</span>
-      <span class="inf"><b>${dalsia.n}</b><span class="pruh"><i style="width:${Math.max(6, Math.min(100, Math.round(st.body / dalsia.cena * 100)))}%"></i></span><small>Chýba ${dalsia.cena - st.body} ${slovoBody(dalsia.cena - st.body)}</small></span>
+      <span class="inf"><b>${dalsia.n}</b><span class="pruh"><i style="width:${Math.max(6, Math.min(100, Math.round(st.body / dalsia.cena * 100)))}%"></i></span><small>Chýba ${dalsia.cena - st.body} ${slovoHviezdy(dalsia.cena - st.body)}</small></span>
       <span class="cena">${ikn('hviezda')}${dalsia.cena}</span></button>` : !zamk.length ? `<p class="odkaz vsetko">${ikn('koruna')}<span>Máš odomknuté všetky hry. Si majster ihriska!</span></p>` : ''}
     ${ostatne.length ? `<h2 class="n2 zamk-n">Ešte zamknuté</h2><div class="dlazdice zamk">${ostatne.map(zamknuta).join('')}</div>` : ''}
   </div>`;
@@ -5743,10 +5741,12 @@ const Domov = {
     const c = this.ciel(t), hora = c === 'sopka' || c === 'hora', [fx, fy] = hora ? [670, 216] : [694, 236];
     const strom = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-3.5 2v-14h7v14z" fill="#A66A3F"/><circle cy="-25" r="16" fill="var(--sc-tree)"/><path d="M-8 -30q3-6 9-7" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/></g>`;
     const hv5 = (cx, cy, R) => { let d = ''; for (let i = 0; i < 10; i++) { const r = i % 2 ? R * .45 : R, a = -Math.PI / 2 + i * Math.PI / 5; d += (i ? 'L' : 'M') + (cx + r * Math.cos(a)).toFixed(1) + ' ' + (cy + r * Math.sin(a)).toFixed(1); } return d + 'Z'; };
+    // cieľ s cestou je o kúsok vľavo od stredu, aby ho na telefóne nezakryl strom múdrosti (stojí vpravo dole); v okne stromu (bez) vedie cesta k stromu
+    const dx = bez ? 0 : -56, posun = dx ? ` transform="translate(${dx} 0)"` : '';
     const koniec = hora ? 'C652 230 660 224 657 214' : 'C651 236 656 234 657 232';
     const z = (tr, x, y, s2 = '') => `<i class="kr-z ${tr}" style="--x:${x}px;--y:${y}px;${s2}"></i>`;
     const mrak = (x, y, w, s) => `<i class="kr-z kr-mrak" style="--x:${x}px;--y:${y}px;--w:${w}px;--t:${s}s"><svg viewBox="-30 -22 60 34" aria-hidden="true"><ellipse cx="0" cy="4" rx="28" ry="10"/><circle cx="-10" cy="-3" r="11"/><circle cx="7" cy="-7" r="14"/></svg></i>`;
-    const dym = bez ? '' : c === 'sopka' ? [0, -2, -4].map(d => z('kr-d', -4, 150, `--d:${d}s`)).join('') : c === 'dom' ? [0, -3].map(d => z('kr-d mala', 72, 168, `--d:${d}s`)).join('') : '';
+    const dym = bez ? '' : c === 'sopka' ? [0, -2, -4].map(d => z('kr-d', -4 + dx, 150, `--d:${d}s`)).join('') : c === 'dom' ? [0, -3].map(d => z('kr-d mala', 72 + dx, 168, `--d:${d}s`)).join('') : '';
     const hviezdy = [[-140, 108], [-62, 172], [-30, 128], [34, 150], [78, 92], [150, 60], [-110, 60], [-480, 60], [-350, 140], [-270, 80], [280, 70], [380, 150], [500, 90], [550, 40]]
       .map(([x, y], i) => z('kr-hv', x, y, `--d:${(i % 8) * 1.5}s`)).join('');
     return `<div class="dom-krajina ciel-${c}${hot ? ' dosiahnuty' : ''}" aria-hidden="true">
@@ -5754,12 +5754,12 @@ const Domov = {
         <circle cx="722" cy="128" r="27" fill="var(--sc-sun)"/>
         <circle class="len-noc" cx="711" cy="120" r="23" fill="var(--sc-sky)"/>
         <circle class="len-den" cx="722" cy="128" r="40" fill="none" stroke="var(--sc-sun)" stroke-width="5" stroke-dasharray=".1 12.5" stroke-linecap="round"/>
-        <g class="kr-vz" style="--v:0"><path d="M0 236C90 214 180 210 270 226S420 216 470 228C520 208 570 206 620 220C650 212 680 210 720 216C760 204 800 206 840 222S980 210 1060 224S1160 220 1200 230V330H0Z" fill="var(--sc-far)"/>${bez ? '' : this.cielSvg(c)}</g>
-        <g class="kr-vz" style="--v:1"><path d="M0 250C140 228 300 236 420 262C480 232 550 238 610 256C670 274 730 246 780 240C900 226 1060 236 1200 252V330H0Z" fill="var(--sc-mid)"/>
+        <g class="kr-vz" style="--v:0"><path d="M0 236C90 214 180 210 270 226S420 216 470 228C520 208 570 206 620 220C650 212 680 210 720 216C760 204 800 206 840 222S980 210 1060 224S1160 220 1200 230V330H0Z" fill="var(--sc-far)"/>${bez ? '' : `<g${posun}>${this.cielSvg(c)}</g>`}</g>
+        <g class="kr-vz" style="--v:1"><path d="M0 250C140 228 300 236 420 262C480 232 550 238 610 256C670 274 730 246 780 240C900 226 1060 236 1200 252V330H0Z" fill="var(--sc-mid)"/><g${posun}>
           <g fill="none" stroke="var(--sc-path)" stroke-linecap="round"><path d="M596 334C606 300 690 300 696 280" stroke-width="26"/><path d="M696 280C702 262 646 258 650 242" stroke-width="17"/><path d="M650 242${koniec}" stroke-width="9"/></g>
           <path d="M596 334C606 300 690 300 696 280C702 262 646 258 650 242${koniec}" fill="none" stroke="var(--sc-pathdot)" stroke-width="3.5" stroke-dasharray=".1 9" stroke-linecap="round"/>
           ${bez ? '' : `<g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M${fx} ${fy}V${fy - 26}"/><path d="M${fx} ${fy - 26}l17 6.5-17 6.5z" fill="var(--coral)"/></g>`}
-          ${hot && !bez ? `<path class="kr-ciel-hv" d="${hv5(fx + 26, fy - 36, 11)}" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>` : ''}</g>
+          ${hot && !bez ? `<path class="kr-ciel-hv" d="${hv5(fx + 26, fy - 36, 11)}" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>` : ''}</g></g>
         <g class="kr-vz" style="--v:2" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M-6 290C150 268 300 276 414 298C460 268 530 272 590 290C650 306 720 280 786 272C900 258 1060 264 1206 280V336H-6Z" fill="var(--sc-front)"/>${strom(300, 278, .9)}${strom(150, 282, .7)}${strom(1010, 266, .8)}${strom(1040, 270, .6)}</g>
       </svg>
       ${mrak(-30, 190, 58, 22)}${mrak(158, 186, 48, 27)}${mrak(-340, 110, 60, 31)}${mrak(360, 96, 52, 25)}${mrak(500, 170, 44, 29)}${mrak(-510, 180, 50, 24)}${dym}<span class="len-noc">${hviezdy}</span>
@@ -5838,10 +5838,10 @@ const views = {
     const t = tD(), v = TV(), dalsie = [...Array(v.length).keys()].map(i => v[(denCislo() + 1 + i) % v.length]).filter(x => x !== t && !st.done.includes(x.id)).slice(0, 6);
     return `<div class="hra-top"><button class="btn kruh dve" data-go="domov" aria-label="Späť domov">${ikn('zavriet')}</button><h1 class="h1 hra-nazov">Objavuj</h1></div>
       <div class="obj-akty">
-        <button class="nalepka obj-akt${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:var(--sun-l)" data-kviz><span class="ikb">${ikn('blesk')}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, body raz za deň')}</small></button>
-        <button class="nalepka obj-akt" style="--c:var(--sky-l)" data-nahodna><span class="ikb">${ikn('kocka')}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 bodov</small></button>
-        ${st.vek === 'starsi' ? `<button class="nalepka obj-akt${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:var(--violet-l)" data-kviz="tazky"><span class="ikb">${ikn('terc')}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 bodov za každú, body raz za deň')}</small></button>
-        <button class="nalepka obj-akt${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:var(--coral-l)" data-kviz="vyzva"><span class="ikb">${ikn('pohar')}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 bodov za každú, body raz za deň')}</small></button>` : ''}
+        <button class="nalepka obj-akt${kvizMinuty('rychly') ? ' cas' : ''}" style="--c:var(--sun-l)" data-kviz><span class="ikb">${ikn('blesk')}</span><b>Rýchly kvíz</b><small>${kvizPopis('rychly', '5 otázok a 2 životy, hviezdy raz za deň')}</small></button>
+        <button class="nalepka obj-akt" style="--c:var(--sky-l)" data-nahodna><span class="ikb">${ikn('kocka')}</span><b>Iná téma</b><small>Nechajte sa prekvapiť, najviac 10 hviezd</small></button>
+        ${st.vek === 'starsi' ? `<button class="nalepka obj-akt${kvizMinuty('tazky') ? ' cas' : ''}" style="--c:var(--violet-l)" data-kviz="tazky"><span class="ikb">${ikn('terc')}</span><b>Ťažký kvíz</b><small>${kvizPopis('tazky', '8 ťažkých otázok a 3 životy, 15 hviezd za každú, hviezdy raz za deň')}</small></button>
+        <button class="nalepka obj-akt${kvizMinuty('vyzva') ? ' cas' : ''}" style="--c:var(--coral-l)" data-kviz="vyzva"><span class="ikb">${ikn('pohar')}</span><b>Výzva</b><small>${kvizPopis('vyzva', '10 extra ťažkých otázok a 3 životy, 20 hviezd za každú, hviezdy raz za deň')}</small></button>` : ''}
       </div>
       <section class="sec"><h2 class="h2">Oblasti tém</h2>
         <div class="skupiny rad">${(kk => SKUPINY.map((g, i) => skupinaKarta(g, kk, i)).join(''))(kats())}</div>
@@ -5872,7 +5872,7 @@ const views = {
         <button class="btn dve maly wide ja-uprav" data-upravit>${ikn('ceruzka')}Upraviť postavičku, meno a vek</button></section>
       <section class="ja-kruh">
         <div class="ja-ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--sand)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--leaf)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}" transform="rotate(-90 50 50)"/></svg><b class="cis">${h}</b></div>
-        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá body a kúsok kruhu.`}</p></div>
+        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá hviezdy a kúsok kruhu.`}</p></div>
       </section>
       ${kartaOdznakov()}
       <div class="ja-vzhlad">${Rezim.karta()}${Pozadie.karta()}</div>
@@ -5948,14 +5948,14 @@ const PR_FARBY = ['sky', 'sun', 'leaf', 'violet', 'teal', 'coral'];
 const prFarba = id => { let h = 0; for (const c of String(id || '')) h = (h * 31 + c.charCodeAt(0)) >>> 0; return 'var(--' + PR_FARBY[h % PR_FARBY.length] + '-l)'; };
 const prAv = (a, id, tr = '') => `<span class="pr-av${tr ? ' ' + tr : ''}" style="--c:${prFarba(id)}">${avatarMaly(a)}</span>`;
 const prPl = (n, a, b, c) => n === 1 ? a : n >= 2 && n <= 4 ? b : c;
-const prBody = n => n + ' ' + prPl(n, 'bod', 'body', 'bodov');
+const prBody = n => n + ' ' + prPl(n, 'hviezda', 'hviezdy', 'hviezd');
 const prHlava = n => `<div class="pr-hl"><h1 class="n0">Priatelia</h1>${n ? `<span class="st cis" aria-label="Počet priateľov: ${n}">${ikn('priatelia')}${n}</span>` : ''}</div>`;
 function chatHtml(fid) {
   const So = socC(), m = (So && So.spravy[fid]) || [], p = So && So.profily[fid];
   if (!m.length) return `<div class="dm-prazdny">${prAv(p && p.avatar, fid, 'velky')}<b>${esc(p ? p.meno : '')}</b><div class="odkaz">Pošli prvú nálepku alebo vetu. Sú dole.</div><span class="dm-dole">${ikn('dole')}</span></div>`;
   return m.map((x, i) => {
     const moja = x.od === So.pid, dalsia = m[i + 1], posledna = !dalsia || dalsia.od !== x.od, cas = i === 0 || x.kedy - m[i - 1].kedy > 30 * 60000;
-    return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n || x.t ? ' nalepka' : ''}${posledna ? ' posl' : ''}${x.r ? ' srdce' : ''}"${moja ? '' : ` data-soc-msg="${x.id}"`}>
+    return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n || x.t ? ' msg-nalepka' : ''}${posledna ? ' posl' : ''}${x.r ? ' srdce' : ''}"${moja ? '' : ` data-soc-msg="${x.id}"`}>
       ${!moja ? `<span class="msg-av" style="--c:${prFarba(fid)}">${posledna ? avatarMaly(p && p.avatar) : ''}</span>` : ''}<span class="msg-obal">${spravaObsah(x, moja)}${x.r ? `<i class="msg-r">${IK.srdce}</i>` : ''}</span></div>`;
   }).join('') + (vid => vid ? `<div class="dm-videne">${ikn('check')}Videné</div>` : '')((ja => ja && (So.citane[fid] || 0) >= ja.kedy && m[m.length - 1] === ja)(m.filter(x => x.od === So.pid).slice(-1)[0]));
 }
@@ -5972,7 +5972,7 @@ function rebricekHtml() {
     .sort((a, b) => b.b - a.b || b.s - a.s);
   const den = new Date().getDay(), konci = den === 0 ? 'končí dnes' : den === 6 ? 'končí zajtra' : 'končí v nedeľu';
   const hl = `<div class="pr-nh"><h2 class="n1">Tento týždeň</h2><span class="st">${ikn('kalendar')}${konci}</span></div>`;
-  if (z.length < 2) return `${hl}<div class="pr-prazdne">${prMudra('zvedava', 'Rebríček je zatiaľ len tvoj. Pridaj si priateľov a súťažte, kto získa za týždeň viac bodov.')}
+  if (z.length < 2) return `${hl}<div class="pr-prazdne">${prMudra('zvedava', 'Rebríček je zatiaľ len tvoj. Pridaj si priateľov a súťažte, kto získa za týždeň viac hviezd.')}
     <button class="btn wide" data-soc-tab="pridat">${ikn('plus')}Pridať priateľa</button></div>`;
   const VYS = [118, 88, 70], FAR = ['var(--sun)', 'var(--sky-l)', 'var(--coral-l)'];
   const stup = (x, i) => `<div class="pr-stup${i === 0 ? ' prvy' : ''}${x.ja ? ' ja' : ''}" style="--h:${VYS[i]}px;--c:${FAR[i]};--i:${i}">
@@ -5984,11 +5984,11 @@ function rebricekHtml() {
   const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Super, len tak ďalej!' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
     : `Na ${moje === 1 ? 'prvé' : moje + '.'} miesto ti chýba ${prBody(chyba)}. Zvládneš to!`;
   return `${hl}<div class="pr-podium-o"><div class="pr-podium${top.length === 2 ? ' dvaja' : ''}">${poradie.map(i => stup(top[i], i)).join('')}</div>
-    ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">body</span></div>
+    ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">hviezdy</span></div>
       ${ostatni.map((x, i) => `<div class="pr-r${x.ja ? ' ja' : ''}" role="row"><span class="pr-por">${i + 4}</span>${prAv(x.avatar, x.pid)}<b>${esc(x.meno)}${x.ja ? ' <span class="pr-ty">Ty</span>' : ''}</b>
         <span class="pr-cs">${ikn('plamen')}${x.s}</span><span class="pr-cs">${ikn('hviezda')}${x.b}</span></div>`).join('')}</div>` : '<div class="pr-zem"></div>'}</div>
     ${prMudra(moje === 0 ? 'radost' : 'povzbudenie', povz)}
-    <p class="pr-mala">Body za tento týždeň. V pondelok sa začína odznova.</p>`;
+    <p class="pr-mala">Hviezdy za tento týždeň. V pondelok sa začína odznova.</p>`;
 }
 const prMudra = (vyraz, text) => `<div class="pr-povz"><span class="pr-m">${mudra(vyraz)}</span><div class="odkaz">${text}</div></div>`;
 Object.assign(views, {
@@ -5998,7 +5998,7 @@ Object.assign(views, {
       <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p></div>`;
     if (!So.zapnute) return `<div class="pr"><div class="pr-vrch">${prHlava(0)}</div>
       <section class="karta soc-intro"><span class="zal" style="--c:var(--sun)">${ikn('stit')}Pre rodiča</span>${prMudra('ahoj', 'S priateľmi si budeš posielať nálepky a vety. Zapne ich rodič.')}
-        <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
+        <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, hviezdy, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
         <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidí rodič v paneli rodiča a dá sa to kedykoľvek vypnúť.</p>
         <p><b>Priateľov zapína rodič.</b> ${maRodica() ? 'Poproste rodiča, nech ich zapne vo svojom paneli.' : 'Rodič si najprv vytvorí účet rodiča a v ňom ich zapne.'}</p>
         <p class="pr-mala">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p>${maRodica() ? '' : '<button class="btn wide cta" data-rodic-novy>Vytvoriť účet rodiča</button>'}</section></div>`;
@@ -6043,7 +6043,7 @@ Object.assign(views, {
     const stat = (ik, c, n, t) => `<div class="pr-stat" style="--c:var(--${c}-l)"><span class="ikb">${ikn(ik)}</span><b class="cis">${n}</b><small>${t}</small></div>`;
     return `<div class="pr pr-profil"><div class="pr-vrch"><div class="pr-hl"><button class="btn kruh dve" data-soc-otvor="${f}" aria-label="Späť na rozhovor">${ikn('spat')}</button></div>
         <div class="pr-ja">${prAv(p.avatar, f, 'velky')}<h1 class="n0">${esc(p.meno)}</h1>${sr > 0 ? `<span class="st" style="--c:var(--sun)">${ikn('plamen')}séria ${sr} ${dni(sr)}</span>` : ''}</div></div>
-      <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'bod', 'body', 'bodov'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
+      <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'hviezda', 'hviezdy', 'hviezd'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
       <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromMaly(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
       ${odz.length ? `<section class="karta pr-odz"><span class="zal" style="--c:var(--sun)">${ikn('odznak')}Posledné odznaky</span><div class="posledne">${odz.map(o => `<span class="medaila mala" title="${esc(o.n)}">${ikOdznaku(o)}</span>`).join('')}</div></section>` : ''}
       <button class="btn wide cta" data-soc-otvor="${f}">${ikn('bublina')}Napísať správu</button>
@@ -6199,7 +6199,7 @@ function krok(f, k) {
   if (f.prehra) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
       <h1 class="h1">Došli životy!</h1>
       <div class="zivoty velke">${[...Array(f.maxZivoty).keys()].map(() => `<i class="strata">${ikn('srdce')}</i>`).join('')}</div>
-      <p class="muted">${KVIZY[druhKvizu(f)].koniec}, tentoraz bez bodov. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</p>
+      <p class="muted">${KVIZY[druhKvizu(f)].koniec}, tentoraz bez hviezd. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</p>
       <div class="win-acts"><button class="btn dve wide" data-zavriet>Späť domov</button></div></div>`;
   if (f.precvic) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('happy')}</button></div>
       ${Precvic.stitok()}
@@ -6219,7 +6219,7 @@ function krok(f, k) {
       <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? 'var(--sun)' : 'var(--sand)')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
-      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 bodov. Najviac bodov dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
+      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> hviezd${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 hviezd. Najviac hviezd dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Hviezdy za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie hviezdy za ňu budú zajtra.'}</div>` : ''}
       ${nOdm ? `<details class="win-zbal win-odm"${nOdm === 1 ? ' open' : ''}><summary>${ikn('hviezda')} ${nOdm === 1 ? 'Máš novú odmenu' : 'Máš nové odmeny: ' + nOdm}</summary>${odmenyHtml(f)}</details>` : ''}
       ${misiaCaka ? kartaMisiePoTeme(t) : ''}
       <div class="win-acts">
@@ -6267,7 +6267,7 @@ function hornaLista(f, k) {
     const b = bodyTeraz(f);
     return `<div class="ftop jav-top"><button class="btn kruh dve" data-zavriet aria-label="Zavrieť">${ikn('zavriet')}</button>
       <div class="postup" role="img" aria-label="Otázka ${qs.indexOf(k) + 1} z ${qs.length}">${qs.map(x => { const o = f.odp[f.kroky.indexOf(x)]; return `<i class="${o ? (o.ok ? 'h' : 'z') : x === k ? 'ted' : ''}"></i>`; }).join('')}</div>
-      ${ziv}<span class="st cis skore" role="img" aria-label="Body: ${b}">${ikn('hviezda')}<b>${b}</b></span></div>`;
+      ${ziv}<span class="st cis skore" role="img" aria-label="Hviezdy: ${b}">${ikn('hviezda')}<b>${b}</b></span></div>`;
   }
   const citanie = f.kroky.filter(x => x.t !== 'q' && x.t !== 'koniec'), s = citanie.indexOf(k);
   const nazov = t ? KAT[t.k].nazov.replace(/­/g, '') : f.vyzva ? 'Výzva' : f.tazky ? 'Ťažký kvíz' : 'Rýchly kvíz';
@@ -6705,7 +6705,7 @@ const Misie = {
         <div><small class="lbl-mala">${ok ? 'Dnes splnené' : 'Časť 2 témy dňa'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p}</span></div>
         ${this.chipy(m, u)}
         ${ok ? `<p class="misia-hotovo">${ikn('check')} Dnešnú misiu máš splnenú. ${esc(T.von)}</p>` : ''}
-        <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Začať misiu'}</button></section>
+        <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez hviezd)' : 'Začať misiu'}</button></section>
       <section class="sec"><h2 class="h2">Náročnosť</h2>
         <div class="chips">${MISIA_UROVNE.map((n, i) => `<button class="chip" data-mi-u="${i + 1}" aria-pressed="${u === i + 1}">${n}</button>`).join('')}</div></section>
       <section class="sec"><h2 class="h2">Moje misie</h2><p class="muted">Tento týždeň: ${this.tyzden()}</p>
@@ -6761,7 +6761,7 @@ const Misie = {
     return `${m.vys ? `<div class="card misia-vys"><small class="lbl-mala">Vysvetlenie</small><p>${esc(m.vys)}</p></div>` : ''}
       <div class="card misia-fakt"><small class="lbl-mala">Zaujímavosť</small><p>${ikn('hviezda')} ${esc(m.fakt)}</p></div>
       <div class="card misia-rodic"><span class="misia-rodic-ik">${IK.rodina}</span><div><small class="lbl-mala">Pre rodiča</small><p>${esc(m.rodic)}</p></div></div>
-      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o objavovanie.</p>'}
+      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Hviezdy za dnes už máš. Tu ide hlavne o objavovanie.</p>'}
       ${odmenyHtml(k)}
       <div class="card misia-von"><small class="lbl-mala">Mimo appky</small><p>${esc(m.von || T.von)}</p></div>
       <button class="btn wide cta" data-go="domov">Hotovo, idem objavovať</button>`;
@@ -6773,7 +6773,7 @@ const Misie = {
     return `<div class="hra-top"><button class="btn kruh dve" data-mi-spat aria-label="Späť na misie">${ikn('zavriet')}</button><b class="hra-nazov">${esc(q.m.n)}</b></div>
       <div class="frame misia-banner" style="--c:${T.c}">${svg(temaDna())}<span class="sticker">${ikn(T.ikn)} ${T.n}</span></div>
       ${this.chipy(q.m)}
-      ${q.nahliad ? '<p class="muted">Táto misia sa počíta bez bodov.</p>' : ''}
+      ${q.nahliad ? '<p class="muted">Táto misia sa počíta bez hviezd.</p>' : ''}
       ${this.telo(q)}${q.koniec ? this.koniec(q) : ''}`;
   },
   klik(b, d) {
@@ -6807,7 +6807,7 @@ function kartaMisiePoTeme(t) {
   const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
   return `<section class="card misia-po-teme" style="--c:${T.c}"><div class="frame">${svg(t)}<span class="sticker">${ikn(T.ikn)} Téma dňa</span></div>
     <div><small class="lbl-mala">${ok ? 'Téma dňa splnená' : 'Časť 2 témy dňa: skús to'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p} Potom choď von a skús to vo svete.</span></div>
-    <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Pokračovať misiou!'}</button></section>`;
+    <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez hviezd)' : 'Pokračovať misiou!'}</button></section>`;
 }
 /* Angličtina na každý deň: samostatný bonus. Denný kvízik (6 otázok, 2 až 3 minúty), nový každý deň z dát v anglictina.js.
    Bez tlaku: vynechaný deň nič nestojí, body sú raz za deň. */
@@ -6903,9 +6903,9 @@ const Ang = {
     const pokrok = `<div class="ang-pokrok" aria-label="Otázka ${q.i + 1} z ${q.qs.length}">${q.qs.map((_, i) => `<i class="${i < q.i || (i === q.i && q.spravne) ? 'ok' : i === q.i ? 'ted' : ''}"></i>`).join('')}</div>`;
     const top = `<div class="hra-top"><button class="btn kruh dve" data-ang-spat aria-label="Späť na angličtinu">${ikn('zavriet')}</button><b class="hra-nazov">${q.skup ? esc(ANG_SKUPINY[q.skup]) : 'Kvízik z angličtiny'}</b></div>`;
     if (k) return `${top}<section class="card misia-pribeh ang-koniec" style="text-align:center">${q.precvic ? '<div>' + Precvic.stitok() + '</div>' : ''}<b class="misia-typ">${q.precvic ? 'Dobre si si to zopakoval' : 'Hotovo!'}</b><p>${q.chyby ? 'Chyby sú v poriadku, tak sa človek učí.' : 'Bez chyby, skvelé!'} ${q.precvic ? '' : q.skup ? 'Môžeš si ho zahrať znova, otázky sa menia.' : 'Zajtra príde nový kvízik.'}</p></section>
-      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o učenie.</p>'}
+      ${q.precvic ? '<p class="muted">Len na precvičenie: hviezdičky ani séria sa nezmenili. Ten deň ti ostáva vynechaný.</p>' : k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Hviezdy za dnes už máš. Tu ide hlavne o učenie.</p>'}
       ${odmenyHtml(k)}<button class="btn wide cta" data-ang-spat>Späť na angličtinu</button>`;
-    return `${top}${pokrok}${q.precvic ? Precvic.stitok() + Precvic.poznamka() : q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez bodov.</p>' : ''}
+    return `${top}${pokrok}${q.precvic ? Precvic.stitok() + Precvic.poznamka() : q.nahliad ? '<p class="muted">Tento kvízik sa počíta bez hviezd.</p>' : ''}
       <section class="card ang-otazka"><span>${esc(o.t)}</span><span class="ang-slovo">${esc(o.slovo)}</span></section>
       <div class="ang-rea">${this.reakcia(q)}</div>
       <div class="ang-ans">${o.o.map((t, i) => `<button class="ans${q.spravne && i === o.s ? ' ok' : q.zle.includes(i) ? ' bad' : ''}" data-ang-vol="${i}" style="--e:var(--coral-l)"${q.spravne || q.zle.includes(i) ? ' disabled' : ''}><span class="em pismeno">${'ABC'[i]}</span><span>${esc(t)}</span></button>`).join('')}</div>
@@ -7438,13 +7438,13 @@ const SPR_KROKY = [
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň ťa tu čaká nová téma. S rodičom si ju prečítate za 3 minúty a potom odpovieš na pár otázok.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Každý deň jeden krátky kvízik z angličtiny. Ťukneš na anglické slovo a vyberieš správny preklad.' },
   { v: 'domov', cil: '#tyz-strom', n: 'Stromček hore', nalada: 'cheer', p: 'Ťukni na stromček a ukáže sa tvoj týždeň so stromom múdrosti. Keď je stromček tmavý, dnešná téma ešte čaká. Po prvej téme sa rozsvieti. Keď sa niekoľko dní neučíš, strom vädne.' },
-  { v: 'domov', cil: '#stars', n: 'Tvoje body', nalada: 'cheer', p: 'Za správne odpovede zbieraš body. Za body sa odomykajú hry a nové veci pre tvoju postavičku.' },
+  { v: 'domov', cil: '#stars', n: 'Tvoje hviezdy', nalada: 'cheer', p: 'Za správne odpovede zbieraš hviezdy. Za hviezdy sa odomykajú hry a nové veci pre tvoju postavičku.' },
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Keď ide rodina autom, appka prečíta tému aj otázky nahlas. Učiť sa dá aj cestou.' },
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Tu sú kvízy, Iná téma, ktorá ťa prekvapí, a všetky oblasti tém: príroda, ľudia, svet a veda.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťukni na Témy', p: 'Teraz si to vyskúšaj: ťukni na Témy dole.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: 'Témy sú v 4 oblastiach: príroda, ľudia, svet a veda. Ťukni na oblasť alebo hore napíš, čo hľadáš.' },
   { tap: 'hry', cil: '#nav-hry', n: 'Ťukni na Hry', nalada: 'happy', p: 'Výborne! Teraz ťukni na Hry.' },
-  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Za body sa odomykajú hry. Vidíš len tie, ktoré sú pre tvoj vek. Hraním sa body neminú.' },
+  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Za hviezdy sa odomykajú hry. Vidíš len tie, ktoré sú pre tvoj vek. Hraním sa hviezdy neminú.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťukni na Priatelia', p: 'Ešte dve zastávky. Ťukni na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
   { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia', p: () => socC() && socC().zapnute ? 'Tu sú tvoji kamaráti. Posielate si nálepky a súťažíte v týždennom rebríčku.' : 'Tu si pridáš kamarátov. Posielate si nálepky a súťažíte v týždennom rebríčku. Zapína to rodič.' },
   { tap: 'ja', cil: '#nav-ja', n: 'Ťukni na Ja', nalada: 'happy', p: 'Posledná zastávka. Ťukni na Ja.' },
@@ -7457,31 +7457,31 @@ const SPR_KROKY = [
 // Ďalšie deti a karta Ja už spúšťajú len sprievodcu pre dieťa (SPR_KROKY).
 const SPR_UCET = [
   { id: 'vitaj', n: 'Vitajte!', nalada: 'hi', tl: [['dalej', 'Ukážte mi to', 1], ['zavri', 'Teraz nie']], p: 'Účet rodiča je vytvorený. Som Sovička Múdra a ukážem vám krok za krokom, ako appka funguje. Najprv spolu pripravíme profil dieťaťa.' },
-  { id: 'ucet', n: 'Ako funguje účet', nalada: 'happy', p: 'Pod jedným účtom rodiča môžu byť profily viacerých detí. Každé dieťa má vlastnú postavičku, body a pokrok. Všetko sa ukladá do cloudu, takže sa nič nestratí ani pri výmene telefónu a prihlásiť sa dá aj na ďalšom zariadení.' },
+  { id: 'ucet', n: 'Ako funguje účet', nalada: 'happy', p: 'Pod jedným účtom rodiča môžu byť profily viacerých detí. Každé dieťa má vlastnú postavičku, hviezdy a pokrok. Všetko sa ukladá do cloudu, takže sa nič nestratí ani pri výmene telefónu a prihlásiť sa dá aj na ďalšom zariadení.' },
   { cil: '#meno-dietata', n: 'Meno dieťaťa', p: 'Sem napíšte meno alebo prezývku. Appka ním dieťa oslovuje a uvidia ho aj priatelia, ak ich neskôr zapnete.' },
   { cil: '.tvorba .seg2', n: 'Vek', p: '5 – 8 rokov: jednoduchšie otázky s obrázkami. 9 – 12 rokov: ťažšie otázky, časť Do hĺbky a navyše ťažký kvíz a výzva. Vek sa dá kedykoľvek zmeniť.' },
-  { cil: '[data-tvorba-dalej]', n: 'Potom postavička', nalada: 'cheer', p: 'V ďalšom kroku si dieťa vyberie postavičku: účes, oči, tričko aj doplnky. Kto sa nechce hrať, ťukne na kocku. Veci so zámkom sa odomknú za body z tém.' },
+  { cil: '[data-tvorba-dalej]', n: 'Potom postavička', nalada: 'cheer', p: 'V ďalšom kroku si dieťa vyberie postavičku: účes, oči, tričko aj doplnky. Kto sa nechce hrať, ťukne na kocku. Veci so zámkom sa odomknú za hviezdy z tém.' },
   { id: 'koniec', n: 'Teraz vy!', nalada: 'cheer', tl: [['hotovo', 'Idem vyplniť profil', 1]], p: 'Napíšte meno, vyberte vek a ťuknite na Ďalej. Postavičku si potom vyberiete spolu s dieťaťom. Hneď po nej pokračujeme prehliadkou appky.' },
 ];
 const SPR_RODIC = [
-  { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú body, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
-  { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň jedna krátka téma na 3 minúty. Prečítate ju dieťaťu (alebo ju appka prečíta nahlas), porozprávate sa a dieťa odpovie na otázky. Za tému dňa je najviac bodov.' },
+  { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú hviezdy, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
+  { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň jedna krátka téma na 3 minúty. Prečítate ju dieťaťu (alebo ju appka prečíta nahlas), porozprávate sa a dieťa odpovie na otázky. Za tému dňa je najviac hviezd.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Denný kvízik z angličtiny má 6 otázok. Dieťa vyberá preklad slova a dostane krátke vysvetlenie. Ďalšie kvízy sú v Objavuj.' },
   { v: 'domov', cil: '#tyz-strom', n: 'Séria a strom múdrosti', p: 'Každý deň s témou pribudne hviezdička a rastie séria. Prvá téma dňa spustí oslavu a na strome múdrosti pribudne plod. Keď sú všetky odpovede zlé, treba otázky skúsiť ešte raz. Stromček hore ukáže týždeň: ťuknutím na minulý deň otvoríte jeho tému, tlačidlom Okruh vyberiete, o čom budú témy týždňa, a ťuknutím na strom uvidíte jeho stupeň.' },
-  { v: 'domov', cil: '#stars', n: 'Body', nalada: 'cheer', p: 'Body sú za správne odpovede a odomykajú hry aj nové veci pre postavičku. Za inú tému ako tému dňa je najviac 10 bodov.' },
+  { v: 'domov', cil: '#stars', n: 'Hviezdy', nalada: 'cheer', p: 'Hviezdy sú za správne odpovede a odomykajú hry aj nové veci pre postavičku. Za inú tému ako tému dňa je najviac 10 hviezd.' },
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Jedno ťuknutie a appka prečíta tému aj otázky nahlas, s prestávkou na odpoveď. Hodí sa na cestu, keď šoférujete.' },
   { v: 'domov', cil: '.plocha-karta', ak: () => !!document.querySelector('.plocha-karta'), n: 'Appka na ploche', p: 'Pridajte si appku na plochu telefónu. Bude sa otvárať ako naozajstná aplikácia, s ikonkou a cez celú obrazovku.' },
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', p: 'Kvízy, iná téma a všetky oblasti tém sú schované tu. Ťuknite na kartu.' },
-  { v: 'objavuj', cil: '.obj-akty', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a body sú raz za deň.' },
+  { v: 'objavuj', cil: '.obj-akty', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a hviezdy sú raz za deň.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťuknite na Témy', p: 'Teraz si to vyskúšajte: ťuknite dole na Témy.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${TV().length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
   { tap: 'hry', cil: '#nav-hry', n: 'Ťuknite na Hry', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Hry.' },
-  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za body. Dieťa vidí hry podľa svojho veku, malé deti majú ľahšie. Hraním sa body neminú. Keď sa niekoľko dní neučí, strom vädne a najdrahšie hry si oddýchnu, po prvej téme sa všetko vráti.' },
+  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za hviezdy. Dieťa vidí hry podľa svojho veku, malé deti majú ľahšie. Hraním sa hviezdy neminú. Keď sa niekoľko dní neučí, strom vädne a najdrahšie hry si oddýchnu, po prvej téme sa všetko vráti.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťuknite na Priatelia', p: 'Ťuknite na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
   { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia zapína rodič', p: 'Deti si posielajú kreslené nálepky, hotové vety aj vlastné krátke slová. Priateľa pridajú len jeho kódom a druhá strana musí súhlasiť. Zapnúť aj vypnúť to môžete len vy.' },
   { tap: 'ja', cil: '#nav-ja', n: 'Ťuknite na Ja', nalada: 'happy', p: 'Posledná časť je profil. Ťuknite na Ja.' },
   { v: 'ja', cil: '.prof-top', n: 'Profil dieťaťa', nalada: 'happy', p: 'Postavička, meno a vek. Ťuknutím na postavičku ju dieťa prezlečie.' },
-  { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky a odmeny', p: 'Za úspechy prichádzajú odznaky a za body nové veci pre postavičku.' },
+  { v: 'ja', cil: '.odznaky-karta', n: 'Odznaky a odmeny', p: 'Za úspechy prichádzajú odznaky a za hviezdy nové veci pre postavičku.' },
   { v: 'ja', ak: () => !maRodica(), cil: () => (x => x && x.closest ? x.closest('section') : null)([...document.querySelectorAll('main .h2')].find(x => x.textContent.trim() === 'Pre rodiča')), n: 'Pre rodiča', p: 'Tu vidíte, čo dieťa tento týždeň prebralo a v ktorých otázkach sa pomýlilo, aby ste sa o nich mohli porozprávať.' },
   { v: 'ja', cil: () => (x => x && x.closest ? x.closest('.card') : x)(document.querySelector('main [data-deti]')), n: 'Rodina a ďalšie deti', p: 'Cez Zmeniť dieťa pridáte ďalšie dieťa alebo prepnete medzi deťmi, prepnúť sa dá aj ťuknutím na postavičku hore.' },
   { v: 'ja', cil: '.spr-karta', n: 'Sprievodca pre dieťa', p: 'Keď bude chcieť, Sovička ukáže appku aj dieťaťu, jeho slovami. Spustíte ho tu.' },
@@ -8101,7 +8101,7 @@ document.addEventListener('click', e => {
     // hneď ukázať a zahrať, cloud to dopošle v pozadí
     Zvuk.play(d.socNal ? 'pop' : 'tap'); vibruj(15); const [x, y] = stred(b); FX.burst(x, y, 10, ['star', 'dot'], 5);
     const ch = document.getElementById('chat');
-    if (ch) { const pr = ch.querySelector('.dm-prazdny'); if (pr) pr.remove(); ch.insertAdjacentHTML('beforeend', `<div class="msg moja posl odosiela${m.n ? ' nalepka' : ''}">${spravaObsah(m)}</div>`); ch.scrollTop = ch.scrollHeight; }
+    if (ch) { const pr = ch.querySelector('.dm-prazdny'); if (pr) pr.remove(); ch.insertAdjacentHTML('beforeend', `<div class="msg moja posl odosiela${m.n ? ' msg-nalepka' : ''}">${spravaObsah(m)}</div>`); ch.scrollTop = ch.scrollHeight; }
     socAkcia(C.soc.posli(st.priatel, m), null, () => socZmena());
   }
   else if (d.socOdober) { const C = window.Cloud, p = socC().profily[d.socOdober]; if (confirm('Naozaj odstrániť ' + (p ? p.meno : 'priateľa') + ' z priateľov?')) socAkcia(C.soc.odober(d.socOdober), () => { toast('Odstránené z priateľov.'); go('priatelia'); }); }

@@ -199,8 +199,6 @@
 .msg-nal > svg { width: 100%; height: 100%; }
 .dm .msg-nal { animation: pop .5s var(--spring) both; }
 .msg.odosiela { opacity: .6; }
-/* správa s nálepkou alebo témou má triedu .nalepka (pomenovanú v 4.9); nesmie dostať vzhľad dlaždice .nalepka zo 40-system.css */
-.dm .msg.nalepka { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
 .dm-chat > .msg:last-child, .dm-chat > .msg:has(+ .dm-videne:last-child) { animation: prBub .5s var(--spring) both; }
 @keyframes prBub { 0% { opacity: 0; transform: translateY(16px) scale(.9); } 60% { opacity: 1; transform: scale(1.04); } }
 .msg-r { position: absolute; right: -6px; bottom: -9px; width: 24px; height: 24px; padding: 2px; border: 2px solid var(--ink); border-radius: 50%; background: var(--card); animation: pop .4s var(--spring) both; }

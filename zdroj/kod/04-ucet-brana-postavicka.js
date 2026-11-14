@@ -95,7 +95,7 @@ const brany = {
     const google = text => `<div class="vs-alebo"><span>alebo</span></div>
         <button type="button" class="btn dve wide google" data-ucet="google"${zam}>${napis('google', `<span class="g">G</span>${text}`, 'Otvára sa Google…')}</button>`;
     if (krok === 'mam') return `<div class="brana vstup">${vstupHlava(-1, 0, spat)}<div class="vs-telo">
-      ${vstupNadpis('Prihlásenie', 'Vitajte späť', 'Prihláste sa a nájdete svoje deti aj ich body.')}
+      ${vstupNadpis('Prihlásenie', 'Vitajte späť', 'Prihláste sa a nájdete svoje deti aj ich hviezdy.')}
       <form id="prihlas-form" class="vs-form" data-forma="prihlas" novalidate>
         ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
         ${pole('heslo', 'password', 'Heslo', '', 'current-password', 'go', 'heslo')}
@@ -105,7 +105,7 @@ const brany = {
       ${google('Prihlásiť sa cez Google')}
       ${vseobecna}</div></div>`;
     if (krok === 'novy') return `<div class="brana vstup">${vstupHlava(0, 3, spat)}<div class="vs-telo">
-      ${vstupNadpis('Krok 1 z 3 · pre rodiča', 'Vytvoríme váš účet', 'Účet je pre rodiča. Deti pridáte v ďalšom kroku a každé má svoje body.')}
+      ${vstupNadpis('Krok 1 z 3 · pre rodiča', 'Vytvoríme váš účet', 'Účet je pre rodiča. Deti pridáte v ďalšom kroku a každé má svoje hviezdy.')}
       <form id="prihlas-form" class="vs-form" data-forma="registruj" novalidate>
         ${pole('email', 'email', 'E-mail', 'rodic@example.sk', 'email', 'next', 'email')}
         ${pole('heslo', 'password', 'Heslo (aspoň 6 znakov)', '', 'new-password', 'next', 'heslo')}
@@ -139,7 +139,7 @@ const brany = {
     const u = st.upravuje, maDeti = window.Cloud && window.Cloud.deti.length;
     const n = u.novy ? (u.prve ? 3 : 2) : 0, z = n === 3 ? 1 : 0, krok = u.novy ? (u.krok || 1) : 0;
     const zmaz = u.novy || (maRodica() && !Rodic.jeOdomknute()) ? '' : u.potvrd
-      ? `<div class="up-potvrd" role="alert"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="tx">Body a prebraté témy tohto dieťaťa sa stratia.</p>
+      ? `<div class="up-potvrd" role="alert"><b>Naozaj odstrániť profil ${esc(u.meno)}?</b><p class="tx">Hviezdy a prebraté témy tohto dieťaťa sa stratia.</p>
           <div class="tests"><button class="btn zle" data-zmazat-ano>Áno, odstrániť</button><button class="btn dve" data-zmazat-nie>Nie</button></div></div>`
       : '<button class="link center" data-zmazat>Odstrániť tento profil</button>';
     const odhlas = maDeti ? '' : '<button type="button" class="link center" data-ucet="odhlas">Odhlásiť sa</button>';
@@ -180,7 +180,7 @@ function najblizsiaVec() {
   const u = st.upravuje, b = u.body || 0, o = ODMENY.find(x => x.cena > b);
   if (!o) return '';
   const pred = ODMENY.filter(x => x.cena <= b).pop(), od = pred ? pred.cena : 0;
-  return `<div class="up-najblizsia"><p class="tx">Najbližšie odomkneš <b>${esc(NAZVY_ODMIEN[o.kluc] || 'novú vec')}</b>. Chýba ešte <b class="cis">${o.cena - b}</b> bodov.</p>
+  return `<div class="up-najblizsia"><p class="tx">Najbližšie odomkneš <b>${esc(NAZVY_ODMIEN[o.kluc] || 'novú vec')}</b>. Chýba ešte <b class="cis">${o.cena - b}</b> hviezd.</p>
     <div class="pruh" aria-hidden="true"><i style="width:${Math.max(4, Math.round((b - od) / (o.cena - od) * 100))}%"></i></div></div>`;
 }
 function avTaby() { return AV_KAT.map(([k, n]) => `<button class="up-tab" data-avkat="${k}" aria-pressed="${st.upravuje.kat === k}">${n}</button>`).join(''); }
@@ -197,7 +197,7 @@ function avMoznosti() {
     return `<button class="vec${farba ? ' farba' : ''}${na ? ' na' : ''}${zam ? ' zam' : ''}" data-cena="${c}" data-avvol="${v}" aria-pressed="${na}" aria-label="${esc(meno)}${zam ? `, odomkne sa pri ${c} bodoch` : ''}">
       ${zam ? `<span class="zmk">${ikn('zamok')}</span>` : ''}<span class="vec-obr">${obr}</span><span class="dolu">${dolu}</span></button>`;
   }).join('');
-  const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za body z tém.</span></div>` : '';
+  const viac = u.novy && !(u.body > 0) ? `<div class="vec viac">${ikn('hviezda')}<span>Veci s cenou ${u.meno ? esc(u.meno) + ' ' : ''}odomkne za hviezdy z tém.</span></div>` : '';
   return veci + viac;
 }
 Object.assign(brany, RodicBrana.brany, RodicPanel.views); // obrazky rodiča z rodic-brana.js a rodic-panel.js

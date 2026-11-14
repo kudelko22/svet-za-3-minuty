@@ -96,7 +96,7 @@ function krok(f, k) {
   if (f.prehra) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('oops')}</button></div>
       <h1 class="h1">Došli životy!</h1>
       <div class="zivoty velke">${[...Array(f.maxZivoty).keys()].map(() => `<i class="strata">${ikn('srdce')}</i>`).join('')}</div>
-      <p class="muted">${KVIZY[druhKvizu(f)].koniec}, tentoraz bez bodov. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</p>
+      <p class="muted">${KVIZY[druhKvizu(f)].koniec}, tentoraz bez hviezd. Správne odpovede: <b>${c} z ${Object.keys(f.odp).length}</b>.<br>${KVIZY[druhKvizu(f)].dalsi} môžeš hrať o ${KVIZY[druhKvizu(f)].min} min.</p>
       <div class="win-acts"><button class="btn dve wide" data-zavriet>Späť domov</button></div></div>`;
   if (f.precvic) return `<div class="win"><div class="win-hero"><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl('happy')}</button></div>
       ${Precvic.stitok()}
@@ -116,7 +116,7 @@ function krok(f, k) {
       <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? 'var(--sun)' : 'var(--sand)')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
-      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> bodov${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 bodov. Najviac bodov dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Body za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie body za ňu budú zajtra.'}</div>` : ''}
+      ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> hviezd${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 hviezd. Najviac hviezd dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Hviezdy za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie hviezdy za ňu budú zajtra.'}</div>` : ''}
       ${nOdm ? `<details class="win-zbal win-odm"${nOdm === 1 ? ' open' : ''}><summary>${ikn('hviezda')} ${nOdm === 1 ? 'Máš novú odmenu' : 'Máš nové odmeny: ' + nOdm}</summary>${odmenyHtml(f)}</details>` : ''}
       ${misiaCaka ? kartaMisiePoTeme(t) : ''}
       <div class="win-acts">
@@ -164,7 +164,7 @@ function hornaLista(f, k) {
     const b = bodyTeraz(f);
     return `<div class="ftop jav-top"><button class="btn kruh dve" data-zavriet aria-label="Zavrieť">${ikn('zavriet')}</button>
       <div class="postup" role="img" aria-label="Otázka ${qs.indexOf(k) + 1} z ${qs.length}">${qs.map(x => { const o = f.odp[f.kroky.indexOf(x)]; return `<i class="${o ? (o.ok ? 'h' : 'z') : x === k ? 'ted' : ''}"></i>`; }).join('')}</div>
-      ${ziv}<span class="st cis skore" role="img" aria-label="Body: ${b}">${ikn('hviezda')}<b>${b}</b></span></div>`;
+      ${ziv}<span class="st cis skore" role="img" aria-label="Hviezdy: ${b}">${ikn('hviezda')}<b>${b}</b></span></div>`;
   }
   const citanie = f.kroky.filter(x => x.t !== 'q' && x.t !== 'koniec'), s = citanie.indexOf(k);
   const nazov = t ? KAT[t.k].nazov.replace(/­/g, '') : f.vyzva ? 'Výzva' : f.tazky ? 'Ťažký kvíz' : 'Rýchly kvíz';

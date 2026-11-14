@@ -54,7 +54,7 @@ const Misie = {
         <div><small class="lbl-mala">${ok ? 'Dnes splnené' : 'Časť 2 témy dňa'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p}</span></div>
         ${this.chipy(m, u)}
         ${ok ? `<p class="misia-hotovo">${ikn('check')} Dnešnú misiu máš splnenú. ${esc(T.von)}</p>` : ''}
-        <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Začať misiu'}</button></section>
+        <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez hviezd)' : 'Začať misiu'}</button></section>
       <section class="sec"><h2 class="h2">Náročnosť</h2>
         <div class="chips">${MISIA_UROVNE.map((n, i) => `<button class="chip" data-mi-u="${i + 1}" aria-pressed="${u === i + 1}">${n}</button>`).join('')}</div></section>
       <section class="sec"><h2 class="h2">Moje misie</h2><p class="muted">Tento týždeň: ${this.tyzden()}</p>
@@ -110,7 +110,7 @@ const Misie = {
     return `${m.vys ? `<div class="card misia-vys"><small class="lbl-mala">Vysvetlenie</small><p>${esc(m.vys)}</p></div>` : ''}
       <div class="card misia-fakt"><small class="lbl-mala">Zaujímavosť</small><p>${ikn('hviezda')} ${esc(m.fakt)}</p></div>
       <div class="card misia-rodic"><span class="misia-rodic-ik">${IK.rodina}</span><div><small class="lbl-mala">Pre rodiča</small><p>${esc(m.rodic)}</p></div></div>
-      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Body za dnes už máš. Tu ide hlavne o objavovanie.</p>'}
+      ${k.zisk ? `<p class="misia-body">+${k.zisk} ${ikn('hviezda')}</p>` : '<p class="muted">Hviezdy za dnes už máš. Tu ide hlavne o objavovanie.</p>'}
       ${odmenyHtml(k)}
       <div class="card misia-von"><small class="lbl-mala">Mimo appky</small><p>${esc(m.von || T.von)}</p></div>
       <button class="btn wide cta" data-go="domov">Hotovo, idem objavovať</button>`;
@@ -122,7 +122,7 @@ const Misie = {
     return `<div class="hra-top"><button class="btn kruh dve" data-mi-spat aria-label="Späť na misie">${ikn('zavriet')}</button><b class="hra-nazov">${esc(q.m.n)}</b></div>
       <div class="frame misia-banner" style="--c:${T.c}">${svg(temaDna())}<span class="sticker">${ikn(T.ikn)} ${T.n}</span></div>
       ${this.chipy(q.m)}
-      ${q.nahliad ? '<p class="muted">Táto misia sa počíta bez bodov.</p>' : ''}
+      ${q.nahliad ? '<p class="muted">Táto misia sa počíta bez hviezd.</p>' : ''}
       ${this.telo(q)}${q.koniec ? this.koniec(q) : ''}`;
   },
   klik(b, d) {
@@ -156,5 +156,5 @@ function kartaMisiePoTeme(t) {
   const m = Misie.dnesna(), T = MISIA_TYPY[m.t], ok = Misie.splnenaDnes();
   return `<section class="card misia-po-teme" style="--c:${T.c}"><div class="frame">${svg(t)}<span class="sticker">${ikn(T.ikn)} Téma dňa</span></div>
     <div><small class="lbl-mala">${ok ? 'Téma dňa splnená' : 'Časť 2 témy dňa: skús to'}</small><b class="misia-typ">${T.n}</b><span class="muted">${T.p} Potom choď von a skús to vo svete.</span></div>
-    <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez bodov)' : 'Pokračovať misiou!'}</button></section>`;
+    <button class="btn wide ${ok ? 'dve' : 'cta'}" data-mi-start>${ok ? 'Zahrať si ešte raz (bez hviezd)' : 'Pokračovať misiou!'}</button></section>`;
 }

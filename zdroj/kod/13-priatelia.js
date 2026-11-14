@@ -44,14 +44,14 @@ const PR_FARBY = ['sky', 'sun', 'leaf', 'violet', 'teal', 'coral'];
 const prFarba = id => { let h = 0; for (const c of String(id || '')) h = (h * 31 + c.charCodeAt(0)) >>> 0; return 'var(--' + PR_FARBY[h % PR_FARBY.length] + '-l)'; };
 const prAv = (a, id, tr = '') => `<span class="pr-av${tr ? ' ' + tr : ''}" style="--c:${prFarba(id)}">${avatarMaly(a)}</span>`;
 const prPl = (n, a, b, c) => n === 1 ? a : n >= 2 && n <= 4 ? b : c;
-const prBody = n => n + ' ' + prPl(n, 'bod', 'body', 'bodov');
+const prBody = n => n + ' ' + prPl(n, 'hviezda', 'hviezdy', 'hviezd');
 const prHlava = n => `<div class="pr-hl"><h1 class="n0">Priatelia</h1>${n ? `<span class="st cis" aria-label="Počet priateľov: ${n}">${ikn('priatelia')}${n}</span>` : ''}</div>`;
 function chatHtml(fid) {
   const So = socC(), m = (So && So.spravy[fid]) || [], p = So && So.profily[fid];
   if (!m.length) return `<div class="dm-prazdny">${prAv(p && p.avatar, fid, 'velky')}<b>${esc(p ? p.meno : '')}</b><div class="odkaz">Pošli prvú nálepku alebo vetu. Sú dole.</div><span class="dm-dole">${ikn('dole')}</span></div>`;
   return m.map((x, i) => {
     const moja = x.od === So.pid, dalsia = m[i + 1], posledna = !dalsia || dalsia.od !== x.od, cas = i === 0 || x.kedy - m[i - 1].kedy > 30 * 60000;
-    return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n || x.t ? ' nalepka' : ''}${posledna ? ' posl' : ''}${x.r ? ' srdce' : ''}"${moja ? '' : ` data-soc-msg="${x.id}"`}>
+    return `${cas ? `<div class="dm-cas">${casSpravy(x.kedy)}</div>` : ''}<div class="msg${moja ? ' moja' : ''}${x.n || x.t ? ' msg-nalepka' : ''}${posledna ? ' posl' : ''}${x.r ? ' srdce' : ''}"${moja ? '' : ` data-soc-msg="${x.id}"`}>
       ${!moja ? `<span class="msg-av" style="--c:${prFarba(fid)}">${posledna ? avatarMaly(p && p.avatar) : ''}</span>` : ''}<span class="msg-obal">${spravaObsah(x, moja)}${x.r ? `<i class="msg-r">${IK.srdce}</i>` : ''}</span></div>`;
   }).join('') + (vid => vid ? `<div class="dm-videne">${ikn('check')}Videné</div>` : '')((ja => ja && (So.citane[fid] || 0) >= ja.kedy && m[m.length - 1] === ja)(m.filter(x => x.od === So.pid).slice(-1)[0]));
 }
@@ -68,7 +68,7 @@ function rebricekHtml() {
     .sort((a, b) => b.b - a.b || b.s - a.s);
   const den = new Date().getDay(), konci = den === 0 ? 'končí dnes' : den === 6 ? 'končí zajtra' : 'končí v nedeľu';
   const hl = `<div class="pr-nh"><h2 class="n1">Tento týždeň</h2><span class="st">${ikn('kalendar')}${konci}</span></div>`;
-  if (z.length < 2) return `${hl}<div class="pr-prazdne">${prMudra('zvedava', 'Rebríček je zatiaľ len tvoj. Pridaj si priateľov a súťažte, kto získa za týždeň viac bodov.')}
+  if (z.length < 2) return `${hl}<div class="pr-prazdne">${prMudra('zvedava', 'Rebríček je zatiaľ len tvoj. Pridaj si priateľov a súťažte, kto získa za týždeň viac hviezd.')}
     <button class="btn wide" data-soc-tab="pridat">${ikn('plus')}Pridať priateľa</button></div>`;
   const VYS = [118, 88, 70], FAR = ['var(--sun)', 'var(--sky-l)', 'var(--coral-l)'];
   const stup = (x, i) => `<div class="pr-stup${i === 0 ? ' prvy' : ''}${x.ja ? ' ja' : ''}" style="--h:${VYS[i]}px;--c:${FAR[i]};--i:${i}">
@@ -80,11 +80,11 @@ function rebricekHtml() {
   const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Super, len tak ďalej!' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
     : `Na ${moje === 1 ? 'prvé' : moje + '.'} miesto ti chýba ${prBody(chyba)}. Zvládneš to!`;
   return `${hl}<div class="pr-podium-o"><div class="pr-podium${top.length === 2 ? ' dvaja' : ''}">${poradie.map(i => stup(top[i], i)).join('')}</div>
-    ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">body</span></div>
+    ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">hviezdy</span></div>
       ${ostatni.map((x, i) => `<div class="pr-r${x.ja ? ' ja' : ''}" role="row"><span class="pr-por">${i + 4}</span>${prAv(x.avatar, x.pid)}<b>${esc(x.meno)}${x.ja ? ' <span class="pr-ty">Ty</span>' : ''}</b>
         <span class="pr-cs">${ikn('plamen')}${x.s}</span><span class="pr-cs">${ikn('hviezda')}${x.b}</span></div>`).join('')}</div>` : '<div class="pr-zem"></div>'}</div>
     ${prMudra(moje === 0 ? 'radost' : 'povzbudenie', povz)}
-    <p class="pr-mala">Body za tento týždeň. V pondelok sa začína odznova.</p>`;
+    <p class="pr-mala">Hviezdy za tento týždeň. V pondelok sa začína odznova.</p>`;
 }
 const prMudra = (vyraz, text) => `<div class="pr-povz"><span class="pr-m">${mudra(vyraz)}</span><div class="odkaz">${text}</div></div>`;
 Object.assign(views, {
@@ -94,7 +94,7 @@ Object.assign(views, {
       <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p></div>`;
     if (!So.zapnute) return `<div class="pr"><div class="pr-vrch">${prHlava(0)}</div>
       <section class="karta soc-intro"><span class="zal" style="--c:var(--sun)">${ikn('stit')}Pre rodiča</span>${prMudra('ahoj', 'S priateľmi si budeš posielať nálepky a vety. Zapne ich rodič.')}
-        <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, body, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
+        <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, hviezdy, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
         <p>Priateľa si dieťa pridá len jeho kódom a druhá strana musí žiadosť prijať. Deti sa nedajú vyhľadať. Priateľov aj správy uvidí rodič v paneli rodiča a dá sa to kedykoľvek vypnúť.</p>
         <p><b>Priateľov zapína rodič.</b> ${maRodica() ? 'Poproste rodiča, nech ich zapne vo svojom paneli.' : 'Rodič si najprv vytvorí účet rodiča a v ňom ich zapne.'}</p>
         <p class="pr-mala">Profil dieťaťa: ${esc(st.meno || 'dieťa')}</p>${maRodica() ? '' : '<button class="btn wide cta" data-rodic-novy>Vytvoriť účet rodiča</button>'}</section></div>`;
@@ -139,7 +139,7 @@ Object.assign(views, {
     const stat = (ik, c, n, t) => `<div class="pr-stat" style="--c:var(--${c}-l)"><span class="ikb">${ikn(ik)}</span><b class="cis">${n}</b><small>${t}</small></div>`;
     return `<div class="pr pr-profil"><div class="pr-vrch"><div class="pr-hl"><button class="btn kruh dve" data-soc-otvor="${f}" aria-label="Späť na rozhovor">${ikn('spat')}</button></div>
         <div class="pr-ja">${prAv(p.avatar, f, 'velky')}<h1 class="n0">${esc(p.meno)}</h1>${sr > 0 ? `<span class="st" style="--c:var(--sun)">${ikn('plamen')}séria ${sr} ${dni(sr)}</span>` : ''}</div></div>
-      <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'bod', 'body', 'bodov'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
+      <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'hviezda', 'hviezdy', 'hviezd'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
       <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromMaly(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
       ${odz.length ? `<section class="karta pr-odz"><span class="zal" style="--c:var(--sun)">${ikn('odznak')}Posledné odznaky</span><div class="posledne">${odz.map(o => `<span class="medaila mala" title="${esc(o.n)}">${ikOdznaku(o)}</span>`).join('')}</div></section>` : ''}
       <button class="btn wide cta" data-soc-otvor="${f}">${ikn('bublina')}Napísať správu</button>
