@@ -1,14 +1,17 @@
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane.
    Pri prechode na 5.0 (PREMENA_V v 23-premena.js) sa namiesto okna hrá úvodná premena a na jej konci sú novinky s v >= PREMENA_V. */
 const NOVINKY = [
-  // DOČASNÉ vety 5.0 (návrhy zo sekcií): záverečná session ich prepíše a nastaví VERZIA_APPKY = PREMENA_V
-  { v: 67, docasne: true, obr: () => logoGlobus(), n: 'Appka sa volá Svetom', p: 'Každý deň objav niečo nové. Celá appka vyzerá ako papierový atlas a má nové písmo, ktoré sa číta ľahšie.' },
-  { v: 67, docasne: true, obr: () => mudra('radost'), n: 'Múdra vyrástla', p: 'Má šatku objaviteľky a vie sa tešiť, čudovať aj premýšľať.' },
-  { v: 67, docasne: true, obr: () => ikn('kompas'), n: 'Domov je krajina', p: 'Cesta každý deň vedie inam: k sopke, do hôr, k hradu, ku hvezdárni alebo k domčeku. Strom múdrosti rastie priamo pri ceste.' },
-  { v: 67, docasne: true, obr: () => ikn('zalozka'), n: 'Téma ako kniha, kvíz ako javisko', p: 'Po správnej odpovedi vyjde slnko a Múdra sa teší s tebou.' },
-  { v: 67, docasne: true, obr: () => ikn('hry'), n: 'Hry sú ihrisko', p: 'Každá hra má nový obrázok a karta Ďalšia hra ukáže, koľko chýba.' },
-  { v: 67, docasne: true, obr: () => ikn('odznak'), n: 'Pas objaviteľa', p: 'Odznaky sú teraz pečiatky v Pase objaviteľa a karta Ja je preukaz s fotkou postavičky.' },
-  { v: 67, docasne: true, obr: () => ikn('priatelia'), n: 'Priatelia a rodič', p: 'Správy v bublinách, rebríček so stupňami víťazov a pokojnejší panel pre rodiča.' },
+  // Verzia 5.0 Svetom: tieto vety ukáže koniec úvodnej premeny (v = PREMENA_V)
+  { v: 67, obr: () => logoGlobus(), n: 'Appka sa volá Svetom', p: 'Každý deň objav kúsok sveta. Celá appka vyzerá ako papierový atlas a má nové písmo, ktoré sa ľahšie číta.' },
+  { v: 67, obr: () => mudra('radost'), n: 'Múdra ožila', p: 'Dýcha, žmurká, obzerá sa, teší sa s tebou a večer zaspí. Skús na ňu ťuknúť.' },
+  { v: 67, obr: () => ikn('kompas'), n: 'Domov je krajina', p: 'Cesta každý deň vedie inam: k sopke, do hôr, k hradu, ku hvezdárni alebo k domčeku. Strom múdrosti rastie pri ceste, ťukni naň.' },
+  { v: 67, obr: () => ikn('zalozka'), n: 'Téma ako kniha, kvíz ako javisko', p: 'Po správnej odpovedi vyjde slnko a Múdra sa teší s tebou. Za odpovede zbieraš hviezdy.' },
+  { v: 67, obr: () => ikn('odznak'), n: 'Pas objaviteľa', p: 'Odznaky sú pečiatky v Pase objaviteľa. Čerstvú pečiatku ťukni a vyzdvihni si 2 hviezdičky. Karta Ja je preukaz s fotkou postavičky.' },
+  { v: 67, obr: () => ikn('hry'), n: 'Hry sú ihrisko', p: 'Každá hra má nový obrázok, karta Ďalšia hra ukáže, koľko chýba, a Múdra sa s tebou počas hry teší.' },
+  { v: 67, obr: () => ikn('priatelia'), n: 'Priatelia', p: 'Tváre priateľov hore, správy v bublinách a rebríček so stupňami víťazov.' },
+  { v: 67, obr: () => ikn('zvuk'), n: 'Nové zvuky', p: 'Jemné zvuky ako drevo a zvončeky. Šuchot strany, odtrhnutie lístka a pečiatka znejú naozaj.' },
+  { v: 67, obr: () => ikn('kluc'), n: 'Pre rodiča', p: 'Účet sa zakladá na jednej ceste v troch krokoch. Panel rodiča je pokojnejší a nastavenia majú prepínače.' },
+  { v: 67, obr: () => ikn('check'), n: 'Opravy', p: 'Dlhé meno sa už nepreplietá, misia si po splnení drží názov, zmena okruhu nemení minulé týždne a odznakov môže byť viac ako 100.' },
   { v: 66, obr: () => IK.mozog, n: 'Verzia 4.8.2: opravy', p: 'Okruh týždňa sa dá znova zmeniť aj z okna so stromom. V niektorých nových témach chýbal obrázok pri odpovedi, často práve pri správnej. Teraz majú všetky odpovede jednej otázky obrázok, alebo všetky písmená A, B, C.' },
   { v: 65, obr: () => stromSvg({ stupen: 2, plody: 4, kos: 0, novy: -1 }), n: 'Verzia 4.8.1: oslava série a ožitie stromu', p: 'Keď dohráš tému dňa, číslo série sa prevalí a zväčší, zažiari plameň a zaznie fanfára. Ak strom zvädol, vietor ho rozkýve, listy sa zatočia a strom múdrosti zasa ožije.' },
   { v: 64, obr: () => IK.mesiac, n: 'Verzia 4.8: Mesačný režim', p: 'V profile Ja v karte Mesačný režim prepneš appku na nočnú oblohu s mesiacom a hviezdičkami. Môžeš si vybrať Svetlý, Mesačný alebo Podľa telefónu. Večer je to príjemnejšie pre oči.' },
