@@ -16,11 +16,8 @@ const oznacVidene = fid => { const So = socC(), m = So ? (So.spravy[fid] || []).
 const neprecitane = fid => { const So = socC(), v = S.get(videlKluc(fid), 0); return So ? (So.spravy[fid] || []).filter(m => m.od === fid && m.kedy > v).length : 0; };
 function socNove() { const So = socC(); if (!So || !So.zapnute) return 0; return So.ziadosti.length + Object.keys(So.priatelia).reduce((a, f) => a + neprecitane(f), 0); }
 function socZnacka() { const b = document.getElementById('nav-priatelia'); if (b) b.classList.toggle('novinka', socNove() > 0); }
-// strom múdrosti priateľa (bez animácie): plod za každý deň série
-const stromMaly = n => `<svg class="strom-mini" viewBox="56 20 208 222" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-  <path d="M40 240 V228 C110 206 210 206 280 228 V240Z" fill="#7ED957"/><path d="M148 232 C150 198 146 178 132 160 L146 154 C154 166 158 176 160 186 C164 172 172 162 186 154 L194 162 C178 174 172 194 174 232Z" fill="#B5651D"/>
-  ${KORUNA.map(([x, y, rr]) => `<circle cx="${x}" cy="${y}" r="${rr + 4}" fill="${INK}" stroke="none"/>`).join('')}${KORUNA.map(([x, y, rr, c]) => `<circle cx="${x}" cy="${y}" r="${rr}" fill="${c}" stroke="none"/>`).join('')}
-  ${PLODY.slice(0, Math.min(n, PLODY.length)).map(([x, y], i) => `<g transform="translate(${x} ${y})">${plod(i)}</g>`).join('')}</g></svg>`;
+// strom priateľa: nová kresba stromu múdrosti podľa jeho série (stupeň aj plody)
+const stromPriatela = n => { const i = stromStupen(n); return `<span class="strom-mini">${stromSvg({ stupen: i, plody: Math.min(n, STROM_STUPNE[i].plody), kos: 0, novy: -1, zem: 'tien' })}</span>`; };
 const casSpravy = t => { const d = new Date(t), dnes = key(new Date()) === key(d); return (dnes ? '' : d.getDate() + '. ' + (d.getMonth() + 1) + '. ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 /* Filter pre voľné písanie (slovenčina, čeština): jednoduchý zoznam zjavných nadávok, aj keď sú písané s bodkami, číslami alebo opakovanými písmenami,
    a údaje, ktoré deti nemajú posielať (telefón, e-mail, odkaz). Nie je dokonalý: hlavná poistka je, že písanie zapína rodič a vidí všetky správy. */
@@ -140,7 +137,7 @@ Object.assign(views, {
     return `<div class="pr pr-profil"><div class="pr-vrch"><div class="pr-hl"><button class="btn kruh dve" data-soc-otvor="${f}" aria-label="Späť na rozhovor">${ikn('spat')}</button></div>
         <div class="pr-ja">${prAv(p.avatar, f, 'velky')}<h1 class="n0">${esc(p.meno)}</h1>${sr > 0 ? `<span class="st" style="--c:var(--sun)">${ikn('plamen')}séria ${sr} ${dni(sr)}</span>` : ''}</div></div>
       <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'hviezda', 'hviezdy', 'hviezd'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
-      <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromMaly(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
+      <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromPriatela(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
       ${odz.length ? `<section class="karta pr-odz"><span class="zal" style="--c:var(--sun)">${ikn('odznak')}Posledné odznaky</span><div class="posledne">${odz.map(o => `<span class="medaila mala" title="${esc(o.n)}">${ikOdznaku(o)}</span>`).join('')}</div></section>` : ''}
       <button class="btn wide cta" data-soc-otvor="${f}">${ikn('bublina')}Napísať správu</button>
       <button class="btn dve wide soc-odober" data-soc-odober="${f}">${ikn('kos')}Odstrániť ${esc(p.meno)} z priateľov</button></div>`;

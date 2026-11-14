@@ -44,7 +44,7 @@ function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
   if (!d || !Cloud.pouzivatel) return;
-  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 200), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 200) });
   zapis(d.id, d);
   socUlozProfil();
   zapisStat();

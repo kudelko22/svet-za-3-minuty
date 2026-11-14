@@ -36,7 +36,8 @@ const plod = (i, hn = 0) => `<circle r="10" fill="${hn >= 2 ? ['#8B5A2B', '#7A55
 /* 5.0: nová kresba stromu. Koruna je jedna silueta s obrysom a tromi tónmi vnútri, na kmeni Múdrina koralová šatka (od Mladého stromu),
    od Veľkého stromu dutina. Plody v troch farbách palety, košík s visačkou „+N“. Vädnutie mení tóny koruny a pridáva opadané listy.
    Súradnice: stred kmeňa x 120, zem y 228. Triedy os-* nesú pohyb (rast, nafúknutie koruny zdola nahor, plody, kývanie). */
-const ST_TON = { z: ['#8BDD90', 'var(--leaf)', 'var(--leaf-d)'], 1: ['#D9E480', '#B9D154', '#96B03C'], 2: ['#EDCE76', '#D8AE48', '#B4892B'], 3: ['#BFAD82', '#A38F62', '#83714B'], zl: ['#FFE48C', 'var(--sun)', 'var(--sun-d)'] };
+// tóny korún sú premenné z 24-domov-strom.css, aby mal strom v Mesačnom režime nočné farby
+const ST_TON = { z: ['var(--st-z0)', 'var(--st-z1)', 'var(--st-z2)'], 1: ['var(--st-10)', 'var(--st-11)', 'var(--st-12)'], 2: ['var(--st-20)', 'var(--st-21)', 'var(--st-22)'], 3: ['var(--st-30)', 'var(--st-31)', 'var(--st-32)'], zl: ['#FFE48C', 'var(--sun)', 'var(--sun-d)'] };
 const ST_KOR = {
   1: [[101, 158, 15, 2], [141, 156, 16, 1], [120, 138, 25, 0]],
   2: [[88, 133, 25, 2], [152, 131, 26, 2], [120, 110, 38, 1], [121, 82, 25, 0]],
@@ -288,4 +289,3 @@ const StromKrajina = {
     return `<span class="kr-strom st${i}${hn ? ' schne' : ''}" data-strom role="button" tabindex="0" aria-label="${popis}">${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, zem: 'tien' })}</span>`;
   },
 };
-const MINI_STROM = `<svg viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 36 V24 H23 V36Z" fill="#B5651D"/><circle cx="20" cy="17" r="13" fill="#4CD07D"/><circle cx="15" cy="15" r="3" fill="#FF5A5F" stroke-width="1.8"/><circle cx="25" cy="19" r="3" fill="#FFD23F" stroke-width="1.8"/></g></svg>`;

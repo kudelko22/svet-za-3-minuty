@@ -35,10 +35,10 @@ service cloud.firestore {
         && d.meno is string && d.meno.size() >= 1 && d.meno.size() <= 20
         && d.vek in ['mladsi', 'starsi']
         && platnyAvatar(d.avatar)
-        && (!('odznaky' in d) || (d.odznaky is list && d.odznaky.size() <= 100))
+        && (!('odznaky' in d) || (d.odznaky is list && d.odznaky.size() <= 200))
         && (!('kedy' in d) || (d.kedy is map && d.kedy.size() <= 500))
         && (!('chyby' in d) || (d.chyby is list && d.chyby.size() <= 60))
-        && (!('vybrate' in d) || (d.vybrate is list && d.vybrate.size() <= 100))
+        && (!('vybrate' in d) || (d.vybrate is list && d.vybrate.size() <= 200))
         && d.body is int && d.body >= 0 && d.body <= 1000000
         && d.done is list && d.done.size() <= 500
         && d.fav is list && d.fav.size() <= 500

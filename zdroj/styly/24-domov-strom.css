@@ -79,3 +79,9 @@
 @media (prefers-reduced-motion: reduce) {
   .os-strom *, .kr-strom, .so-bub { animation: none !important; }
 }
+
+/* 5.0: farby koruny stromu (zelený, vädnúci 1–3); v noci tlmené, mesačné tóny, ladia s nočnou krajinou */
+html { --st-z0: #8BDD90; --st-z1: var(--leaf); --st-z2: var(--leaf-d); --st-10: #D9E480; --st-11: #B9D154; --st-12: #96B03C;
+  --st-20: #EDCE76; --st-21: #D8AE48; --st-22: #B4892B; --st-30: #BFAD82; --st-31: #A38F62; --st-32: #83714B; }
+html[data-rezim="mesacny"] { --st-z0: #5DB59A; --st-z1: #3A9A7E; --st-z2: #24705E; --st-10: #A9B474; --st-11: #8A9A57; --st-12: #6B7B40;
+  --st-20: #C2A66A; --st-21: #A3874B; --st-22: #826836; --st-30: #978C78; --st-31: #7C715D; --st-32: #615747; }

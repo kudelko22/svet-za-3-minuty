@@ -1086,6 +1086,12 @@ body.ang-rezim main.gut { padding-block: max(14px, env(safe-area-inset-top)) 120
 @media (prefers-reduced-motion: reduce) {
   .os-strom *, .kr-strom, .so-bub { animation: none !important; }
 }
+
+/* 5.0: farby koruny stromu (zelený, vädnúci 1–3); v noci tlmené, mesačné tóny, ladia s nočnou krajinou */
+html { --st-z0: #8BDD90; --st-z1: var(--leaf); --st-z2: var(--leaf-d); --st-10: #D9E480; --st-11: #B9D154; --st-12: #96B03C;
+  --st-20: #EDCE76; --st-21: #D8AE48; --st-22: #B4892B; --st-30: #BFAD82; --st-31: #A38F62; --st-32: #83714B; }
+html[data-rezim="mesacny"] { --st-z0: #5DB59A; --st-z1: #3A9A7E; --st-z2: #24705E; --st-10: #A9B474; --st-11: #8A9A57; --st-12: #6B7B40;
+  --st-20: #C2A66A; --st-21: #A3874B; --st-22: #826836; --st-30: #978C78; --st-31: #7C715D; --st-32: #615747; }
 /* Domov 5.0: okná týždňa (stromček v hlavičke), okruh týždňa a Prehľad týždňa. Okno je papierová karta s obrysom ako .zavoj > .okno. */
 .okruh-tl-ik { flex: none; display: grid; place-items: center; width: 22px; height: 22px; }
 .okruh-tl-ik svg, .okruh-ik svg { width: 100%; height: 100%; }
@@ -2187,7 +2193,8 @@ body:has(main > .ihrisko) .blobs { display: none; }
 .pr-stat b { font: 900 1.5rem/1 var(--fd); }
 .pr-stat small { font: 600 .82rem/1.2 var(--fb); }
 .pr-strom { display: grid; justify-items: center; gap: 4px; }
-.strom-mini { width: 170px; height: auto; }
+.strom-mini { display: block; width: 170px; margin: 0 auto; }
+.strom-mini svg { display: block; width: 100%; height: auto; }
 .pr-odz .posledne { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .soc-odober { color: var(--muted); }
 @media (min-width: 520px) { .pr-staty { grid-template-columns: repeat(4, 1fr); } .pr-stat { grid-template-columns: 1fr; justify-items: center; text-align: center; row-gap: 4px; } .pr-stat .ikb { grid-row: auto; } }
@@ -5920,11 +5927,8 @@ const oznacVidene = fid => { const So = socC(), m = So ? (So.spravy[fid] || []).
 const neprecitane = fid => { const So = socC(), v = S.get(videlKluc(fid), 0); return So ? (So.spravy[fid] || []).filter(m => m.od === fid && m.kedy > v).length : 0; };
 function socNove() { const So = socC(); if (!So || !So.zapnute) return 0; return So.ziadosti.length + Object.keys(So.priatelia).reduce((a, f) => a + neprecitane(f), 0); }
 function socZnacka() { const b = document.getElementById('nav-priatelia'); if (b) b.classList.toggle('novinka', socNove() > 0); }
-// strom múdrosti priateľa (bez animácie): plod za každý deň série
-const stromMaly = n => `<svg class="strom-mini" viewBox="56 20 208 222" aria-hidden="true"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-  <path d="M40 240 V228 C110 206 210 206 280 228 V240Z" fill="#7ED957"/><path d="M148 232 C150 198 146 178 132 160 L146 154 C154 166 158 176 160 186 C164 172 172 162 186 154 L194 162 C178 174 172 194 174 232Z" fill="#B5651D"/>
-  ${KORUNA.map(([x, y, rr]) => `<circle cx="${x}" cy="${y}" r="${rr + 4}" fill="${INK}" stroke="none"/>`).join('')}${KORUNA.map(([x, y, rr, c]) => `<circle cx="${x}" cy="${y}" r="${rr}" fill="${c}" stroke="none"/>`).join('')}
-  ${PLODY.slice(0, Math.min(n, PLODY.length)).map(([x, y], i) => `<g transform="translate(${x} ${y})">${plod(i)}</g>`).join('')}</g></svg>`;
+// strom priateľa: nová kresba stromu múdrosti podľa jeho série (stupeň aj plody)
+const stromPriatela = n => { const i = stromStupen(n); return `<span class="strom-mini">${stromSvg({ stupen: i, plody: Math.min(n, STROM_STUPNE[i].plody), kos: 0, novy: -1, zem: 'tien' })}</span>`; };
 const casSpravy = t => { const d = new Date(t), dnes = key(new Date()) === key(d); return (dnes ? '' : d.getDate() + '. ' + (d.getMonth() + 1) + '. ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
 /* Filter pre voľné písanie (slovenčina, čeština): jednoduchý zoznam zjavných nadávok, aj keď sú písané s bodkami, číslami alebo opakovanými písmenami,
    a údaje, ktoré deti nemajú posielať (telefón, e-mail, odkaz). Nie je dokonalý: hlavná poistka je, že písanie zapína rodič a vidí všetky správy. */
@@ -6044,7 +6048,7 @@ Object.assign(views, {
     return `<div class="pr pr-profil"><div class="pr-vrch"><div class="pr-hl"><button class="btn kruh dve" data-soc-otvor="${f}" aria-label="Späť na rozhovor">${ikn('spat')}</button></div>
         <div class="pr-ja">${prAv(p.avatar, f, 'velky')}<h1 class="n0">${esc(p.meno)}</h1>${sr > 0 ? `<span class="st" style="--c:var(--sun)">${ikn('plamen')}séria ${sr} ${dni(sr)}</span>` : ''}</div></div>
       <div class="pr-staty">${stat('plamen', 'coral', sr, dni(sr) + ' po sebe')}${stat('hviezda', 'sun', bo, prPl(bo, 'hviezda', 'hviezdy', 'hviezd'))}${stat('temy', 'sky', te, prPl(te, 'téma', 'témy', 'tém'))}${stat('odznak', 'violet', od, prPl(od, 'odznak', 'odznaky', 'odznakov'))}</div>
-      <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromMaly(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
+      <section class="karta pr-strom"><span class="zal" style="--c:var(--teal)">${ikn('strom')}Strom múdrosti</span>${stromPriatela(sr)}<p class="pr-mala">Plod za každý deň série</p></section>
       ${odz.length ? `<section class="karta pr-odz"><span class="zal" style="--c:var(--sun)">${ikn('odznak')}Posledné odznaky</span><div class="posledne">${odz.map(o => `<span class="medaila mala" title="${esc(o.n)}">${ikOdznaku(o)}</span>`).join('')}</div></section>` : ''}
       <button class="btn wide cta" data-soc-otvor="${f}">${ikn('bublina')}Napísať správu</button>
       <button class="btn dve wide soc-odober" data-soc-odober="${f}">${ikn('kos')}Odstrániť ${esc(p.meno)} z priateľov</button></div>`;
@@ -6396,7 +6400,8 @@ const plod = (i, hn = 0) => `<circle r="10" fill="${hn >= 2 ? ['#8B5A2B', '#7A55
 /* 5.0: nová kresba stromu. Koruna je jedna silueta s obrysom a tromi tónmi vnútri, na kmeni Múdrina koralová šatka (od Mladého stromu),
    od Veľkého stromu dutina. Plody v troch farbách palety, košík s visačkou „+N“. Vädnutie mení tóny koruny a pridáva opadané listy.
    Súradnice: stred kmeňa x 120, zem y 228. Triedy os-* nesú pohyb (rast, nafúknutie koruny zdola nahor, plody, kývanie). */
-const ST_TON = { z: ['#8BDD90', 'var(--leaf)', 'var(--leaf-d)'], 1: ['#D9E480', '#B9D154', '#96B03C'], 2: ['#EDCE76', '#D8AE48', '#B4892B'], 3: ['#BFAD82', '#A38F62', '#83714B'], zl: ['#FFE48C', 'var(--sun)', 'var(--sun-d)'] };
+// tóny korún sú premenné z 24-domov-strom.css, aby mal strom v Mesačnom režime nočné farby
+const ST_TON = { z: ['var(--st-z0)', 'var(--st-z1)', 'var(--st-z2)'], 1: ['var(--st-10)', 'var(--st-11)', 'var(--st-12)'], 2: ['var(--st-20)', 'var(--st-21)', 'var(--st-22)'], 3: ['var(--st-30)', 'var(--st-31)', 'var(--st-32)'], zl: ['#FFE48C', 'var(--sun)', 'var(--sun-d)'] };
 const ST_KOR = {
   1: [[101, 158, 15, 2], [141, 156, 16, 1], [120, 138, 25, 0]],
   2: [[88, 133, 25, 2], [152, 131, 26, 2], [120, 110, 38, 1], [121, 82, 25, 0]],
@@ -6648,7 +6653,6 @@ const StromKrajina = {
     return `<span class="kr-strom st${i}${hn ? ' schne' : ''}" data-strom role="button" tabindex="0" aria-label="${popis}">${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, zem: 'tien' })}</span>`;
   },
 };
-const MINI_STROM = `<svg viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 36 V24 H23 V36Z" fill="#B5651D"/><circle cx="20" cy="17" r="13" fill="#4CD07D"/><circle cx="15" cy="15" r="3" fill="#FF5A5F" stroke-width="1.8"/><circle cx="25" cy="19" r="3" fill="#FFD23F" stroke-width="1.8"/></g></svg>`;
 /* Misia dňa: jedna krátka misia na deň (5 typov), body raz za deň, história splnených. Bez tlaku: vynechaný deň nič nestojí. */
 const MISIA_TYPY = {
   detektiv: { n: 'Detektívna misia', c: 'var(--violet)', ik: 'lupa', ikn: 'lupa', p: 'Prečítaj indície a odhaľ záhadu.', von: 'Vymyslite doma vlastnú záhadu a nechajte ostatných hádať.' },
@@ -8807,7 +8811,7 @@ function ulozAktivne() {
   casovac = null;
   const d = Cloud.deti.find(x => x.id === st.dietaId);
   if (!d || !Cloud.pouzivatel) return;
-  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 100), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 100) });
+  Object.assign(d, { meno: st.meno, vek: st.vek, avatar: st.avatar, body: Math.max(0, Math.round(st.body || 0)), done: st.done.slice(0, 500), fav: st.fav.slice(0, 500), dni: st.dni.slice(-400), odznaky: st.odznaky.slice(0, 200), kedy: st.kedy, chyby: st.chyby.slice(-60), vybrate: st.vybrate.slice(0, 200) });
   zapis(d.id, d);
   socUlozProfil();
   zapisStat();
