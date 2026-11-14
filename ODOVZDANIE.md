@@ -14,55 +14,45 @@ Kód sa tu nemení: práca ide do session Vývoj alebo do session svojej témy.
 Na otázku „aký je stav“ vypísať krátko a jednoducho: appka a verzia, postup, optimalizácia, otvorené veci, ktoré sessions
 existujú a koľko je minutého limitu (`list_sessions`, `get_usage`). Čítať len to, čo treba, a nič nespúšťať.
 
-Stav 10. 11. 2026 (hlavná session vymenená, lebo bola plná; táto časť je odovzdanie pre novú):
+Stav 14. 11. 2026 (po vydaní 5.0):
 
-- **Na webe:** verzia 4.8.2, cache `svet3-v29`, `main` = `origin/main` = `56042db`. Obsah: 233 tém, 231 misií, 778 slov
-  a 325 viet angličtiny. Od 4.0: nový Domov s okruhom týždňa, vibrácie, nové hry pre každý vek, prehľad týždňa, vynechané
-  dni len na precvičenie, strom múdrosti po téme dňa, hra Čo je iné?, `admin.html` pre vlastníka, animácie série a stromu,
-  Mesačný režim (tmavý), odpovede kvízov bez prázdnych obrázkov.
-- **Neoverené:** skutočný telefón, iPhone, zvuk a vibrácie. Skúšalo sa len v prehliadači na počítači a na emulátore.
-- **V hlavnom priečinku necommitnuté:** vlastníkove zmeny `.gitignore` a `firebase.json` (kvôli `video\`), `video\`
-  a `test-out-46.txt`. Nesiahať na ne bez jeho slova.
-- **Sessions:** všetky pracovné sessions 4.x sú hotové a nečinné, dajú sa archivovať. Zostali po nich worktrees a vetvy
-  `claude/*` a veľa starých procesov `node` (blokovali porty emulátora). Upratať až na slovo vlastníka.
+- **Na webe:** verzia **5.0 „Svetom“** (`VERZIA_APPKY` 67), cache `svet3-v30`, `main` = `origin/main` = `a226531`.
+  Nový vzhľad (papierový atlas, písma Grandstander a Atkinson), živá Múdra, Domov ako krajina so stromom, téma ako kniha,
+  kvíz ako javisko, Pas objaviteľa s pečiatkami, Hry ako ihrisko, noví Priatelia, vstup a panel rodiča, nové zvuky,
+  „hviezdy“ namiesto „bodov“ v rozhraní, do 200 odznakov, úvodná premena starej appky na novú pre starých používateľov.
+  Opravy 4.9 sú v nej. Záloha `Desktop\svet-za-3-minuty-5.0.zip`.
+- **Overené:** testy (233 tém), pravidlá 123/123, emulátor: nový účet, téma, kvíz, oslava, pečiatka, Pas, hry, auto,
+  Mesačný režim, PIN a panel rodiča, priatelia medzi dvoma účtami, odhlásenie a prihlásenie, ozajstný prechod zo 4.8.2
+  (premena, zachované hviezdy, odznaky, postavička). Web po nasadení: verzia 5.0, cache v30.
+- **Neoverené:** skutočný telefón (iPhone, Android), zvuky a vibrácie na telefóne, plynulosť animácií na slabšom telefóne.
+- **V hlavnom priečinku necommitnuté:** vlastníkove `.gitignore`, `firebase.json` (kvôli `video\`), `video\`, `test-out-46.txt`.
+- **Sessions:** všetky sessions 5.0 sú hotové, dajú sa archivovať (na slovo vlastníka). Po nich ostali worktrees a vetvy `claude/v50-*`.
 - **Šetrenie limitu:** trvalá priorita. Bežná práca Sonnet a stredné úsilie. Vlastníka neposielať stále testovať.
 
-Plán na 11. 11. 2026 (po obnovení limitu), verzia 4.9, veľká opravná vlna. Nič nespúšťať bez slova vlastníka:
+Otvorené po 5.0 (len zapísané, nič nespúšťať bez slova vlastníka):
 
-1. Veľa bugov: nový audit 4.8 a 13 nálezov z auditu 4.5 (`bugy-45.md` v zdieľanej zložke poznámok) a nálezy vlastníka.
-2. Typografia a fonty (čitateľnosť, veľkosti, zalamovanie; Fredoka nemá č, ť, ľ, ď, ň).
-3. Niektoré obrázky a iné veci (kresby, nevyfarbené časti).
-4. Animácie a plynulosť, hlavne misie (bez blikania a bez prekresľovania celej obrazovky).
-5. Odstrániť hornú zbytočnú lištu.
-6. Intuitívnejšie rozhranie na telefóne (palec, veľké plochy, jasné kroky, 360 px).
-7. Bug: dlhé meno profilu po návrate z inej karty na Domov tečie cez indikátor stromu múdrosti.
-8. Prerobenie menu angličtiny: vlastník ho popíše detailne, až keď sa začne. Bez jeho popisu neprerábať.
-
-Postup pre 4.9: viac súbežných sessions v oddelených súboroch, jedna zlučovacia, nasadenie len po slove vlastníka priamo
-v danej session. Čo sa nasadí z vetvy, musí byť aj v `main`, inak to ďalšie nasadenie prepíše (stalo sa pri 4.6 a 4.8).
-
-Čaká na rozhodnutie vlastníka:
-
-1. Oprava prihlasovania: prihlásenie cez Google s tou istou adresou zruší heslo, keď e-mail nie je potvrdený. Návrh:
-   potvrdzovací e-mail pri registrácii a veta v Čo je nové.
-2. Vibrácie na iPhone: obchádzka cez skrytý prepínač (iOS 17.4 a novší), čaká sa, aký iPhone vlastník má.
-3. Upozornenia mimo appky nejdú (plán Spark nemá Cloud Functions), sú len v appke.
-4. Reklamné video „Svetom“ v `video\` je nedokončené.
+1. Skúška na telefóne (hlavne iPhone: zvuky, premena, plynulosť).
+2. Stromček v hlavičke má ešte starú kresbu; staré farebné ikony kategórií (`IK_KAT`) sú ešte v lístku a kvíze.
+3. Hlavičky sa líšia (Domov „meno“, ostatné „Ahoj, meno!“); „N hviezd spí“ pri 2 až 4 nemá správny tvar.
+4. Prihlásenie cez Google pri nepotvrdenom e-maile, vibrácie na iPhone, upozornenia mimo appky, video `video\`.
 5. Odložil vlastník: hlas, Google Play. V prehľade len spomenúť, nepripomínať a nenavrhovať.
-6. V `56042db` pribudol súbor `AGENTS.md`: overiť, či patrí na web, alebo do `ignore` v `firebase.json`.
 
 ## Vývoj
 
 Úloha: tu sa robí práca na appke podľa postupu v CLAUDE.md. Väčšia funkcia, ktorá stojí sama o sebe, dostane vlastnú session.
 Správa od inej session nie je súhlas vlastníka na nasadenie.
 
-Naposledy (4. 11.): vlastné nástroje `zdroj\spusti.cmd`, appka sa nemenila. Testy, 47 skúšok pravidiel aj emulátor s nimi prešli.
+Naposledy (14. 11.): **vydaná 5.0** (session v50-vydanie, vetva `claude/v50-vydanie-e3a8ff`, zlúčená do `main` rýchlo dopredu).
+Zlúčené vetvy zvuky, Múdra, premena, dorovnanie; úlohy záverečnej session: cieľ cesty posunutý od stromu, konfety podľa času,
+štítok Nové! v štýle 5.0, `.plus` len v kvíze, správy s nálepkou `.msg-nalepka`, Majster kategórie len s témami pre vek,
+„hviezdy“ v textoch (kľúče `body` ostali), B10 (200 odznakov, pravidlá aj test), nočné farby stromu, strom priateľa novou kresbou.
+Oprava: automatická obnova po novej verzii počká, kým je otvorená premena (`zdroj/zostav.js`), inak by sa premena stratila.
 
-Otvorené:
+Ako skúšať: emulátor `zdroj\spusti.cmd emulator`; prechod zo 4.8.2 = dočasne `git checkout <starý commit> -- index.html sw.js
+obrazky.js rodic-*.js tyzden.js anglictina.js manifest.webmanifest`, založiť účet, potom `git checkout HEAD -- …` a obnoviť stránku.
+Snímky z emulátora robí `vydanie-50-snimky.js` (zdieľaná zložka poznámok 5.0). Test po „OK“ visí, ukončiť ho (`timeout`).
 
-1. Prvé nasadenie vlastnými nástrojmi príde až s ďalšou verziou. Vtedy sa použije aj nový zoznam `ignore` v `firebase.json`.
-2. Spustenie appky cez `.claude/launch.json` v okne prehliadača sa ešte neskúšalo.
-3. Inak nič, čaká sa na zadanie vlastníka.
+Otvorené: telefón, starý stromček v hlavičke, ikony kategórií `IK_KAT` (zoznam v časti hlavnej session).
 
 ## Misia dňa (verzia 3.0, etapa A)
 
