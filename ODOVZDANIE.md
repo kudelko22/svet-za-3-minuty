@@ -24,6 +24,10 @@ Stav 14. 11. 2026 (po vydaní 5.0):
 - **Overené:** testy (233 tém), pravidlá 123/123, emulátor: nový účet, téma, kvíz, oslava, pečiatka, Pas, hry, auto,
   Mesačný režim, PIN a panel rodiča, priatelia medzi dvoma účtami, odhlásenie a prihlásenie, ozajstný prechod zo 4.8.2
   (premena, zachované hviezdy, odznaky, postavička). Web po nasadení: verzia 5.0, cache v30.
+- **15. 11. malý update bez správy v novinkách** (verzia ostáva 67 / 5.0, cache `svet3-v31`, `main` = `c90cd38`): slnko za Múdrou je celý kruh
+  (kvíz aj výsledok hry); Odhlásiť sa je aj v Ja, vo výbere dieťaťa (pri účte rodiča najprv PIN) a na hlavnej stránke panela rodiča;
+  po odstránení dieťaťa z panela ostane rodič v Nastaveniach. Záloha `Desktopsvet-za-3-minuty-5.0-opravy-15-11.zip`.
+  Zapísané na neskôr: srdiečko v texte prázdnych Uložených tém v Ja je na samostatnom riadku.
 - **Neoverené:** skutočný telefón (iPhone, Android), zvuky a vibrácie na telefóne, plynulosť animácií na slabšom telefóne.
 - **V hlavnom priečinku necommitnuté:** vlastníkove `.gitignore`, `firebase.json` (kvôli `video\`), `video\`, `test-out-46.txt`.
 - **Sessions:** všetky sessions 5.0 sú hotové, dajú sa archivovať (na slovo vlastníka). Po nich ostali worktrees a vetvy `claude/v50-*`.
