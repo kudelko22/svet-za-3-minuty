@@ -730,7 +730,7 @@ function vysledokHry(h) {
   const rek = v.novy ? `<span class="pec vysl-pec">${ikn('pohar')}Nový rekord</span>` : v.prvy ? `<span class="pec vysl-pec">${ikn('pohar')}Prvý rekord</span>`
     : v.stary != null ? `<p class="vysl-rek">${ikn('pohar')}Rekord: <b>${rekordText(h.id, v.stary)}</b></p>` : '';
   return `<div class="vysl${dobre ? ' dobre' : ''}" role="dialog" aria-modal="true" aria-labelledby="vysl-n">
-    <div class="vysl-scena" aria-hidden="true">${dobre ? `<div class="vysl-slnko">${slnkoKviz()}</div>` : ''}<div class="vysl-mud">${mudra(dobre ? 'oslava' : 'povzbudenie', { extra: dobre })}</div>
+    <div class="vysl-scena" aria-hidden="true">${dobre ? `<div class="vysl-slnko">${slnkoKviz(132, 96)}</div>` : ''}<div class="vysl-mud">${mudra(dobre ? 'oslava' : 'povzbudenie', { extra: dobre })}</div>
       <span class="vysl-cislo">${ikn(ikonaHry(h.id))}<b>${v.hodnota}</b></span></div>
     <div class="vysl-harok"><h2 class="n1" id="vysl-n">${nadpis}</h2><p class="vysl-co">${rekordText(h.id, v.hodnota)}</p>
       ${t ? `<p class="vysl-t">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}${rek}

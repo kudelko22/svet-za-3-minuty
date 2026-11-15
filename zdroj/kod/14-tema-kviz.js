@@ -138,9 +138,9 @@ function reakcia(f, odp, q) {
       <p>${odp.ok ? '' : 'Správne je: <b>' + q.a[0][1] + '</b>. '}${q.w || ''}</p>
       <button class="btn wide" data-dalej>${dalej}${ikn('sipka', 'za')}</button></div></div>`;
 }
-// slnko za Múdrou (polkruh s lúčmi), kreslí sa raz
-const SLNKO_LUCE = (() => { let t = ''; const n = 13, k = 180 / n; for (let i = 0; i < n; i++) { const a = (180 + i * k) * Math.PI / 180, b = (180 + (i + 1) * k) * Math.PI / 180; t += `<path d="M180 250L${(180 + 260 * Math.cos(a)).toFixed(1)} ${(250 + 260 * Math.sin(a)).toFixed(1)}L${(180 + 260 * Math.cos(b)).toFixed(1)} ${(250 + 260 * Math.sin(b)).toFixed(1)}Z" fill="${i % 2 ? '#FFC533' : '#FFDB70'}"/>`; } return t; })();
-const slnkoKviz = () => `<svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMax meet"><clipPath id="slnko-k"><circle cx="180" cy="250" r="178"/></clipPath><circle cx="180" cy="250" r="204" fill="none" stroke="#FFC533" stroke-width="7" stroke-dasharray=".1 16" stroke-linecap="round"/><g clip-path="url(#slnko-k)"><g class="luce">${SLNKO_LUCE}</g></g><circle cx="180" cy="250" r="178" fill="none" style="stroke:var(--ink)" stroke-width="3"/></svg>`;
+// slnko za Múdrou: celý kruh s lúčmi dookola (15. 11.: predtým polkruh), kreslí sa raz; cy a r podľa toho, kde stojí Múdra
+const SLNKO_LUCE = (() => { let t = ''; const n = 26, k = 360 / n; for (let i = 0; i < n; i++) { const a = i * k * Math.PI / 180, b = (i + 1) * k * Math.PI / 180; t += `<path d="M180 250L${(180 + 260 * Math.cos(a)).toFixed(1)} ${(250 + 260 * Math.sin(a)).toFixed(1)}L${(180 + 260 * Math.cos(b)).toFixed(1)} ${(250 + 260 * Math.sin(b)).toFixed(1)}Z" fill="${i % 2 ? '#FFC533' : '#FFDB70'}"/>`; } return t; })();
+const slnkoKviz = (cy = 100, r = 90) => `<svg viewBox="0 0 360 250" preserveAspectRatio="xMidYMax meet"><clipPath id="slnko-k${cy}"><circle cx="180" cy="${cy}" r="${r}"/></clipPath><circle cx="180" cy="${cy}" r="${r + 14}" fill="none" stroke="#FFC533" stroke-width="7" stroke-dasharray=".1 16" stroke-linecap="round"/><g clip-path="url(#slnko-k${cy})"><g transform="translate(0 ${cy - 250})"><g class="luce">${SLNKO_LUCE}</g></g></g><circle cx="180" cy="${cy}" r="${r}" fill="none" style="stroke:var(--ink)" stroke-width="3"/></svg>`;
 // Odhad bodov počas kvízu, aby dieťa videlo nové body hneď. Počíta rovnako ako dokonci(), nič nezapisuje; body pripíše až dokonci().
 function odhadZisku(f, c) {
   if (f.precvic || c < 0) return 0;
