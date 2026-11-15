@@ -93,7 +93,7 @@ const views = {
         <p class="diag" id="diag">${esc(Zvuk.diag())}</p>
       </section>` : ''}
       <section class="ja-rodina"><span class="dop">Rodina</span>
-        ${maRodica() ? `<div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button></div>` : `<p class="tx">Účet rodiča: ${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}<br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
+        ${maRodica() ? `<div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button><button class="btn dve maly" data-ucet="odhlas">${ikn('odhlas')}Odhlásiť sa</button></div>` : `<p class="tx">Účet rodiča: ${esc(C && C.pouzivatel ? C.pouzivatel.email || '' : '')}<br><span id="cloud-stav">${esc(C ? C.stavUlozenia : '')}</span></p>
         <div class="ja-rad"><button class="btn dve maly" data-deti>${ikn('priatelia')}Zmeniť dieťa</button><button class="btn dve maly" data-ucet="odhlas">${ikn('odhlas')}Odhlásiť sa</button></div>
         <button class="btn dve maly wide" data-rodic-novy>${ikn('kluc')}Vytvoriť účet rodiča</button>
         ${Plocha.naPloche() ? '' : `<button class="btn dve maly wide" data-plocha>${ikn('domov')}Pridať appku na plochu</button>`}`}

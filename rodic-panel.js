@@ -57,8 +57,9 @@ const RodicPanel = (() => {
         }).join('')}
         ${C.deti.length ? '' : '<p class="rd-p">Zatiaľ tu nie je žiadne dieťa. Pridajte ho v Nastaveniach.</p>'}
         <div class="rd-blok">
-          <button class="rd-riadok" data-rp-nastavenia>${ikn('nastav')}<span class="rd-t"><b>Nastavenia</b><small>PIN, deti, vädnutie stromu, hlas</small></span>${sip()}</button>
+          <button class="rd-riadok" data-rp-nastavenia>${ikn('nastav')}<span class="rd-t"><b>Nastavenia</b><small>PIN, pridať, upraviť a odstrániť dieťa, hlas</small></span>${sip()}</button>
           <button class="rd-riadok" data-rp-vyber>${ikn('priatelia')}<span class="rd-t"><b>Späť na výber dieťaťa</b><small>Panel sa pritom zamkne</small></span>${sip()}</button>
+          <button class="rd-riadok" data-rp-odhlas>${ikn('odhlas')}<span class="rd-t"><b>Odhlásiť sa</b><small>${esc(C.pouzivatel && C.pouzivatel.email || '')}</small></span>${sip()}</button>
         </div></div></div>`;
     },
     rodicDieta() {
@@ -145,7 +146,7 @@ const RodicPanel = (() => {
     }
     else if (d.rpPridaj !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); }
     else if (d.rpOdstran) { Zvuk.play('tap'); rp.potvrd = d.rpOdstran; renderTicho(); }
-    else if (d.rpOdstranAno) { rp.potvrd = null; Zvuk.play('bad'); C.zmazDieta(d.rpOdstranAno); Rodic.chod('rodicNastavenia'); }
+    else if (d.rpOdstranAno) { rp.potvrd = null; Zvuk.play('bad'); C.zmazDieta(d.rpOdstranAno); Rodic.odomkni(); Rodic.chod('rodicNastavenia'); } // zmazDieta zamyká (výber dieťaťa); z panela ostáva rodič v Nastaveniach
     else if (d.rpNie !== undefined) { rp.potvrd = null; renderTicho(); }
     else if (d.rpZmaz !== undefined) { Zvuk.play('tap'); rp.potvrd = 'zmaz'; renderTicho(); }
     else if (d.rpZmazAno !== undefined) {

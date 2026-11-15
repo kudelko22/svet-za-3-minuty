@@ -7,7 +7,9 @@ function noveUpravovanie(prve) {
 }
 // Účet rodiča (3.5): odomknutie PIN-om je len v pamäti, samo sa zamkne po 5 minútach nečinnosti, pri zmene dieťaťa a pri odhlásení
 const Rodic = {
-  odomknute: false, do: 0, MINUT: 5,
+  odomknute: false, do: 0, MINUT: 5, po: null,
+  // akcia len pre rodiča (odhlásenie): hneď, ak je panel odomknutý, inak najprv PIN a potom akcia
+  poOdomknuti(fn) { if (this.jeOdomknute()) { fn(); return; } this.po = fn; this.chod('rodicPin'); },
   odomkni() { this.odomknute = true; this.do = Date.now() + this.MINUT * 60000; },
   zamkni() { this.odomknute = false; this.do = 0; },
   // každé volanie počas odomknutia je „aktivita“ a predĺži čas
@@ -20,6 +22,7 @@ const Rodic = {
   chod(faza, id) {
     Hlas.stop();
     if (!String(faza).startsWith('rodic')) this.zamkni(); // odchod z rodičovskej zóny = zamknúť
+    if (faza !== 'rodicPin') this.po = null;
     if (id !== undefined) st.rodicDieta = id;
     st.flow = null; st.faza = faza; render(); scrollTo(0, 0);
   },

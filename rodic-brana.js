@@ -119,7 +119,6 @@ const RodicBrana = (() => {
       : `<button class="vs-rodic rodic-novy" data-rodic-novy><span class="vs-rodic-plus">${ikn2('kluc')}</span><span><b>Pre rodiča</b><small>Nastavte PIN a uvidíte prehľad detí</small></span>${ikn2('sipka')}</button>`;
     let r = html.replace('<!--rodic-->', karta);
     if (r === html) r = html.replace('</h1>', '</h1>' + karta);
-    if (p) r = r.replace(/\s*<button class="btn dve maly" data-ucet="odhlas">[\s\S]*?<\/button>/, ''); // odhlásenie je v rodičovskej zóne
     return r;
   };
 
@@ -186,7 +185,7 @@ const RodicBrana = (() => {
     let ok = false;
     try { ok = await C.rodicOverPin(pin); } catch (e) { ok = false; }
     S2.pracuje = false;
-    if (ok) { S2.chyb = 0; S2.do = 0; S2.kolo = 0; ulozPokusy(); S2.pin = ''; S2.chyba = ''; Rodic.odomkni(); Rodic.chod('rodic'); return; }
+    if (ok) { S2.chyb = 0; S2.do = 0; S2.kolo = 0; ulozPokusy(); S2.pin = ''; S2.chyba = ''; Rodic.odomkni(); const po = Rodic.po; Rodic.po = null; if (po) { po(); return; } Rodic.chod('rodic'); return; }
     nacitajPokusy(); S2.chyb++;
     if (S2.chyb >= POKUSOV) { S2.chyb = 0; S2.do = Date.now() + Math.min(PAUZA_MS * 2 ** S2.kolo, 3600000); S2.kolo = Math.min(S2.kolo + 1, 8); ulozPokusy(); S2.pin = ''; S2.chyba = ''; Zvuk.play('bad'); renderTicho(); return; }
     ulozPokusy(); dolu(false); zle('Zlý PIN. Zostáva pokusov: ' + (POKUSOV - S2.chyb));

@@ -704,7 +704,7 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   C.rodic.profil = { meno: "Mama", ikona: "r1", pin: "x", nastavenia: {} };
   h = views.ja();
   if (h.includes("Vytvoriť účet rodiča")) chyby.push("rodic: s rodicom stale ponuka vytvorenia");
-  if (!h.includes("data-deti") || h.includes('data-ucet="odhlas"')) chyby.push("rodic: karta Rodina nie je zmensena");
+  if (!h.includes("data-deti") || !h.includes('data-ucet="odhlas"')) chyby.push("rodic: v karte Rodina chyba Zmenit dieta alebo Odhlasit sa (chrani ho PIN)");
   if (h.includes("Pre rodiča</h2>")) chyby.push("rodic: prehlad ostal v detskom pohlade");
   Rodic.zamkni(); st.upravuje = { id: "x", meno: "A", vek: "mladsi", avatar: nahodnyAvatar(0), body: 0, kat: "vlasy", novy: false, potvrd: false };
   if (brany.tvorba().includes("data-zmazat")) chyby.push("rodic: zamknuty rodic, ale je Odstranit profil");

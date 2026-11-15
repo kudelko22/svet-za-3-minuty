@@ -96,6 +96,7 @@ document.addEventListener('click', e => {
   }
   if (d.ucet) {
     if (!window.Cloud) { toast('Prihlásenie sa ešte načítava, skúste o chvíľu.'); return; }
+    if (d.ucet === 'odhlas' && maRodica() && !Rodic.jeOdomknute()) { Zvuk.play('tap'); Rodic.poOdomknuti(() => window.Cloud.akcia('odhlas', '', '')); return; }
     const email = (document.getElementById('email') || {}).value || '', heslo = (document.getElementById('heslo') || {}).value || '';
     window.Cloud.akcia(d.ucet, email.trim(), heslo);
     return;
