@@ -32,3 +32,7 @@
 .owl.mudra[data-m="hi"] .ow-wr { animation-iteration-count: 3; }
 .mz-zije[data-v="radost"] .mz-cele, .mz-zije[data-v="oslava"] .mz-cele { animation-iteration-count: 1; }
 .mz-zije[data-v="radost"] .mz-extra, .mz-zije[data-v="oslava"] .mz-extra, .mz-zije[data-v="povzbudenie"] .mz-extra { animation-iteration-count: 4; }
+/* 10. Priatelia: kostry sa pri načítavaní len jemne a pomaly nadýchnu; po 8 s sa ukáže dôvod, prečo to trvá (offline) */
+.pr-tien, .pr-kostra span { animation-duration: 2.8s; }
+.pr-neskoro { opacity: 0; visibility: hidden; animation: prNeskoro .01s 8s forwards; }
+@keyframes prNeskoro { to { opacity: 1; visibility: visible; } }

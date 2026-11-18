@@ -796,7 +796,7 @@ function hryZoznam() {
   const dlazdica = h => { const r = rek(h);
     return `<button class="dlazdica hra-karta" data-hra="${h.id}" style="--c:${h.c};--i:${i++}" aria-label="${esc(h.n)}${r != null ? ', rekord ' + esc(rekordText(h.id, r)) : ', nová hra'}">
       <span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
-      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
+      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : ''}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
   const zamknuta = h => `<button class="dlazdica hra-karta zamknuta${spi(h) ? ' spi' : ''}" data-hra="${h.id}" style="--i:${i++}" aria-label="${esc(h.n)}, ${spi(h) ? 'spí, kým strom vädne' : `zamknutá, cena ${h.cena}, chýba ${h.cena - st.body}`}">
       <span class="zmk">${ikn(spi(h) ? 'mesiac' : 'zamok')}</span><span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;

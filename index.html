@@ -2962,6 +2962,10 @@ svg.mudra { overflow: visible; }
 .owl.mudra[data-m="hi"] .ow-wr { animation-iteration-count: 3; }
 .mz-zije[data-v="radost"] .mz-cele, .mz-zije[data-v="oslava"] .mz-cele { animation-iteration-count: 1; }
 .mz-zije[data-v="radost"] .mz-extra, .mz-zije[data-v="oslava"] .mz-extra, .mz-zije[data-v="povzbudenie"] .mz-extra { animation-iteration-count: 4; }
+/* 10. Priatelia: kostry sa pri načítavaní len jemne a pomaly nadýchnu; po 8 s sa ukáže dôvod, prečo to trvá (offline) */
+.pr-tien, .pr-kostra span { animation-duration: 2.8s; }
+.pr-neskoro { opacity: 0; visibility: hidden; animation: prNeskoro .01s 8s forwards; }
+@keyframes prNeskoro { to { opacity: 1; visibility: visible; } }
 </style>
 </head>
 <body>
@@ -5508,7 +5512,7 @@ function hryZoznam() {
   const dlazdica = h => { const r = rek(h);
     return `<button class="dlazdica hra-karta" data-hra="${h.id}" style="--c:${h.c};--i:${i++}" aria-label="${esc(h.n)}${r != null ? ', rekord ' + esc(rekordText(h.id, r)) : ', nová hra'}">
       <span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
-      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
+      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : ''}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
   const zamknuta = h => `<button class="dlazdica hra-karta zamknuta${spi(h) ? ' spi' : ''}" data-hra="${h.id}" style="--i:${i++}" aria-label="${esc(h.n)}, ${spi(h) ? 'spí, kým strom vädne' : `zamknutá, cena ${h.cena}, chýba ${h.cena - st.body}`}">
       <span class="zmk">${ikn(spi(h) ? 'mesiac' : 'zamok')}</span><span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;
@@ -6048,7 +6052,7 @@ Object.assign(views, {
   priatelia() {
     const So = socC();
     if (!So || !So.nacitane) return `<div class="pr pr-nacitava" aria-busy="true"><div class="pr-vrch">${prHlava(0)}<div class="pribehy">${'<span class="pr-tien"></span>'.repeat(4)}</div></div>
-      <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p></div>`;
+      <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p><p class="pr-mala pr-neskoro">Trvá to dlhšie. Možno si bez internetu, skús to neskôr.</p></div>`;
     if (!So.zapnute) return `<div class="pr"><div class="pr-vrch">${prHlava(0)}</div>
       <section class="karta soc-intro"><span class="zal" style="--c:var(--sun)">${ikn('stit')}Pre rodiča</span>${prMudra('ahoj', 'S priateľmi si budeš posielať nálepky a vety. Zapne ich rodič.')}
         <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, hviezdy, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>
