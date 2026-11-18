@@ -25,8 +25,9 @@ function dokonci(f) {
     kvizZamkni(druhKvizu(f));
   }
   pripisBody(f.zisk);
+  if (f.typ === 'tema' && !f.ina && f.zisk > 0) Dedinka.temaDna(); // truhlička za každé 3 témy dňa
   // deň (a strom múdrosti) len s aspoň jednou správnou odpoveďou
-  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); }
+  if (c && !st.dni.includes(dnes)) { hnPredDnes = hnStupen(); st.dni.push(dnes); S.set('dni', st.dni.slice(-400)); Dedinka.denPribudol(); Dedinka.obnov(); }
   f.noveOdznaky = noveOdznaky(qn && c === qn ? (f.typ === 'kviz' ? (f.vyzva ? 'vyzva' : f.tazky ? 'tazky' : 'blesk') : 'bezchyby') : '', { uci: true });
   f.noveOdmeny = noveOdmeny(bodyPred, st.body);
   f.noveHry = noveHry(bodyPred, st.body);

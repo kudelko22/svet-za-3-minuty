@@ -51,7 +51,7 @@ const Precvic = {
   prazdne: () => ({ zisk: 0, noveOdznaky: [], noveOdmeny: [], noveHry: [], precvic: true }),
   poznamka: () => '<p class="precvic-pozn">Len na precvičenie: nedostaneš hviezdičky, séria ani strom sa nezmenia.</p>',
 };
-function pripisBody(n) { if (!n || Precvic.teraz()) return 0; st.body += n; S.set('body', st.body); return n; }
+function pripisBody(n) { if (!n || Precvic.teraz()) return 0; st.body += n; S.set('body', st.body); if (typeof Dedinka !== 'undefined') Dedinka.krok(n); return n; }
 const denCislo = (dt = new Date()) => { const d = dt; return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 864e5); };
 const temaDna = () => byId(Tyzden.temaDna(key(new Date())));
 

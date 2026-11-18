@@ -2,12 +2,35 @@
 Cloud.rodicDietaOtvor = id => { const d = Cloud.dieta(id); if (!d) return false; if (st.dietaId !== id) { Cloud.ulozHned(); nastavAktivne(d); } socStart(id); return true; };
 Cloud.rodicDietaZavri = () => socZastav();
 
+/* Dedinka (5.1): živý odber dokumentu hra/dedinka aktívneho dieťaťa. Server povie, že dokument nie je = migrácia starého účtu (štartová dedinka a
+   uvítacia truhlička); prázdna odpoveď z pamäte sa ignoruje. Vlastné neuložené zmeny majú prednosť pred cloudom. */
+function dedinkaStop() {
+  if (odberDedinky) { odberDedinky(); odberDedinky = null; }
+  clearTimeout(casovacDedinky); casovacDedinky = null; dedinkaCaka = null; dedinkaId = null;
+}
+function dedinkaStart(id) {
+  if (!Cloud.pouzivatel || dedinkaId === id) return;
+  dedinkaStop(); dedinkaId = id; const uid = Cloud.pouzivatel.uid;
+  odberDedinky = onSnapshot(doc(db, 'rodiny', uid, 'deti', id, 'hra', 'dedinka'), { includeMetadataChanges: true }, snap => {
+    if (dedinkaId !== id || st.dietaId !== id) return;
+    if (snap.exists()) { if (!casovacDedinky && !snap.metadata.hasPendingWrites) { Dedinka.prevezmi(id, snap.data()); if (st.faza === 'appka' && st.view === 'domov') renderTicho(); } }
+    else if (!snap.metadata.fromCache) Dedinka.zaloz(id);
+  }, () => { /* bez dedinky (pravidlá ešte nenasadené alebo bez siete) appka funguje ďalej, dedinka je len v zariadení */ });
+}
+function ulozDedinkuHned() {
+  const id = dedinkaCaka; if (!id) return;
+  clearTimeout(casovacDedinky); casovacDedinky = null; dedinkaCaka = null;
+  if (!Cloud.pouzivatel || Dedinka.id !== id || !Dedinka.d) return;
+  Cloud.ulozHned(); // najprv pokrok (body), potom dedinka: pravidlo minute <= body + dar
+  setDoc(doc(db, 'rodiny', Cloud.pouzivatel.uid, 'deti', id, 'hra', 'dedinka'), { ...Dedinka.telo(), upravene: serverTimestamp() }).catch(() => {});
+}
 function nastavAktivne(d) {
   Object.assign(st, {
     dietaId: d.id, meno: d.meno || '', vek: d.vek === 'starsi' ? 'starsi' : 'mladsi', avatar: { ...AV_ZAKLAD, ...(d.avatar || nahodnyAvatar()) },
     body: d.body || 0, done: [...(d.done || [])], fav: [...(d.fav || [])], dni: [...(d.dni || [])], odznaky: [...(d.odznaky || [])],
     kedy: { ...(d.kedy || {}) }, chyby: [...(d.chyby || [])], vybrate: [...(d.vybrate || [])],
   });
+  dedinkaStart(d.id);
 }
 function zapis(id, d) {
   const z = setDoc(doc(db, 'rodiny', Cloud.pouzivatel.uid, 'deti', id), {
@@ -106,7 +129,7 @@ async function prevodStareho(u) {
 }
 
 onAuthStateChanged(auth, u => {
-  Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = ''; socZastav();
+  Cloud.pouzivatel = u; Cloud.deti = []; Cloud.nacitane = false; Cloud.chyba = ''; socZastav(); dedinkaStop(); Dedinka.id = null; Dedinka.d = null;
   Sprievodca.zavri(true); // sprievodca nového účtu nesmie ostať visieť nad úvodom po odhlásení
   if (odber) { odber(); odber = null; }
   if (odberRodic) { odberRodic(); odberRodic = null; }

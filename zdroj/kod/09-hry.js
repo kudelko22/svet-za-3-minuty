@@ -200,7 +200,8 @@ const Hra = {
     if (lepsi && hodnota > 0) S.set(kl, hodnota);
     S.set('hry-pocet-' + st.dietaId, S.get('hry-pocet-' + st.dietaId, 0) + 1);
     const odznaky = noveOdznaky('', { hra: h.id, hodnota, pary: h.karty ? h.karty.length / 2 : 0, dieliky: h.p ? h.p.length : 0 });
-    h.hotovo = { hodnota, novy: lepsi && stary != null, prvy: stary == null && hodnota > 0, stary, odznaky };
+    const zisk = Dedinka.hraKoniec(h.id, hodnota, { mene: menejJeLepsie, zaklad: h.karty ? h.karty.length / 2 : h.p ? h.p.length : 0, z: h.kola ? h.kola.length : 0 }); // 1 až 5 hviezd, najviac 20 za deň
+    h.hotovo = { hodnota, novy: lepsi && stary != null, prvy: stary == null && hodnota > 0, stary, odznaky, zisk };
     Zvuk.play('win'); FX.ohnostroj(3); vibruj([40, 60, 40]);
     if (h.id === 'skladacka') obnovSklad();
     if (!main.querySelector('.hra')) return;

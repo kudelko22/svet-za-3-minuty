@@ -162,6 +162,34 @@ const { doc, setDoc, getDoc, getDocs, collection, writeBatch, addDoc, deleteDoc,
   await t('rodina A zmaže svoje štatistiky', deleteDoc(sd(fa, 'ua')), true);
   await t('rodina B nezmaže cudzie štatistiky', deleteDoc(sd(fb, 'ub2')), false);
 
+  // ---- Moja dedinka (5.1): rodiny/{uid}/deti/{id}/hra/dedinka ----
+  { const DID = 'ddedinka01', dd = (f, u = 'ua', id = DID) => doc(f, 'rodiny', u, 'deti', id, 'hra', 'dedinka');
+    const dok = (z = {}) => ({ v: 1, start: 0, dar: 100, minute: 0, zem: 2, miesta: { r2c2: ['chalupka', 0, ''] }, batoh: { lampa: 1 }, dary: { chalupka: 1 }, izba: {}, cesta: { mes: '2026-11', kroky: 5, vzate: [] },
+      truhly: { temy: 0, cakaju: ['vitaj'], otv: 0, stupen: 0 }, hryDen: '', hryHv: 0, upravene: serverTimestamp(), ...z });
+    const mapa = n => Object.fromEntries(Array.from({ length: n }, (_, i) => ['r' + (i % 5 + 1) + 'c' + (i % 8 + 1) + 'x' + i, ['sud', 0, '']]));
+    await env.withSecurityRulesDisabled(async c => { await setDoc(doc(c.firestore(), 'rodiny', 'ua', 'deti', DID), { meno: 'Ema', body: 50 }); });
+    await t('dedinka: vlastník uloží štartovú dedinku', setDoc(dd(fa), dok()), true);
+    await t('dedinka: vlastník ju prečíta', getDoc(dd(fa)), true);
+    await t('dedinka: cudzí ju nečíta', getDoc(dd(fc)), false);
+    await t('dedinka: cudzí nezapíše do cudzieho dieťaťa', setDoc(dd(fc, 'ua'), dok()), false);
+    await t('dedinka: cudzí nezapíše do svojho dieťaťa, čo neexistuje', setDoc(dd(fc, 'uc'), dok()), false);
+    await t('dedinka: minuté presne body + dar (150) prejde', setDoc(dd(fa), dok({ minute: 150 })), true);
+    await t('dedinka: minuté viac ako body + dar (151) neprejde', setDoc(dd(fa), dok({ minute: 151 })), false);
+    await t('dedinka: neznámy kľúč neprejde', setDoc(dd(fa), dok({ hocico: 1 })), false);
+    await t('dedinka: iný názov dokumentu neprejde', setDoc(doc(fa, 'rodiny', 'ua', 'deti', DID, 'hra', 'iny'), dok()), false);
+    await t('dedinka: 120 miest prejde', setDoc(dd(fa), dok({ miesta: mapa(120) })), true);
+    await t('dedinka: 121 miest neprejde', setDoc(dd(fa), dok({ miesta: mapa(121) })), false);
+    await t('dedinka: záporné minuté neprejde', setDoc(dd(fa), dok({ minute: -1 })), false);
+    await t('dedinka: zem 6 neprejde', setDoc(dd(fa), dok({ zem: 6 })), false);
+    await t('dedinka: zem 1 neprejde', setDoc(dd(fa), dok({ zem: 1 })), false);
+    await t('dedinka: dar nad limit neprejde', setDoc(dd(fa), dok({ dar: 100001 })), false);
+    await t('dedinka: desatinné číslo neprejde', setDoc(dd(fa), dok({ minute: 1.5 })), false);
+    await t('dedinka: 31 zastávok neprejde', setDoc(dd(fa), dok({ cesta: { mes: '2026-11', kroky: 5, vzate: Array.from({ length: 31 }, (_, i) => i + 1) } })), false);
+    await t('dedinka: bez času servera neprejde', setDoc(dd(fa), { ...dok(), upravene: 5 }), false);
+    await t('dedinka: zablokovaný účet nezapíše', setDoc(dd(fb, 'ub', B), dok()), false);
+    await t('dedinka: pravidlá dieťaťa ostali (cudzí kľúč v dieťati neprejde)', setDoc(doc(fa, 'rodiny', 'ua', 'deti', 'dabc123xyz'), { meno: 'Ema', hra: {} }), false);
+    await t('dedinka: vlastník ju zmaže', deleteDoc(dd(fa)), true); }
+
   await env.clearFirestore(); await env.cleanup();
   console.log('Pravidlá: prešlo', ok.length, 'z', ok.length + zle.length);
   if (zle.length) { console.log('ZLYHALO:\n- ' + zle.join('\n- ')); process.exit(1); }

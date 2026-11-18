@@ -67,6 +67,7 @@ const noveId = () => 'd' + Date.now().toString(36) + Math.random().toString(36).
 const zoradene = o => o ? Object.keys(o).sort().map(k => k + '=' + o[k]).join(',') : '';
 const otlacok = d => JSON.stringify([d.meno, d.vek, zoradene({ ...AV_ZAKLAD, ...d.avatar }), d.body || 0, d.done || [], d.fav || [], d.dni || [], d.odznaky || [], zoradene(d.kedy), d.chyby || [], d.vybrate || []]);
 let odber = null, odberRodic = null, casovac = null;
+let odberDedinky = null, dedinkaId = null, casovacDedinky = null, dedinkaCaka = null; // dedinka aktívneho dieťaťa
 // prihlásenie cez Google v appke na ploche odchádza na stránku Googlu a vracia sa späť (do 3 minút)
 let dokoncujeGoogle = Date.now() - (S.get('presmerovanie', 0) || 0) < 180000;
 
@@ -158,7 +159,13 @@ const Cloud = {
     this.stavUlozenia = 'Ukladá sa…'; obnovStav();
     casovac = setTimeout(ulozAktivne, 800);
   },
-  ulozHned() { if (casovac) { clearTimeout(casovac); ulozAktivne(); } },
+  ulozHned() { if (casovac) { clearTimeout(casovac); ulozAktivne(); } ulozDedinkuHned(); },
+  // dedinka dieťaťa (rodiny/<uid>/deti/<id>/hra/dedinka): zmena sa uloží o chvíľu; pred zápisom sa uloží aj pokrok (pravidlá porovnávajú minuté hviezdy s `body`)
+  naplanujDedinku(id) {
+    if (!this.pouzivatel || !id) return;
+    clearTimeout(casovacDedinky); dedinkaCaka = id;
+    casovacDedinky = setTimeout(ulozDedinkuHned, 800);
+  },
   async akcia(co, email, heslo, heslo2) {
     const prihlasuje = ['google', 'prihlas', 'registruj'].includes(co);
     if (this.pracuje) return; // už sa prihlasuje, ďalšie ťuknutie ignorujeme
@@ -237,6 +244,8 @@ const Cloud = {
   },
   zmazDieta(id) {
     Rodic.zamkni();
+    if (dedinkaId === id) dedinkaStop();
+    deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'deti', id, 'hra', 'dedinka')).catch(() => {});
     S.set('pokrok-hotovo-' + this.pouzivatel.uid, true);
     this.deti = this.deti.filter(x => x.id !== id);
     deleteDoc(doc(db, 'rodiny', this.pouzivatel.uid, 'deti', id)).catch(e => toast('Nepodarilo sa odstrániť: ' + chybaText(e)));

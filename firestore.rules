@@ -52,6 +52,35 @@ service cloud.firestore {
       allow create, update: if smiePisat(uid) && dieta.matches('^[a-z0-9]{6,32}$') && platneDieta(request.resource.data);
     }
 
+    // ---- Moja dedinka (5.1): rodiny/{uid}/deti/{dieta}/hra/dedinka, samostatný dokument (pravidlá dieťaťa sa nemenia) ----
+    // Mena sú hviezdy: minuté nesmú presiahnuť body dieťaťa + dar. Obsah miest a batohu sa kontroluje len veľkosťou (pravidlá nevedia prechádzať kľúče).
+    function platnaDedinka(d, uid, dieta) {
+      return d.keys().hasOnly(['v', 'start', 'dar', 'minute', 'zem', 'miesta', 'batoh', 'dary', 'izba', 'cesta', 'truhly', 'hryDen', 'hryHv', 'upravene'])
+        && d.v is int && d.v == 1
+        && d.start is int && d.start >= 0 && d.start <= 1000000
+        && d.dar is int && d.dar >= 0 && d.dar <= 100000
+        && d.minute is int && d.minute >= 0 && d.minute <= 1000000
+        && d.minute <= get(/databases/$(database)/documents/rodiny/$(uid)/deti/$(dieta)).data.body + d.dar
+        && d.zem is int && d.zem >= 2 && d.zem <= 5
+        && d.miesta is map && d.miesta.size() <= 120
+        && d.batoh is map && d.batoh.size() <= 200
+        && d.dary is map && d.dary.size() <= 200
+        && d.izba is map && d.izba.size() <= 40
+        && d.cesta is map && d.cesta.size() <= 12
+        && d.cesta.kroky is int && d.cesta.kroky >= 0 && d.cesta.kroky <= 100000
+        && (!('vzate' in d.cesta) || (d.cesta.vzate is list && d.cesta.vzate.size() <= 30))
+        && d.truhly is map && d.truhly.size() <= 8
+        && (!('cakaju' in d.truhly) || (d.truhly.cakaju is list && d.truhly.cakaju.size() <= 50))
+        && d.hryDen is string && d.hryDen.size() <= 10
+        && d.hryHv is int && d.hryHv >= 0 && d.hryHv <= 1000
+        && d.upravene == request.time;
+    }
+    match /rodiny/{uid}/deti/{dieta}/hra/{dok} {
+      allow read, delete: if jeMoj(uid);
+      allow create, update: if smiePisat(uid) && dok == 'dedinka' && dieta.matches('^[a-z0-9]{6,32}$')
+        && exists(/databases/$(database)/documents/rodiny/$(uid)/deti/$(dieta)) && platnaDedinka(request.resource.data, uid, dieta);
+    }
+
     // ---- Profil rodiča (verzia 3.5): jeden na rodinu, PIN len ako PBKDF2 hash; nikdy sa nezverejňuje (nie je v profily, kody ani správach) ----
     function platnyRodic(d) {
       return d.keys().hasOnly(['meno', 'ikona', 'pin', 'nastavenia', 'verzia', 'upravene'])
