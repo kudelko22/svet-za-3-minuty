@@ -792,4 +792,14 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
   if (!D.dedinkaVec('chalupka', { zrkadlo: true }).includes('scale(-1 1)')) zle.push('zrkadlo');
   if (!D.dedinkaVec('chalupka', { farby: { stena: 'coral-l' } }).includes('var(--coral-l)')) zle.push('farba steny');
   if (D.dedinkaVec('chalupka', { farby: { stena: 'red"><script>' } }).includes('script')) zle.push('nebezpecna farba');
+  // voľby prispôsobenia: každá hodnota sa vykreslí platne a hodnoty jednej voľby dávajú aspoň dve rôzne kresby
+  const VOLBY = D.dedinkaKresby.VOLBY, volba = D.dedinkaKresby.volba;
+  for (const [k, dims] of Object.entries(VOLBY)) {
+    if (!kluce.includes(k)) zle.push('volby pre neznamy kluc ' + k);
+    for (const [dim, hodnoty] of Object.entries(dims)) {
+      const r = new Set(); if (hodnoty.length < 2) zle.push('malo hodnot ' + k + ' ' + dim);
+      for (const v of hodnoty) { const s = D.dedinkaVec(k, volba(k, dim, v)); if (!s || /NaN|undefined|null|\[object/.test(s)) zle.push('zla volba ' + k + ' ' + dim + '=' + v); if (/#[0-9a-f]{3,8}\b/i.test(s)) zle.push('pevna farba ' + k + ' ' + dim + '=' + v); r.add(s); }
+      if (r.size < 2) zle.push('volba nic nemeni ' + k + ' ' + dim);
+    }
+  }
   if (zle.length) { console.log('CHYBY dedinka-kresby', zle); process.exit(1); } }
