@@ -2489,6 +2489,14 @@ body:has(.brana.vstup, .brana.rd) .blobs { visibility: hidden; }
 .rd-hlasy .hlas b { font: 700 .94rem/1.2 var(--fb); }
 .rd-hlasy .hlas small { font: 400 .78rem/1.3 var(--fb); }
 .rd-hlasy .muted, .rd-hlasy .rada { margin: 8px 0 0; font: 400 .81rem/1.45 var(--fb); color: var(--muted); }
+
+/* 5.1: pokojnejšia úvodná strana (menšia krajina, bez bubliny a mávania, tlmenejšie farby) */
+.vs-sc.vs-sc-vitaj { height: 206px; filter: saturate(.72); }
+.vs-vitaj .vs-rec { display: none; }
+.vs-vitaj .vs-mudra { width: 92px; left: 12px; }
+.vs-vitaj .vs-mudra .ow-wl, .vs-vitaj .vs-mudra .ow-wr { animation: none; }
+.vs-vitaj .vs-stred .logo { --ls: 3.6rem; margin-top: 14px; }
+.vs-vitaj .vs-telo { gap: 14px; padding-top: 18px; }
 /* 5.0: Režim do auta. Sem patria nové štýly tejto sekcie (smer: tmavá plocha (--noc-*), postup ako cesta s autíčkom).
    Súbor sa načíta až po starých štýloch a po 40-system.css, takže prepíše pravidlá zo 4.9. Staré pravidlá, ktoré nahradíš, zmaž v ich pôvodnom súbore. */
 
@@ -3688,9 +3696,9 @@ const brany = {
       </form>
       ${google('Pokračovať cez Google')}
       ${vseobecna}</div></div>`;
-    return `<div class="brana vstup vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div><p class="odkaz vs-rec">Ahoj! Poďme spolu objavovať svet.</p></div>
+    return `<div class="brana vstup vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div></div>
       <div class="vs-telo vs-stred">${logo()}<p class="podtitul">${PODTITUL}</p>
-      <p class="tx vs-muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
+      <p class="tx vs-muted">Krátke témy o svete na rozhovor s deťmi.</p>
       <button type="button" class="btn wide" data-uvod="novy">${sipkaTl('Som tu nový')}</button>
       <button type="button" class="btn dve wide" data-uvod="mam">Mám účet</button>
       <p class="vs-mala">Predtým Svet za 3 minúty</p>

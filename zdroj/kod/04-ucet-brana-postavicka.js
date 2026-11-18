@@ -117,9 +117,9 @@ const brany = {
       </form>
       ${google('Pokračovať cez Google')}
       ${vseobecna}</div></div>`;
-    return `<div class="brana vstup vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div><p class="odkaz vs-rec">Ahoj! Poďme spolu objavovať svet.</p></div>
+    return `<div class="brana vstup vs-vitaj"><div class="vs-sc vs-sc-vitaj">${kresbaVitaj()}<div class="vs-mudra">${mudra('ahoj', { tien: false })}</div></div>
       <div class="vs-telo vs-stred">${logo()}<p class="podtitul">${PODTITUL}</p>
-      <p class="tx vs-muted">Krátke témy o svete na rozhovor s deťmi. Pokrok každého dieťaťa sa ukladá do účtu.</p>
+      <p class="tx vs-muted">Krátke témy o svete na rozhovor s deťmi.</p>
       <button type="button" class="btn wide" data-uvod="novy">${sipkaTl('Som tu nový')}</button>
       <button type="button" class="btn dve wide" data-uvod="mam">Mám účet</button>
       <p class="vs-mala">Predtým Svet za 3 minúty</p>

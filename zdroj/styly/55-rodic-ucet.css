@@ -199,3 +199,11 @@ body:has(.brana.vstup, .brana.rd) .blobs { visibility: hidden; }
 .rd-hlasy .hlas b { font: 700 .94rem/1.2 var(--fb); }
 .rd-hlasy .hlas small { font: 400 .78rem/1.3 var(--fb); }
 .rd-hlasy .muted, .rd-hlasy .rada { margin: 8px 0 0; font: 400 .81rem/1.45 var(--fb); color: var(--muted); }
+
+/* 5.1: pokojnejšia úvodná strana (menšia krajina, bez bubliny a mávania, tlmenejšie farby) */
+.vs-sc.vs-sc-vitaj { height: 206px; filter: saturate(.72); }
+.vs-vitaj .vs-rec { display: none; }
+.vs-vitaj .vs-mudra { width: 92px; left: 12px; }
+.vs-vitaj .vs-mudra .ow-wl, .vs-vitaj .vs-mudra .ow-wr { animation: none; }
+.vs-vitaj .vs-stred .logo { --ls: 3.6rem; margin-top: 14px; }
+.vs-vitaj .vs-telo { gap: 14px; padding-top: 18px; }
