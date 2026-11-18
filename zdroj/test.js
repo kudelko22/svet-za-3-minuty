@@ -768,3 +768,28 @@ console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', 
 // 4.8.2: výber okruhu sa musí dať otvoriť aj z okna stromu (ochrana pred dvojitým otvorením brala okno stromu za výber okruhu)
 { const o = html.slice(html.indexOf('const Okruh = {'), html.indexOf('const TyzPrehlad'));
   if (!o.includes("if (document.querySelector('.okruh-vyber')) return;") || !o.includes("className = 'okruh-okno okruh-vyber'")) { console.log('CHYBA okruh: ochrana pred dvojitým otvorením musí hľadať len .okruh-vyber'); process.exit(1); } }
+// Moja dedinka (5.1): každá kresba z katalógu sa vykreslí ako platné SVG (deň aj noc), farby idú len z premenných, v noci majú premenné hodnotu
+{ const D = new Function(fs.readFileSync(path.join(R, 'obrazky.js'), 'utf8') + '\nreturn { dedinkaKresby, dedinkaVec, EMO_RE };')(), zle = [];
+  const css = html.slice(0, html.indexOf('</style>')), RE = new RegExp(D.EMO_RE.source, 'u');
+  const def = b => new Set([...b.matchAll(/(--[a-z0-9-]+):\s*[^;]+;/gi)].map(m => m[1]));
+  const den = def(css.match(/^:root \{[\s\S]*?^\}/gm).join('\n')), noc = def(css.match(/^:root\[data-rezim="mesacny"\][^{]*\{[\s\S]*?^\}/gm).join('\n'));
+  const kluce = D.dedinkaKresby.kluce(), pouzite = new Set();
+  if (kluce.length < 58 + 9) zle.push('malo kresieb ' + kluce.length);
+  if (new Set(kluce).size !== kluce.length) zle.push('kluc dvakrat');
+  for (const k of kluce) {
+    const s = D.dedinkaVec(k, { x: 10, y: 20, s: .8, zrkadlo: k.length % 2 === 0, farby: { stena: 'sun-l', strecha: 'violet' }, farba: 'coral' }), v = D.dedinkaKresby.svg(k, {});
+    if (!s || !/<(path|circle|rect|ellipse)/.test(s)) zle.push('prazdna kresba ' + k);
+    if (/NaN|undefined|null|\[object/.test(s + v)) zle.push('zla hodnota v kresbe ' + k);
+    if (RE.test(s)) zle.push('emoji v kresbe ' + k);
+    if (/#[0-9a-f]{3,8}\b/i.test(s)) zle.push('pevna farba v kresbe ' + k);
+    const zas = []; for (const m of (s + v).matchAll(/<(\/?)(g|svg)\b[^>]*?(\/?)>/g)) { if (m[3]) continue; if (m[1]) { if (zas.pop() !== m[2]) zle.push('nezhodne znacky ' + k); } else zas.push(m[2]); }
+    if (zas.length) zle.push('neuzavrete znacky ' + k);
+    for (const m of s.matchAll(/var\((--[a-z0-9-]+)\)/g)) pouzite.add(m[1]);
+    if (!/^<svg class="dv-svg" viewBox="-?\d+ -?\d+ \d+ \d+"/.test(v) || !D.dedinkaKresby.RAMCEK[k]) zle.push('svg bez ramceka ' + k);
+  }
+  for (const v of pouzite) { if (!den.has(v)) zle.push('premenna ' + v + ' nema dennu hodnotu'); if (v.startsWith('--dv-') && !noc.has(v)) zle.push('premenna ' + v + ' nema nocnu hodnotu'); }
+  if (D.dedinkaVec('neexistuje') !== '') zle.push('neznamy kluc');
+  if (!D.dedinkaVec('chalupka', { zrkadlo: true }).includes('scale(-1 1)')) zle.push('zrkadlo');
+  if (!D.dedinkaVec('chalupka', { farby: { stena: 'coral-l' } }).includes('var(--coral-l)')) zle.push('farba steny');
+  if (D.dedinkaVec('chalupka', { farby: { stena: 'red"><script>' } }).includes('script')) zle.push('nebezpecna farba');
+  if (zle.length) { console.log('CHYBY dedinka-kresby', zle); process.exit(1); } }
