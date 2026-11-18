@@ -736,6 +736,69 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   if (!o.includes("data-kviz") || !o.includes("data-nahodna") || (o.match(/data-skupina=/g) || []).length !== SKUPINY.length) throw new Error("objavuj: chyba kvizy alebo oblasti");
   st.view = "domov"; render(); Okruh.ukaz(); if (!document.querySelector(".okruh-okno") || !document.querySelector("[data-okruh-id]")) throw new Error("okruh okno");
   Tyzden.nastav("priroda"); if (TY().vybrany() !== "priroda") throw new Error("okruh nastav"); Tyzden.nastav("zmiesany"); st.view = "domov"; render(); }
+/* DEDINKA 5.1: mešec, kúpa, predaj, miesta, migrácia, hviezdy za hry, cesta a truhličky */
+{ const stare = { Cloud: window.Cloud, id: st.dietaId, body: st.body, dni: st.dni, flow: st.flow, auto: st.auto, ang: st.ang, misia: st.misia, hra: st.hra };
+  window.Cloud = undefined; Object.assign(st, { dietaId: "dtest1", body: 0, dni: [], flow: null, auto: null, ang: null, misia: null }); Dedinka.id = null; Dedinka.d = null;
+  const ch = t => chyby.push("dedinka: " + t);
+  if (DED_VECI.length !== 58) ch("58 veci, je " + DED_VECI.length);
+  if (new Set(DED_VECI.map(v => v.id)).size !== 58) ch("id veci nie su jedinecne");
+  if (DED_VECI.filter(v => !v.nekupne && v.id !== "schranka").reduce((a, v) => a + v.cena, 0) !== 5887) ch("katalog nema 5887 hviezd");
+  let d = Dedinka.ziskaj();
+  if (!d || d.dar !== 100 || d.start !== 0 || d.zem !== 2 || !d.miesta.r2c2 || d.miesta.r2c2[0] !== "chalupka" || d.miesta.r2c3[0] !== "schranka" || d.truhly.cakaju.join() !== "vitaj") ch("startova dedinka " + JSON.stringify(d));
+  if (!localStorage.d["svet3:dedinka-dtest1"]) ch("lokalna kopia sa neulozila");
+  if (Dedinka.mesec() !== 100) ch("mesec noveho uctu");
+  st.dietaId = "dtest2"; st.body = 1234; const pred = JSON.stringify([st.done, st.dni, st.body]); d = Dedinka.ziskaj();
+  if (d.dar !== 223 || d.start !== 1234 || Dedinka.mesec() !== 223) ch("stary ucet dar " + d.dar);
+  st.body = 99999; st.dietaId = "dtest3"; d = Dedinka.ziskaj(); if (d.dar !== 300) ch("dar stareho uctu ma strop 300");
+  st.dietaId = "dtest2"; st.body = 1234; Dedinka.id = null; Dedinka.d = null;
+  if (JSON.stringify([st.done, st.dni, st.body]) !== pred) ch("migracia zmenila stare data");
+  const k1 = Dedinka.kup("jablon"); if (!k1.ok || Dedinka.mesec() !== 223 - 45 || Dedinka.batoh().jablon !== 1) ch("kupa jablone");
+  if (!Dedinka.kup("jablon").ok) ch("strom sa da kupit viackrat");
+  if (!Dedinka.kup("sliepka").ok || Dedinka.kup("sliepka").chyba !== "uz-mam") ch("zvieratko len raz");
+  if (Dedinka.kup("zamocek").chyba !== "malo-hviezd") ch("zamocek je drahy");
+  if (Dedinka.kup("iglu").chyba !== "nekupne" || Dedinka.kup("hento").chyba !== "nezname") ch("nekupne a nezname");
+  const pm = Dedinka.mesec();
+  if (Dedinka.predaj("sliepka").vrat !== 30 || Dedinka.mesec() !== pm + 30) ch("predaj vrati polovicu");
+  if (Dedinka.predaj("chalupka").chyba !== "darovane") ch("darovanu chalupku nejde predat");
+  if (!Dedinka.odober("r2c2").ok || Dedinka.predaj("chalupka").chyba !== "darovane") ch("uschovat darovanu vec");
+  if (!Dedinka.poloz("chalupka", "r2c2").ok) ch("spat na miesto");
+  if (Dedinka.poloz("jablon", "r3c1").ok) ch("rad 3 je zamknuty");
+  if (Dedinka.poloz("jablon", "r2c2").ok) ch("obsadene miesto");
+  if (!Dedinka.poloz("jablon", "r1c1", { zrk: 1, farby: "ab" }).ok || Dedinka.d.miesta.r1c1.join() !== "jablon,1,ab") ch("polozenie");
+  Dedinka.d.dar += 2000;
+  Dedinka.kup("stodola"); if (!Dedinka.poloz("stodola", "r1c4").ok || Dedinka.poloz("jablon", "r1c5").ok || !Dedinka.obsadene("r1c5") || Dedinka.obsadene("r1c5").kluc !== "r1c4") ch("siroka vec zaberá dva stlpce");
+  Dedinka.kup("mostik"); if (Dedinka.poloz("mostik", "r2c8").ok) ch("siroka vec nesmie vycnievat z mriezky");
+  if (!Dedinka.presun("r1c1", "r1c7").ok || Dedinka.d.miesta.r1c1 || !Dedinka.d.miesta.r1c7) ch("presun");
+  if (Dedinka.presun("r1c7", "r1c4").ok) ch("presun na obsadene"); if (!Dedinka.otoc("r1c7") || Dedinka.d.miesta.r1c7[1] !== 0) ch("otocenie");
+  if (!Dedinka.kup("postel").ok || Dedinka.poloz("postel", "r1c8").ok) ch("nabytok patri len do izby");
+  if (!Dedinka.polozIzba("postel", "s3").ok || Dedinka.d.izba.s3 !== "postel") ch("izba"); if (Dedinka.predaj("postel", "s3").vrat !== 35) ch("predaj z izby");
+  { const dar0 = Dedinka.d.dar, min0 = Dedinka.d.minute; st.body = 1234 + 1000; Dedinka.d.minute = 0; Dedinka.d.dar = 0; if (Dedinka.mesec() !== 1000) ch("mesec = body - start + dar - minute"); Dedinka.d.minute = 5000; if (Dedinka.mesec() !== 0) ch("mesec nie je zaporny"); Dedinka.d.minute = min0; Dedinka.d.dar = dar0; st.body = 1234; }
+  { const z = Dedinka.cisti({ start: -5, dar: 1e9, minute: "x", zem: 99, miesta: { r9c9: ["sud", 0, ""], r1c1: ["sud", 1, "AB!?zz"], r1c2: ["nie-je", 0, ""] }, batoh: { sud: 1e9, nieje: 3 }, truhly: { cakaju: ["drevo", "zle"], temy: -4 }, cesta: { vzate: [0, 5, 31, "7"] } });
+    if (z.start !== 0 || z.dar !== 100000 || z.minute !== 0 || z.zem !== 5 || Object.keys(z.miesta).join() !== "r1c1" || z.miesta.r1c1[2] !== "zz" || z.batoh.sud !== 99 || z.batoh.nieje || z.truhly.cakaju.join() !== "drevo" || z.truhly.temy !== 0 || z.cesta.vzate.join() !== "5,7") ch("cistenie dokumentu " + JSON.stringify(z));
+    if (Dedinka.cisti(null).v !== 1 || Dedinka.cisti("zle").zem !== 2) ch("cistenie prazdneho"); }
+  st.dni = []; Dedinka.obnov(); if (Dedinka.rady() !== 2) ch("zem na zaciatku");
+  st.dni = Array.from({ length: 7 }, (_, i) => "2026-01-0" + (i + 1)); Dedinka.obnov(); if (Dedinka.rady() !== 4 || Dedinka.d.truhly.cakaju.filter(x => x === "zlato").length !== 1) ch("zem a zlata truhlicka pri stupni 3 " + Dedinka.rady() + Dedinka.d.truhly.cakaju);
+  st.dni = []; Dedinka.obnov(); if (Dedinka.rady() !== 4) ch("zem neubuda (vadnutie)"); if (!Dedinka.poloz("jablon", "r3c1").ok) ch("rad 3 po odomknuti");
+  const hv = Dedinka.hviezdyZaHru.bind(Dedinka); if (hv("sova", 0) !== 0 || hv("sova", 1) < 1 || hv("sova", 99) !== 5 || hv("hadaj", 8, { z: 8 }) !== 5 || hv("hadaj", 1, { z: 8 }) !== 2 || hv("pexeso", 6, { mene: true, zaklad: 6 }) !== 5 || hv("pexeso", 30, { mene: true, zaklad: 6 }) < 1) ch("hviezdy za vysledok " + [hv("hadaj", 1, { z: 8 }), hv("pexeso", 6, { mene: true, zaklad: 6 })]);
+  { const b0 = st.body, k0 = Dedinka.d.cesta.kroky; let spolu = 0; for (let i = 0; i < 10; i++) spolu += Dedinka.hraKoniec("sova", 99); if (spolu !== 20 || st.body !== b0 + 20) ch("strop 20 hviezd za den " + spolu); if (Dedinka.hraKoniec("sova", 99) !== 0) ch("po strope nic");
+    if (Dedinka.d.cesta.kroky !== k0 + 20) ch("kazda hviezda je krok cesty");
+    Dedinka.d.hryDen = "2000-01-01"; st.flow = { precvic: true }; if (Dedinka.hraKoniec("sova", 99) !== 0 || st.body !== b0 + 20) ch("Precvic nedava hviezdy"); st.flow = null;
+    if (Dedinka.hraKoniec("sova", 99) < 1) ch("novy den, novy strop"); }
+  { const c = Dedinka.cestaStav(); if (!c || c.zastavky.length !== 30 || c.zastavky[29].odmena.t !== "zlato" || c.zastavky[4].odmena.t !== "striebro" || c.zastavky[0].odmena.typ !== "vec") ch("cesta ma 30 zastavok");
+    Dedinka.d.cesta.kroky = 85; const c2 = Dedinka.cestaStav(); if (c2.dostupne !== 2 || c2.dalsia !== 35) ch("zastavka po 40 krokoch " + JSON.stringify([c2.dostupne, c2.dalsia]));
+    const r = Dedinka.cestaVezmi(1); if (!r.ok || Dedinka.cestaVezmi(1).chyba !== "uz-vzate" || Dedinka.cestaVezmi(3).chyba !== "este-nie") ch("vyzdvihnutie zastavky"); }
+  { const n = Dedinka.truhlaNabidka("striebro"); if (n.length !== 3 || new Set(n).size !== 3 || JSON.stringify(n) !== JSON.stringify(Dedinka.truhlaNabidka("striebro"))) ch("ponuka 3 veci bez nahody " + n);
+    if (Dedinka.truhlaNabidka("vitaj").join() !== "gulaty,kvety,lavicka") ch("uvitacia ponuka");
+    if (Dedinka.truhlaOtvor("vitaj", "sud").chyba !== "nie-z-ponuky") ch("vyber mimo ponuky"); if (!Dedinka.truhlaOtvor("vitaj", "gulaty").ok || Dedinka.truhlaOtvor("vitaj", "gulaty").chyba !== "nemam") ch("uvitacia truhlicka raz");
+    const dar0 = Dedinka.d.dar; Dedinka.d.truhly.cakaju.push("drevo"); const n2 = Dedinka.truhlaNabidka("drevo"); if (!Dedinka.truhlaOtvor("drevo", n2[0]).ok || Dedinka.d.dar !== dar0 + 10) ch("drevena truhlicka da 10 hviezd");
+    for (let i = 0; i < 40; i++) { const t = Dedinka.truhlaNabidka("zlato"); if (t.length !== 3) { ch("ponuka pri vycerpani " + i); break; } Dedinka.d.truhly.cakaju.push("zlato"); Dedinka.truhlaOtvor("zlato", t[0]); } }
+  { Dedinka.d.truhly = { temy: 0, cakaju: [], otv: 0, stupen: 9 }; for (let i = 0; i < 3; i++) { Dedinka.d.truhly.den = "x"; Dedinka.temaDna(); } if (Dedinka.d.truhly.cakaju.join() !== "drevo") ch("drevena za 3 temy dna " + Dedinka.d.truhly.cakaju); Dedinka.temaDna(); if (Dedinka.d.truhly.temy !== 3) ch("tema dna len raz za den");
+    Dedinka.d.cesta.ul = null; Dedinka.ulohaPostup("temy3", 3); if (!Dedinka.ulohy().find(u => u.id === "temy3").hotovo) ch("uloha tyzdna"); }
+  { Dedinka.d.cesta.mes = "2020-01"; Dedinka.d.cesta.kroky = 120; Dedinka.d.cesta.vzate = [1]; Dedinka.obnov(); if (Dedinka.d.cesta.mes !== Dedinka.mesiac() || Dedinka.d.cesta.kroky !== 0 || !Dedinka.cestaStav("2020-01") || Dedinka.cestaStav("2020-01").dostupne !== 2) ch("minuly mesiac");
+    if (!Dedinka.cestaVezmi(2, "2020-01").ok) ch("vyzdvihnutie po mesiaci"); }
+  { Dedinka.prevezmi("dtest2", { start: 7, dar: 11, minute: 3, hocico: 1 }); if (Dedinka.d.start !== 7 || Dedinka.d.hocico !== undefined || Object.keys(Dedinka.telo()).some(k => !DED_UPRAVENE_POLE.includes(k)) || "upravene" in Dedinka.telo()) ch("prevzatie z cloudu"); }
+  Object.keys(localStorage.d).filter(k => k.includes("dedinka-")).forEach(k => localStorage.removeItem(k));
+  window.Cloud = stare.Cloud; Object.assign(st, { dietaId: stare.id, body: stare.body, dni: stare.dni, flow: stare.flow, auto: stare.auto, ang: stare.ang, misia: stare.misia, hra: stare.hra }); Dedinka.id = null; Dedinka.d = null; }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);
