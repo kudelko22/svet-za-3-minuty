@@ -158,7 +158,7 @@ const brany = {
     if (krok === 2) return `<div class="brana vstup tvorba up">${vstupHlava(z + 1, n, 'data-tvorba-spat')}<div class="vs-telo">
       ${vstupNadpis(`Krok ${z + 2} z ${n} · ${esc(u.meno)}`, 'Postavička', 'Vyberte spolu účes, oči a farby. Kto sa nechce hrať, ťukne na kocku.')}
       ${satnik()}
-      <button class="btn wide" data-ulozit-dieta>${ikn('check')}Hotovo, poďme na to!</button>
+      <button class="btn wide" data-ulozit-dieta>${ikn('check')}Hotovo, môžeme začať</button>
       ${odhlas}</div></div>`;
     // úprava postavičky dieťaťa, ktoré už existuje: šatník
     return `<div class="brana tvorba up up-uprava">

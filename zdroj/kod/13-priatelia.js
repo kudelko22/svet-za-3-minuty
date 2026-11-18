@@ -74,7 +74,7 @@ function rebricekHtml() {
   const top = z.slice(0, 3), poradie = top.length === 3 ? [1, 0, 2] : [1, 0];
   const ostatni = z.slice(3), moje = z.findIndex(x => x.ja), pred = z[moje - 1];
   const chyba = pred ? Math.max(1, pred.b - ja.b + (pred.s >= ja.s ? 1 : 0)) : 0;
-  const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Super, len tak ďalej!' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
+  const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Len tak ďalej.' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
     : `Na ${moje === 1 ? 'prvé' : moje + '.'} miesto ti chýba ${prBody(chyba)}. Zvládneš to!`;
   return `${hl}<div class="pr-podium-o"><div class="pr-podium${top.length === 2 ? ' dvaja' : ''}">${poradie.map(i => stup(top[i], i)).join('')}</div>
     ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">hviezdy</span></div>

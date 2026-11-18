@@ -113,7 +113,7 @@ function krok(f, k) {
   const viac = [dnesTema && !misiaCaka ? kartaMisiePoTeme(t) : '', pochval, rel.length ? `<div class="sec"><h2 class="h2">Na túto tému nadväzuje</h2><div class="list">${rel.map(row).join('')}</div></div>` : ''].filter(Boolean).join('');
   return `<div class="win win-krat">
       <div class="win-hero"><div class="burst"></div><button class="win-owl" data-sova aria-label="Sovička Múdra">${owl(c ? 'cheer' : 'hi')}</button></div>
-      <h1 class="h1">${c === qn ? 'Skvelá práca' : c ? 'Výborne' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
+      <h1 class="h1">${c === qn ? 'Všetko správne' : c ? 'Pekné kolo' : 'Dobrý pokus'}${st.meno ? ', ' + esc(st.meno) : ''}!</h1>
       <div class="stars3" data-n="${hv}" aria-label="${hv} z 3 hviezd">${[0, 1, 2].map(i => STAR(i < hv ? 'var(--sun)' : 'var(--sand)')).join('')}</div>
       <p class="muted">Správne odpovede: <b>${c} z ${qn}</b></p>
       ${f.zisk ? `<div class="earn">${STAR()} <b>+0</b> hviezd${f.opakovanie ? ' za zopakovanie' : ''}</div>${f.ina && !f.opakovanie ? '<p class="muted">Za inú tému je najviac 10 hviezd. Najviac hviezd dáva téma dňa!</p>' : ''}` : f.dnesUz ? `<div class="earn plain">${f.typ === 'kviz' ? 'Hviezdy za tento kvíz už dnes máš. Zajtra môžeš získať ďalšie!' : 'Túto tému ste dnes už opakovali. Ďalšie hviezdy za ňu budú zajtra.'}</div>` : ''}

@@ -174,7 +174,7 @@ const Oslava = {
     const odz = (st.flow && st.flow.noveOdznaky) || [];
     const el = document.createElement('div');
     el.className = 'oslava os-velka' + (W ? ' ozil' : ''); el.style.setProperty('--w', W + 's'); el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', vyrastol ? 'Strom múdrosti vyrástol' : 'Séria rastie');
-    const nadpis = ozil ? 'Strom ožil!' : vyrastol ? 'Strom vyrástol!' : s === 1 ? 'Skvelý začiatok!' : 'Séria rastie!';
+    const nadpis = ozil ? 'Strom ožil!' : vyrastol ? 'Strom vyrástol!' : s === 1 ? 'Prvý list' : 'Séria rastie!';
     const strom = W ? `<div class="os-dvojstrom">${stromSvg({ stupen: i, plody: Math.min(naStrome, 4), kos: 0, novy: -1, hn: ozil, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .03, plody: .5, sova: .8 } }).replace('class="os-strom', 'class="vyschnuty os-strom')}</div>` : stromSvg(cerstvy);
     el.innerHTML = `<div class="os-listy">${stromListy(9, i)}</div><div class="os-obsah">
       ${stromScena(strom, { luce: true })}

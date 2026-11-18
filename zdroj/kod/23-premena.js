@@ -89,7 +89,7 @@ const Premena = {
             <span class="pm-st-tag">${STAR('#FFD23F')}Téma dňa</span>
             <div class="pm-st-obr">${scene(t, 'sm')}</div>
             <b class="pm-st-nadpis">${t.t}</b>
-            <span class="pm-st-btn">Poďme na to!</span>
+            <span class="pm-st-btn">Začíname</span>
             <span class="pm-st-sova-miesto"></span>
           </div>
           <div class="pm-st-karta pm-st-ang" data-pm-a><small>Dnes ešte nie</small><b>Angličtina na každý deň</b></div>
@@ -115,7 +115,7 @@ const Premena = {
               <b class="n1">${t.t}</b>
             </div>
             <div class="perf"></div>
-            <div class="dl-dole"><span class="btn wide">Poďme na to!${ikn('sipka', 'za')}</span></div>
+            <div class="dl-dole"><span class="btn wide">Ideme na to${ikn('sipka', 'za')}</span></div>
           </article>
           <div class="pm-nv-nav">${PM_NOVE_MENU.map(([n, ik], i) => `<span class="${i ? '' : 'on'}" data-pm-nb><span class="ni">${ikn(ik)}</span>${n}</span>`).join('')}</div>
         </div>

@@ -584,7 +584,7 @@ const Hra = {
     }
     h.krok++;
     if (h.krok === h.seq.length) {
-      h.faza = 'cakaj'; simonStav('Výborne!'); mudraHra('radost', 900);
+      h.faza = 'cakaj'; simonStav('Sedí!'); mudraHra('radost', 900);
       h.dalsia = setTimeout(() => { if (st.hra !== h) return; h.seq.push(Math.floor(Math.random() * 4)); this.ukaz(h); }, 850);
     }
   },
@@ -726,7 +726,7 @@ function obnovSklad() {
 const ikonaHry = id => ['pexeso', 'skladacka'].includes(id) ? 'znova' : id === 'opakuj' ? 'hraj' : ['sova', 'krtko', 'hviezdy'].includes(id) ? 'hviezda' : 'check';
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null, dobre = v.hodnota > 0 || ['pexeso', 'skladacka'].includes(h.id);
-  const nadpis = !dobre ? 'Skús to ešte raz!' : ['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) ? 'Super!' : 'Hotovo!';
+  const nadpis = !dobre ? 'Skús to ešte raz!' : ['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) ? 'Pekne!' : 'Hotovo!';
   const rek = v.novy ? `<span class="pec vysl-pec">${ikn('pohar')}Nový rekord</span>` : v.prvy ? `<span class="pec vysl-pec">${ikn('pohar')}Prvý rekord</span>`
     : v.stary != null ? `<p class="vysl-rek">${ikn('pohar')}Rekord: <b>${rekordText(h.id, v.stary)}</b></p>` : '';
   return `<div class="vysl${dobre ? ' dobre' : ''}" role="dialog" aria-modal="true" aria-labelledby="vysl-n">

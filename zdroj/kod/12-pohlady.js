@@ -17,7 +17,7 @@ const views = {
           </div>
           <div class="perf"></div>
           <div class="dl-dole">
-            <button class="btn wide${hot ? ' dve' : ''}" data-start="${t.id}">${hot ? ikn('znova') + 'Zopakovať tému' : 'Poďme na to!' + ikn('sipka', 'za')}</button>
+            <button class="btn wide${hot ? ' dve' : ''}" data-start="${t.id}">${hot ? ikn('znova') + 'Zopakovať tému' : 'Do témy' + ikn('sipka', 'za')}</button>
             ${kartaMisie(hot, t)}
           </div>
         </article>
@@ -72,7 +72,7 @@ const views = {
         <button class="btn dve maly wide ja-uprav" data-upravit>${ikn('ceruzka')}Upraviť postavičku, meno a vek</button></section>
       <section class="ja-kruh">
         <div class="ja-ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--sand)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--leaf)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(h / vsetky * obvod).toFixed(1)} ${obvod}" transform="rotate(-90 50 50)"/></svg><b class="cis">${h}</b></div>
-        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky! Si skvelý.' : `${h} z ${vsetky}. Každá téma pridá hviezdy a kúsok kruhu.`}</p></div>
+        <div><h2 class="n2">Prebraté témy</h2><p class="tx">${h === vsetky ? 'Všetky. Žiadna nechýba.' : `${h} z ${vsetky}. Každá téma pridá hviezdy a kúsok kruhu.`}</p></div>
       </section>
       ${kartaOdznakov()}
       <div class="ja-vzhlad">${Rezim.karta()}${Pozadie.karta()}</div>
