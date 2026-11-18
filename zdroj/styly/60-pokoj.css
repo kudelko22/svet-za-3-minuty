@@ -1,0 +1,27 @@
+/* 5.1: pokojnejšia appka. Pohyb ostáva len tam, kde má dôvod (hlavné tlačidlo, odpočet, hra). Dôvody v opravy-51.md. */
+/* 1. kartičky, ikony a medaily nepodskakujú, keď nič nerobia */
+.act-e, .tile-e, .misia-obr, .medaila.velka, .odznak.ma .medaila, .dlazdica:not(.zamknuta) .hr-obr svg,
+.dieta .kruh-av, .brana-owl { animation: none; }
+.av { animation: none; }
+.hra-dlazdica, .dlazdica { animation-iteration-count: 1; }
+/* 2. štítky a vyznačenia „nové“ neblikajú a nepulzujú */
+.nav button.novinka .ni, .odznaky-karta.novinka, .odznak.na-vyber { animation: none; }
+/* 3. lesk na hlavnom tlačidle len zriedka (bolo každé 2,6 s) */
+.btn.cta::after { animation-duration: 8s; }
+/* 4. plamienok v počítadle sa nehýbe, slnko a mraky sú pomalé */
+.mini .ii .ik { animation: none; }
+/* 5. úvodné okná a sprievodca: Múdra nepodskakuje, písmená nadpisu sa nevlnia */
+.nov-hlava .owl, .spr-karta .owl, .spr.velka .spr-sova .owl, .uvod-sova svg { animation: none; }
+.spr.velka .spr-nadpis b span { animation: none; }
+/* 6. Múdra v pokoji: dýchanie, šatka a doplnky pomalšie a zriedkavejšie; poskoky len občas */
+:where(svg.mudra.mz-zije) { animation-duration: 6s; }
+.mz-zije .mz-satka { animation-duration: 7s; }
+.mz-zije .mz-pierko { animation-duration: 14s; }
+.mz-zije[data-v="radost"] .mz-cele { animation-duration: 12s; }
+.mz-zije[data-v="oslava"] .mz-cele { animation-duration: 12s; }
+.mz-zije[data-v="radost"] .mz-extra, .mz-zije[data-v="oslava"] .mz-extra { animation-duration: 4s; }
+.mz-zije[data-v="povzbudenie"] .mz-extra { animation-duration: 4s; }
+.mz-zije[data-v="zvedava"] .mz-extra { animation-duration: 9s; }
+.mz-zije[data-v="premysla"] .mz-extra { animation-duration: 7s; }
+/* 7. čítanie nahlas: tlačidlo nesúperí s hlavným (biele, nie fialové) */
+.btn.citaj:not(.on) { --cta: var(--card); --cta-d: var(--sand); --cta-t: var(--text); }
