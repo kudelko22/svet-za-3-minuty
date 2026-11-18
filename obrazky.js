@@ -1506,7 +1506,7 @@ const fc = n => (n && PALETA[n]) ? `var(--${n})` : undefined;
 const okno = (x, y, w = 11, h = 11) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="${T.okno}"/><path d="M${x + w / 2} ${y}v${h}M${x} ${y + h / 2}h${w}" stroke-width="1.6"/>` + `<rect class="dv-noc" x="${x - 4}" y="${y - 4}" width="${w + 8}" height="${h + 8}" rx="6" fill="${T.svetlo}" opacity=".18" stroke="none"/>`;
 const dvere = (x = 0, c = D.violetD, h = 18) => `<path d="M${x - 6} 0V${-h + 6}a6 6 0 0 1 12 0V0z" fill="${c}"/><circle cx="${x + 3}" cy="-7" r="1.1" fill="${T.ink}" stroke="none"/>`;
 const DOM = {
-  chalupka: (c = {}) => `<rect x="11" y="-62" width="8" height="18" fill="${D.coralD}"/><rect x="-24" y="-38" width="48" height="38" rx="2" fill="${c.stena || D.sunL}"/><path d="M-31 -35 L0 -63 L31 -35 Z" fill="${c.strecha || D.coral}"/><path d="M-20 -42h40" stroke-width="1.4" opacity=".5"/>${okno(-19, -30)}${okno(8, -30)}${dvere(0, c.dvere)}`,
+  chalupka: (c = {}) => `<rect x="11" y="-62" width="8" height="18" fill="${D.coralD}"/><rect x="-24" y="-38" width="48" height="38" rx="2" fill="${c.stena || D.sunL}"/><path d="M-31 -35 L0 -63 L31 -35 Z" fill="${c.strecha || D.coral}"/><path d="M-20 -42h40" stroke-width="1.4" opacity=".5"/>${okno(-19, -30)}${okno(8, -30)}${dvere(0, c.dvere)}<path d="M-15 0v-7" stroke="${T.leafD}" stroke-width="1.6"/><circle cx="-15" cy="-9" r="3" fill="${D.coral}" stroke-width="1.3"/><path d="M-20 0v-7" stroke="${T.leafD}" stroke-width="1.6"/><circle cx="-20" cy="-9" r="3" fill="${D.sun}" stroke-width="1.3"/><path d="M15 0v-7" stroke="${T.leafD}" stroke-width="1.6"/><circle cx="15" cy="-9" r="3" fill="${D.sun}" stroke-width="1.3"/><path d="M20 0v-7" stroke="${T.leafD}" stroke-width="1.6"/><circle cx="20" cy="-9" r="3" fill="${D.coral}" stroke-width="1.3"/><g class="dv-dym">${[[15, -69, 3.2], [19, -78, 4.2], [15, -88, 5.2]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${D.white}" stroke-width="1.4" opacity=".9"/>`).join('')}</g>`,
   vezicka: (c = {}) => `<rect x="-15" y="-60" width="30" height="60" rx="2" fill="${c.stena || D.skyL}"/><path d="M-20 -58 L0 -92 L20 -58 Z" fill="${c.strecha || D.violet}"/><circle cx="0" cy="-92" r="2.5" fill="${D.sun}"/><circle cx="0" cy="-45" r="6" fill="${T.okno}"/>${okno(-5, -32, 10, 9)}${dvere(0, c.dvere || D.coralD, 16)}`,
   hrib: (c = {}) => `<path d="M-14 0V-28h28V0z" fill="${c.stena || D.card}"/>${okno(3, -24, 8, 8)}${dvere(-4, c.dvere || D.teal, 15)}<path d="M-30 -26c0-20 13-32 30-32s30 12 30 32c0 3-3 5-6 5h-48c-3 0-6-2-6-5z" fill="${c.strecha || D.coral}"/><circle cx="-14" cy="-40" r="4.5" fill="var(--dv-biela)" stroke="none"/><circle cx="6" cy="-48" r="3.5" fill="var(--dv-biela)" stroke="none"/><circle cx="17" cy="-34" r="4" fill="var(--dv-biela)" stroke="none"/>`,
   stodola: (c = {}) => `<path d="M-28 0V-34l10-14h36l10 14V0z" fill="${c.stena || D.coral}"/><path d="M-28 -34l10-14h36l10 14z" fill="${c.strecha || D.coralD}"/><rect x="-11" y="-26" width="22" height="26" fill="${D.card}"/><path d="M-11 -26l22 26M11 -26l-22 26" stroke-width="1.8"/>`,
@@ -1626,16 +1626,27 @@ function telo(kluc, o = {}) {
   if (h.skupina === 'dom') { const fa = o.farby || {}; return h.f({ stena: fc(fa.stena), strecha: fc(fa.strecha), dvere: fc(fa.dvere) }); }
   return h.f(fc(o.farba));
 }
-const G = (x, y, s, inner, flip, kl) => `<g class="dv dv-${kl}" transform="translate(${x} ${y}) scale(${flip ? -s : s} ${s})">${inner}</g>`;
+/* spoločné svetlo zľava: tieň pod každou vecou padá doprava, trs trávy v päte, chodníček k dverám. Tieň a tráva sa pri zrkadlení nepreklápajú. */
+const BEZ_TIEN = { koberec: 1, kamen_cesta: 1, jazierko: 1, prazdne: 1, mostik: 1, obraz: 1, lesenie: 0 };
+const DVERE_X = { chalupka: 0, vezicka: 0, hrib: -4, kniznica: 0, kaviaren: 11, dielna: 11, zamocek: 0, hvezdaren: 0, majak: 0 };
+function zem(kluc, vnutri) {
+  if (BEZ_TIEN[kluc]) return '';
+  const w = (RAMCEK[kluc] || [0, 0, 40])[2], rx = Math.max(10, w * (vnutri ? .36 : .42)), cx = rx * .14;
+  let s = `<ellipse class="dv-tien" cx="${cx.toFixed(1)}" cy="1" rx="${rx.toFixed(1)}" ry="${(rx * .2).toFixed(1)}" fill="var(--ink)" opacity=".16" stroke="none"/>`;
+  if (!vnutri && !/^(iglu|snehuliak|krtko|rybka|bubliny)$/.test(kluc)) { const x = rx * .92; s += `<path d="M${-x - 3} 0l-2-6M${-x} 0l1-7M${-x + 3} 0l3-5M${x - 3} 0l-3-5M${x} 0l-1-7M${x + 3} 0l2-6" fill="none" stroke="var(--dv-lis-d)" stroke-width="1.8"/>`; }
+  return s;
+}
+const cestickaKDveram = kluc => kluc in DVERE_X ? `<path d="M${DVERE_X[kluc] - 6} 0L${DVERE_X[kluc] - 12} 10h24L${DVERE_X[kluc] + 6} 0z" fill="var(--dv-cesta)" stroke-width="1.6"/>` : '';
+const G = (x, y, s, telo, flip, kl, zem2) => `<g class="dv dv-${kl}" transform="translate(${x} ${y})"><g transform="scale(${s})" stroke-width="${(2.2 / s).toFixed(2)}">${zem2}</g><g transform="scale(${flip ? -s : s} ${s})" stroke-width="${(2.2 / s).toFixed(2)}">${telo}</g></g>`;
 function dedinkaVec(kluc, o = {}) {
   const t = telo(kluc, o); if (!t) return '';
-  return G(o.x || 0, o.y || 0, o.s || 1, t, o.zrkadlo, kluc.replace(/\W+/g, '-'));
+  return G(o.x || 0, o.y || 0, o.s || 1, cestickaKDveram(kluc) + t, o.zrkadlo, kluc.replace(/W+/g, '-'), kluc === 'prazdne' ? '' : zem(kluc, kluc.startsWith('nab.') || najdi(kluc)?.skupina === 'nab'));
 }
 const kluce = () => Object.values(ZOZNAM).flat();
 /* rámček každej veci (x, y, šírka, výška), zmeraný z kresby */
 const RAMCEK = {
   stan: [-31, -51, 61, 53],
-  chalupka: [-34, -66, 67, 68],
+  chalupka: [-34, -96, 67, 99],
   hrib: [-33, -61, 65, 63],
   stodola: [-31, -51, 61, 53],
   vezicka: [-23, -97, 45, 100],
@@ -1708,7 +1719,7 @@ const RAMCEK = {
 };
 function svg(kluc, o = {}) {
   const r = RAMCEK[kluc] || [-40, -100, 80, 106];
-  return `<svg class="dv-svg" viewBox="${r[0]} ${r[1]} ${r[2]} ${r[3]}" role="img" aria-label="${o.popis || kluc}" preserveAspectRatio="xMidYMax meet"><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${dedinkaVec(kluc, { ...o, x: 0, y: 0, s: 1 })}</g></svg>`;
+  return `<svg class="dv-svg" viewBox="${r[0] - 6} ${r[1]} ${r[2] + 12} ${r[3] + 12}" role="img" aria-label="${o.popis || kluc}" preserveAspectRatio="xMidYMax meet"><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${dedinkaVec(kluc, { ...o, x: 0, y: 0, s: 1 })}</g></svg>`;
 }
 return { SKUPINY, ZOZNAM, RAMCEK, kluce, telo, dedinkaVec, svg, miesto, G, fc };
 })();
