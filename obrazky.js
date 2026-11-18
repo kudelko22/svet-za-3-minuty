@@ -1521,6 +1521,7 @@ const DOM = {
   mlyn: (c = {}) => `<path d="M-14 0l5-52h18l5 52z" fill="${c.stena || D.card}"/><path d="M-12 -50l12-12 12 12z" fill="${c.strecha || D.teal}"/>${dvere(0, D.woodD, 14)}<g transform="translate(0 -52)"><g class="vrtula">${[0, 90, 180, 270].map(a => `<rect x="-4" y="-38" width="8" height="34" rx="2" fill="${D.paper}" transform="rotate(${a + 20})"/>`).join('')}</g><circle r="4" fill="${D.sun}"/></g>`,
   iglu: () => `<path d="M-30 0a30 30 0 0 1 60 0z" fill="var(--dv-sneh)"/><path d="M-28 -12h56M-20 -24h40M-6 -12v-12M10 -24v12" stroke-width="1.3" opacity=".6"/><path d="M-9 0v-8a9 9 0 0 1 18 0v8z" fill="${D.skyL}"/>`,
   stan: (c = {}) => `<path d="M-28 0L0 -40 28 0z" fill="${c.stena || D.sun}"/><path d="M-6 0L0 -40 6 0z" fill="${c.dvere || D.coral}"/><path d="M0 -40v-8l9 3-9 3" fill="${c.dvere || D.coral}"/>`,
+  domov: (c = {}) => { const k = c.komin || 'maly', st = c.stena || D.sunL, sr = c.strecha || D.coral; return (k === 'ziadny' ? '' : `<rect x="19" y="-98" width="11" height="30" fill="${D.coralD}"/><rect x="17" y="-101" width="15" height="5" rx="1.5" fill="${sr}"/>`) + `<rect x="-46" y="-66" width="24" height="66" rx="2" fill="${st}"/><path d="M-51 -64L-34 -96-17 -64z" fill="${D.violet}"/><circle cx="-34" cy="-96" r="2.5" fill="${D.sun}"/>${okno(-40, -52, 11, 11)}${okno(-40, -32, 11, 11)}<rect x="-34" y="-56" width="68" height="56" rx="2" fill="${st}"/><path d="M-42 -52L0 -90 42 -52z" fill="${sr}"/><path d="M-29 -56h58" stroke-width="1.4" opacity=".5"/><circle cx="0" cy="-66" r="6.5" fill="${T.okno}"/><path d="M0 -72.500v13M-6.500 -66h13" stroke-width="1.6"/>${okno(-28, -40, 12, 12)}${okno(16, -40, 12, 12)}<rect x="-30" y="-27" width="20" height="5" rx="1.5" fill="${D.woodD}"/><rect x="12" y="-27" width="20" height="5" rx="1.5" fill="${D.woodD}"/>${[-26, -19, -12, 14, 21, 28].map((x, i) => `<circle cx="${x}" cy="-29" r="2.2" fill="${[D.coral, D.sun, D.pink][i % 3]}" stroke-width="1"/>`).join('')}<path d="M-14 -22h28l-4-7h-20z" fill="${tm(sr, D.coralD)}"/>${dvere(0, c.dvere, 22)}<path d="M0 -90v-14" stroke-width="2.4"/><path d="M0 -104h16l-4 5 4 5H0z" fill="${D.sun}"/>` + (k === 'ziadny' ? '' : `<g class="dv-dym">${[[24, -106, 3.4], [28, -116, 4.4], [24, -127, 5.4]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${D.white}" stroke-width="1.4" opacity=".9"/>`).join('')}</g>`); },
 };
 
 /* ---------- stromy a kríky ---------- */
@@ -1534,7 +1535,7 @@ const STROM = {
   jesen: (c = D.sunD) => `${kmen()}<circle cy="-40" r="20" fill="${c}"/><circle cx="-8" cy="-46" r="7" fill="${D.coral}" stroke="none" opacity=".7"/>`,
   palma: () => `<path d="M-2 0c0-14 2-28 6-40h5c-3 12-5 26-4 40z" fill="${D.wood}"/>${[-60, -20, 20, 60, 150].map(a => `<path d="M6 -40q${18 * Math.cos(a * Math.PI / 180)} ${-10 + 14 * Math.sin(a * Math.PI / 180)} ${30 * Math.cos(a * Math.PI / 180)} ${10 + 18 * Math.sin(a * Math.PI / 180)}" fill="none" stroke="${T.leafD}" stroke-width="6"/>`).join('')}<circle cx="6" cy="-40" r="3" fill="${D.woodD}"/>`,
   ker: (c = T.leaf) => `<path d="M-20 0c-4-10 2-18 10-16 2-8 16-8 18 0 8-2 14 8 8 16z" fill="${c}"/><path d="M-13 -9c1-4 4-6 8-7" fill="none" stroke="${D.white}" stroke-width="2" opacity=".8"/><circle cx="9" cy="-7" r="2.2" fill="${D.coral}" stroke-width="1.4"/><circle cx="-3" cy="-4" r="2.2" fill="${D.coral}" stroke-width="1.4"/>`,
-  mudrost: (st = 4) => `<path d="M-6 0c2-10 2-24 0-34h12c-2 10-2 24 0 34z" fill="${D.woodD}"/><path d="M-30 -42c-8-18 8-34 22-30 6-10 26-8 30 4 12 4 12 22 2 26 0 10-14 16-24 10-8 6-26 4-30-10z" fill="${T.leaf}"/><path d="M-6 -30h12l-3 6h-6z" fill="${D.coral}"/>${[[-14, -50, D.coral], [10, -60, D.sun], [18, -42, D.violet], [-4, -66, D.coral], [-20, -36, D.sun]].slice(0, st + 1).map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="4" fill="${c}"/>`).join('')}`,
+  mudrost: (st = 4) => `<ellipse cy="-2" rx="44" ry="10.5" fill="${T.stone}"/><ellipse cy="-3" rx="37" ry="8" fill="${T.leaf}"/><path d="M-22 -3q3-3 7-3M8 -2q4-4 9-3" fill="none" stroke="${D.white}" stroke-width="1.5" opacity=".8"/><path d="M-6 0c2-10 2-24 0-34h12c-2 10-2 24 0 34z" fill="${D.woodD}"/><path d="M-30 -42c-8-18 8-34 22-30 6-10 26-8 30 4 12 4 12 22 2 26 0 10-14 16-24 10-8 6-26 4-30-10z" fill="${T.leaf}"/><path d="M-6 -30h12l-3 6h-6z" fill="${D.coral}"/>${[[-14, -50, D.coral], [10, -60, D.sun], [18, -42, D.violet], [-4, -66, D.coral], [-20, -36, D.sun]].slice(0, st + 1).map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="4" fill="${c}"/>`).join('')}`,
 };
 
 /* ---------- drobnosti ---------- */
@@ -1577,17 +1578,36 @@ const ZVER = {
 };
 
 /* ---------- miesta hier ---------- */
+const hviezda = (x, y, r, f = D.sun, sw = 1.4) => { let d = ''; for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * .46 : r, a = -Math.PI / 2 + i * Math.PI / 5; d += (i ? 'L' : 'M') + (x + rr * Math.cos(a)).toFixed(1) + ' ' + (y + rr * Math.sin(a)).toFixed(1); } return `<path d="${d}z" fill="${f}" stroke-width="${sw}"/>`; };
+/* obláčiky na prechod medzi miestami: stred spodku v (0, 0), plochý spodok, farba --dv-oblak (v noci tmavšia) */
+const OBL = {
+  oblak1: () => `<path d="M-48 0c-12 0-16-16-6-20 0-12 14-16 22-8 4-10 22-12 28-2 10-6 22 2 20 12 10 2 12 18-2 18z" fill="var(--dv-oblak)"/><path d="M-40 -8c4-3 8-3 11 0M10 -10c3-3 7-3 10 0" fill="none" stroke-width="1.600" opacity=".35"/>`,
+  oblak2: () => `<path d="M-30 0c-12 0-14-14-6-19-4-10 6-20 16-16 4-12 24-12 28 0 12-2 18 12 10 20 6 6 2 15-8 15z" fill="var(--dv-oblak)"/><path d="M-22 -14c3-4 8-5 12-3M6 -24c4-3 8-2 11 1" fill="none" stroke-width="1.600" opacity=".35"/>`,
+  oblak3: () => `<path d="M-20 0c-10 0-12-12-4-15 0-9 10-13 16-7 6-6 18-2 18 8 8 1 9 14-1 14z" fill="var(--dv-oblak)"/><path d="M-12 -9c2-3 6-3 8-1" fill="none" stroke-width="1.600" opacity=".35"/>`,
+};
 const HRA = {
   ihrisko: () => `<rect x="-30" y="-8" width="30" height="8" rx="3" fill="${D.sand}"/><path d="M4 0V-34M18 0V-34" stroke-width="2.6"/><path d="M4 -24h14" stroke-width="2"/><path d="M4 -30h14v-8l-7-6-7 6z" fill="${D.coral}"/><path d="M18 -26c10 4 14 14 16 26" fill="none" stroke="${D.sun}" stroke-width="6"/><path d="M18 -26c10 4 14 14 16 26" fill="none" stroke-width="1.2"/><path d="M-22 -8l4-6 4 6" fill="${D.sky}"/>`,
   kaviaren: () => `<rect x="-26" y="-36" width="52" height="36" rx="2" fill="${D.card}"/><path d="M-30 -36h60l-4 10h-52z" fill="${D.coral}"/><path d="M-20 -36l-2 10M-8 -36v10M4 -36l1 10M16 -36l2 10" stroke="var(--dv-biela)" stroke-width="4"/><path d="M-30 -36h60l-4 10h-52z" fill="none"/>${okno(-20, -20, 16, 12)}${dvere(11, D.teal, 16)}<rect x="-10" y="-50" width="20" height="13" rx="3" fill="${D.sunL}"/><path d="M-5 -46h7v5a3.5 3.5 0 0 1-7 0zM2 -45h2a1.5 1.5 0 0 1 0 3h-2" fill="${D.card}" stroke-width="1.3"/>`,
   majak: () => `<path d="M-13 0l5-56h16l5 56z" fill="var(--dv-biela)"/><path d="M-11.3 -18h22.6l-1.1-12h-20.4zM-9.4 -42h18.8l-.8-8H-8.6z" fill="${D.coral}"/><rect x="-9" y="-68" width="18" height="12" rx="2" fill="${T.svetlo}"/><path d="M-12 -68h24l-12-9z" fill="${D.violetD}"/>${dvere(0, D.violetD, 12)}` + `<path d="M9 -62l26-8v14z" fill="${D.sunL}" class="dv-noc" opacity=".5" stroke="none"/>`,
   hvezdaren: () => `<rect x="-22" y="-28" width="44" height="28" rx="2" fill="${D.card}"/><path d="M-24 -28a24 24 0 0 1 48 0z" fill="${D.violetL}"/><path d="M-4 -50h8v22h-8z" fill="${D.violetD}"/><path d="M2 -46l16-14 4 4-16 12z" fill="${D.ink}"/>${dvere(0, D.violetD, 15)}`,
-  krtko: () => `<path d="M-30 0c4-10 14-10 18 0zM10 0c4-10 14-10 18 0z" fill="${D.woodD}"/><path d="M-10 0c2-14 18-14 20 0z" fill="${D.woodD}"/><ellipse cy="-10" rx="7" ry="8" fill="var(--dv-krtko)"/><ellipse cy="-6" rx="3.5" ry="2.4" fill="${D.pink}"/><circle cx="-3" cy="-12" r="1.3" fill="var(--dv-biela)" stroke="none"/><circle cx="3" cy="-12" r="1.3" fill="var(--dv-biela)" stroke="none"/>`,
+  krtko: () => `<path d="M-36 0c2-16 14-28 36-28s34 12 36 28z" fill="${D.woodD}"/><ellipse cx="-20" cy="-9" rx="7" ry="3" fill="${D.ink}"/><ellipse cx="20" cy="-9" rx="7" ry="3" fill="${D.ink}"/><ellipse cy="-22" rx="11" ry="12" fill="var(--dv-krtko)"/><ellipse cy="-16.500" rx="5.500" ry="4" fill="${D.pink}"/><circle cx="-4.500" cy="-24" r="1.700" fill="${D.card}" stroke="none"/><circle cx="4.500" cy="-24" r="1.700" fill="${D.card}" stroke="none"/><ellipse cx="-11" cy="-9" rx="4" ry="3" fill="${D.pink}"/><ellipse cx="11" cy="-9" rx="4" ry="3" fill="${D.pink}"/><path d="M-30 -30l5-5M30 -30l-5-5" stroke-width="2.400"/>${hviezda(26, -40, 4.500)}`,
   kniznica: () => `<rect x="-26" y="-40" width="52" height="40" rx="2" fill="${D.tealL}"/><path d="M-32 -38L0 -60 32 -38z" fill="${D.teal}"/>${okno(-20, -30, 12, 14)}${okno(8, -30, 12, 14)}${dvere(0, D.violetD)}<rect x="-9" y="-56" width="18" height="12" rx="2" fill="${D.card}"/><path d="M0 -54v8M0 -54c-3-1-6-1-7 0v8c1-1 4-1 7 0 3-1 6-1 7 0v-8c-1-1-4-1-7 0" fill="${D.sunL}" stroke-width="1.3"/>`,
   dielna: () => `<rect x="-26" y="-34" width="52" height="34" rx="2" fill="${D.sunL}"/><path d="M-30 -32L-30 -46H30L30 -32z" fill="${D.wood}"/>${okno(-20, -26, 14, 11)}<rect x="2" y="-24" width="18" height="24" fill="${D.woodD}"/><g transform="translate(0 -40)"><circle r="7" fill="${D.stone}"/><circle r="2.5" fill="${D.card}"/></g>`,
   altanok: () => `<path d="M-24 -34L0 -50 24 -34z" fill="${D.violet}"/><path d="M-20 0v-34M20 0v-34M-6 0v-34M6 0v-34" stroke-width="2.4"/><rect x="-24" y="-12" width="48" height="4" fill="${D.card}"/><path d="M-4 -44v-10l8-2v8" fill="none" stroke-width="1.8"/><circle cx="-6" cy="-44" r="2.4" fill="${D.ink}"/><circle cx="2" cy="-46" r="2.4" fill="${D.ink}"/>`,
-  bubliny: () => `${MALE.fontana()}<circle cx="-10" cy="-38" r="5" fill="${D.skyL}" opacity=".9"/><circle cx="8" cy="-46" r="7" fill="${D.skyL}" opacity=".9"/><circle cx="16" cy="-32" r="4" fill="${D.skyL}" opacity=".9"/>`,
+  bubliny: () => `${MALE.fontana()}${[[-18, -44, 10, 'p'], [8, -58, 8, 'm'], [24, -40, 9, 'k']].map(([x, y, r, t]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${D.skyL}" stroke-width="1.800"/><path d="M${x - r * .55} ${y - r * .4}q${r * .2} ${-r * .4} ${r * .6} ${-r * .4}" fill="none" stroke="${D.white}" stroke-width="1.400"/><path d="${t === 'p' ? `M${x - 4} ${y + 1}h8M${x} ${y - 3}v8` : t === 'm' ? `M${x - 3.500} ${y + 1}h7` : `M${x - 3} ${y - 2}l6 6M${x + 3} ${y - 2}l-6 6`}" stroke="${D.violetD}" stroke-width="1.900"/>`).join('')}`,
   lesenie: () => `<rect x="-26" y="-44" width="52" height="44" fill="var(--dv-lesenie)" stroke-dasharray="5 4"/><path d="M-22 0v-48M22 0v-48M-26 -16h52M-26 -32h52M-22 -16L22 -32" stroke="${D.wood}" stroke-width="3"/><path d="M-22 0v-48M22 0v-48" stroke-width="1"/>`,
+  pexeso: () => `<rect x="-30" y="-48" width="60" height="48" rx="3" fill="${D.violetL}"/><path d="M-35 -46L0 -68 35 -46z" fill="${D.violet}"/>${[[-18, -37, 'h'], [0, -37, 's'], [18, -37, 'd'], [-18, -14, 'd'], [0, -14, 'h'], [18, -14, 's']].map(([x, y, t]) => `<rect x="${x - 7}" y="${y - 9}" width="14" height="18" rx="2.5" fill="${t === 'd' ? D.violetD : D.card}" stroke-width="1.6"/>` + (t === 's' ? hviezda(x, y, 4.4, D.sun, 1) : t === 'h' ? `<path d="M${x} ${y + 4}c-6-4-5-9-2-9 1 0 2 1 2 2 0-1 1-2 2-2 3 0 4 5-2 9z" fill="${D.coral}" stroke-width="1"/>` : `<circle cx="${x}" cy="${y}" r="2" fill="${D.violetL}" stroke="none"/>`)).join('')}`,
+  pocitaj: () => `<path d="M-24 -8v8M24 -8v8" stroke-width="3"/><rect x="-30" y="-52" width="60" height="46" rx="4" fill="${D.wood}"/><path d="M-34 -52h68l-6-11h-56z" fill="${D.leaf}"/>${[[-42, 3, D.coral], [-30, 5, D.sun], [-18, 2, D.teal]].map(([y, n, c]) => `<path d="M-25 ${y}h50" stroke-width="1.6"/>` + Array.from({ length: n }, (_, i) => `<circle cx="${-19 + i * 8.5}" cy="${y}" r="3.6" fill="${c}" stroke-width="1.4"/>`).join('')).join('')}`,
+  iny: () => `<rect x="-30" y="-46" width="60" height="46" rx="3" fill="${D.coralL}"/><path d="M-35 -46L-29 -62h58l6 16z" fill="${D.coral}"/>${[[-14, -34], [14, -34], [-14, -14], [14, -14]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="10" fill="${D.card}"/>` + (i === 3 ? `<path d="M${x} ${y - 6}l6 11h-12z" fill="${D.teal}" stroke-width="1.4"/>` : `<circle cx="${x}" cy="${y}" r="5" fill="${D.sun}" stroke-width="1.4"/>`)).join('')}`,
+  hadaj: () => `<rect x="-18" y="-64" width="36" height="64" rx="3" fill="${D.skyL}"/><path d="M-23 -62L0 -90 23 -62z" fill="${D.sky}"/><circle cy="-92" r="3" fill="${D.sun}"/><path d="M-8 -50c0-11 16-11 16 0 0 8-8 7-8 15" fill="none" stroke="${D.violetD}" stroke-width="5"/><circle cx="0" cy="-26" r="3.2" fill="${D.violetD}"/>${dvere(0, D.coralD, 12)}`,
+  tien: () => `<rect x="-32" y="-54" width="64" height="54" rx="3" fill="${D.coral}"/><rect x="-24" y="-46" width="48" height="34" rx="2" fill="${D.card}"/><path d="M-32 -54h12l-4 14zM32 -54H20l4 14z" fill="${D.violetD}"/><ellipse cx="-10" cy="-22" rx="9" ry="6" fill="${D.ink}"/><circle cx="-2" cy="-30" r="5" fill="${D.ink}"/><path d="M2 -30l6 2-6 2z" fill="${D.ink}"/><ellipse cx="14" cy="-20" rx="6" ry="4.4" fill="${D.sun}" stroke-width="1.4"/><circle cx="19" cy="-26" r="3.6" fill="${D.sun}" stroke-width="1.4"/><circle cx="0" cy="-60" r="5" fill="${D.sunL}"/><path d="M-9 -60h-4M9 -60h4M0 -69v-4" stroke-width="1.6"/>`,
+  sova: () => `${[[-20, 40, D.coral], [0, 52, D.sun], [20, 36, D.teal]].map(([x, h, c]) => `<rect x="${x - 7}" y="${-h}" width="14" height="${h}" fill="${c}"/><path d="M${x - 7} ${-h}L${x} ${-h - 11} ${x + 7} ${-h}z" fill="${D.sunL}"/><path d="M${x - 2.4} ${-h - 7.600}L${x} ${-h - 11} ${x + 2.4} ${-h - 7.600}z" fill="${D.ink}" stroke-width="1"/><path d="M${x} ${-h + 4}v${h - 10}" stroke-width="1" opacity=".4"/>`).join('')}<path d="M-8 -82C-26 -90-30 -70-18 -66zM8 -82c18-8 22 12 10 16z" fill="${D.violetD}"/><ellipse cx="0" cy="-76" rx="10" ry="11" fill="${D.violet}"/><ellipse cy="-73" rx="5.500" ry="6.500" fill="${D.violetL}"/><circle cx="-4" cy="-80" r="3.600" fill="${D.card}" stroke-width="1.4"/><circle cx="4" cy="-80" r="3.600" fill="${D.card}" stroke-width="1.4"/><circle cx="-4" cy="-80" r="1.400" fill="${D.ink}" stroke="none"/><circle cx="4" cy="-80" r="1.400" fill="${D.ink}" stroke="none"/><path d="M-1.600 -77h3.200l-1.600 2.400z" fill="${D.sunD}" stroke-width="1"/>${hviezda(26, -80, 5, D.sun, 1.2)}`,
+  hviezdy: () => `<path d="M0 0V-52" stroke-width="3.600"/><ellipse cy="-2" rx="16" ry="4" fill="${D.wood}"/><path d="M-24 -56q0 26 24 26t24-26z" fill="${D.skyL}"/><path d="M-14 -54v20M0 -54v26M14 -54v20M-22 -44h44M-17 -36h34" stroke-width="1.2" opacity=".55"/><ellipse cy="-56" rx="24" ry="7" fill="${D.sunL}"/>${hviezda(-30, -26, 6.5)}${hviezda(30, -70, 6)}${hviezda(34, -34, 4.600)}${hviezda(-22, -82, 4.800)}${hviezda(3, -58, 5.500, D.sun, 1.2)}`,
+  poradie: () => `<rect x="-35" y="-16" width="24" height="16" fill="${D.teal}"/><rect x="-11" y="-32" width="24" height="32" fill="${D.sun}"/><rect x="13" y="-48" width="24" height="48" fill="${D.coral}"/>${[[-23, -8, 1], [1, -16, 2], [25, -24, 3]].map(([x, y, n]) => Array.from({ length: n }, (_, i) => `<circle cx="${x + (i - (n - 1) / 2) * 7.600}" cy="${y}" r="3" fill="${D.card}" stroke-width="1.4"/>`).join('')).join('')}<path d="M25 -48v-16" stroke-width="2.400"/><path d="M25 -64h15l-4 5 4 5H25z" fill="${D.violet}"/>`,
+  ine: () => `<rect x="-30" y="-36" width="60" height="36" rx="2" fill="${D.tealL}"/>${[0, 1, 2, 3].map(i => `<path d="M${-34 + i * 17} -36L${-29 + i * 14.500} -52h14.500L${-17 + i * 17} -36z" fill="${i === 2 ? D.teal : D.coral}"/>`).join('')}<rect x="-26" y="-20" width="52" height="4" fill="${D.wood}"/>${[-18, -6, 6].map(x => `<circle cx="${x}" cy="-26" r="5" fill="${D.sun}" stroke-width="1.4"/>`).join('')}<path d="M18 -20l-6.500-10h13z" fill="${D.teal}" stroke-width="1.4"/>`,
+  opakuj: () => `<path d="M-7 0h14l-3-14h-8z" fill="${D.wood}"/><path d="M0 -40L-27 -40A27 27 0 0 1 0 -67z" fill="${D.coral}"/><path d="M0 -40V-67A27 27 0 0 1 27 -40z" fill="${D.sun}"/><path d="M0 -40H27A27 27 0 0 1 0 -13z" fill="${D.leaf}"/><path d="M0 -40V-13A27 27 0 0 1 -27 -40z" fill="${D.sky}"/><circle cy="-40" r="6.500" fill="${D.card}"/><path d="M5 -62a23 23 0 0 1 17 17" fill="none" stroke="${D.white}" stroke-width="2.200" opacity=".85"/><circle class="dv-noc" cx="14" cy="-52" r="17" fill="${D.sunL}" opacity=".3" stroke="none"/>`,
+  slovo: () => `<rect x="-30" y="-40" width="60" height="40" rx="2" fill="${D.sunL}"/><path d="M-35 -40L0 -62 35 -40z" fill="${D.wood}"/><rect x="-28" y="-18" width="56" height="5" rx="1.500" fill="${D.woodD}"/>${[[-17, D.violet, 'a'], [0, D.coral, 'o'], [17, D.teal, 'k']].map(([x, c, g], i) => `<g transform="translate(${x} -29) rotate(${[-7, 5, -3][i]})"><rect x="-8" y="-8" width="16" height="16" rx="2.500" fill="${c}"/><path d="${g === 'a' ? 'M-4 5L0 -5 4 5M-2 1h4' : g === 'k' ? 'M-3 -5v10M-3 0l6-5M-3 0l6 5' : 'M0 -5a4.500 5 0 1 0 .1 0z'}" fill="none" stroke="${D.card}" stroke-width="2" stroke-linecap="round"/></g>`).join('')}<circle cx="0" cy="-48" r="4" fill="${D.card}" stroke-width="1.400"/>`,
+  skladacka: () => `<path d="M-34 -52L0 -70 34 -52z" fill="${D.violet}"/><rect x="-28" y="-52" width="28" height="26" fill="${D.sunL}"/><rect x="0" y="-52" width="28" height="26" fill="${D.coralL}"/><rect x="-28" y="-26" width="28" height="26" fill="${D.skyL}"/><rect x="0" y="-26" width="28" height="26" fill="none" stroke-dasharray="4 3" stroke-width="1.800"/><circle cx="0" cy="-39" r="4.500" fill="${D.sunL}"/><circle cx="-14" cy="-26" r="4.500" fill="${D.sunL}"/><circle cx="0" cy="-13" r="4.500" fill="${D.skyL}"/><g transform="translate(42 -10) rotate(14)"><rect x="-12" y="-11" width="24" height="22" fill="${D.leafL}"/><circle cx="-12" cy="0" r="4" fill="${D.leafL}" stroke-width="1.600"/></g>`,
 };
 
 /* ---------- nábytok (vnútri domčeka) ---------- */
@@ -1610,9 +1630,10 @@ const miesto = (x, y, rx = 22, aktivne) => `<ellipse cx="${x}" cy="${y}" rx="${r
 
 /* ---------- rozhranie ---------- */
 const SKUPINY = {
-  dom: DOM, strom: STROM, mala: MALE, zver: ZVER, hra: HRA, nab: NAB,
+  dom: DOM, strom: STROM, mala: MALE, zver: ZVER, hra: HRA, nab: NAB, obl: OBL,
 };
 const ZOZNAM = {
+  domov: ['domov'],
   domcek: ['stan', 'chalupka', 'hrib', 'stodola', 'vezicka', 'mlyn', 'zamocek', 'iglu'],
   strom: ['ker', 'gulaty', 'smrek', 'breza', 'jablon', 'jesen', 'ceresna', 'palma'],
   kvet: ['kvety', 'huby', 'tulipany', 'slnecnica'],
@@ -1620,12 +1641,14 @@ const ZOZNAM = {
   zvieratko: ['sliepka', 'kacka', 'zajac', 'jez', 'macka', 'ovca', 'pes'],
   ozdoba: ['schranka', 'sud', 'kamene', 'seno', 'vlajocky', 'lampa', 'lavicka', 'lucerny', 'strasiak', 'hojdacka', 'studna', 'jazierko', 'fontana', 'socha', 'snehuliak'],
   nabytok: ['kvetinac', 'stolicka', 'obraz', 'koberec', 'nab.lampa', 'stol', 'globus', 'kreslo', 'postel', 'polica', 'akvarium', 'dalekohlad'],
-  hra: ['ihrisko', 'kaviaren', 'majak', 'hvezdaren', 'krtko', 'kniznica', 'dielna', 'altanok', 'bubliny'],
+  hra: ['pexeso', 'pocitaj', 'iny', 'hadaj', 'tien', 'sova', 'hviezdy', 'poradie', 'krtko', 'ine', 'opakuj', 'bubliny', 'slovo', 'skladacka'],
+  budova: ['ihrisko', 'kaviaren', 'majak', 'hvezdaren', 'kniznica', 'dielna', 'altanok'],
+  oblacik: ['oblak1', 'oblak2', 'oblak3'],
   ina: ['lesenie', 'prazdne', 'mudrost', 'rybka'],
 };
 function najdi(kluc) {
   const [g, n] = kluc.includes('.') ? kluc.split('.') : [null, kluc];
-  for (const k of (g ? [g] : ['dom', 'strom', 'mala', 'zver', 'hra', 'nab'])) if (SKUPINY[k] && SKUPINY[k][n]) return { skupina: k, f: SKUPINY[k][n] };
+  for (const k of (g ? [g] : ['dom', 'strom', 'mala', 'zver', 'hra', 'nab', 'obl'])) if (SKUPINY[k] && SKUPINY[k][n]) return { skupina: k, f: SKUPINY[k][n] };
   return null;
 }
 const OKNA = ['stvorec', 'okruhle', 'oblukove'], KOMINY = ['maly', 'siroky', 'ziadny'], SEZONY = ['jar', 'leto', 'jesen', 'zima'];
@@ -1646,6 +1669,7 @@ function telo(kluc, o = {}) {
   if (kluc === 'prazdne') return miesto(0, -4, 24, o.aktivne);
   const h = najdi(kluc); if (!h) return '';
   const holy = kluc.replace(/^\w+\./, '');
+  if (kluc === 'mudrost') return h.f(Number.isInteger(o.stupen) ? Math.max(0, Math.min(4, o.stupen)) : 4);
   OKNO_TVAR = OKNA.includes(o.okna) ? o.okna : 'stvorec';
   if (h.skupina === 'dom') { const fa = o.farby || {}; return h.f({ stena: fc(fa.stena), strecha: fc(fa.strecha), dvere: fc(fa.dvere), komin: KOMINY.includes(o.komin) ? o.komin : undefined }, o); }
   if (h.skupina === 'strom') { const sez = SEZONY.includes(o.sezona) ? o.sezona : null, col = fc(o.farba) || (sez && (holy === 'ceresna' ? SEZ_CER : SEZ)[sez]) || undefined, [pred, po] = sezona(holy, sez); return pred + h.f(col, { ...o, sezona: sez }) + po; }
@@ -1661,6 +1685,7 @@ const VOLBY = {
   chalupka: { ...dom3(), okna: OKNA, komin: KOMINY }, vezicka: { ...dom3(), okna: OKNA }, hrib: { ...dom3(['card', 'sun-l', 'sky-l', 'coral-l', 'teal-l', 'violet-l'], ['coral', 'violet', 'teal', 'sun', 'sky', 'leaf']), okna: OKNA },
   stodola: { ...dom3(KOVY, ['coral-d', 'violet-d', 'teal-d', 'sun-d', 'sky-d', 'leaf-d'], SVETLE) }, mlyn: { 'farby.stena': SVETLE, 'farby.strecha': STRECHA },
   zamocek: { ...dom3(['card', 'violet-l', 'sky-l', 'coral-l', 'teal-l', 'sun-l'], STRECHA, ['drevo-d', 'violet-d', 'coral-d', 'teal-d', 'sky-d', 'leaf-d']) },
+  domov: { ...dom3(['sun-l', 'sky-l', 'coral-l', 'teal-l', 'leaf-l', 'violet-l'], STRECHA, DVERE), okna: OKNA, komin: KOMINY }, mudrost: { stupen: [0, 1, 2, 3, 4] },
   kaviaren: { okna: OKNA }, kniznica: { okna: OKNA }, dielna: { okna: OKNA },
   gulaty: { sezona: SEZONY }, jablon: { sezona: SEZONY, plod: ['coral', 'sun', 'violet', 'sky'] }, ceresna: { sezona: SEZONY }, breza: { sezona: SEZONY }, jesen: { sezona: SEZONY }, ker: { sezona: SEZONY }, smrek: { sezona: ['leto', 'zima'] },
   kvety: { farba: LUPENE }, tulipany: { farba: LUPENE }, huby: { farba: ['coral', 'sun', 'violet', 'sky', 'teal', 'biela'] }, slnecnica: { farba: ['sun', 'coral', 'violet', 'sky', 'ruzova', 'biela'] },
@@ -1673,8 +1698,8 @@ const VOLBY = {
 /* volba('chalupka', 'farby.strecha', 'violet') -> objekt o pre dedinkaVec */
 const volba = (kluc, dim, v) => { const [a, b] = dim.split('.'); return b ? { [a]: { [b]: v } } : { [a]: v }; };
 /* spoločné svetlo zľava: tieň pod každou vecou padá doprava, trs trávy v päte, chodníček k dverám. Tieň a tráva sa pri zrkadlení nepreklápajú. */
-const BEZ_TIEN = { koberec: 1, kamen_cesta: 1, jazierko: 1, prazdne: 1, mostik: 1, obraz: 1, lesenie: 0 };
-const DVERE_X = { chalupka: 0, vezicka: 0, hrib: -4, kniznica: 0, kaviaren: 11, dielna: 11, zamocek: 0, hvezdaren: 0, majak: 0 };
+const BEZ_TIEN = { oblak1: 1, oblak2: 1, oblak3: 1, koberec: 1, kamen_cesta: 1, jazierko: 1, prazdne: 1, mostik: 1, obraz: 1, lesenie: 0 };
+const DVERE_X = { domov: 0, chalupka: 0, vezicka: 0, hrib: -4, kniznica: 0, kaviaren: 11, dielna: 11, zamocek: 0, hvezdaren: 0, majak: 0 };
 function zem(kluc, vnutri) {
   if (BEZ_TIEN[kluc]) return '';
   const w = (RAMCEK[kluc] || [0, 0, 40])[2], rx = Math.max(10, w * (vnutri ? .36 : .42)), cx = rx * .14;
@@ -1691,6 +1716,7 @@ function dedinkaVec(kluc, o = {}) {
 const kluce = () => Object.values(ZOZNAM).flat();
 /* rámček každej veci (x, y, šírka, výška), zmeraný z kresby */
 const RAMCEK = {
+  domov: [-54, -135, 98, 138],
   stan: [-31, -51, 61, 53],
   chalupka: [-34, -96, 67, 99],
   hrib: [-33, -61, 65, 63],
@@ -1749,24 +1775,39 @@ const RAMCEK = {
   polica: [-23, -53, 45, 55],
   akvarium: [-23, -31, 45, 33],
   dalekohlad: [-19, -39, 35, 41],
+  pexeso: [-38, -71, 75, 73],
+  pocitaj: [-37, -66, 73, 68],
+  iny: [-38, -65, 75, 67],
+  hadaj: [-26, -98, 51, 100],
+  tien: [-35, -76, 69, 78],
+  sova: [-30, -90, 63, 92],
+  hviezdy: [-39, -90, 80, 94],
+  poradie: [-38, -67, 80, 69],
+  krtko: [-39, -47, 77, 50],
+  ine: [-37, -55, 73, 57],
+  opakuj: [-30, -72, 63, 74],
+  bubliny: [-31, -69, 66, 73],
+  slovo: [-38, -65, 75, 67],
+  skladacka: [-37, -73, 96, 79],
   ihrisko: [-33, -47, 69, 49],
   kaviaren: [-33, -53, 65, 55],
   majak: [-16, -80, 53, 82],
   hvezdaren: [-27, -63, 53, 65],
-  krtko: [-33, -21, 63, 23],
   kniznica: [-35, -63, 69, 65],
   dielna: [-33, -50, 65, 52],
   altanok: [-27, -59, 53, 61],
-  bubliny: [-25, -56, 49, 60],
+  oblak1: [-63, -40, 89, 42],
+  oblak2: [-44, -47, 68, 49],
+  oblak3: [-32, -28, 51, 30],
   lesenie: [-29, -51, 57, 53],
   prazdne: [-27, -15, 53, 21],
-  mudrost: [-35, -81, 69, 84],
+  mudrost: [-47, -81, 93, 92],
   rybka: [-19, -19, 31, 17],
 };
 function svg(kluc, o = {}) {
   const r = RAMCEK[kluc] || [-40, -100, 80, 106];
   return `<svg class="dv-svg" viewBox="${r[0] - 6} ${r[1]} ${r[2] + 12} ${r[3] + 12}" role="img" aria-label="${o.popis || kluc}" preserveAspectRatio="xMidYMax meet"><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${dedinkaVec(kluc, { ...o, x: 0, y: 0, s: 1 })}</g></svg>`;
 }
-return { SKUPINY, ZOZNAM, RAMCEK, VOLBY, volba, kluce, telo, dedinkaVec, svg, miesto, G, fc };
+return { SKUPINY, ZOZNAM, OBLAKY: ['oblak1', 'oblak2', 'oblak3'], RAMCEK, VOLBY, volba, kluce, telo, dedinkaVec, svg, miesto, G, fc };
 })();
 const dedinkaVec = dedinkaKresby.dedinkaVec, DEDINKA_ZOZNAM = dedinkaKresby.ZOZNAM, DEDINKA_VOLBY = dedinkaKresby.VOLBY;
