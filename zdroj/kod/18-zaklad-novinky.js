@@ -1,6 +1,8 @@
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane.
    Pri prechode na 5.0 (PREMENA_V v 23-premena.js) sa namiesto okna hrá úvodná premena a na jej konci sú novinky s v >= PREMENA_V. */
 const NOVINKY = [
+  // 5.0.1: milšia Múdra (16. 11.)
+  { v: 68, obr: () => mudra('ahoj'), n: 'Milšia Múdra', p: 'Múdra má nové, lesklé oči a mäkšiu tvár. Keď večer zaspí, zavrie oči a sladko spí.' },
   // Verzia 5.0 Svetom: tieto vety ukáže koniec úvodnej premeny (v = PREMENA_V)
   { v: 67, obr: () => logoGlobus(), n: 'Appka sa volá Svetom', p: 'Každý deň objav kúsok sveta. Celá appka vyzerá ako papierový atlas a má nové písmo, ktoré sa ľahšie číta.' },
   { v: 67, obr: () => mudra('radost'), n: 'Múdra ožila', p: 'Dýcha, žmurká, obzerá sa, teší sa s tebou a večer zaspí. Skús na ňu ťuknúť.' },

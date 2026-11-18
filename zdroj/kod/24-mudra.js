@@ -13,7 +13,7 @@ const Mudra = (() => {
   // pohyb, ktorý patrí k výrazu, a dĺžky pohybov (ms), po ktorých sa trieda zoberie
   const POHYB = { ahoj: 'mav', stoji: 'usad', radost: 'hop', oslava: 'oslava', povzbudenie: 'pohlad', zvedava: 'zved', premysla: 'mysli' };
   const DLZKA = { mav: 1100, usad: 500, hop: 720, hop2: 1000, oslava: 1300, pohlad: 1500, zved: 1200, mysli: 1400, tocka: 850, tras: 750, skrc: 800 };
-  const TUK = ['hop', 'tocka', 'tras', 'skrc', 'hop2'];
+  const TUK = ['hop', 'tras', 'skrc', 'hop2']; // otočka (sploštenie) vypadla s milšou Múdrou
   const SPANOK_MS = 30000;
   const sledovane = new Set(), nastupy = new Map();
   let io = null, tukPosl = -1, spi = false, casSpanku = 0;

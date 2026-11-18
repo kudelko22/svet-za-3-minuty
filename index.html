@@ -2848,8 +2848,8 @@ svg.mudra { overflow: visible; }
 @keyframes mzZmurk { 0%, 44%, 47.5%, 86%, 89%, 92.5%, 100% { transform: none; } 45.6%, 87.4%, 90.8% { transform: scaleY(.1); } }
 @keyframes mzPozri { 0%, 26%, 50%, 62%, 84%, 100% { transform: none; } 30%, 46% { transform: translate(3px, -2px); } 66%, 80% { transform: translate(-3px, 1px); } }
 @keyframes mzHlava { 0%, 52%, 82%, 100% { transform: none; } 58%, 74% { transform: rotate(-5deg); } 78% { transform: rotate(1deg); } }
-@keyframes mzHlavaZv { 0%, 30%, 85%, 100% { transform: none; } 38%, 70% { transform: rotate(-8deg) translateY(-2px); } 76% { transform: rotate(-3deg); } }
-@keyframes mzHlavaMysli { from { transform: rotate(1deg); } to { transform: rotate(5deg); } }
+@keyframes mzHlavaZv { 0%, 30%, 85%, 100% { transform: none; } 38%, 70% { transform: rotate(-6deg) translateY(-2px); } 76% { transform: rotate(-2deg); } }
+@keyframes mzHlavaMysli { from { transform: rotate(1deg); } to { transform: rotate(4deg); } }
 @keyframes mzPierko { 0%, 78%, 100% { transform: none; } 82% { transform: rotate(-12deg); } 87% { transform: rotate(7deg); } 92% { transform: rotate(-3deg); } }
 @keyframes mzSatka { from { transform: rotate(-5deg); } to { transform: rotate(7deg); } }
 @keyframes mzPoskok { 0%, 70%, 100% { transform: none; } 74% { transform: scale(1.06, .93); } 80% { transform: translateY(-12px) scale(.97, 1.04); } 86% { transform: scale(1.04, .95); } 90% { transform: none; } }
@@ -2884,14 +2884,15 @@ svg.mudra { overflow: visible; }
 @keyframes mzHop { 0%, 100% { transform: none; } 15% { transform: scale(1.1, .88); } 40% { transform: translateY(-26px) scale(.94, 1.08); } 58% { transform: translateY(-28px) scale(.98, 1.02); } 80% { transform: scale(1.08, .92); } 90% { transform: scale(.98, 1.02); } }
 @keyframes mzHop2 { 0%, 100% { transform: none; } 10%, 50% { transform: scale(1.07, .91); } 28% { transform: translateY(-18px) scale(.96, 1.05); } 70% { transform: translateY(-14px) scale(.97, 1.04); } 88% { transform: scale(1.05, .95); } }
 @keyframes mzTocka { 0%, 100% { transform: none; } 14% { transform: scale(1.08, .9); } 32% { transform: translateY(-16px) scale(.25, 1.05); } 50% { transform: translateY(-22px) scale(-1, 1); } 68% { transform: translateY(-14px) scale(.25, 1.03); } 86% { transform: scale(1.06, .94); } }
-@keyframes mzTras { 0%, 100% { transform: none; } 14% { transform: rotate(-9deg); } 30% { transform: rotate(8deg); } 46% { transform: rotate(-6deg); } 62% { transform: rotate(4deg); } 78% { transform: rotate(-2deg); } }
+@keyframes mzTras { 0%, 100% { transform: none; } 14% { transform: rotate(-6deg); } 30% { transform: rotate(5deg); } 46% { transform: rotate(-4deg); } 62% { transform: rotate(3deg); } 78% { transform: rotate(-1deg); } }
 @keyframes mzSkrc { 0%, 100% { transform: none; } 18% { transform: scale(1.14, .82); } 42% { transform: translateY(-18px) scale(.9, 1.14); } 66% { transform: scale(1.05, .95); } 82% { transform: scale(.99, 1.01); } }
-@keyframes mzOciVelke { 0%, 100% { transform: none; } 30%, 60% { transform: scale(1.14); } }
+/* milšia Múdra: pri prekvapení oči radostne prižmúri, nezväčšuje ich */
+@keyframes mzOciVelke { 0%, 100% { transform: none; } 30%, 60% { transform: scaleY(.55); } }
 @keyframes mzOslava { 0%, 100% { transform: none; } 8%, 44% { transform: scale(1.1, .88); } 26% { transform: translateY(-32px) rotate(-8deg) scale(.95, 1.06); } 64% { transform: translateY(-26px) rotate(8deg) scale(.96, 1.05); } 84% { transform: scale(1.07, .93); } 93% { transform: scale(.99, 1.01); } }
 @keyframes mzNaklon { 0%, 100% { transform: none; } 25%, 75% { transform: translateX(4px) rotate(5deg); } }
 @keyframes mzPohlad { 0%, 100% { transform: none; } 25%, 55% { transform: rotate(16deg); } 40%, 70% { transform: rotate(2deg); } }
 @keyframes mzZved { 0%, 100% { transform: none; } 30% { transform: translateY(-7px) scale(.97, 1.05); } 60% { transform: scale(1.02, .98); } }
-@keyframes mzZvedHlava { 0%, 100% { transform: none; } 30%, 70% { transform: rotate(-10deg); } }
+@keyframes mzZvedHlava { 0%, 100% { transform: none; } 30%, 70% { transform: rotate(-6deg); } }
 @keyframes mzBublina { from { transform: scale(0); opacity: 0; } }
 @keyframes mzMav { 0%, 100% { transform: none; } 20%, 60% { transform: translateY(-5px) rotate(-3deg); } 40%, 80% { transform: rotate(2deg); } }
 @keyframes mzUsad { 0%, 100% { transform: none; } 40% { transform: scale(1.05, .94); } }
@@ -2899,15 +2900,18 @@ svg.mudra { overflow: visible; }
 
 /* ---------- spánok (Mesačný režim alebo večer, po chvíli bez dotyku) ---------- */
 :where(svg.mudra.mz-spi) { animation-duration: 5.6s; }
-.mudra.mz-spi .mz-oko { animation: mzZaspi 1.6s ease-in forwards; }
+/* spánok: otvorené oko sa pomaly zavrie a zmizne, ostane mäkký oblúčik (.mz-zavrete), oko sa už nepootvára */
+.mudra.mz-spi .mz-oko { animation: mzZaspi 1.4s ease-in forwards; }
+.mudra.mz-spi .mz-zavrete { animation: mzUkaz .35s ease-out 1.1s forwards; }
 .mudra.mz-spi .mz-hlava { animation: mzKyva 5.6s ease-in-out .8s infinite alternate backwards; }
 .mudra.mz-spi .ow-wl, .mudra.mz-spi .ow-wr, .mudra.mz-spi .ow-blink { animation: none; }
 .mudra .mz-zzz path { opacity: 0; }
 .mudra.mz-spi .mz-zzz path { animation: mzZzz 3.6s ease-out 1.4s infinite; }
 .mudra.mz-spi .mz-zzz path:nth-child(2) { animation-delay: 2.6s; }
 .mudra.mz-spi .mz-zzz path:nth-child(3) { animation-delay: 3.8s; }
-@keyframes mzZaspi { 0% { transform: none; } 35% { transform: scaleY(.45); } 50% { transform: scaleY(.75); } 100% { transform: scaleY(.1); } }
-@keyframes mzKyva { from { transform: rotate(3deg); } to { transform: rotate(8deg) translateY(2px); } }
+@keyframes mzZaspi { 0% { transform: none; } 80% { transform: scaleY(.1); opacity: 1; } 100% { transform: scaleY(.1); opacity: 0; } }
+@keyframes mzUkaz { to { opacity: 1; } }
+@keyframes mzKyva { from { transform: rotate(2deg); } to { transform: rotate(5deg) translateY(2px); } }
 @keyframes mzZzz { 0% { opacity: 0; transform: translate(0, 6px) scale(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(14px, -26px) scale(1.1); } }
 
 /* ---------- stop: skryté okno, mimo obrazovky, obmedzený pohyb ---------- */
@@ -2958,16 +2962,16 @@ svg.mudra { overflow: visible; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=67"></script>
-<script src="obrazky.js?v=67"></script>
-<script src="misie.js?v=67"></script>
-<script src="kvizy.js?v=67"></script>
-<script src="tyzden.js?v=67"></script>
-<script src="anglictina.js?v=67"></script>
-<script src="rodic-brana.js?v=67"></script>
-<script src="rodic-panel.js?v=67"></script>
+<script src="temy.js?v=68"></script>
+<script src="obrazky.js?v=68"></script>
+<script src="misie.js?v=68"></script>
+<script src="kvizy.js?v=68"></script>
+<script src="tyzden.js?v=68"></script>
+<script src="anglictina.js?v=68"></script>
+<script src="rodic-brana.js?v=68"></script>
+<script src="rodic-panel.js?v=68"></script>
 <script>
-const VERZIA_APPKY = 67; const VERZIA_NAZOV = '5.0'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 68; const VERZIA_NAZOV = '5.0.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -6967,6 +6971,8 @@ const Ang = {
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane.
    Pri prechode na 5.0 (PREMENA_V v 23-premena.js) sa namiesto okna hrá úvodná premena a na jej konci sú novinky s v >= PREMENA_V. */
 const NOVINKY = [
+  // 5.0.1: milšia Múdra (16. 11.)
+  { v: 68, obr: () => mudra('ahoj'), n: 'Milšia Múdra', p: 'Múdra má nové, lesklé oči a mäkšiu tvár. Keď večer zaspí, zavrie oči a sladko spí.' },
   // Verzia 5.0 Svetom: tieto vety ukáže koniec úvodnej premeny (v = PREMENA_V)
   { v: 67, obr: () => logoGlobus(), n: 'Appka sa volá Svetom', p: 'Každý deň objav kúsok sveta. Celá appka vyzerá ako papierový atlas a má nové písmo, ktoré sa ľahšie číta.' },
   { v: 67, obr: () => mudra('radost'), n: 'Múdra ožila', p: 'Dýcha, žmurká, obzerá sa, teší sa s tebou a večer zaspí. Skús na ňu ťuknúť.' },
@@ -8203,7 +8209,7 @@ const Mudra = (() => {
   // pohyb, ktorý patrí k výrazu, a dĺžky pohybov (ms), po ktorých sa trieda zoberie
   const POHYB = { ahoj: 'mav', stoji: 'usad', radost: 'hop', oslava: 'oslava', povzbudenie: 'pohlad', zvedava: 'zved', premysla: 'mysli' };
   const DLZKA = { mav: 1100, usad: 500, hop: 720, hop2: 1000, oslava: 1300, pohlad: 1500, zved: 1200, mysli: 1400, tocka: 850, tras: 750, skrc: 800 };
-  const TUK = ['hop', 'tocka', 'tras', 'skrc', 'hop2'];
+  const TUK = ['hop', 'tras', 'skrc', 'hop2']; // otočka (sploštenie) vypadla s milšou Múdrou
   const SPANOK_MS = 30000;
   const sledovane = new Set(), nastupy = new Map();
   let io = null, tukPosl = -1, spi = false, casSpanku = 0;
