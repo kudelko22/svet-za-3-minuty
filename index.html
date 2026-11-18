@@ -2955,6 +2955,13 @@ svg.mudra { overflow: visible; }
 .mz-zije[data-v="premysla"] .mz-extra { animation-duration: 7s; }
 /* 7. čítanie nahlas: tlačidlo nesúperí s hlavným (biele, nie fialové) */
 .btn.citaj:not(.on) { --cta: var(--card); --cta-d: var(--sand); --cta-t: var(--text); }
+/* 8. Domov: obrázok témy dňa stojí (hýbe sa až v samotnej téme), aby lístok nesúperil s krajinou a Múdrou */
+.dom-listok .dl-obr svg * { animation: none !important; }
+/* 9. radosť Múdrej po odpovedi a v oslave trvá chvíľu a doznie (bolo bez konca: mávanie, poskoky aj iskry naraz) */
+.owl.mudra[data-m="cheer"] .ow-wl, .owl.mudra[data-m="cheer"] .ow-wr { animation-iteration-count: 6; }
+.owl.mudra[data-m="hi"] .ow-wr { animation-iteration-count: 3; }
+.mz-zije[data-v="radost"] .mz-cele, .mz-zije[data-v="oslava"] .mz-cele { animation-iteration-count: 1; }
+.mz-zije[data-v="radost"] .mz-extra, .mz-zije[data-v="oslava"] .mz-extra, .mz-zije[data-v="povzbudenie"] .mz-extra { animation-iteration-count: 4; }
 </style>
 </head>
 <body>
