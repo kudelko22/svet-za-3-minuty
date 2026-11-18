@@ -130,9 +130,7 @@ const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}$
   ${o.bublina ? `<p class="odkaz so-bub">${o.bublina}</p>` : ''}
   <div class="so-strom">${strom}</div>
 </div>`;
-// šesť stupňov na jednej bodkovanej čiare: prejdené s fajkou, terajší so stromčekom, budúce prerušovaným krúžkom
-const stromCesta = i => `<ol class="so-cesta" aria-label="Stupne stromu">${STROM_STUPNE.map((x, k) => `<li class="${k < i ? 'hot' : k === i ? 'tu' : ''}"><i>${k < i ? ikn('check') : k === i ? ikn('strom') : ''}</i><span class="cis">${x.od}</span></li>`).join('')}</ol>`;
-// týždeň v okne stromu a v oslave (rovnaké krúžky ako na Domove)
+// týždeň vo veľkej oslave (rovnaké krúžky ako na Domove)
 const tyzdenStromu = (dnes, padne) => {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
   return `<div class="dom-dni so-dni">${DNI.map((d, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x), je = k === dnes, h = st.dni.includes(k), bud = k > dnes;
@@ -149,7 +147,7 @@ const planSerie = (s, pocetDni) => {
 /* Oslavy sa neskladajú na seba: stredná oslava (pečiatka) počká, kým sa zavrie veľká oslava alebo okno stromu */
 const Oslavy = {
   rad: [], cak: 0,
-  obsadene: () => !!document.querySelector('.oslava, .os-stredna'),
+  obsadene: () => !!document.querySelector('.oslava, .os-stredna, .strom-okno'),
   pridaj(fn) { this.rad.push(fn); this.dalsia(); },
   dalsia() {
     if (!this.rad.length) return;
@@ -236,45 +234,64 @@ const Oslava = {
     });
   },
 };
-// okno stromu (z Domova: strom v krajine, tlačidlo Strom múdrosti): stupeň, plody, čo chýba, týždeň s okruhom
+/* 5.1: okno „Môj strom“ (variant A): zdola vysunutá karta s Múdrou a stromom, týždeň v kvapkách, rast v obrázkoch, jedno tlačidlo,
+   okruh a Minulé dni malým riadkom dole. Otvára ho stromček v hlavičke aj strom v krajine Domova. */
 const Strom = {
+  // 7 kvapiek: hot = v ten deň sa učil, tu = dnes ešte nie, zme = zmeškaný (otvorí tému dňa len na precvičenie), bud = budúci alebo pred začiatkom
+  tyzden() {
+    const prvy = [...st.dni].sort()[0];
+    return Tyzden.dni().map(x => {
+      const stav = x.hotovo ? 'hot' : x.jeDnes ? 'tu' : x.jeBudúci || !prvy || x.datum < prvy ? 'bud' : 'zme', den = x.jeDnes ? 'Dnes' : x.den;
+      const popis = `${x.den} ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}., ` + { hot: 'strom polial', tu: 'dnes ešte nie', zme: 'bez učenia', bud: x.jeBudúci ? 'ešte len príde' : 'pred začiatkom' }[stav];
+      return stav === 'bud' ? `<span class="ms-den" role="img" aria-label="${popis}">${kvapka(stav, den)}</span>`
+        : `<button class="ms-den" data-tyz-den="${esc(x.datum)}" aria-label="${popis}. Otvoriť tému dňa${stav === 'zme' ? ', len na precvičenie' : ''}">${kvapka(stav, den)}</button>`;
+    }).join('');
+  },
+  // šesť stupňov ako malé stromčeky na bodkovanej čiare (žiadne čísla); veta hovorí, koľko kvapiek (dní učenia) chýba
+  rast(i, pocet) {
+    const vel = [20, 26, 31, 36, 40, 44], dalsi = STROM_STUPNE[i + 1], ch = dalsi ? dalsi.od - pocet : 0;
+    const co = ['vyklíči stromček', 'vyrastie mladý strom', 'vyrastie veľký strom', 'strom zakvitne', 'strom bude zlatý'][i];
+    const stupne = STROM_STUPNE.map((x, k) => `<span class="ms-st ${k < i ? 'hot' : k === i ? 'tu' : 'bud'}" style="--v:${vel[k]}px">${stromSvg({ stupen: k, plody: k ? Math.min(3, x.plody) : 0, kos: 0, novy: -1, zem: false })}${k < i ? `<i class="ms-ok">${ikn('check')}</i>` : ''}</span>`).join('');
+    return `<div class="ms-rast" role="img" aria-label="Strom múdrosti: ${esc(STROM_STUPNE[i].n)}, stupeň ${i + 1} zo ${STROM_STUPNE.length}">${stupne}</div>
+      <p class="ms-veta">${dalsi ? `Ešte <b>${ch} ${slovoKvapky(ch)}</b> a ${co}.` : 'Tvoj strom je celý zlatý. Krajší nie je!'}</p>`;
+  },
+  html() {
+    const pocet = st.dni.length, i = stromStupen(pocet), s = seria(), S0 = STROM_STUPNE[i], hn = hnStupen(), hot = TyzStrom.jeHotovo();
+    const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), Ty = TY(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), zaj = Ty.odZajtra(), oz = zaj && Ty.okruhy().find(o => o.id === zaj);
+    const bub = !pocet ? 'Tu vyrastie tvoj strom. Prvá téma ho zasadí!' : hn ? 'Strom je smädný. Jedna téma ho poleje!' : hot ? 'Dnes je strom poliaty. Príď zajtra!' : 'Polej strom: preber tému dňa!';
+    return `<i class="ms-ucho" aria-hidden="true"></i>
+      <div class="ms-hl"><h2 class="n1">Môj strom</h2><button class="btn kruh dve" data-strom-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
+      <div class="ms-sc${hn ? ' hn' : ''}"><div class="os-listy"></div><p class="ms-bub">${bub}</p><i class="ms-kopec" aria-hidden="true"></i>
+        <button class="ms-sova" aria-label="Sovička Múdra">${mudra(hn ? 'povzbudenie' : hot ? 'radost' : 'ahoj')}</button>
+        <span class="ms-str" role="img" aria-label="${esc(hn ? HN_TEXT[hn].n : S0.n)}, ${naStrome} ${slovoPlody(naStrome)}">${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6 } })}</span></div>
+      ${hn ? `<p class="ms-veta">Nič sa nestratilo. Po téme strom hneď ožije${bodyUbudlo() ? ' a hviezdičky sa zobudia' : ''}.</p>` : ''}
+      <h3 class="ms-h">Tento týždeň</h3><div class="ms-tyz">${this.tyzden()}</div>
+      <h3 class="ms-h">Strom rastie</h3>${this.rast(i, pocet)}
+      ${hot ? '<p class="ms-hotovo">Dnes je poliaty. Zajtra pribudne ďalšia kvapka.</p>' : `<button class="btn wide ms-tl" data-strom-tema>${ikn('kvapka')}Polej strom: téma dňa</button>`}
+      <div class="ms-okr"><span class="okruh-tl-ik">${okruhIk(vyb)}</span><span class="ms-okr-t">Témy tento týždeň: <b>${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</b>${oz ? `<small>Od zajtra: ${esc(oz.nazov)}</small>` : ''}</span><button class="btn dve maly" data-okruh-otvor aria-haspopup="dialog">Zmeniť</button></div>
+      <button class="ms-preh" data-tyz-prehlad aria-haspopup="dialog">${ikn('kalendar')}Minulé dni</button>`;
+  },
+  obnov() { const k = document.querySelector('.strom-okno .ms-karta'); if (k) k.innerHTML = this.html(); },
   ukaz() {
-    if (document.querySelector('.oslava, .os-stredna')) return;
-    // 4.4: okná týždňa (pás, Prehľad týždňa, okruh) sa pri otvorení stromu zavrú, aby sa neprekrývali
+    if (document.querySelector('.oslava, .os-stredna, .strom-okno')) return;
     document.querySelectorAll('.okruh-okno').forEach(o => { o.classList.add('pryc'); setTimeout(() => o.remove(), 250); });
-    const dnes = key(new Date()), pocet = st.dni.length, i = stromStupen(pocet), S0 = STROM_STUPNE[i], dalsi = STROM_STUPNE[i + 1], s = seria(), hotovo = st.dni.includes(dnes);
-    const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), hn = hnStupen();
-    const bublina = hn ? (hn >= 2 ? 'Nič sa nestratilo. Stačí jedna téma!' : 'Strom je smädný. Jedna téma ho napojí!') : !pocet ? 'Tu raz vyrastie strom. Preber tému dňa a zasadíme ho!'
-      : hotovo ? 'Dnes plod pribudol. Príď zajtra a vyrastie ďalší!' : 'Dnes ešte plod chýba. Preber tému dňa a pribudne ďalší!';
-    const Ty = TY(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), u = bodyUbudlo(), sh = spiaceHry();
-    const seriaSt = `<span class="st" style="--c:var(--coral-l)">${ikn('plamen')}${s ? `${s} ${dni(s)} po sebe` : 'Séria začne dnes'}</span>`;
-    const karta = hn
-      ? `<h2 class="n0">${HN_TEXT[hn].n}</h2>${seriaSt}<p class="tx">${HN_TEXT[hn].p}</p>
-        <div class="so-chips"><span class="st cis">${ikn('hviezda')}${st.body}</span>${u ? `<span class="st" style="--c:var(--violet-l)">${ikn('mesiac')}${u} ${u === 1 ? 'hviezdička spí' : u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}</span>` : ''}${sh ? `<span class="st">${ikn('zamok')}${sh} ${sh === 1 ? 'hra spí' : sh <= 4 ? 'hry spia' : 'hier spí'}</span>` : ''}</div>`
-      : `<h2 class="n0">${S0.n}</h2>${seriaSt}
-        <p class="so-mal">${pocet} ${dni(pocet)} učenia · ${naStrome ? `na strome ${naStrome === 1 ? 'visí' : 'visia'} ${naStrome} ${slovoPlody(naStrome)}` : 'zatiaľ bez plodov'}${kos ? ` · v košíku ${kos}` : ''}</p>
-        ${stromCesta(i)}
-        <p class="tx">${dalsi ? `Ešte <b>${dalsi.od - pocet} ${dni(dalsi.od - pocet)} učenia</b> a vyrastie z neho ${dalsi.n.toLowerCase()}.` : 'Najvyšší stupeň! Strom je celý zlatý.'}</p>`;
     const el = document.createElement('div');
-    el.className = 'oslava strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Strom múdrosti');
-    el.innerHTML = `<div class="os-listy">${hn ? '' : stromListy(5, i)}</div><div class="os-obsah">
-      <div class="so-hlava"><h1 class="n1">Strom múdrosti</h1><button class="btn kruh dve" data-strom-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
-      ${stromScena(stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6, sova: .9 } }), { hn, bublina, domov: true })}
-      <section class="karta so-karta"><span class="zal">Stupeň ${i + 1} zo ${STROM_STUPNE.length}</span>${karta}</section>
-      <div class="so-tyz"><h3 class="n2">Tento týždeň</h3><button class="btn maly dve" data-so-okruh>${okruhIk(vyb) || ikn('kompas')}Okruh: ${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</button></div>
-      ${tyzdenStromu(dnes)}
-      ${hotovo ? '' : `<button class="btn wide" data-strom-tema>Poďme na tému dňa${ikn('sipka', 'za')}</button>`}
-      <p class="dop so-tip">${hn ? 'Rodič môže vädnutie vypnúť vo svojom paneli.' : 'Ťukni na strom a zatrasie sa. Ťukni na Múdru a zahúka.'}</p></div>`;
+    el.className = 'strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Môj strom');
+    el.innerHTML = `<div class="ms-karta">${this.html()}</div>`;
     document.body.appendChild(el);
-    Zvuk.play('okno'); setTimeout(() => Zvuk.play('pop'), 300);
-    const kl = e => { if (e.key === 'Escape') zavri(); };
+    Zvuk.play('okno'); Haptika.hraj('tuk');
+    // Escape zavrie najprv okno navrchu (okruh, Minulé dni), až potom strom
+    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-okno')) zavri(); };
     const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 320); };
     document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
       e.stopPropagation();
-      if (e.target.closest('[data-strom-zavri]')) { Zvuk.play('zavri'); zavri(); return; }
+      if (e.target === el || e.target.closest('[data-strom-zavri]')) { Zvuk.play('zavri'); zavri(); return; }
       if (e.target.closest('[data-strom-tema]')) { zavri(); startTema(temaDna().id); return; }
-      if (e.target.closest('[data-so-okruh]')) { Zvuk.play('tap'); zavri(); setTimeout(() => Okruh.ukaz(), 200); return; }
+      const den = e.target.closest('[data-tyz-den]'); if (den) { Zvuk.play('pop'); zavri(); Tyzden.otvor(den.dataset.tyzDen); return; }
+      if (e.target.closest('[data-okruh-otvor]')) { Zvuk.play('tap'); Okruh.ukaz(); return; }
+      if (e.target.closest('[data-tyz-prehlad]')) { Zvuk.play('tap'); TyzPrehlad.ukaz(); return; }
+      if (e.target.closest('.ms-sova')) { Zvuk.play('hoot'); vibruj(20); return; }
       tukniNaStrom(el, e);
     });
     const x = el.querySelector('[data-strom-zavri]'); if (x && x.focus) x.focus({ preventScroll: true });

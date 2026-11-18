@@ -1048,40 +1048,10 @@ body.ang-rezim main.gut { padding-block: max(14px, env(safe-area-inset-top)) 120
 @keyframes krStromIn { from { transform: translateY(14px) scale(.7); opacity: 0; } }
 @media (min-width: 420px) { .kr-strom { right: 6px; } }
 
-/* okno stromu: krajina hore, karta so stupňom, týždeň s okruhom */
-.strom-okno { place-items: start center; padding: 0; background: var(--bg); }
-.strom-okno .os-obsah { gap: 12px; padding: 0 16px 20px; }
-.so-hlava { position: absolute; z-index: 2; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(env(safe-area-inset-top) + 12px) 16px 0; }
-.so-hlava .n1 { margin: 0; }
-.strom-okno .so-scena { height: min(46vh, 340px); }
-/* okno stromu stojí v tej istej krajine ako Domov (Domov.krajina bez cieľa cesty), cestička vedie k stromu */
-.so-domov { background: var(--sc-sky); }
-.so-domov .dom-krajina { inset: 0; height: auto; z-index: 0; }
-.so-domov .so-strom { z-index: 1; left: auto; right: 2%; width: min(64%, 250px, 30vh); translate: 0; }
-:root:not([data-rezim="mesacny"]) .so-domov.hn .dom-krajina { filter: saturate(.55) brightness(1.03); }
 .so-bub { position: absolute; z-index: 2; left: 12px; top: calc(env(safe-area-inset-top) + 64px); max-width: min(190px, 52%); margin: 0; font-size: .92rem; animation: recIn .45s var(--spring) .5s both; transform-origin: 10% 100%; }
-.so-mal { margin: 0; font: 800 .75rem/1.3 var(--fb); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .so-karta { display: grid; justify-items: start; gap: 8px; width: 100%; margin-top: -34px; text-align: left; }
 .so-karta .n0, .so-karta .tx { margin: 0; }
-.so-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.so-cesta { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); width: 100%; margin: 2px 0; padding: 0; list-style: none; }
-.so-cesta::before { content: ""; position: absolute; left: 8%; right: 8%; top: 15px; border-top: 4px dotted var(--sc-pathdot); }
-.so-cesta li { position: relative; display: grid; justify-items: center; gap: 4px; font: 700 .78rem/1 var(--fd); color: var(--muted); }
-.so-cesta i { display: grid; place-items: center; width: 30px; height: 30px; border: 2.5px dashed var(--muted); border-radius: 50%; background: var(--card); color: #fff; }
-.so-cesta .hot i { border: var(--obrys-m); background: var(--teal); box-shadow: inset 0 -3px 0 var(--teal-d); }
-.so-cesta .tu i { width: 36px; height: 36px; margin-top: -3px; border: var(--obrys-m); background: var(--sun); box-shadow: inset 0 -4px 0 var(--sun-d); }
-.so-cesta .tu { color: var(--text); }
-.so-cesta .ikn { width: 18px; height: 18px; }
-.so-cesta .tu .ikn { width: 24px; height: 24px; }
-.so-tyz { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
-.so-tyz .n2 { margin: 0; }
-.so-tyz .btn { max-width: 62%; overflow: hidden; }
-.so-tyz .okruh-tl-ik { display: inline-grid; flex: none; width: 20px; height: 20px; margin-right: 6px; }
-.so-tyz .okruh-tl-ik svg { width: 100%; height: 100%; }
 .so-dni { width: 100%; }
-.so-dni .dom-den { cursor: default; }
-.so-tip { margin: 0; text-align: center; }
-.strom-okno .btn.wide { width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   .os-strom *, .kr-strom, .so-bub { animation: none !important; }
@@ -1092,6 +1062,76 @@ html { --st-z0: #8BDD90; --st-z1: var(--leaf); --st-z2: var(--leaf-d); --st-10: 
   --st-20: #EDCE76; --st-21: #D8AE48; --st-22: #B4892B; --st-30: #BFAD82; --st-31: #A38F62; --st-32: #83714B; }
 html[data-rezim="mesacny"] { --st-z0: #5DB59A; --st-z1: #3A9A7E; --st-z2: #24705E; --st-10: #A9B474; --st-11: #8A9A57; --st-12: #6B7B40;
   --st-20: #C2A66A; --st-21: #A3874B; --st-22: #826836; --st-30: #978C78; --st-31: #7C715D; --st-32: #615747; }
+
+/* 5.1: kvapka = jeden deň učenia (týždeň v okne Môj strom aj v hlavičke). hot = poliaty, tu = dnes ešte nie, zme = bez učenia, bud = budúci */
+.kv { display: inline-grid; justify-items: center; gap: 3px; font: 800 .74rem/1 var(--fd); color: var(--muted); }
+.kv svg { width: var(--kvs, 32px); height: var(--kvs, 32px); overflow: visible; }
+.kv-k { fill: var(--card); stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+.kv-c { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.kv.hot .kv-k { fill: var(--sky); }
+.kv.hot, .kv.tu { color: var(--text); }
+.kv.tu .kv-k { stroke-dasharray: 3.2 2.6; fill: color-mix(in srgb, var(--sky) 16%, var(--card)); }
+.kv.tu small { color: var(--link); }
+.kv.zme .kv-k { fill: color-mix(in srgb, var(--muted) 18%, var(--card)); stroke: color-mix(in srgb, var(--ink) 40%, transparent); }
+.kv.bud .kv-k { fill: none; stroke: color-mix(in srgb, var(--muted) 70%, transparent); stroke-dasharray: 2 3; }
+.kv.bud small { opacity: .7; }
+
+/* hlavička Domova: stromček s kvapkou (plná = dnes poliaty) */
+.tyz-strom { position: relative; display: grid; place-items: center; width: 52px; height: 44px; padding: 0; border: var(--obrys-m); border-radius: 16px; background: var(--card); box-shadow: 0 3px 0 var(--ink); cursor: pointer; }
+.tyz-strom .tsm { display: block; width: 40px; margin-top: -6px; }
+.tyz-strom .tsm .os-strom * { animation: none !important; }
+.tyz-strom > .kv { --kvs: 22px; position: absolute; right: -7px; bottom: -7px; filter: drop-shadow(0 2px 0 var(--ink)); }
+.tyz-strom > .kv.tu svg { animation: kvVolaj 2.4s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes kvVolaj { 0%, 70%, 100% { transform: none; } 80% { transform: scale(1.18) rotate(-8deg); } 90% { transform: scale(1.1) rotate(6deg); } }
+.tyz-strom.schne { background: var(--sun-l); }
+.tyz-strom:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.tyz-strom[hidden] { display: none; }
+@media (max-width: 380px) { .top-r { gap: 8px; } .stars { padding-right: 10px; } }
+
+/* okno Môj strom: karta zdola nad stmaveným Domovom */
+.strom-okno { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; background: rgb(24 20 63 / .55); animation: zavojIn .25s ease-out both; }
+.strom-okno.pryc { opacity: 0; transition: opacity .3s; }
+.ms-karta { position: relative; width: min(100%, 480px); max-height: calc(100dvh - env(safe-area-inset-top) - 12px); overflow: auto; overscroll-behavior: contain;
+  padding: 8px 16px calc(env(safe-area-inset-bottom) + 18px); background: var(--fon); border: var(--obrys); border-bottom: 0; border-radius: 28px 28px 0 0; animation: msIn .45s cubic-bezier(.2, 1.15, .35, 1) both; }
+.strom-okno.pryc .ms-karta { animation: msOut .3s ease-in both; }
+@keyframes msIn { from { transform: translateY(100%); } }
+@keyframes msOut { to { transform: translateY(100%); } }
+.ms-ucho { display: block; width: 44px; height: 5px; margin: 0 auto 6px; border-radius: 3px; background: var(--muted); opacity: .5; }
+.ms-hl { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ms-hl .n1 { margin: 0; }
+.ms-sc { position: relative; height: 178px; overflow: hidden; border: var(--obrys); border-radius: 22px; background: linear-gradient(var(--sc-sky), color-mix(in srgb, var(--sc-sky) 60%, var(--card))); }
+:root:not([data-rezim="mesacny"]) .ms-sc.hn { filter: saturate(.7); }
+.ms-kopec { position: absolute; left: -10%; right: -10%; bottom: -60px; height: 110px; border-radius: 50%; background: var(--sc-front); border-top: 3px solid var(--ink); }
+.ms-str { position: absolute; right: 6%; bottom: 6px; width: 136px; }
+.ms-sova { position: absolute; left: 10px; bottom: 8px; width: 76px; padding: 0; border: 0; background: none; cursor: pointer; }
+.ms-sova svg { display: block; width: 100%; height: auto; }
+.ms-bub { position: absolute; z-index: 2; left: 12px; top: 10px; max-width: 50%; margin: 0; padding: 8px 12px; background: var(--card); border: var(--obrys); border-radius: 16px 16px 16px 4px; font: 700 .95rem/1.25 var(--fd); color: var(--text); animation: recIn .45s var(--spring) .35s both; }
+.ms-sc .os-listy { z-index: 1; }
+.ms-h { margin: 14px 0 6px; font: 800 1.02rem/1.2 var(--fd); color: var(--text); }
+.ms-tyz { display: flex; justify-content: space-between; padding: 10px 6px 8px; background: var(--card); border: var(--obrys); border-radius: 18px; }
+.ms-den { display: grid; justify-items: center; min-width: 38px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+span.ms-den { cursor: default; }
+button.ms-den:active .kv svg { transform: translateY(2px); }
+.ms-rast { position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 10px 6px; background: var(--card); border: var(--obrys); border-radius: 18px; }
+.ms-rast::before { content: ""; position: absolute; left: 22px; right: 22px; bottom: 16px; border-top: 3px dotted color-mix(in srgb, var(--muted) 60%, transparent); }
+.ms-st { position: relative; display: grid; justify-items: center; width: 44px; }
+.ms-st .os-strom { width: var(--v); }
+.ms-st .os-strom * { animation: none !important; }
+.ms-st.bud .os-strom { filter: grayscale(1); opacity: .35; }
+.ms-st.tu::after { content: ""; position: absolute; inset: -4px -2px -2px; border: 3px solid var(--sun); border-radius: 14px; }
+.ms-ok { position: absolute; right: 0; top: -2px; display: grid; place-items: center; width: 16px; height: 16px; border: 2px solid var(--ink); border-radius: 50%; background: var(--leaf); color: #fff; }
+.ms-ok .ikn { width: 10px; height: 10px; }
+.ms-veta { margin: 6px 2px 0; font: 600 .98rem/1.35 var(--fb); color: var(--text); }
+.ms-veta b { font-weight: 800; }
+.ms-tl { width: 100%; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.ms-tl .ikn { width: 24px; height: 24px; }
+.ms-hotovo { margin: 14px 0 0; padding: 12px; border: 3px dashed color-mix(in srgb, var(--leaf) 70%, var(--ink)); border-radius: 16px; background: color-mix(in srgb, var(--leaf) 16%, var(--card)); text-align: center; font: 800 1rem/1.3 var(--fd); color: var(--text); }
+.ms-okr { display: flex; align-items: center; gap: 8px; margin-top: 14px; font: 600 .9rem/1.25 var(--fb); color: var(--text); }
+.ms-okr-t { flex: 1; min-width: 0; }
+.ms-okr-t small { display: block; color: var(--muted); font-weight: 700; }
+.ms-preh { display: inline-flex; align-items: center; gap: 6px; margin: 8px 0 0; padding: 6px 2px; border: 0; background: none; font: 700 .9rem/1.2 var(--fb); color: var(--link); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.ms-preh .ikn { width: 18px; height: 18px; }
+@media (prefers-reduced-motion: reduce) { .ms-karta, .strom-okno.pryc .ms-karta, .ms-bub, .tyz-strom > .kv.tu svg { animation: none !important; } }
 /* Domov 5.0: okná týždňa (stromček v hlavičke), okruh týždňa a Prehľad týždňa. Okno je papierová karta s obrysom ako .zavoj > .okno. */
 .okruh-tl-ik { flex: none; display: grid; place-items: center; width: 22px; height: 22px; }
 .okruh-tl-ik svg, .okruh-ik svg { width: 100%; height: 100%; }
@@ -1100,35 +1140,8 @@ html[data-rezim="mesacny"] { --st-z0: #5DB59A; --st-z1: #3A9A7E; --st-z2: #24705
 .okruh-karta { position: relative; display: grid; gap: 12px; width: min(100%, 420px); max-height: calc(100dvh - 32px); overflow: auto; padding: 18px 16px 16px; border: var(--obrys); border-radius: 24px 26px 24px 28px; background: var(--card); color: var(--text); box-shadow: 0 6px 0 var(--ink); animation: oknoIn .35s var(--spring) both; }
 .okruh-karta > .tx { color: var(--muted); }
 .tyzs-hl { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.tyz-strom[hidden] { display: none; }
 .snd[hidden] { display: none; }
-.ts-z { animation: tsZ 2.4s ease-in-out infinite; }
-.ts-i { animation: tsIskra 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-.ts-i2 { animation-delay: .9s; }
-@keyframes tsZ { 50% { opacity: .35; } }
-@keyframes tsIskra { 50% { opacity: .4; scale: .6; } }
-.ts-list { animation: tsList 3s ease-in infinite; transform-box: fill-box; }
-@keyframes tsList { 0% { opacity: 0; transform: translate(0, -4px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-3px, 9px) rotate(40deg); } }
 
-/* okno týždňa: vyrastie zo stromčeka v hlavičke; karta so záložkou Týždeň */
-.tyzs-okno { animation: zavojIn .3s ease-out both; }
-.tyzs-okno.pryc { transition: opacity .3s; }
-.tyzs-karta { overflow: visible; margin-top: 16px; padding-top: 24px; animation: tyzsIn .5s cubic-bezier(.2, 1.2, .35, 1) both; transform-origin: 50% 50%; }
-.tyzs-okno.pryc .tyzs-karta { animation: tyzsOut .3s ease-in both; }
-@keyframes tyzsIn { from { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } 40% { opacity: 1; } }
-@keyframes tyzsOut { to { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } }
-.tyzs-st { display: flex; flex-wrap: wrap; gap: 6px; }
-.tyzs-st .st.zhas { background: var(--sand); }
-.tyzs-tip { text-align: center; }
-.tyzs-karta .dom-okr { flex-wrap: wrap; }
-.tyzs-strom { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px 8px 8px; border: var(--obrys); border-radius: var(--r-karta); background: var(--leaf-l); color: var(--text); box-shadow: 0 4px 0 var(--ink); text-align: left; }
-.tyzs-strom.schne { background: var(--sun-l); }
-.tyzs-strom:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
-.tyzs-strom-k { flex: none; width: 64px; }
-.tyzs-strom-k .os-strom * { animation: none !important; }
-.tyzs-strom-t { flex: 1; display: grid; gap: 3px; min-width: 0; }
-.tyzs-strom-t b { font: 800 1.19rem/1.15 var(--fd); }
-.tyzs-strom > .ikn { flex: none; }
 
 /* Prehľad týždňa */
 .tyz-karta { width: min(100%, 560px); gap: 12px; }
@@ -1167,7 +1180,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 .okruh-volba:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .okruh-volba[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 4px 0 var(--ink), 0 0 0 3px var(--sun) inset; }
 .okruh-ik.ikb { margin: 0; }
-@media (prefers-reduced-motion: reduce) { .ts-z, .ts-i, .tyzs-karta, .ts-list, .tp-den, .okruh-karta { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tp-den, .okruh-karta { animation: none; } }
 
 .precvic-pozn { margin: 6px 0 0; font-size: .95rem; color: var(--text); opacity: .8; }
 .precvic-stitok { display: inline-flex; margin: 4px 0; }
@@ -1439,14 +1452,6 @@ h1.logo { margin: .35em 0 0; }
 /* Hlavička na Domove: meno bez „Ahoj,“ (pozdravuje Múdra), stromček so sériou ako štítok */
 .domov-v #pozdrav .pz-ahoj, .domov-v #pozdrav .pz-vykr { display: none; }
 .domov-v .hi b { font-size: 1.4rem; }
-.tyz-strom { position: relative; display: flex; align-items: center; gap: 2px; height: 38px; padding: 0 11px 0 4px; border: var(--obrys-m); border-radius: 999px; background: var(--leaf-l); color: var(--text); box-shadow: 0 3px 0 var(--ink); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.tyz-strom svg { flex: none; width: 30px; height: 30px; overflow: visible; }
-.ts-pocet { min-width: .7em; font: 800 1.05rem/1 var(--fd); text-align: center; }
-.tyz-strom.spi { background: var(--sand); }
-.tyz-strom.schne { background: var(--sun-l); }
-.tyz-strom.hotovo::after { content: ""; position: absolute; inset: -6px; border: 2px dotted var(--leaf-d); border-radius: 999px; pointer-events: none; }
-.tyz-strom:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
-@media (max-width: 380px) { .top-r { gap: 5px; } .tyz-strom { padding-right: 9px; } .tyz-strom svg { width: 26px; height: 26px; } .stars { padding-right: 10px; } }
 
 /* Múdra a jej odkaz nad lístkom */
 .dom-start { display: grid; }
@@ -1484,23 +1489,7 @@ h1.logo { margin: .35em 0 0; }
 button.dom-misia { cursor: pointer; } button.dom-misia:active { transform: translateX(3px); }
 .dom-misia.hotova > .ikn:last-child { color: var(--ok-t); }
 
-/* Pripomienka (séria, strom schne): pásik s krížikom */
-.strom-pas { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: var(--obrys); border-radius: var(--r-karta); background: var(--sun-l); box-shadow: 0 4px 0 var(--ink); color: var(--text); cursor: pointer; text-align: left; }
-.strom-pas.schne { background: var(--coral-l); }
-.strom-pas:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
-.sp-ik { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border: var(--obrys-m); border-radius: 13px 15px 12px 16px; background: var(--card); rotate: -4deg; }
-.sp-k { width: 38px; height: 38px; overflow: visible; }
-.sp-t { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.sp-t b { font: 800 1rem/1.15 var(--fd); overflow-wrap: anywhere; }
-.sp-t small { font: 600 .85rem/1.3 var(--fb); overflow-wrap: anywhere; }
-.sp-sip { flex: none; font: 800 1.4rem/1 var(--fd); font-style: normal; }
-.sp-x { flex: none; }
 
-/* Tvoj týždeň: cestička zo siedmich dní, strom múdrosti, okruh týždňa */
-.dom-tyz { display: grid; gap: 12px; }
-.dom-nh { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.dom-strom { display: inline-flex; align-items: center; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
-.dom-strom.schne { --cta: var(--sun-l); --cta-d: var(--sun); }
 .dom-dni { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); align-items: start; }
 .dom-dni::before { content: ""; position: absolute; left: 7%; right: 7%; top: 21px; border-top: 4px dotted var(--sc-pathdot); }
 .dom-den { position: relative; display: grid; justify-items: center; gap: 6px; padding: 0; border: 0; background: none; font: 700 .75rem/1 var(--fb); color: var(--muted); cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -1516,13 +1505,6 @@ button.dom-misia { cursor: pointer; } button.dom-misia:active { transform: trans
 .dom-den:not(:disabled):active i { transform: translateY(2px); }
 .anim .dom-den.tu i { animation: denTu .6s var(--spring) .5s both; }
 @keyframes denTu { from { transform: scale(.4); } }
-.dom-okr { display: flex; gap: 8px; }
-.dom-okruh, .dom-preh { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 4px 12px 4px 8px; border: var(--obrys-m); border-radius: var(--r-maly); background: var(--card); box-shadow: 0 3px 0 var(--ink); font: 600 .88rem/1.15 var(--fb); color: var(--text); text-align: left; cursor: pointer; }
-.dom-okruh { flex: 1; min-width: 0; }
-.dom-okruh > span:nth-child(2) { flex: 1; min-width: 0; }
-.dom-okruh b { font: 800 .94rem/1.15 var(--fd); }
-.dom-okruh > .ikn, .dom-preh > .ikn { width: 20px; height: 20px; }
-.dom-okruh:active, .dom-preh:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 
 /* Angličtina a Objavuj: dve nálepky */
 .dom-nal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -5555,85 +5537,28 @@ const tD = () => temaDna();
 // 5.0: ikona okruhu z novej rodiny (ikn), nie stará farebná IK
 const OKRUH_IKN = { zmiesany: 'kompas', ...SK_IKN };
 const okruhIk = o => o ? ikn(OKRUH_IKN[o.id] || 'kompas') : '';
-/* 5.0: okno týždňa (otvára ho stromček v hlavičke): séria, 7 dní ako na Domove, okruh, Prehľad a strom múdrosti */
-function kartaTyzden() {
-  const Ty = TY(), s = seria(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), hn = hnStupen(), i = stromStupen(), S0 = STROM_STUPNE[i];
-  const hot = Ty.dni().filter(x => x.hotovo).length, naStrome = Math.min(s, S0.plody);
-  return `<div class="tyzs-hl"><h2 class="n1">Tento týždeň</h2><button class="btn kruh dve" data-tyzs-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
-    <div class="tyzs-st"><span class="st${s ? '' : ' zhas'}" style="--c:var(--coral-l)">${ikn('plamen')}${s ? `${s} ${dni(s)} po sebe` : 'Séria začne dnes'}</span><span class="st cis">${ikn('check')}${hot} zo 7</span></div>
-    ${Domov.dniHtml()}
-    <p class="dop tyzs-tip">Ťukni na deň a otvoríš jeho tému</p>
-    <div class="dom-okr"><button class="dom-okruh" data-okruh-otvor aria-haspopup="dialog"><span class="okruh-tl-ik">${okruhIk(vyb)}</span><span>Okruh týždňa: <b>${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</b></span>${ikn('ceruzka')}</button>
-      <button class="dom-preh" data-tyz-prehlad aria-haspopup="dialog">${ikn('kalendar')}Prehľad</button></div>
-    <button class="tyzs-strom${hn ? ' schne' : ''}" data-strom aria-label="Strom múdrosti: ${esc(hn ? HN_TEXT[hn].n : S0.n)}. Otvoriť">
-      <span class="tyzs-strom-k">${stromSvg({ stupen: i, plody: naStrome, kos: 0, novy: -1, hn, zem: 'tien' })}</span>
-      <span class="tyzs-strom-t"><small class="dop">Strom múdrosti</small><b>${esc(hn ? HN_TEXT[hn].n : S0.n)}</b></span>${ikn('sipka')}</button>`;
-}
-/* Stromček v hornej lište Domova (4.2): tmavý a spiaci, kým dnešná téma nie je hotová; farebný, s hviezdičkami, keď je hotovo.
-   Po ťuknutí sa z neho rozvinie okno s týždňom (karta Tento týždeň, Prehľad týždňa aj strom múdrosti). */
-/* 4.4: ikona stromu v troch stavoch: rastie (zelený s plodmi), schne (žltý, ovisnutý, padá list), spí (tmavý, len v lište) */
-const stromIkona = (stav, trieda = '') => stav === 'schne'
-  ? `<svg class="${trieda}" viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 37 V25 H23 V37Z" fill="#8A5A3A"/><circle cx="20" cy="18" r="13" fill="#E3B341"/><circle cx="14" cy="21" r="4" fill="#C9822B" stroke-width="1.8"/><circle cx="26" cy="15" r="3" fill="#A66A3F" stroke-width="1.8"/></g><path class="ts-list" d="M31 22 q4 2 3 6 q-4 -1 -3 -6Z" fill="#C9822B" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/></svg>`
-  : `<svg class="${trieda}" viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 37 V25 H23 V37Z" fill="#A66A3F"/><circle cx="20" cy="18" r="13" fill="#5BC56B"/><circle cx="15" cy="16" r="3" fill="#FF6A4D" stroke-width="1.8"/><circle cx="25" cy="20" r="3" fill="#FFC533" stroke-width="1.8"/></g></svg>`;
-const stromTlacidlo = (hot, hn = 0) => hn ? stromIkona('schne') : hot
-  ?`<svg viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 37 V25 H23 V37Z" fill="#A66A3F"/><circle cx="20" cy="18" r="13" fill="#5BC56B"/><circle cx="15" cy="16" r="3" fill="#FF6A4D" stroke-width="1.8"/><circle cx="25" cy="20" r="3" fill="#FFC533" stroke-width="1.8"/></g><path class="ts-i ts-i1" d="${HVIEZDA}" fill="#FFC533" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round" transform="translate(27 -1) scale(.6)"/><path class="ts-i ts-i2" d="${HVIEZDA}" fill="#FFC533" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round" transform="translate(0 3) scale(.5)"/></svg>`
-  : `<svg viewBox="0 0 40 40" aria-hidden="true"><g stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"><path d="M17 37 V25 H23 V37Z" fill="#7A6A63"/><circle cx="20" cy="18" r="13" fill="#9C95C4"/></g><path d="M13 19 q2.4 2.4 4.8 0 M22.4 19 q2.4 2.4 4.8 0" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/><text x="29" y="9" font-size="9" font-weight="800" font-family="Grandstander, sans-serif" fill="${INK}" class="ts-z">z</text></svg>`;
+/* 5.1: týždeň a strom múdrosti sú v jednom okne „Môj strom“ (Strom v 15-domov-strom-oslava.js). Každý deň učenia (st.dni) je kvapka,
+   ktorou dieťa poleje strom: týždeň je 7 kvapiek, rast stromu 6 malých stromčekov. V hlavičke Domova je stromček s kvapkou:
+   plná kvapka = dnes poliaty, prerušovaná = dnes ešte nie. Ťuknutie otvorí okno zdola. */
+const kvapka = (stav, den = '') => `<span class="kv ${stav}"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="kv-k" d="M12 2.6C8.8 6.6 5 11 5 15.2a7 7 0 0 0 14 0C19 11 15.2 6.6 12 2.6Z"/>${stav === 'hot' ? '<path class="kv-c" d="M8.6 15.4l2.3 2.3 4.6-4.8"/>' : ''}</svg>${den ? `<small>${den}</small>` : ''}</span>`;
+const slovoKvapky = n => n === 1 ? 'kvapka' : n >= 2 && n <= 4 ? 'kvapky' : 'kvapiek';
 const TyzStrom = {
-  jeHotovo() { try { return st.kedy[tD().id] === key(new Date()); } catch (e) { return false; } },
-  // tlačidlo v hornej lište: viditeľné len na Domove, mení sa podľa dnešnej témy
+  // dnes poliaty = dnes sa dieťa učilo (téma alebo kvíz so správnou odpoveďou), rovnako ako séria a strom
+  jeHotovo() { return st.dni.includes(key(new Date())); },
+  // tlačidlo v hornej lište: viditeľné len na Domove
   maluj() {
     const b = document.getElementById('tyz-strom'); if (!b) return;
-    const zap = st.faza === 'appka' && st.view === 'domov', hot = zap && this.jeHotovo();
+    const zap = st.faza === 'appka' && st.view === 'domov';
     b.hidden = !zap; if (!zap) return;
-    const hn = hnStupen() ? 1 : 0, s = seria(), k = (hot ? 'h' : 's') + hn + '-' + s;
-    if (b.dataset.k !== k) {
-      b.dataset.k = k; b.innerHTML = stromTlacidlo(hot, hn) + `<b class="ts-pocet">${s}</b>`; b.classList.toggle('hotovo', hot && !hn); b.classList.toggle('spi', !hot && !hn); b.classList.toggle('schne', !!hn);
-      b.setAttribute('aria-label', (hn ? 'Strom schne. ' : '') + `Séria ${s} ${dni(s)}. ` + (hot ? 'Tento týždeň. Dnešná téma je hotová.' : 'Tento týždeň. Dnešná téma ešte čaká.'));
-    }
+    const hot = this.jeHotovo(), hn = hnStupen(), i = stromStupen(), pl = Math.min(3, seria(), STROM_STUPNE[i].plody), k = `${hot ? 1 : 0}${hn}-${i}-${pl}`;
+    if (b.dataset.k === k) return;
+    b.dataset.k = k;
+    b.innerHTML = `<span class="tsm">${stromSvg({ stupen: Math.max(1, i), plody: pl, kos: 0, novy: -1, hn, zem: false })}</span>${kvapka(hot ? 'hot' : 'tu')}`;
+    b.className = 'tyz-strom' + (hot ? ' hotovo' : '') + (hn ? ' schne' : '');
+    b.setAttribute('aria-label', 'Môj strom. ' + (hot ? 'Dnes je poliaty.' : hn ? 'Strom je smädný, dnes ešte nie je poliaty.' : 'Dnes ešte nie je poliaty.'));
   },
-  obnov() { const k = document.querySelector('.tyzs-karta'); if (k) k.innerHTML = this.html(); },
-  html() { return `<span class="zal">${ikn('kalendar')}Týždeň</span>${kartaTyzden()}`; },
-  ukaz(od) {
-    if (document.querySelector('.tyzs-okno')) return;
-    const el = document.createElement('div');
-    el.className = 'okruh-okno tyzs-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Tento týždeň');
-    el.innerHTML = `<div class="okruh-karta tyzs-karta">${this.html()}</div>`;
-    // karta vyrastie zo stromčeka: začne na jeho mieste a zmenšená
-    const kar = el.firstElementChild;
-    if (od && od.getBoundingClientRect) { const r = od.getBoundingClientRect(); kar.style.setProperty('--dx', (r.left + r.width / 2 - innerWidth / 2) + 'px'); kar.style.setProperty('--dy', (r.top + r.height / 2 - innerHeight / 2) + 'px'); }
-    document.body.appendChild(el);
-    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-vyber, .tyz-okno')) zavri(); };
-    const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 300); };
-    document.addEventListener('keydown', kl);
-    el.addEventListener('click', e => {
-      if (e.target.closest('[data-tyz-den]')) { zavri(); return; } // ďalej sa postará bežné ťuknutie na deň
-      if (e.target === el || e.target.closest('[data-tyzs-zavri]')) { Zvuk.play('zavri'); zavri(); }
-    });
-    Zvuk.play('okno'); Haptika.hraj('tuk');
-    const p = el.querySelector('.dom-den.dnes') || el.querySelector('.dom-den:not([disabled])'); if (p) p.focus({ preventScroll: true });
-  },
-};
-/* Pás stromu na Domove (4.4): vždy ukazuje stav stromu (rastie / schne) a len keď je čo povedať, aj jemnú pripomienku.
-   Pripomienka: raz za deň, zavrie sa krížikom, nie pri precvičovaní a nie keď je dnešok hotový. */
-const Pripomienka = {
-  kluc: () => 'pripomienka-' + (st.dietaId || 'x'),
-  text() {
-    if (Precvic.teraz() || st.dni.includes(key(new Date())) || TyzStrom.jeHotovo() || S.get(this.kluc(), '') === key(new Date())) return '';
-    const s = seria(), gap = dniOdPoslednej();
-    if (s > 0) return `Tvoja séria ${s} ${dni(s)} padne, ak dnes nezahráš.`;
-    if (hnStupen()) return 'Strom schne. Jedna téma ho hneď oživí.';
-    if (hnitieZapnute() && st.dni.length && gap === 2) return 'Strom začne schnúť, ak dnes nezahráš.';
-    return st.dni.length ? 'Dnes ešte nebola žiadna lekcia. Téma dňa čaká.' : '';
-  },
-  html() {
-    const hn = hnStupen(), s = seria(), tx = this.text(); if (!tx) return ''; // pás je len pripomienka; stav stromu a počet dní ukazuje polkruh v lište
-    const stav = hn ? 'Strom schne' : 'Strom rastie';
-    const pod = tx || (hn ? HN_TEXT[hn].p : `${STROM_STUPNE[stromStupen()].n}${s ? `, séria ${s} ${dni(s)}` : ''}`);
-    return `<div class="strom-pas${hn ? ' schne' : ''}${tx ? ' pripomienka' : ''}" data-strom role="button" tabindex="0" aria-label="Strom múdrosti. ${esc(stav)}. ${esc(pod)}">
-      <span class="sp-ik">${stromIkona(hn ? 'schne' : 'rastie', 'sp-k')}</span><span class="sp-t"><b>${esc(stav)}</b><small>${esc(pod)}</small></span>
-      ${tx ? `<button class="btn kruh dve sp-x" data-prip-zavri aria-label="Zavrieť pripomienku">${ikn('zavriet')}</button>` : '<i class="sp-sip">›</i>'}</div>`;
-  },
-  zavri(b) { S.set(this.kluc(), key(new Date())); Zvuk.play('tap'); const p = b.closest && b.closest('.strom-pas'); if (p) p.outerHTML = this.html(); },
+  obnov() { Strom.obnov(); },
+  ukaz(od) { Strom.ukaz(od); },
 };
 const Okruh = {
   ukaz() {
@@ -5641,8 +5566,8 @@ const Okruh = {
     const Ty = TY(), vyb = Ty.vybrany(), el = document.createElement('div');
     el.className = 'okruh-okno okruh-vyber'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Okruh týždňa');
     el.innerHTML = `<div class="okruh-karta"><div class="tyzs-hl"><h2 class="n1">Okruh týždňa</h2><button class="btn kruh dve" data-okruh-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
-      <p class="tx">Vyber, o čom budú témy tento týždeň. Zmiešaný je od všetkého trochu.</p>
-      <div class="okruh-mriezka">${Ty.okruhy().map(o => `<button class="okruh-volba" data-okruh-id="${esc(o.id)}" aria-pressed="${o.id === vyb}"><span class="okruh-ik ikb">${okruhIk(o)}</span><b>${esc(o.nazov)}</b></button>`).join('')}</div></div>`;
+      <p class="tx">Vyber, o čom budú témy tento týždeň. Zmiešaný je od všetkého trochu.${st.dni.includes(key(new Date())) && Ty._pondelok(Ty._zajtra()) === Ty._pondelok(key(new Date())) ? ' Dnes si už strom polial, nový okruh začne zajtra.' : ''}</p>
+      <div class="okruh-mriezka">${Ty.okruhy().map(o => `<button class="okruh-volba" data-okruh-id="${esc(o.id)}" aria-pressed="${o.id === (Ty.odZajtra() || vyb)}"><span class="okruh-ik ikb">${okruhIk(o)}</span><b>${esc(o.nazov)}</b></button>`).join('')}</div></div>`;
     document.body.appendChild(el);
     const kl = e => { if (e.key === 'Escape') zavri(); };
     const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 250); };
@@ -5656,12 +5581,12 @@ const Okruh = {
     Zvuk.play('okno'); const p = el.querySelector('.okruh-volba[aria-pressed="true"]') || el.querySelector('.okruh-volba'); if (p) p.focus({ preventScroll: true });
   },
 };
-/* Prehľad týždňa (verzia 4.1 C): okno s dňami, stavmi, súčtami a prechodom na minulé týždne. */
+/* Prehľad týždňa (verzia 4.1 C, 5.1 otvára ho „Minulé dni“ v okne stromu): dni, stavy, súčty, prechod na minulé týždne, precvičovanie zmeškaných dní. */
 const TyzPrehlad = {
   posun: 0, MAX: 12,
-  /* najstarší deň, o ktorom vieme (dokončená téma alebo angličtina); bez neho história neexistuje */
+  /* najstarší deň, o ktorom vieme (deň učenia, dokončená téma alebo angličtina); bez neho história neexistuje */
   najstarsi() {
-    const d = [...Object.values(st.kedy || {}), ...Object.keys(Ang.data().dni || {})].filter(x => typeof x === 'string' && /^\d{4}-\d\d-\d\d$/.test(x)).sort();
+    const d = [...st.dni, ...Object.values(st.kedy || {}), ...Object.keys(Ang.data().dni || {})].filter(x => typeof x === 'string' && /^\d{4}-\d\d-\d\d$/.test(x)).sort();
     return d[0] || null;
   },
   maPredosly() {
@@ -5696,7 +5621,7 @@ const TyzPrehlad = {
         <div class="tp-nav-st"><b class="n2">${nazovT}</b><small class="cis">${rozsah}</small></div>
         <button class="btn kruh dve tp-krok" data-tp-krok="1" ${p < 0 ? '' : 'disabled'} aria-label="Nasledujúci týždeň">${ikn('sipka')}</button></div>
       <div class="tp-suctu" role="group" aria-label="Súčet týždňa">
-        <div class="tp-sucet"><span class="tp-cis">${z.hotovo}<small> z ${z.z}</small></span><span>Témy dňa hotové</span></div>
+        <div class="tp-sucet"><span class="tp-cis">${z.hotovo}<small> z ${z.z}</small></span><span>Dni s učením</span></div>
         <div class="tp-sucet"><span class="tp-cis">${z.ang}<small> z ${z.z}</small></span><span>Angličtina</span></div>
         <div class="tp-sucet ${s ? '' : 'zhas'}"><span class="tp-cis">${s}<small> ${dni(s)}</small></span><span>Séria po sebe</span></div></div>
       <div class="tp-okruh"><span class="okruh-tl-ik">${okruhIk(okr)}</span><span>Okruh: <b>${okr ? esc(okr.nazov) : 'Zmiešaný'}</b></span>${p === 0 ? `<button class="btn dve maly tp-zmen" data-tp-okruh>${ikn('ceruzka')}Zmeniť</button>` : ''}</div>
@@ -5787,23 +5712,6 @@ const Domov = {
     if (hnStupen()) return `${ahoj} Poď, jedna téma strom hneď oživí.`;
     return `${ahoj} Dnes ideme ${DOM_CIELE[this.ciel(t)]}.`;
   },
-  // 7 dní týždňa ako krúžky na bodkovanej cestičke (Domov aj okno týždňa)
-  dniHtml() {
-    return `<div class="dom-dni">${TY().dni().map(x => {
-      const bud = x['jeBudúci'], tr = x.hotovo ? 'hot' : x.jeDnes ? 'tu' : bud ? 'bud' : 'zme', dm = `${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}.`;
-      const stav = x.hotovo ? 'hotovo' : x.jeDnes ? 'dnes' : bud ? 'ešte zamknuté' : 'ukáž tému dňa';
-      return `<button class="dom-den ${tr}${x.jeDnes ? ' dnes' : ''}" ${bud ? 'disabled' : `data-tyz-den="${esc(x.datum)}"`}${x.jeDnes ? ' aria-current="date"' : ''} aria-label="${esc(x.den)} ${dm}, ${stav}"><i>${x.hotovo ? ikn('check') : x.jeDnes ? ikn('hviezda') : ''}</i>${x.jeDnes ? 'Dnes' : esc(x.den)}</button>`;
-    }).join('')}</div>`;
-  },
-  tyzden() {
-    const Ty = TY(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), hn = hnStupen();
-    return `<section class="dom-tyz" aria-label="Tvoj týždeň">
-      <div class="dom-nh"><h2 class="n2">Tvoj týždeň</h2><span class="btn maly dve dom-strom${hn ? ' schne' : ''}" data-strom role="button" tabindex="0">${ikn('strom')}${hn ? 'Strom schne' : 'Strom múdrosti'}</span></div>
-      ${this.dniHtml()}
-      <div class="dom-okr"><button class="dom-okruh" data-okruh-otvor aria-haspopup="dialog"><span class="okruh-tl-ik">${okruhIk(vyb)}</span><span>Okruh týždňa: <b>${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</b></span>${ikn('ceruzka')}</button>
-        <button class="dom-preh" data-tyz-prehlad aria-haspopup="dialog">${ikn('kalendar')}Prehľad</button></div>
-    </section>`;
-  },
   odmena() {
     const o = dalsiaOdmena(), av = st.avatar;
     const obr = av ? `<span class="kruh-av dom-odm-av" style="--bg:${av.pozadie}">${postavicka(o ? { ...av, [o.k]: o.v } : av)}</span>` : `<span class="ikb dom-odm-av">${ikn('darcek')}</span>`;
@@ -5838,8 +5746,6 @@ const views = {
       </section>
       ${location.hostname.endsWith('github.io') ? `
       <a class="presun" href="https://svet-za-3-minuty.web.app/">Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
-      ${Pripomienka.html()}
-      ${Domov.tyzden()}
       <div class="dom-nal">${Ang.karta()}<button class="nalepka objavuj-karta" data-go="objavuj" style="--c:var(--sun-l)"><span class="ikb">${ikn('lupa')}</span><b>Objavuj</b><small>Kvízy, iná téma a všetky oblasti</small></button></div>
       ${Domov.odmena()}
       ${Plocha.karta()}
@@ -6501,9 +6407,7 @@ const stromScena = (strom, o = {}) => `<div class="so-scena${o.hn ? ' hn' : ''}$
   ${o.bublina ? `<p class="odkaz so-bub">${o.bublina}</p>` : ''}
   <div class="so-strom">${strom}</div>
 </div>`;
-// šesť stupňov na jednej bodkovanej čiare: prejdené s fajkou, terajší so stromčekom, budúce prerušovaným krúžkom
-const stromCesta = i => `<ol class="so-cesta" aria-label="Stupne stromu">${STROM_STUPNE.map((x, k) => `<li class="${k < i ? 'hot' : k === i ? 'tu' : ''}"><i>${k < i ? ikn('check') : k === i ? ikn('strom') : ''}</i><span class="cis">${x.od}</span></li>`).join('')}</ol>`;
-// týždeň v okne stromu a v oslave (rovnaké krúžky ako na Domove)
+// týždeň vo veľkej oslave (rovnaké krúžky ako na Domove)
 const tyzdenStromu = (dnes, padne) => {
   const pon = new Date(); pon.setDate(pon.getDate() - (pon.getDay() + 6) % 7);
   return `<div class="dom-dni so-dni">${DNI.map((d, i) => { const x = new Date(pon); x.setDate(pon.getDate() + i); const k = key(x), je = k === dnes, h = st.dni.includes(k), bud = k > dnes;
@@ -6520,7 +6424,7 @@ const planSerie = (s, pocetDni) => {
 /* Oslavy sa neskladajú na seba: stredná oslava (pečiatka) počká, kým sa zavrie veľká oslava alebo okno stromu */
 const Oslavy = {
   rad: [], cak: 0,
-  obsadene: () => !!document.querySelector('.oslava, .os-stredna'),
+  obsadene: () => !!document.querySelector('.oslava, .os-stredna, .strom-okno'),
   pridaj(fn) { this.rad.push(fn); this.dalsia(); },
   dalsia() {
     if (!this.rad.length) return;
@@ -6607,45 +6511,64 @@ const Oslava = {
     });
   },
 };
-// okno stromu (z Domova: strom v krajine, tlačidlo Strom múdrosti): stupeň, plody, čo chýba, týždeň s okruhom
+/* 5.1: okno „Môj strom“ (variant A): zdola vysunutá karta s Múdrou a stromom, týždeň v kvapkách, rast v obrázkoch, jedno tlačidlo,
+   okruh a Minulé dni malým riadkom dole. Otvára ho stromček v hlavičke aj strom v krajine Domova. */
 const Strom = {
+  // 7 kvapiek: hot = v ten deň sa učil, tu = dnes ešte nie, zme = zmeškaný (otvorí tému dňa len na precvičenie), bud = budúci alebo pred začiatkom
+  tyzden() {
+    const prvy = [...st.dni].sort()[0];
+    return Tyzden.dni().map(x => {
+      const stav = x.hotovo ? 'hot' : x.jeDnes ? 'tu' : x.jeBudúci || !prvy || x.datum < prvy ? 'bud' : 'zme', den = x.jeDnes ? 'Dnes' : x.den;
+      const popis = `${x.den} ${+x.datum.slice(8)}. ${+x.datum.slice(5, 7)}., ` + { hot: 'strom polial', tu: 'dnes ešte nie', zme: 'bez učenia', bud: x.jeBudúci ? 'ešte len príde' : 'pred začiatkom' }[stav];
+      return stav === 'bud' ? `<span class="ms-den" role="img" aria-label="${popis}">${kvapka(stav, den)}</span>`
+        : `<button class="ms-den" data-tyz-den="${esc(x.datum)}" aria-label="${popis}. Otvoriť tému dňa${stav === 'zme' ? ', len na precvičenie' : ''}">${kvapka(stav, den)}</button>`;
+    }).join('');
+  },
+  // šesť stupňov ako malé stromčeky na bodkovanej čiare (žiadne čísla); veta hovorí, koľko kvapiek (dní učenia) chýba
+  rast(i, pocet) {
+    const vel = [20, 26, 31, 36, 40, 44], dalsi = STROM_STUPNE[i + 1], ch = dalsi ? dalsi.od - pocet : 0;
+    const co = ['vyklíči stromček', 'vyrastie mladý strom', 'vyrastie veľký strom', 'strom zakvitne', 'strom bude zlatý'][i];
+    const stupne = STROM_STUPNE.map((x, k) => `<span class="ms-st ${k < i ? 'hot' : k === i ? 'tu' : 'bud'}" style="--v:${vel[k]}px">${stromSvg({ stupen: k, plody: k ? Math.min(3, x.plody) : 0, kos: 0, novy: -1, zem: false })}${k < i ? `<i class="ms-ok">${ikn('check')}</i>` : ''}</span>`).join('');
+    return `<div class="ms-rast" role="img" aria-label="Strom múdrosti: ${esc(STROM_STUPNE[i].n)}, stupeň ${i + 1} zo ${STROM_STUPNE.length}">${stupne}</div>
+      <p class="ms-veta">${dalsi ? `Ešte <b>${ch} ${slovoKvapky(ch)}</b> a ${co}.` : 'Tvoj strom je celý zlatý. Krajší nie je!'}</p>`;
+  },
+  html() {
+    const pocet = st.dni.length, i = stromStupen(pocet), s = seria(), S0 = STROM_STUPNE[i], hn = hnStupen(), hot = TyzStrom.jeHotovo();
+    const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), Ty = TY(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), zaj = Ty.odZajtra(), oz = zaj && Ty.okruhy().find(o => o.id === zaj);
+    const bub = !pocet ? 'Tu vyrastie tvoj strom. Prvá téma ho zasadí!' : hn ? 'Strom je smädný. Jedna téma ho poleje!' : hot ? 'Dnes je strom poliaty. Príď zajtra!' : 'Polej strom: preber tému dňa!';
+    return `<i class="ms-ucho" aria-hidden="true"></i>
+      <div class="ms-hl"><h2 class="n1">Môj strom</h2><button class="btn kruh dve" data-strom-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
+      <div class="ms-sc${hn ? ' hn' : ''}"><div class="os-listy"></div><p class="ms-bub">${bub}</p><i class="ms-kopec" aria-hidden="true"></i>
+        <button class="ms-sova" aria-label="Sovička Múdra">${mudra(hn ? 'povzbudenie' : hot ? 'radost' : 'ahoj')}</button>
+        <span class="ms-str" role="img" aria-label="${esc(hn ? HN_TEXT[hn].n : S0.n)}, ${naStrome} ${slovoPlody(naStrome)}">${stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6 } })}</span></div>
+      ${hn ? `<p class="ms-veta">Nič sa nestratilo. Po téme strom hneď ožije${bodyUbudlo() ? ' a hviezdičky sa zobudia' : ''}.</p>` : ''}
+      <h3 class="ms-h">Tento týždeň</h3><div class="ms-tyz">${this.tyzden()}</div>
+      <h3 class="ms-h">Strom rastie</h3>${this.rast(i, pocet)}
+      ${hot ? '<p class="ms-hotovo">Dnes je poliaty. Zajtra pribudne ďalšia kvapka.</p>' : `<button class="btn wide ms-tl" data-strom-tema>${ikn('kvapka')}Polej strom: téma dňa</button>`}
+      <div class="ms-okr"><span class="okruh-tl-ik">${okruhIk(vyb)}</span><span class="ms-okr-t">Témy tento týždeň: <b>${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</b>${oz ? `<small>Od zajtra: ${esc(oz.nazov)}</small>` : ''}</span><button class="btn dve maly" data-okruh-otvor aria-haspopup="dialog">Zmeniť</button></div>
+      <button class="ms-preh" data-tyz-prehlad aria-haspopup="dialog">${ikn('kalendar')}Minulé dni</button>`;
+  },
+  obnov() { const k = document.querySelector('.strom-okno .ms-karta'); if (k) k.innerHTML = this.html(); },
   ukaz() {
-    if (document.querySelector('.oslava, .os-stredna')) return;
-    // 4.4: okná týždňa (pás, Prehľad týždňa, okruh) sa pri otvorení stromu zavrú, aby sa neprekrývali
+    if (document.querySelector('.oslava, .os-stredna, .strom-okno')) return;
     document.querySelectorAll('.okruh-okno').forEach(o => { o.classList.add('pryc'); setTimeout(() => o.remove(), 250); });
-    const dnes = key(new Date()), pocet = st.dni.length, i = stromStupen(pocet), S0 = STROM_STUPNE[i], dalsi = STROM_STUPNE[i + 1], s = seria(), hotovo = st.dni.includes(dnes);
-    const naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody), hn = hnStupen();
-    const bublina = hn ? (hn >= 2 ? 'Nič sa nestratilo. Stačí jedna téma!' : 'Strom je smädný. Jedna téma ho napojí!') : !pocet ? 'Tu raz vyrastie strom. Preber tému dňa a zasadíme ho!'
-      : hotovo ? 'Dnes plod pribudol. Príď zajtra a vyrastie ďalší!' : 'Dnes ešte plod chýba. Preber tému dňa a pribudne ďalší!';
-    const Ty = TY(), vyb = Ty.okruhy().find(o => o.id === Ty.vybrany()), u = bodyUbudlo(), sh = spiaceHry();
-    const seriaSt = `<span class="st" style="--c:var(--coral-l)">${ikn('plamen')}${s ? `${s} ${dni(s)} po sebe` : 'Séria začne dnes'}</span>`;
-    const karta = hn
-      ? `<h2 class="n0">${HN_TEXT[hn].n}</h2>${seriaSt}<p class="tx">${HN_TEXT[hn].p}</p>
-        <div class="so-chips"><span class="st cis">${ikn('hviezda')}${st.body}</span>${u ? `<span class="st" style="--c:var(--violet-l)">${ikn('mesiac')}${u} ${u === 1 ? 'hviezdička spí' : u <= 4 ? 'hviezdičky spia' : 'hviezdičiek spí'}</span>` : ''}${sh ? `<span class="st">${ikn('zamok')}${sh} ${sh === 1 ? 'hra spí' : sh <= 4 ? 'hry spia' : 'hier spí'}</span>` : ''}</div>`
-      : `<h2 class="n0">${S0.n}</h2>${seriaSt}
-        <p class="so-mal">${pocet} ${dni(pocet)} učenia · ${naStrome ? `na strome ${naStrome === 1 ? 'visí' : 'visia'} ${naStrome} ${slovoPlody(naStrome)}` : 'zatiaľ bez plodov'}${kos ? ` · v košíku ${kos}` : ''}</p>
-        ${stromCesta(i)}
-        <p class="tx">${dalsi ? `Ešte <b>${dalsi.od - pocet} ${dni(dalsi.od - pocet)} učenia</b> a vyrastie z neho ${dalsi.n.toLowerCase()}.` : 'Najvyšší stupeň! Strom je celý zlatý.'}</p>`;
     const el = document.createElement('div');
-    el.className = 'oslava strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Strom múdrosti');
-    el.innerHTML = `<div class="os-listy">${hn ? '' : stromListy(5, i)}</div><div class="os-obsah">
-      <div class="so-hlava"><h1 class="n1">Strom múdrosti</h1><button class="btn kruh dve" data-strom-zavri aria-label="Zavrieť">${ikn('zavriet')}</button></div>
-      ${stromScena(stromSvg({ stupen: i, plody: naStrome, kos, novy: -1, hn, sova: true, zem: false, t: { kmen: .1, koruna: .2, krok: .05, plody: .6, sova: .9 } }), { hn, bublina, domov: true })}
-      <section class="karta so-karta"><span class="zal">Stupeň ${i + 1} zo ${STROM_STUPNE.length}</span>${karta}</section>
-      <div class="so-tyz"><h3 class="n2">Tento týždeň</h3><button class="btn maly dve" data-so-okruh>${okruhIk(vyb) || ikn('kompas')}Okruh: ${vyb ? esc(vyb.nazov) : 'Zmiešaný'}</button></div>
-      ${tyzdenStromu(dnes)}
-      ${hotovo ? '' : `<button class="btn wide" data-strom-tema>Poďme na tému dňa${ikn('sipka', 'za')}</button>`}
-      <p class="dop so-tip">${hn ? 'Rodič môže vädnutie vypnúť vo svojom paneli.' : 'Ťukni na strom a zatrasie sa. Ťukni na Múdru a zahúka.'}</p></div>`;
+    el.className = 'strom-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Môj strom');
+    el.innerHTML = `<div class="ms-karta">${this.html()}</div>`;
     document.body.appendChild(el);
-    Zvuk.play('okno'); setTimeout(() => Zvuk.play('pop'), 300);
-    const kl = e => { if (e.key === 'Escape') zavri(); };
+    Zvuk.play('okno'); Haptika.hraj('tuk');
+    // Escape zavrie najprv okno navrchu (okruh, Minulé dni), až potom strom
+    const kl = e => { if (e.key === 'Escape' && !document.querySelector('.okruh-okno')) zavri(); };
     const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => el.remove(), 320); };
     document.addEventListener('keydown', kl);
     el.addEventListener('click', e => {
       e.stopPropagation();
-      if (e.target.closest('[data-strom-zavri]')) { Zvuk.play('zavri'); zavri(); return; }
+      if (e.target === el || e.target.closest('[data-strom-zavri]')) { Zvuk.play('zavri'); zavri(); return; }
       if (e.target.closest('[data-strom-tema]')) { zavri(); startTema(temaDna().id); return; }
-      if (e.target.closest('[data-so-okruh]')) { Zvuk.play('tap'); zavri(); setTimeout(() => Okruh.ukaz(), 200); return; }
+      const den = e.target.closest('[data-tyz-den]'); if (den) { Zvuk.play('pop'); zavri(); Tyzden.otvor(den.dataset.tyzDen); return; }
+      if (e.target.closest('[data-okruh-otvor]')) { Zvuk.play('tap'); Okruh.ukaz(); return; }
+      if (e.target.closest('[data-tyz-prehlad]')) { Zvuk.play('tap'); TyzPrehlad.ukaz(); return; }
+      if (e.target.closest('.ms-sova')) { Zvuk.play('hoot'); vibruj(20); return; }
       tukniNaStrom(el, e);
     });
     const x = el.querySelector('[data-strom-zavri]'); if (x && x.focus) x.focus({ preventScroll: true });
@@ -7453,7 +7376,7 @@ const SPR_KROKY = [
   { n: 'Sovička Múdra', nalada: 'happy', p: 'Pri každom kroku môžeš ťuknúť na reproduktor a ja ti ho prečítam nahlas. Keď chceš skončiť, ťukni na krížik.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň ťa tu čaká nová téma. S rodičom si ju prečítate za 3 minúty a potom odpovieš na pár otázok.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Každý deň jeden krátky kvízik z angličtiny. Ťukneš na anglické slovo a vyberieš správny preklad.' },
-  { v: 'domov', cil: '#tyz-strom', n: 'Stromček hore', nalada: 'cheer', p: 'Ťukni na stromček a ukáže sa tvoj týždeň so stromom múdrosti. Keď je stromček tmavý, dnešná téma ešte čaká. Po prvej téme sa rozsvieti. Keď sa niekoľko dní neučíš, strom vädne.' },
+  { v: 'domov', cil: '#tyz-strom', n: 'Stromček hore', nalada: 'cheer', p: 'Toto je tvoj strom múdrosti. Každý deň, keď sa niečo naučíš, ho poleješ a vyrastie. Prázdna kvapka znamená, že dnes ešte nie je poliaty. Ťukni naň a uvidíš celý týždeň.' },
   { v: 'domov', cil: '#stars', n: 'Tvoje hviezdy', nalada: 'cheer', p: 'Za správne odpovede zbieraš hviezdy. Za hviezdy sa odomykajú hry a nové veci pre tvoju postavičku.' },
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Keď ide rodina autom, appka prečíta tému aj otázky nahlas. Učiť sa dá aj cestou.' },
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Tu sú kvízy, Iná téma, ktorá ťa prekvapí, a všetky oblasti tém: príroda, ľudia, svet a veda.' },
@@ -7483,7 +7406,7 @@ const SPR_RODIC = [
   { id: 'vitaj', n: 'Profil je hotový!', nalada: 'cheer', tl: [['dalej', 'Ukážte mi všetko', 1], ['zavri', 'Teraz nie']], p: 'Teraz vám ukážem celú appku: čo robiť každý deň, za čo sú hviezdy, kvízy, hry, priateľov aj nastavenia pre rodiča.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Každý deň jedna krátka téma na 3 minúty. Prečítate ju dieťaťu (alebo ju appka prečíta nahlas), porozprávate sa a dieťa odpovie na otázky. Za tému dňa je najviac hviezd.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', nalada: 'happy', p: 'Denný kvízik z angličtiny má 6 otázok. Dieťa vyberá preklad slova a dostane krátke vysvetlenie. Ďalšie kvízy sú v Objavuj.' },
-  { v: 'domov', cil: '#tyz-strom', n: 'Séria a strom múdrosti', p: 'Každý deň s témou pribudne hviezdička a rastie séria. Prvá téma dňa spustí oslavu a na strome múdrosti pribudne plod. Keď sú všetky odpovede zlé, treba otázky skúsiť ešte raz. Stromček hore ukáže týždeň: ťuknutím na minulý deň otvoríte jeho tému, tlačidlom Okruh vyberiete, o čom budú témy týždňa, a ťuknutím na strom uvidíte jeho stupeň.' },
+  { v: 'domov', cil: '#tyz-strom', n: 'Séria a strom múdrosti', p: 'Každý deň s témou pribudne hviezdička a rastie séria. Prvá téma dňa spustí oslavu a na strome múdrosti pribudne plod. Keď sú všetky odpovede zlé, treba otázky skúsiť ešte raz. Stromček hore otvorí okno Môj strom: kvapky ukážu dni učenia v týždni, malé stromčeky, koľko chýba do ďalšieho stupňa. Dole sa dá zmeniť okruh týždňa a pozrieť Minulé dni.' },
   { v: 'domov', cil: '#stars', n: 'Hviezdy', nalada: 'cheer', p: 'Hviezdy sú za správne odpovede a odomykajú hry aj nové veci pre postavičku. Za inú tému ako tému dňa je najviac 10 hviezd.' },
   { v: 'domov', cil: '.auto-mala', n: 'Režim do auta', p: 'Jedno ťuknutie a appka prečíta tému aj otázky nahlas, s prestávkou na odpoveď. Hodí sa na cestu, keď šoférujete.' },
   { v: 'domov', cil: '.plocha-karta', ak: () => !!document.querySelector('.plocha-karta'), n: 'Appka na ploche', p: 'Pridajte si appku na plochu telefónu. Bude sa otvárať ako naozajstná aplikácia, s ikonkou a cez celú obrazovku.' },
@@ -7509,7 +7432,7 @@ const SPR_NOVE = [
   { id: 'vitaj', n: 'Pozri, čo je nové', nalada: 'hi', tl: [['dalej', 'Ukáž mi to!', 1], ['zavri', 'Teraz nie']], p: 'V appke pribudlo pár vecí. Ukážem ti ich za chvíľku.' },
   { v: 'domov', cil: '.hero', n: 'Téma dňa', nalada: 'happy', p: 'Hore je zasa Téma dňa. Každý deň nová, na 3 minúty.' },
   { v: 'domov', cil: '.ang-karta', n: 'Kvízik z angličtiny', p: 'Denný kvízik z angličtiny: vyberieš správny preklad slova.' },
-  { v: 'domov', cil: '#tyz-strom', n: 'Stromček hore', nalada: 'cheer', p: 'Týždeň je teraz schovaný v stromčeku. Ťukni naň a uvidíš dni, okruh, prehľad aj strom múdrosti. Tmavý stromček znamená, že dnešná téma ešte čaká.' },
+  { v: 'domov', cil: '#tyz-strom', n: 'Stromček hore', nalada: 'cheer', p: 'Týždeň a strom múdrosti sú teraz spolu v stromčeku hore. Každý deň učenia je kvapka, ktorá strom poleje. Prázdna kvapka znamená, že dnes ešte nie je poliaty.' },
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Kvízy, Iná téma a všetky oblasti tém nájdeš tu.' },
   { id: 'koniec', n: 'Hotovo!', nalada: 'cheer', tl: [['tema', 'Poďme na tému dňa!', 1], ['domov', 'Zavrieť']], p: 'Celého sprievodcu nájdeš kedykoľvek v karte Ja.' },
 ];
@@ -8008,11 +7931,7 @@ document.addEventListener('click', e => {
   if (d.autoStart) { if (Hlas.hovori) Hlas.stop(); Auto.start(d.autoStart); return; }
   if (d.auto) { Auto.ovladaj(d.auto); return; }
   if (RodicBrana.klik(b, d) || RodicPanel.klik(b, d)) return;
-  if (d.pripZavri !== undefined) { Pripomienka.zavri(b); return; }
   if (d.tyzStrom !== undefined) { TyzStrom.ukaz(b); return; }
-  if (d.tyzPrehlad !== undefined) { Zvuk.play('tap'); TyzPrehlad.ukaz(); return; }
-  if (d.okruhOtvor !== undefined) { Zvuk.play('tap'); Okruh.ukaz(); return; }
-  if (d.tyzDen) { Zvuk.play('pop'); TY().otvor(d.tyzDen); return; }
   if (Misie.klik(b, d) || Ang.klik(b, d)) return;
   if (d.vyber) { vyberOdznak(d.vyber, b); return; }
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra, b); return; }

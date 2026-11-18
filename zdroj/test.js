@@ -168,6 +168,20 @@ for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglicti
   if (TyzPrehlad.maPredosly()) throw new Error('prehlad: starsie nez zaznam');
   TyzPrehlad.posun = 0; st.kedy = kedy0;
 }
+/* TYZDEN 5.1: deň je hotový podľa dní učenia (st.dni), nie podľa témy dňa; zmena okruhu po dnešnom učení platí od zajtra */
+{
+  const dnes = key(new Date()), dp = [...st.dni], doneP = [...st.done], kl = Tyzden._kluc(), okP = S.get(kl, []);
+  const t7 = Tyzden.dni(), prvy = t7.find(x => !x.jeDnes && !x.jeBudúci), bud = t7.find(x => x.jeBudúci);
+  st.done = T.map(t => t.id); st.dni = [];
+  if (Tyzden.dni().some(x => x.hotovo)) throw new Error('tyzden 5.1: hotovo podla st.done');
+  st.dni = [dnes, ...(prvy ? [prvy.datum] : []), ...(bud ? [bud.datum] : [])];
+  const t8 = Tyzden.dni(); if (!t8.find(x => x.jeDnes).hotovo || (prvy && !t8.find(x => x.datum === prvy.datum).hotovo) || t8.some(x => x.jeBudúci && x.hotovo)) throw new Error('tyzden 5.1: hotovo podla st.dni');
+  S.set(kl, []); const zaj = Tyzden._zajtra(), novyTyz = Tyzden._pondelok(zaj) !== Tyzden._pondelok(dnes), td0 = Tyzden.temaDna(dnes);
+  const r = Tyzden.nastav('veda');
+  if (novyTyz ? r !== true : (r !== 'zajtra' || Tyzden.vybrany() !== 'zmiesany' || Tyzden.temaDna(dnes) !== td0 || Tyzden.okruhNa(zaj) !== 'veda' || Tyzden.odZajtra() !== 'veda')) throw new Error('tyzden 5.1: okruh po uceni od zajtra ' + r);
+  st.dni = []; if (Tyzden.nastav('svet') !== true || Tyzden.vybrany() !== 'svet' || Tyzden.odZajtra()) throw new Error('tyzden 5.1: okruh pred ucenim hned (a zrusi zajtrajsi)');
+  S.set(kl, okP); st.dni = dp; st.done = doneP;
+}
 /* PRECVICOVANIE (4.3): zmeskany den sa da zahrat, ale nic neudeli */
 {
   const dnes = key(new Date()), iso = Tyzden.dni(undefined, -1)[3].datum, tid = Tyzden.temaDna(iso);
@@ -443,15 +457,6 @@ const zalohaV22 = { body: st.body, odznaky: [...st.odznaky], vek: st.vek }; st.v
   for (let i = 0; i < 600; i++) { if (h.y > 240) h.vy = h.skok; sovaKrok(h, 1 / 60); }
   if (!h.prekazky.length) chyby.push("sova bez ceruziek"); Hra.sovaKresli(h); Hra.koniec(false, 31);
   if (!st.odznaky.includes("sova30") || !st.odznaky.includes("sova10")) chyby.push("odznaky sova"); Hra.zrus(); }
-/* PRIPOMIENKA_44: pas stromu a pripomienky na Domove */
-{ const dp = st.dni, pv = st.flow; const dnes = key(new Date()), vcera = new Date(); vcera.setDate(vcera.getDate() - 1);
-  S.set(Pripomienka.kluc(), "");
-  st.dni = [key(vcera)]; if (!/séria 1 deň padne/.test(Pripomienka.text())) chyby.push("pripomienka seria: " + Pripomienka.text());
-  st.dni = [key(vcera), dnes]; if (Pripomienka.text()) chyby.push("pripomienka ked je dnes hotovo");
-  st.dni = [key(vcera)]; Pripomienka.zavri({}); if (Pripomienka.text()) chyby.push("pripomienka po zavreti");
-  S.set(Pripomienka.kluc(), ""); st.dni = []; if (Pripomienka.text()) chyby.push("pripomienka bez historie");
-  const html = (st.dni = [key(vcera)], Pripomienka.html()); if (!/data-strom/.test(html) || !/data-prip-zavri/.test(html) || /[\u{1F300}-\u{1FAFF}]/u.test(html)) chyby.push("pas stromu html");
-  st.dni = dp; S.set(Pripomienka.kluc(), ""); }
 /* STROM_44: animacia stromu len ako zaver dnesnej temy dna, raz za den, nikdy pri kvize, inej teme ani precvicovani */
 { const f = { typ: "tema", id: temaDna().id, odp: { 3: { ok: true } } }, dniPred = st.dni; st.dni = []; S.set(Oslava.kluc(), "");
   if (!Oslava.treba(f)) chyby.push("oslava tema dna");
@@ -666,15 +671,25 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
   if (PLODY.length < Math.max(...STROM_STUPNE.map(x => x.plody))) chyby.push("malo miest na plody");
   Object.assign(st, { faza: "appka", dietaId: "d1", flow: null, hra: null, auto: null, view: "domov" }); render();
   if (main.innerHTML.includes("tyzden-karta")) chyby.push("karta Tento tyzden ma byt schovana");
-  { const sv = stromTlacidlo(true), sp = stromTlacidlo(false); if (!sv.includes("ts-i") || sp.includes("ts-i") || !sp.includes("ts-z") || !sv.startsWith("<svg") || !sp.startsWith("<svg")) chyby.push("strom v lište: stavy"); TyzStrom.maluj();
-    const kd = st.kedy; st.kedy = {}; if (TyzStrom.jeHotovo()) chyby.push("strom: nema byt hotovo"); st.kedy = { [temaDna().id]: key(new Date()) }; if (!TyzStrom.jeHotovo()) chyby.push("strom: ma byt hotovo"); st.kedy = kd;
-    const ok = TyzStrom.html(); if (!ok.includes("tyzs-strom") || !ok.includes("data-tyz-den") || !ok.includes("data-tyz-prehlad") || !ok.includes("data-okruh-otvor") || !ok.includes("data-tyzs-zavri")) chyby.push("okno tyzdna"); }
+  /* 5.1: stromček v hlavičke (kvapka podľa dnešného učenia) a okno Môj strom (týždeň v kvapkách, rast, okruh, Minulé dni) */
+  { const dp = st.dni, dnes = key(new Date()), vc = new Date(); vc.setDate(vc.getDate() - 1);
+    st.dni = [key(vc)]; if (TyzStrom.jeHotovo()) chyby.push("strom: nema byt poliaty");
+    const ok0 = Strom.html(); if (!ok0.includes("data-strom-tema") || ok0.includes("ms-hotovo") || !ok0.includes("Polej strom")) chyby.push("okno stromu: nepoliaty");
+    st.dni = [key(vc), dnes]; if (!TyzStrom.jeHotovo()) chyby.push("strom: ma byt poliaty (aj inou temou)");
+    const ok = Strom.html(); if (!ok.includes("ms-hotovo") || ok.includes("data-strom-tema") || !ok.includes("data-okruh-otvor") || !ok.includes("data-tyz-prehlad") || !ok.includes("data-strom-zavri")) chyby.push("okno stromu: poliaty");
+    if ((ok.match(/class="kv /g) || []).length !== 7 + 0 || (ok.match(/class="ms-st /g) || []).length !== STROM_STUPNE.length) chyby.push("okno stromu: 7 kvapiek a 6 stupnov");
+    if (ok.includes("so-cesta") ||/[\u{1F300}-\u{1FAFF}]/u.test(ok)) chyby.push("okno stromu: cisla stupnov alebo emoji");
+    // kvapky: dnes a vcera poliate, buduce dni nie su tlacidla, dni pred prvym dnom ucenia tiez nie
+    const tl = (ok.match(/data-tyz-den="[0-9-]+"/g) || []).map(x => x.slice(14, 24));
+    if (tl.some(d => d > dnes) || !tl.includes(dnes) || tl.some(d => d < key(vc))) chyby.push("okno stromu: tlacidla dni " + tl);
+    st.dni = []; const nv = Strom.html(); if (!nv.includes("Prvá téma ho zasadí") || (nv.match(/data-tyz-den=/g) || []).length !== 1) chyby.push("okno stromu: novy profil");
+    st.dni = dp; TyzStrom.maluj(); }
   const dniPred = st.dni; for (const n of [0, 1, 5, 20, 40]) { st.dni = Array.from({ length: n }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz(); Oslava.ukaz(() => {}); }
   /* 5.0: okno stromu, strom v krajine Domova, pečiatky, Pas objaviteľa, stredná oslava (falošný DOM: zachytíme vytvorené prvky) */
   { const zaz = [], ce = document.createElement, qs = document.querySelector; document.createElement = () => { const e = ce(); zaz.push(e); return e; }; document.querySelector = () => null;
     st.dni = Array.from({ length: 5 }, (_, i) => { const x = new Date(); x.setDate(x.getDate() - i); return key(x); }); Strom.ukaz();
     const o = zaz.find(e => /strom-okno/.test(e.className || ''));
-    if (!o || !o.innerHTML.includes('Ešte <b>2 dni učenia</b>') || !o.innerHTML.includes('so-cesta') || !o.innerHTML.includes('data-so-okruh') || !o.innerHTML.includes('so-dni')) chyby.push('okno stromu 5.0');
+    if (!o || !o.innerHTML.includes('Ešte <b>2 kvapky</b> a vyrastie veľký strom') || !o.innerHTML.includes('ms-rast') || !o.innerHTML.includes('data-okruh-otvor') || !o.innerHTML.includes('ms-tyz')) chyby.push('okno stromu 5.1');
     const z = st.odznaky, v = st.vybrate; st.odznaky = ['prva', 'temy3']; st.vybrate = ['prva'];
     oslavaOdznaku([ODZNAKY[0], ODZNAKY[1]]); const sr = zaz.find(e => e.className === 'os-stredna'); if (!sr || !sr.innerHTML.includes('osr-pec') || !sr.innerHTML.includes('Prvý krok')) chyby.push('stredna oslava');
     document.createElement = ce; document.querySelector = qs;
@@ -726,16 +741,15 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   const h = main.innerHTML;
   if (h.includes("Misia dňa") || !h.includes("Téma dňa")) throw new Error("domov: nazov Tema dna");
   // 5.0: týždeň je na Domove znova ako cestička zo siedmich dní s okruhom; krajina, lístok a Múdra; ciele, na ktoré ukazuje sprievodca
-  if (!h.includes("data-tyz-den=") || !h.includes("data-okruh-otvor") || !h.includes("data-tyz-prehlad") || !h.includes("data-strom") || !h.includes('data-go="objavuj"')) throw new Error("domov 5.0: tyzden, okruh, prehlad, strom a objavuj");
+  if (h.includes("data-tyz-den=") || h.includes("strom-pas") || h.includes("dom-tyz") || !h.includes("data-strom") || !h.includes('data-go="objavuj"')) throw new Error("domov 5.1: tyzden je v okne stromu, strom v krajine a objavuj");
   if (!h.includes('class="dom-krajina') || !h.includes("dom-listok hero") || !h.includes("ang-karta") || !h.includes("objavuj-karta") || !h.includes("data-sova") || !h.includes('data-go="anglictina"') || !h.includes("data-auto-start=") || !h.includes('data-go="odznaky"')) throw new Error("domov 5.0: krajina, listok, nalepky, mudra, odkazy");
-  if ((h.match(/data-tyz-den=/g) || []).length + (h.match(/class="dom-den [^"]*" disabled/g) || []).length !== 7) throw new Error("domov 5.0: sedem dni");
   ['sopka', 'hora', 'hrad', 'hvezdaren', 'dom'].forEach(c => { if (!Domov.cielSvg(c).includes('<')) throw new Error("krajina: ciel " + c); });
-  { const ok = TyzStrom.html(); if (!ok.includes("data-tyz-den=") || !ok.includes("data-okruh-otvor")) throw new Error("okno tyzdna"); TyzStrom.maluj(); }
+  TyzStrom.maluj();
   if (h.includes("data-kviz") || h.includes("data-skupina")) throw new Error("domov: kvizy a oblasti maju byt v Objavuj");
   st.view = "objavuj"; render(); const o = main.innerHTML;
   if (!o.includes("data-kviz") || !o.includes("data-nahodna") || (o.match(/data-skupina=/g) || []).length !== SKUPINY.length) throw new Error("objavuj: chyba kvizy alebo oblasti");
   st.view = "domov"; render(); Okruh.ukaz(); if (!document.querySelector(".okruh-okno") || !document.querySelector("[data-okruh-id]")) throw new Error("okruh okno");
-  Tyzden.nastav("priroda"); if (TY().vybrany() !== "priroda") throw new Error("okruh nastav"); Tyzden.nastav("zmiesany"); st.view = "domov"; render(); }
+  { const dn = st.dni; st.dni = st.dni.filter(x => x !== key(new Date())); Tyzden.nastav("priroda"); if (TY().vybrany() !== "priroda") throw new Error("okruh nastav"); Tyzden.nastav("zmiesany"); st.dni = dn; } st.view = "domov"; render(); }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);
