@@ -1,0 +1,114 @@
+/* 5.1 Cesta mesiaca, úlohy týždňa, truhličky (27-dedinka-cesta.js). Farby z --dv-* (cez deň aj v noci), pohyb len transform a opacity, pokojný. */
+.ct { position: relative; display: grid; gap: 14px; width: 100%; max-width: 440px; margin-inline: auto; padding-bottom: 24px; }
+.ct-x { position: absolute; top: 10px; left: 10px; width: 40px; height: 40px; }
+.ct-prazdno { text-align: center; color: var(--muted); font-weight: 600; }
+.ct-hlava { position: relative; display: grid; justify-items: center; gap: 8px; padding: 16px 16px 14px; text-align: center; border-radius: 22px; border: var(--obrys, 2.5px solid var(--ink)); box-shadow: 0 4px 0 var(--ink);
+  color: var(--text); background: radial-gradient(circle at 18% 22%, var(--dv-biela) 0 2px, transparent 2.5px) 0 0 / 46px 46px, radial-gradient(circle at 70% 60%, var(--dv-biela) 0 1.6px, transparent 2px) 0 0 / 58px 58px, linear-gradient(var(--dv-nebo), var(--dv-kopec1)); overflow: hidden; }
+.ct-nadpis { margin: 0; font: 800 1.7rem/1.05 var(--fd); }
+.ct-mes { margin: -4px 0 0; font-weight: 700; text-transform: capitalize; opacity: .8; }
+.ct-pas { width: 100%; height: 16px; border-radius: 999px; border: 2.5px solid var(--ink); background: var(--card); overflow: hidden; }
+.ct-pas-v { display: block; height: 100%; border-radius: 999px; background: var(--sun); border-right: 2.5px solid var(--ink); box-sizing: border-box; min-width: 8px; transition: width .6s var(--spring, ease); }
+.ct-tx { margin: 0; font-weight: 700; }
+.ct-pozn { margin: 0; font: 500 .82rem/1.35 var(--fb); opacity: .85; }
+.ct-hlava .btn { width: 100%; }
+.ct-truhla { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.ct-truhla-ik { width: 40px; flex: none; } .ct-truhla-ik .tr-svg { display: block; width: 100%; height: auto; }
+
+/* úlohy týždňa */
+.ct-ulohy { padding: 12px 14px; border-radius: 20px; border: var(--obrys, 2.5px solid var(--ink)); background: var(--card); box-shadow: 0 3px 0 var(--ink); }
+.ct-h2 { margin: 0 0 6px; font: 800 1.05rem/1.2 var(--fd); color: var(--text); }
+.ct-ulohy ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ct-ul { display: grid; grid-template-columns: 24px 1fr auto; grid-template-areas: "p n k" ". b b"; align-items: center; column-gap: 10px; row-gap: 4px; color: var(--text); font-weight: 600; }
+.ct-ul-pip { grid-area: p; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--bg, var(--card)); }
+.ct-ul.hotovo .ct-ul-pip { background: var(--grass, #6BCB77); }
+.ct-ul-pip .ikn { width: 15px; height: 15px; }
+.ct-ul-n { grid-area: n; }
+.ct-ul.hotovo .ct-ul-n { opacity: .65; }
+.ct-ul-p { grid-area: b; display: flex; gap: 5px; }
+.ct-ul-p i { flex: 1; max-width: 44px; height: 8px; border-radius: 999px; border: 2px solid var(--ink); background: var(--card); }
+.ct-ul-p i.z { background: var(--sun); }
+.ct-ul-k { grid-area: k; height: 26px; font-size: .85rem; background: var(--sun); color: var(--dk, #3B2A00); }
+.ct-stare { display: grid; }
+.ct-stare .btn { width: 100%; }
+
+/* cesta: vlnovka a medailóny zhora nadol */
+.ct-cesta { position: relative; width: 100%; }
+.ct-vlnka { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ct-vlnka path { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ct-obrys { stroke: var(--ink); stroke-width: 21px; }
+.ct-zakl { stroke: var(--dv-cesta); stroke-width: 14px; }
+.ct-hotova { stroke: var(--sun); stroke-width: 14px; }
+.ct-stop { position: absolute; width: 120px; transform: translate(-50%, -32px); display: grid; justify-items: center; gap: 3px; pointer-events: none; }
+.ct-stop > * { pointer-events: auto; }
+.ct-med { position: relative; display: grid; place-items: center; width: 64px; height: 64px; padding: 0; border-radius: 50%; cursor: pointer; border: 3px solid var(--ink); background: var(--card); box-shadow: 0 3px 0 var(--ink);
+  -webkit-tap-highlight-color: transparent; transition: transform .2s var(--spring, ease); }
+.ct-med:active { transform: scale(.94); }
+.ct-med:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+.ct-ik { display: block; width: 44px; height: 44px; } .ct-ik .dv-svg, .ct-ik .tr-svg { display: block; width: 100%; height: 100%; }
+.ct-tr .ct-med { width: 74px; height: 74px; margin-block: -5px; } .ct-tr .ct-ik { width: 56px; height: 52px; }
+.ct-n { position: absolute; left: 50%; top: -12px; translate: -46px 0; display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 5px; border-radius: 999px; border: 2.5px solid var(--ink); background: var(--card); color: var(--text); font: 800 .78rem/1 var(--fd); }
+.ct-nazov { max-width: 118px; text-align: center; font: 700 .76rem/1.15 var(--fb); color: var(--text); padding: 1px 7px; border-radius: 999px; background: color-mix(in srgb, var(--card) 82%, transparent); }
+.ct-stop.vzate .ct-med { background: var(--sun-l); } .ct-stop.vzate .ct-ik { opacity: .55; }
+.ct-ok { position: absolute; right: -6px; bottom: -4px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--grass, #6BCB77); }
+.ct-ok .ikn { width: 14px; height: 14px; }
+.ct-stop.dost .ct-med { background: var(--sun); box-shadow: 0 3px 0 var(--ink), 0 0 0 6px color-mix(in srgb, var(--sun) 45%, transparent); }
+.ct-stop.nasl .ct-med { border-style: dashed; }
+.ct-stop.caka .ct-med { background: var(--dv-kopec1); } .ct-stop.caka .ct-ik { opacity: .6; filter: grayscale(.5); }
+.ct-stop.nasl .ct-ik { opacity: .75; }
+.ct-stary .ct-hlava { filter: saturate(.8); }
+
+/* dedinka: truhlička, ktorá čaká (jemne sa hojdá), a smerovník */
+.ds-truhla { transform-origin: 50% 100%; }
+@media (prefers-reduced-motion: no-preference) { .tr-v-dedinke { transform-box: fill-box; transform-origin: 50% 100%; animation: trHojda 4.5s ease-in-out infinite; } }
+@keyframes trHojda { 0%, 80%, 100% { transform: rotate(0); } 86% { transform: rotate(-3deg); } 92% { transform: rotate(3deg); } 96% { transform: rotate(-1.5deg); } }
+
+/* oslava zastávky (stredná, zlatá = veľká) */
+.ct-os-vec { position: relative; display: grid; place-items: center; width: min(200px, 54vw); aspect-ratio: 1; margin-bottom: -12px; border: var(--obrys, 2.5px solid var(--ink)); border-radius: 50%; background: var(--card); box-shadow: 0 4px 0 var(--ink); }
+.ct-os-vec > * { width: 68%; height: 68%; } .ct-os-vec .dv-svg, .ct-os-vec .tr-svg { display: block; width: 100%; height: 100%; }
+.ct-oslava.dopadla .ct-os-vec { animation: osrTras .45s ease-out; }
+.ct-velka .osr-luce g { animation-duration: 36s; }
+.ct-oslava .osr-karta { padding-top: 22px; }
+
+/* truhlička: otvorenie a výber 1 z 3 */
+.tr-okno { position: fixed; inset: 0; z-index: 57; display: grid; place-items: center; overflow: hidden auto; padding: 16px; background: linear-gradient(var(--dv-nebo), var(--dv-kopec1)); animation: osIn .3s ease-out both; }
+.tr-okno.pryc { animation: osOut .3s ease-in both; }
+.tr-luce { opacity: 0; transition: opacity .5s; } .tr-luce g { fill: color-mix(in srgb, var(--sun) 55%, transparent); transform-origin: 180px 210px; animation: spin 40s linear infinite; }
+.tr-okno.otvorena .tr-luce { opacity: 1; }
+.tr-pozdejsie { position: absolute; top: 12px; right: 12px; z-index: 2; }
+.tr-obsah { position: relative; display: grid; justify-items: center; gap: 8px; width: min(100%, 380px); }
+.tr-n { margin: 0; font: 800 1.5rem/1.1 var(--fd); color: var(--text); text-align: center; }
+.tr-tx { margin: 0; min-height: 1.3em; font-weight: 700; color: var(--text); text-align: center; }
+.tr-truhla { margin-top: 10px; position: relative; display: grid; place-items: end center; width: 168px; height: 128px; padding: 0; border: 0; background: none; cursor: pointer; transform-origin: 50% 100%; -webkit-tap-highlight-color: transparent; }
+.tr-truhla:focus-visible { outline: 3px solid var(--sky); outline-offset: 4px; border-radius: 16px; }
+.tr-truhla .tr-svg { grid-area: 1 / 1; display: block; width: 100%; height: auto; overflow: visible; }
+.tr-truhla .tr-otv { display: none; }
+.tr-okno.otvorena .tr-truhla .tr-svg:not(.tr-otv) { display: none; } .tr-okno.otvorena .tr-truhla .tr-otv { display: block; }
+.tr-otv .tr-veko { transform-box: fill-box; transform-origin: 0 100%; transform: translate(-2px, -4px) rotate(-17deg); }
+.tr-okno.vyber .tr-truhla, .tr-okno.hotovo .tr-truhla { cursor: default; pointer-events: none; height: 104px; width: 136px; }
+@media (prefers-reduced-motion: no-preference) {
+  .tr-okno:not(.otvorena):not(.tras) .tr-truhla { animation: trHojda 4.5s ease-in-out infinite; }
+  .tr-okno.tras .tr-truhla { animation: trTras .5s ease-in-out; }
+  .tr-okno.otvorena .tr-truhla { animation: trSkok .45s var(--spring, ease-out); }
+}
+@keyframes trTras { 15% { transform: translateX(-5px) rotate(-4deg); } 35% { transform: translateX(5px) rotate(4deg); } 55% { transform: translateX(-4px) rotate(-3deg); } 75% { transform: translateX(3px) rotate(2deg); } }
+@keyframes trSkok { 0% { transform: scale(.94, 1.05); } 55% { transform: scale(1.08, .94) translateY(-6px); } 100% { transform: none; } }
+.tr-karty { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: -6px; visibility: hidden; }
+.tr-okno.vyber .tr-karty, .tr-okno.hotovo .tr-karty { visibility: visible; }
+.tr-karta { display: grid; grid-template-rows: 1fr auto; justify-items: center; gap: 4px; min-height: 118px; padding: 8px 4px 8px; border-radius: 18px; border: var(--obrys, 2.5px solid var(--ink)); background: var(--card); color: var(--text); cursor: pointer;
+  box-shadow: 0 3px 0 var(--ink); font: 700 .8rem/1.15 var(--fb); text-align: center; -webkit-tap-highlight-color: transparent; transition: transform .2s var(--spring, ease), opacity .3s; }
+.tr-karta-ik { display: grid; place-items: center; width: 100%; height: 74px; } .tr-karta-ik .dv-svg { display: block; width: 100%; height: 100%; }
+.tr-karta:active { transform: scale(.96); }
+.tr-karta:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+.tr-karta.vybrana { background: var(--sun-l); transform: translateY(-6px) scale(1.04); box-shadow: 0 3px 0 var(--ink), 0 0 0 5px color-mix(in srgb, var(--sun) 60%, transparent); }
+.tr-okno.hotovo .tr-karta { pointer-events: none; } .tr-okno.hotovo .tr-karta:not(.vybrana) { opacity: .25; }
+@media (prefers-reduced-motion: no-preference) {
+  .tr-okno.vyber .tr-karta, .tr-okno.hotovo .tr-karta { animation: trKarta .5s var(--spring, ease-out) calc(var(--k) * .12s) both; }
+  .tr-okno.hotovo .tr-karta.vybrana { animation: trVybrana .5s var(--spring, ease-out) both; }
+}
+@keyframes trKarta { from { opacity: 0; transform: translateY(-70px) scale(.5); } }
+@keyframes trVybrana { 50% { transform: translateY(-14px) scale(1.1); } }
+.tr-vysl { margin: 0; min-height: 1.3em; font-weight: 700; color: var(--text); text-align: center; }
+.tr-akcie { width: 100%; visibility: hidden; } .tr-okno.vyber .tr-akcie, .tr-okno.hotovo .tr-akcie { visibility: visible; } .tr-akcie .btn { width: 100%; }
+.tr-hv { display: inline-flex; align-items: center; gap: 4px; margin: 0; padding: 3px 12px; border-radius: 999px; background: var(--card); border: 2.5px solid var(--ink); font-weight: 700; font-size: .88rem; color: var(--text); }
+.tr-hv .ikn { width: 18px; height: 18px; }
+@media (prefers-reduced-motion: reduce) { .tr-okno, .tr-okno.pryc, .tr-karta, .ct-pas-v { animation: none; transition: none; } }

@@ -117,6 +117,7 @@ const DedScena = {
       const telo = m.stav === 'stavba' ? dedinkaVec('lesenie', { x: m.x, y: m.y, s: m.s }) + this.cenovka(m.x + 30 * m.s, m.y + 2, m.h.cena) : dedinkaVec(m.h.id, { x: m.x, y: m.y, s: m.s });
       v.push({ y: m.y, html: this.tuk('hra:' + m.h.id, popis, telo, ' ds-hra ds-' + m.stav) });
     });
+    if (typeof DedCesta !== 'undefined') DedCesta.scena().forEach(x => v.push(x)); // smerovník Cesta mesiaca a čakajúca truhlička (27-dedinka-cesta.js)
     v.push({ y: DS_STROM[1], html: this.namestie() });
     return v.sort((a, b) => a.y - b.y).map(x => x.html).join('');
   },
@@ -180,6 +181,7 @@ const DedScena = {
   klik(el) {
     if (DedStav.klik(el)) return; // stavanie (27-dedinka-stavanie.js)
     const d = el.dataset.ded;
+    if (typeof DedCesta !== 'undefined' && DedCesta.klik(d)) return;
     if (d === 'strom') { Zvuk.play('pop'); Strom.ukaz(); return; }
     if (d === 'dom') { Zvuk.play('whoosh'); Prechod.spusti('Môj domček', () => { st.view = 'izba'; Render.nova = true; render(); scrollTo(0, 0); }); return; }
     if (d === 'zem') { Zvuk.play('tap'); this.tras(el); toast('Keď strom múdrosti vyrastie, dedinka dostane ďalší kus zeme.'); return; }

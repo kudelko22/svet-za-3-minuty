@@ -175,9 +175,10 @@ function render(tichy) {
     fillTemy();
   }
   if (st.view === 'dedinka' || st.view === 'izba') DedScena.po();
+  if (st.view === 'cesta') DedCesta.po();
   ['domov', 'temy', 'dedinka', 'priatelia', 'ja'].forEach(v => {
     const b = document.getElementById('nav-' + v);
-    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina' || st.view === 'objavuj')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil')) || (v === 'dedinka' && (st.view === 'hry' || st.view === 'izba'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina' || st.view === 'objavuj')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil')) || (v === 'dedinka' && (st.view === 'hry' || st.view === 'izba' || st.view === 'cesta'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   socZnacka();
   paintHead();
