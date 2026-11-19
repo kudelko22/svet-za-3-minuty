@@ -53,12 +53,12 @@ const slovoPriklady = n => n === 1 ? 'príklad' : n >= 2 && n <= 4 ? 'príklady'
 const slovoTony = n => n === 1 ? 'farba' : n >= 2 && n <= 4 ? 'farby' : 'farieb';
 const slovoKrtky = n => n === 1 ? 'krtko' : n >= 2 && n <= 4 ? 'krtky' : 'krtkov';
 const slovoBody = n => n === 1 ? 'bod' : n >= 2 && n <= 4 ? 'body' : 'bodov';
-const rekordText = (id, r) => id === 'sova' ? `${r} ${slovoBody(r)}` : id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'krtko' ? `${r} ${slovoKrtky(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'pocitaj' ? `${r} z 5 hneď správne` : KV_HRY[id] ? `${r} z ${KV_KOL} hneď správne` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
+const rekordText = (id, r) => typeof HRY51 !== 'undefined' && HRY51[id] ? `${r} hneď správne` : id === 'sova' ? `${r} ${slovoBody(r)}` : id === 'opakuj' ? `${r} ${slovoTony(r)}` : id === 'hviezdy' ? `${r} ${slovoHviezdy(r)}` : id === 'krtko' ? `${r} ${slovoKrtky(r)}` : id === 'bubliny' ? `${r} ${slovoPriklady(r)}` : id === 'pocitaj' ? `${r} z 5 hneď správne` : KV_HRY[id] ? `${r} z ${KV_KOL} hneď správne` : id === 'hadaj' ? `${r} z 8 správne` : `${r} ${slovoTahy(r)}`;
 // obrázky do hier: najprv z prebratých tém, tie dieťa pozná
 const temyDoHry = n => { const v = TV(), d = mix(v.length).map(i => v[i]); return [...d.filter(t => st.done.includes(t.id)), ...d.filter(t => !st.done.includes(t.id))].slice(0, n); };
 // stav hry v lište: ikona a číslo (Grandstander), pri časovaných hrách aj zostávajúci čas
 const stavCas = h => h.zostava != null ? `<span class="hs-cas${h.beh && h.zostava <= 5 ? ' malo' : ''}">${h.zostava} s</span>` : '';
-const stavHry = h => { const [ik, t] = h.id === 'sova' || h.id === 'krtko' ? ['hviezda', h.skore] : h.id === 'opakuj' ? ['hraj', h.seq.length] : h.id === 'hviezdy' ? ['hviezda', h.skore] : h.id === 'bubliny' ? ['check', h.skore] : h.id === 'pocitaj' ? ['check', h.spravne + ' z 5'] : h.kv || h.id === 'hadaj' ? ['check', h.spravne + ' z ' + h.kola.length] : ['znova', h.tahy + ' ' + slovoTahy(h.tahy)]; return `${ikn(ik)}<b>${t}</b>${stavCas(h)}`; };
+const stavHry = h => { const [ik, t] = h.n51 ? Hra51.stav(h) : h.id === 'sova' || h.id === 'krtko' ? ['hviezda', h.skore] : h.id === 'opakuj' ? ['hraj', h.seq.length] : h.id === 'hviezdy' ? ['hviezda', h.skore] : h.id === 'bubliny' ? ['check', h.skore] : h.id === 'pocitaj' ? ['check', h.spravne + ' z 5'] : h.kv || h.id === 'hadaj' ? ['check', h.spravne + ' z ' + h.kola.length] : ['znova', h.tahy + ' ' + slovoTahy(h.tahy)]; return `${ikn(ik)}<b>${t}</b>${stavCas(h)}`; };
 const obnovStavHry = () => { const el = document.getElementById('hra-stav'); if (!el || !st.hra) return; const n = stavHry(st.hra); if (el.innerHTML === n) return; el.innerHTML = n; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); };
 // Múdra v lište hry reaguje: radosť, povzbudenie, oslava; po chvíli sa vráti k zvedavému pohľadu
 function mudraHra(v, ms = 1500) {
@@ -165,7 +165,9 @@ const Hra = {
     this.zrus(); Hlas.stop(); st.hraPosledna = id; // len v pamäti (nič sa neukladá): ihrisko ju ukáže hore
     const mal = st.vek !== 'starsi';
     st.flow = null;
-    if (id === 'pexeso') {
+    if (HRY51[id]) {
+      st.hra = Hra51.novy(id, mal); // 5.1: hry s úrovňami (09b-hry-51.js)
+    } else if (id === 'pexeso') {
       const t = temyDoHry(mal ? 6 : 8);
       st.hra = { id, karty: mix(t.length * 2).map(i => t[i % t.length].id), otocene: [], najdene: [], tahy: 0 };
     } else if (id === 'hviezdy') {
@@ -173,7 +175,7 @@ const Hra = {
     } else if (id === 'krtko') {
       st.hra = { id, skore: 0, zostava: 30, beh: false, mal, hore: {} };
     } else if (id === 'pocitaj') {
-      st.hra = { id, kola: mix(5).map(i => i + 1), druh: mix(4), i: 0, spravne: 0, chyba: false, zle: [], odp: null };
+      st.hra = { id, kola: mix(5).map(i => i + 1), druh: mix(POC_OBR.length), i: 0, spravne: 0, chyba: false, zle: [], odp: null };
       st.hra.moznosti = moznostiPocitaj(st.hra);
     } else if (KV_HRY[id]) {
       st.hra = { id, kv: true, mal, kola: KV_HRY[id](mal), i: 0, krok: 0, vzate: [], zle: [], chyba: false, spravne: 0, odp: false };
@@ -617,10 +619,11 @@ function priklad(mal) {
   const a = r(2, 9), b = r(2, 10); return [`${a} × ${b}`, a * b];
 }
 const moznostiHadaj = h => { const sp = h.kola[h.i], v = TV(), ine = mix(v.length).map(i => v[i].id).filter(id => id !== sp).slice(0, h.n - 1); return [sp, ...ine].sort(() => Math.random() - .5); };
-const POC_OBR = [() => STAR('var(--sun)'), () => IK.srdce, () => IK.ohen, () => IK.diamant];
+const POC_OBR = [() => STAR('var(--sun)'), () => IK.srdce, () => IK.ohen, () => IK.diamant,
+  ...['jablko', 'jahoda', 'ryba', 'kvet', 'lopta', 'auto', 'sova', 'hruška', 'motýľ', 'včela', 'hríb', 'medvedík'].map(k => () => ineSvg(INE_OBR[k]()))]; // 5.1: viac obrázkov na počítanie
 function moznostiPocitaj(h) { const v = h.kola[h.i], inak = mix(5).map(i => i + 1).filter(x => x !== v).slice(0, 2); return mix(3).map(i => [v, ...inak][i]); }
 function pocitajHtml(h) {
-  const n = h.kola[h.i], obr = POC_OBR[h.druh[h.i % 4]];
+  const n = h.kola[h.i], obr = POC_OBR[h.druh[h.i % h.druh.length]];
   return `<div class="card poc-pole" aria-label="${n} obrázkov">${Array.from({ length: n }, (_, i) => `<span class="poc-obr" style="--d:${(i * .12).toFixed(2)}s">${obr()}</span>`).join('')}</div>
     <p class="hadaj-otazka">Koľko ich je?</p>
     <div class="poc-moz">${h.moznosti.map(m => `<button class="btn dve poc-btn${h.odp ? (m === n ? ' ok' : '') : h.zle.includes(m) ? ' zle' : ''}" data-pocitaj="${m}"${h.zle.includes(m) ? ' disabled' : ''}>${m}</button>`).join('')}</div>`;
@@ -650,9 +653,13 @@ const TVARY = [
   `<path d="${HVIEZDA}" transform="scale(2)"/>`, `<path d="${SRDCE_D}"/>`, '<path d="M24 4 L43 24 L24 44 L5 24Z"/>',
 ];
 const tvar = (t, f) => `<span class="kv-it"><svg viewBox="0 0 48 48" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" fill="${f}">${TVARY[t]}</g></svg></span>`;
-const KV_SIL = [() => STAR('var(--sun)'), () => IK.srdce, () => IK.ohen, () => IK.diamant, () => IK.blesk, () => IK.kocka, () => IK.pohar, () => IK.mozog];
+const KV_SIL = [() => STAR('var(--sun)'), () => IK.srdce, () => IK.ohen, () => IK.diamant, () => IK.blesk, () => IK.kocka, () => IK.pohar, () => IK.mozog,
+  ...['slon', 'žirafa', 'zajac', 'sova', 'ryba', 'korytnačka', 'motýľ', 'banán', 'lietadlo', 'raketa', 'gitara', 'kaktus', 'dáždnik', 'čižma', 'had', 'pavúk', 'hríb', 'slnečnica'].map(k => () => ineSvg(INE_OBR[k]()))]; // 5.1: tiene zvierat a vecí
 const KV_SLOVA = { ruky: 'ruky', zuby: 'zuby', srdce: 'srdce', mesiac: 'mesiac', vcely: 'včely', duha: 'dúha', vtaky: 'vtáky', raketa: 'raketa', vlak: 'vlak', hory: 'hory', more: 'more',
   hviezdy: 'hviezdy', bicykel: 'bicykel', lietadlo: 'lietadlo', mozog: 'mozog', magnet: 'magnet', chlieb: 'chlieb', hudba: 'hudba', snih: 'sneh', farby: 'farby', mapa: 'mapa' };
+// 5.1: ďalšie slová s obrázkami z hry Čo je iné? (kľúč obrázka je samo slovo)
+const KV_SLOVA_OBR = ['žirafa', 'delfín', 'tučniak', 'jahoda', 'paprika', 'uhorka', 'ponorka', 'gitara', 'klavír', 'flauta', 'trúbka', 'kladivo', 'ceruzka', 'nožnice', 'tulipán', 'kaktus', 'medvedík',
+  'topánka', 'ponožka', 'autobus', 'pomaranč', 'hrozno', 'slivka', 'kostol', 'žralok', 'pavúk', 'motýľ', 'slnečnica', 'vrtuľník', 'husle', 'lyžica', 'vidlička', 'dáždnik', 'jašterica', 'tiger', 'škola'];
 const KV_HRY = {
   iny() {
     return Array.from({ length: KV_KOL }, (_, r) => {
@@ -691,11 +698,13 @@ const KV_HRY = {
     });
   },
   slovo() {
-    const vsetky = Object.keys(KV_SLOVA).filter(id => TV().some(t => t.id === id)), dlhe = vsetky.filter(id => KV_SLOVA[id].length >= 6), ok = dlhe.length >= KV_KOL ? dlhe : vsetky; // starší dostanú dlhšie slová
+    const zTem = Object.keys(KV_SLOVA).filter(id => TV().some(t => t.id === id)).map(id => ({ s: KV_SLOVA[id], obr: () => svg(byId(id)) }));
+    const vsetky = [...zTem, ...KV_SLOVA_OBR.filter(w => !zTem.some(x => x.s === w)).map(w => ({ s: w, obr: () => `<span class="kv-it velky">${ineSvg(INE_OBR[w]())}</span>` }))];
+    const dlhe = vsetky.filter(x => x.s.length >= 6), ok = dlhe.length >= KV_KOL ? dlhe : vsetky; // starší dostanú dlhšie slová
     return mix(ok.length).slice(0, KV_KOL).map(i => {
-      const id = ok[i], p = [...KV_SLOVA[id].toLocaleUpperCase('sk')];
+      const x = ok[i], p = [...x.s.toLocaleUpperCase('sk')];
       let ml; do ml = mix(p.length); while (ml.every((x, j) => x === j));
-      return { prompt: `<div class="frame hadaj-obr">${svg(byId(id))}</div>`, otazka: 'Poskladaj slovo z písmen', moz: ml.map(j => ({ z: p[j], html: p[j], sl: p[j] })), sprav: p, sloty: true, tm: 'pismena', tr: 'obraz' };
+      return { prompt: `<div class="frame hadaj-obr">${x.obr()}</div>`, otazka: 'Poskladaj slovo z písmen', moz: ml.map(j => ({ z: p[j], html: p[j], sl: p[j] })), sprav: p, sloty: true, tm: 'pismena', tr: 'obraz' };
     });
   },
 };
@@ -727,14 +736,14 @@ function obnovSklad() {
 const ikonaHry = id => ['pexeso', 'skladacka'].includes(id) ? 'znova' : id === 'opakuj' ? 'hraj' : ['sova', 'krtko', 'hviezdy'].includes(id) ? 'hviezda' : 'check';
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null, dobre = v.hodnota > 0 || ['pexeso', 'skladacka'].includes(h.id);
-  const nadpis = !dobre ? 'Skús to ešte raz!' : ['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) ? 'Super!' : 'Hotovo!';
+  const nadpis = !dobre ? 'Skús to ešte raz!' : ['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) || h.n51 ? 'Super!' : 'Hotovo!';
   const rek = v.novy ? `<span class="pec vysl-pec">${ikn('pohar')}Nový rekord</span>` : v.prvy ? `<span class="pec vysl-pec">${ikn('pohar')}Prvý rekord</span>`
     : v.stary != null ? `<p class="vysl-rek">${ikn('pohar')}Rekord: <b>${rekordText(h.id, v.stary)}</b></p>` : '';
   return `<div class="vysl${dobre ? ' dobre' : ''}" role="dialog" aria-modal="true" aria-labelledby="vysl-n">
     <div class="vysl-scena" aria-hidden="true">${dobre ? `<div class="vysl-slnko">${slnkoKviz(132, 96)}</div>` : ''}<div class="vysl-mud">${mudra(dobre ? 'oslava' : 'povzbudenie', { extra: dobre })}</div>
       <span class="vysl-cislo">${ikn(ikonaHry(h.id))}<b>${v.hodnota}</b></span></div>
     <div class="vysl-harok"><h2 class="n1" id="vysl-n">${nadpis}</h2><p class="vysl-co">${rekordText(h.id, v.hodnota)}</p>
-      ${t ? `<p class="vysl-t">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}${rek}
+      ${h.n51 ? Hra51.vysl(h) : ''}${t ? `<p class="vysl-t">Na obrázku je téma „${esc(t.t)}“.</p>` : ''}${rek}
       ${odmenyHtml({ noveOdznaky: v.odznaky || [] })}
       <div class="vysl-tl"><button class="btn wide" data-hra="${h.id}">${ikn('znova')}Hrať znova</button><button class="btn dve wide" data-hra-spat>${ikn('hry')}Iná hra</button></div></div></div>`;
 }
@@ -747,7 +756,9 @@ function renderHra() {
   const h = st.hra, info = HRY.find(x => x.id === h.id);
   document.body.classList.remove('tinted');
   let telo;
-  if (h.id === 'pexeso') {
+  if (h.n51) {
+    telo = Hra51.html(h);
+  } else if (h.id === 'pexeso') {
     telo = `<div class="pexeso" style="--st:${h.karty.length > 12 ? 4 : 3}">${h.karty.map((tid, i) => `<button class="pex${h.najdene.includes(tid) ? ' otocena najdena' : h.otocene.includes(i) ? ' otocena' : ''}" data-pex="${i}" aria-label="Karta ${i + 1}" style="--i:${i}"><span class="pex-in"><span class="pex-rub">${STAR('var(--sun)')}</span><span class="pex-lic">${svg(byId(tid))}</span></span></button>`).join('')}</div>`;
   } else if (h.id === 'hviezdy') {
     telo = `<div class="nebo" id="nebo">${startTl(h)}</div>

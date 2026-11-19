@@ -33,6 +33,7 @@ document.addEventListener('click', e => {
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra, b); return; }
   if (d.hraSpat !== undefined && st.view === 'dedinka') { DedScena.zHry(); return; } // 5.1: hra spustená v dedinke sa vráti cez obláčiky
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
+  if (d.h51 !== undefined) { Hra51.klik(b, d); return; }
   if (d.pex) { Hra.pex(+d.pex, b); return; }
   if (d.hv) { Hra.chyt(b); return; }
   if (d.krt !== undefined) { Hra.krt(+d.krt, b); return; }
