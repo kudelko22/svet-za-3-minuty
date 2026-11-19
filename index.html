@@ -2934,6 +2934,9 @@ svg.mudra { overflow: visible; }
 @keyframes dvDym { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(-5px); opacity: .7; } }
 /* 5.1 Moja dedinka: scéna na celú šírku (26-dedinka-scena.js), presun s obláčikmi, izba, smerovník na Domove.
    Scéna je široká krajina; na úzkom displeji sa posúva prstom do strán. Pohyb je len transform a opacity, pokojný. */
+/* farby krajiny scény (deň, noc v Mesačnom režime) */
+:root { --ds-tien: #2A2356; --ds-voda: #7CC8F0; --ds-voda-l: #A8DDF7; --ds-hora: #CBE3F0; --ds-les: #72BE84; --ds-les-d: #4E9C62; --ds-cesta-d: #D9B77E; --ds-cesta-l: #FFF1CF; --ds-kamen-l: #ECE6F8; }
+:root[data-rezim="mesacny"] { --ds-tien: #0B0824; --ds-voda: #2D3F86; --ds-voda-l: #3A52A0; --ds-hora: #2B2862; --ds-les: #2A4C70; --ds-les-d: #223C5E; --ds-cesta-d: #34345E; --ds-cesta-l: #5A5A8E; --ds-kamen-l: #9F99C8; }
 body.ded-v { overflow-x: hidden; }
 body.ded-v main.gut { padding-block: 0; gap: 0; }
 .ds { position: relative; }
@@ -2956,10 +2959,11 @@ body.ded-v main.gut { padding-block: 0; gap: 0; }
 @keyframes dsTras { 20% { transform: rotate(-3deg); } 45% { transform: rotate(3deg); } 70% { transform: rotate(-1.5deg); } }
 .ds-spi { opacity: .72; }
 .ds-stavba .dv { opacity: .9; }
-/* strom: kresba stromu bez vstupných animácií, len vietor v korune */
-.ds-strom .os-zem, .ds-strom .os-kmen, .ds-strom .os-k, .ds-strom .os-plod, .ds-strom .os-kvet, .ds-strom .os-kos { animation: none; }
+/* strom: kresba stromu bez vstupných animácií; hýbe sa len koruna (kmeň, košík a štítok +N stoja), pokojne */
+.ds-strom .os-zem, .ds-strom .os-kmen, .ds-strom .os-k, .ds-strom .os-plod, .ds-strom .os-kvet, .ds-strom .os-kos, .ds-strom .os-hoj, .ds-strom .os-strom { animation: none; }
+.ds-strom .os-koruna { animation: none; }
 @media (prefers-reduced-motion: no-preference) {
-  .ds-strom .os-strom { transform-box: fill-box; transform-origin: 50% 100%; animation: dsVietor 7s ease-in-out infinite; }
+  .ds-strom .os-koruna { transform-box: fill-box; transform-origin: 50% 100%; animation: dsVietor 9s ease-in-out infinite; }
   .ds-mrak { animation: dsMrak var(--t, 50s) ease-in-out infinite alternate; }
   .ds-mrak2 { animation-direction: alternate-reverse; }
   .ds-hv { animation: dsHv 5s ease-in-out var(--d, 0s) infinite; }
@@ -9340,7 +9344,10 @@ const DED_VEC = Object.fromEntries(DED_VECI.map(v => [v.id, v]));
 const DED_RADY = 5, DED_STLPCE = 8, DED_IZBA = 8, DED_ZEM_START = 2, DED_MAX_MIEST = 120, DED_MAX_BATOH = 200;
 // voľby vecí (strecha, steny, dvere, materiál, farba, variant...) nesie položená vec ako krátky reťazec [0-9a-z]: jeden znak = jedna voľba, poradie určuje kresba; zmena je zadarmo
 const DED_VOLBY = 16;
-const DED_KLUC = /^r([1-5])c([1-8])$/, DED_SLOT = /^s([1-8])$/;
+const DED_KLUC = /^r([1-5])(?:c([1-8])|d([1-9]|1[0-9]))$/, DED_SLOT = /^s([1-8])$/;
+// 5.1: doplnkové miesta r{rad}d{n} medzi radmi a pri jazierku (len pre úzke veci); počet v rade, polohy v 26-dedinka-scena.js (DS_DOPLNKY)
+const DED_DOPLNKY = [0, 0, 11, 8, 7, 14];
+const dedKlucOk = k => { const m = DED_KLUC.exec(k); return !!m && (!!m[2] || +m[3] <= DED_DOPLNKY[m[1]]); };
 const DED_UPRAVENE_POLE = ['v', 'start', 'dar', 'minute', 'zem', 'miesta', 'batoh', 'dary', 'izba', 'cesta', 'truhly', 'hryDen', 'hryHv'];
 // Cesta mesiaca: 30 zastávok po 40 krokoch (krok = získaná hviezda alebo splnená úloha týždňa); každá 5. strieborná truhlička, 30. zlatá
 const DED_KROKOV = 40, DED_ZASTAVOK = 30, DED_HRY_DEN = 20;
@@ -9367,7 +9374,7 @@ const Dedinka = {
     const d = Dedinka.prazdny(ci(r.start, 0, 1e6, 0), ci(r.dar, 0, 1e5, 100));
     d.minute = ci(r.minute, 0, 1e6, 0); d.zem = ci(r.zem, DED_ZEM_START, DED_RADY, DED_ZEM_START);
     const mapa = (m, ok) => { const o = {}; if (m && typeof m === 'object') for (const k of Object.keys(m)) if (ok(k, m[k])) o[k] = m[k]; return o; };
-    d.miesta = mapa(r.miesta, (k, v) => DED_KLUC.test(k) && Array.isArray(v) && DED_VEC[v[0]] && DED_VEC[v[0]].sk !== 'nabytok');
+    d.miesta = mapa(r.miesta, (k, v) => dedKlucOk(k) && Array.isArray(v) && DED_VEC[v[0]] && DED_VEC[v[0]].sk !== 'nabytok' && (DED_KLUC.exec(k)[2] || DED_VEC[v[0]].sirka === 1));
     for (const k of Object.keys(d.miesta)) { const v = d.miesta[k]; d.miesta[k] = [v[0], v[1] ? 1 : 0, typeof v[2] === 'string' ? v[2].replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY) : '']; }
     const kolko = (m) => mapa(m, (k, v) => DED_VEC[k] && Number.isFinite(+v) && +v > 0);
     d.batoh = kolko(r.batoh); d.dary = kolko(r.dary); for (const k of Object.keys(d.batoh)) d.batoh[k] = ci(d.batoh[k], 1, 99, 1); for (const k of Object.keys(d.dary)) d.dary[k] = ci(d.dary[k], 1, 99, 1);
@@ -9454,19 +9461,21 @@ const Dedinka = {
   },
   // ---------- miesta ----------
   // mriežka 5 radov x 8 stĺpcov, kľúč r{rad}c{stĺpec} (od 1; rad 1 je vzadu); široké veci zaberú aj stĺpec vpravo
-  kluceMiest: () => { const a = []; for (let r = 1; r <= DED_RADY; r++) for (let c = 1; c <= DED_STLPCE; c++) a.push('r' + r + 'c' + c); return a; },
+  kluceMiest: () => { const a = []; for (let r = 1; r <= DED_RADY; r++) { for (let c = 1; c <= DED_STLPCE; c++) a.push('r' + r + 'c' + c); for (let n = 1; n <= DED_DOPLNKY[r]; n++) a.push('r' + r + 'd' + n); } return a; },
   rady() { const d = this.ziskaj(); return d ? d.zem : DED_ZEM_START; }, // odomknuté rady 1..rady
   obsadene(kluc) { // kto zaberá miesto: { kluc, typ } alebo null (aj sused široké veci vľavo)
     const d = this.ziskaj(), m = DED_KLUC.exec(kluc); if (!d || !m) return null;
     if (d.miesta[kluc]) return { kluc, typ: d.miesta[kluc][0] };
+    if (!m[2]) return null; // doplnkové miesto zaberá len samo seba
     const l = 'r' + m[1] + 'c' + (+m[2] - 1);
     if (+m[2] > 1 && d.miesta[l] && DED_VEC[d.miesta[l][0]].sirka === 2) return { kluc: l, typ: d.miesta[l][0] };
     return null;
   },
   mozeNa(id, kluc, okrem) { // je možné položiť vec na miesto? (okrem = miesto, z ktorého sa vec presúva)
     const d = this.ziskaj(), v = DED_VEC[id], m = DED_KLUC.exec(kluc);
-    if (!d || !v || !m || v.sk === 'nabytok') return false;
+    if (!d || !v || !m || v.sk === 'nabytok' || !dedKlucOk(kluc)) return false;
     if (+m[1] > d.zem) return false;
+    if (!m[2]) { const o = this.obsadene(kluc); return v.sirka === 1 && (!o || o.kluc === okrem); } // doplnkové miesto: len úzka vec
     const cs = v.sirka === 2 ? [+m[2], +m[2] + 1] : [+m[2]];
     if (cs[cs.length - 1] > DED_STLPCE) return false;
     return cs.every(c => { const o = this.obsadene('r' + m[1] + 'c' + c); return !o || o.kluc === okrem; });
@@ -9638,11 +9647,34 @@ const DS_W = 1100, DS_H = 640, DS_X = 550, DS_Y0 = 100; // DS_Y0: horný kúsok 
 // rady miest (1 vzadu, 5 vpredu): päta y, mierka, polovica stredného pásu (cesta, námestie, hry), krok medzi stĺpcami
 const DS_RADY = { 1: [262, .6, 130, 44], 2: [330, .72, 150, 46], 3: [410, .85, 205, 56], 4: [492, .97, 232, 62], 5: [585, 1.1, 252, 68] };
 // miesto r{rad}c{stĺpec}: stĺpce 1–4 vľavo od stredu (1 najďalej), 5–8 vpravo; široká vec (sirka 2) stojí medzi svojím a ďalším stĺpcom
+// 5.1: doplnkové miesta r{rad}d{n} (n od 1 zľava): medzi radmi, pri jazierku vľavo vzadu a v predných rohoch; len úzke veci; mimo hier, domu, stromu, cesty a smerovníka
+// rad: [päta, mierka, x…] alebo viac skupín za sebou; počty musia sedieť s DED_DOPLNKY (25-dedinka-data.js)
+const DS_DOPLNKY = {
+  2: [[296, .66, [42, 210, 270, 330, 390, 706, 766, 826, 886, 946, 1006]]],
+  3: [[370, .78, [42, 106, 170, 234, 850, 914, 978, 1042]]],
+  4: [[451, .91, [42, 118, 194, 270, 838, 914, 990]]],
+  5: [[539, 1.04, [42, 126, 210, 812, 874, 958, 1042]], [625, 1.14, [42, 114, 186, 826, 898, 970, 1042]]],
+};
 function dedMiesto(kl, sirka = 1) {
-  const m = /^r([1-5])c([1-8])$/.exec(kl); if (!m) return null;
+  const m = /^r([1-5])(?:c([1-8])|d(\d{1,2}))$/.exec(kl); if (!m) return null;
+  if (m[3]) { // doplnkové miesto: pevný bod, jemne rozhádzaný v y, aby nestáli ako pod pravítkom
+    let n = +m[3]; for (const [y, s, xs] of DS_DOPLNKY[m[1]] || []) { if (n <= xs.length) return { x: xs[n - 1], y: y + ((n * 7) % 3 - 1) * 4, s, rad: +m[1] }; n -= xs.length; }
+    return null;
+  }
   const [y, s, g, k] = DS_RADY[m[1]], x = c => { const l = c <= 4, i = l ? 4 - c : c - 5; return DS_X + (l ? -1 : 1) * (g + (i + .5) * k); };
   const c = +m[2]; return { x: sirka === 2 && c < 8 ? (x(c) + x(c + 1)) / 2 : x(c), y, s, rad: +m[1] };
 }
+// cesta: jedna súvislá krivka od popredia cez námestie až za kopec; stred x a šírka podľa y (perspektíva)
+const dsCx = y => DS_X + 26 * (y - 200) / 460 * Math.sin((660 - y) / 70);
+const dsCw = y => 8 + 64 * Math.pow(Math.max(0, (y - 205) / 455), 1.1);
+const dsMier = y => Math.max(.4, .6 + (y - 262) * .00155); // mierka krajiny v danej hĺbke
+// mäkký tieň a kúsok trávy pod vecou (svetlo zľava zhora ako slnko, tieň trochu doprava); w = polovica šírky pri mierke 1
+function dsZem(x, y, s, w) {
+  const rx = w * s, t = (a, z) => `<path transform="translate(${(x + a * rx).toFixed(1)} ${(y + 1).toFixed(1)}) scale(${(s * z).toFixed(2)})" d="M-4 0q-1-5-4-7M0 0q0-6 1-10M4 0q1-4 4-6" fill="none" stroke="var(--dv-lis-d)" stroke-width="2"/>`;
+  return `<g class="ds-pod"><ellipse cx="${(x + rx * .12).toFixed(1)}" cy="${(y + 1.5).toFixed(1)}" rx="${(rx * 1.08).toFixed(1)}" ry="${(rx * .2 + 2).toFixed(1)}" fill="var(--ds-tien)" opacity=".2" stroke="none"/>
+    <ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${(rx * .8).toFixed(1)}" ry="${(rx * .13 + 1.5).toFixed(1)}" fill="var(--dv-lis-d)" opacity=".18" stroke="none"/>${t(-.95, 1)}${t(.9, .8)}${w > 34 ? t(-.4, .7) : ''}</g>`;
+}
+const DS_ZEM_SK = { domcek: 38, strom: 26, kvety: 20, plot: 26, zviera: 22, ozdoba: 24 };
 // pevné miesta hier (posun od stredu, päta, mierka); hra dostane miesto podľa poradia ceny vo svojom vekovom zozname
 const DS_HRY_MIESTA = [[-152, 410, .84], [152, 410, .84], [-116, 330, .72], [116, 330, .72], [-140, 502, .92], [176, 502, .95],
   [-80, 268, .6], [84, 268, .6], [196, 600, 1.02], [-62, 230, .5], [62, 230, .5], [0, 212, .46],
@@ -9686,35 +9718,85 @@ const DedScena = {
       <text x="7" y="-17" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="12" fill="var(--dv-biela)" stroke="none">${cena}</text></g>`;
   },
   krajina() {
-    const W = DS_W, H = DS_H, X = DS_X;
-    // kopec: mäkké nepravidelné vlny (pevné „náhodné“ výšky podľa fz), každý rad iný
-    const kopec = (y, amp, f, tr = '', fz = 0) => {
+    const W = DS_W, H = DS_H, X = DS_X, f1 = v => v.toFixed(1);
+    let seme = 7; const rnd = () => (seme = (seme * 9301 + 49297) % 233280) / 233280; // pevná „náhoda“: krajina je vždy rovnaká
+    // kopec: mäkké nepravidelné vlny (pevné „náhodné“ výšky podľa fz), každý rad iný; vráti obrys
+    const kopecD = (y, amp, fz) => {
       const n = 7, kr = W / (n - 1); let d = `M-30 ${y}`, px = -30, py = y;
       for (let i = 0; i <= n; i++) {
         const x = i * kr + ((i * 37 + fz * 13) % 41) - 20, h = y - amp * (.3 + (((Math.sin(i * 12.9 + fz * 7.3) * 43758.5) % 1) + 1) % 1 * .7), c = (px + x) / 2;
         d += ` C${c.toFixed(0)} ${py.toFixed(0)} ${c.toFixed(0)} ${h.toFixed(0)} ${x.toFixed(0)} ${h.toFixed(0)}`; px = x; py = h;
       }
-      return `<path${tr} d="${d} V${H + 10} H-30Z" fill="${f}"/>`;
+      return d + ` V${H + 10} H-30Z`;
     };
+    // vrstva kopca: jemný tieň nad hrebeňom (kopec vzadu je pri ňom tmavší), plocha, svetlý lem pod hrebeňom
+    const kopec = (y, amp, f, fz, obrys = '') => { const d = kopecD(y, amp, fz);
+      return `<path d="${d}" transform="translate(0 -6)" fill="var(--ds-tien)" opacity=".08"/><path d="${d}" fill="${f}"${obrys}/><path d="${d}" transform="translate(0 6)" fill="none" stroke="var(--dv-lis-l)" stroke-width="3" opacity=".3"/>`; };
     const hv = [[90, 60], [210, 74], [330, 92], [470, 66], [610, 86], [740, 60], [900, 74], [1020, 68], [160, 130], [960, 128], [400, 120], [520, 82], [575, 140], [660, 116], [440, 170], [800, 150], [360, 156]].map(([x, y], i) => `<circle class="ds-hv" cx="${x}" cy="${y}" r="${i % 3 ? 1.6 : 2.3}" fill="var(--dv-svetlo)" style="--d:${(i % 5) * 1.3}s"/>`).join('');
+    // ďaleké hory (bez obrysu, splývajú s oblohou) so snehom na vrcholoch
+    const hory = [[-30, 206], [70, 160], [150, 186], [250, 140], [350, 182], [430, 164], [520, 190], [640, 150], [740, 184], [830, 158], [930, 188], [1020, 146], [1130, 196]];
+    let hd = `M${hory[0][0]} ${hory[0][1]}`; for (let i = 1; i < hory.length; i++) { const [x, y] = hory[i], [x0, y0] = hory[i - 1]; hd += ` Q${(x0 + x) / 2} ${Math.min(y0, y) - 6} ${x} ${y}`; }
+    const sneh = hory.filter(([, y]) => y < 170).map(([x, y]) => `<path d="M${x - 14} ${y + 12}q7-10 14-13q7 3 14 13q-4-3-7 1q-4-4-7 0q-4-4-7 0q-3-4-7-1z" fill="var(--dv-sneh)" opacity=".75"/>`).join('');
+    // les na obzore: rad malých korún za druhým kopcom a pár stromov z kresieb
+    const koruny = Array.from({ length: 52 }, (_, i) => { const x = i * 21.5 + (i * 17) % 11, y = 238 + (i * 13) % 9, r = 11 + (i * 7) % 7;
+      return Math.abs(x - X) < 22 ? '' : i % 3 ? `<circle cx="${x}" cy="${y - r}" r="${r}" fill="var(--ds-les)" stroke="var(--ds-les-d)" stroke-width="1.6"/>` : `<path d="M${x} ${y - r * 2.6}l${r * .9} ${r * 2.2}h${-r * 1.8}z" fill="var(--ds-les)" stroke="var(--ds-les-d)" stroke-width="1.6"/>`; }).join('');
     const les = [[70, 214, .42, 'smrek'], [104, 220, .36, 'smrek'], [300, 206, .34, 'gulaty'], [790, 208, .36, 'gulaty'], [990, 212, .42, 'smrek'], [1030, 218, .34, 'smrek'], [640, 200, .3, 'breza']]
       .map(([x, y, s, k]) => dedinkaVec(k, { x, y, s })).join('');
+    // cesta: jeden súvislý pás od spodku cez námestie (strom stojí na nej) až za kopec; okraje, vyšliapaný stred, kamienky po krajoch
+    const ys = []; for (let y = 222; y <= H + 30; y += 6) ys.push(y);
+    const okraj = (z, k) => ys.map(y => `${f1(dsCx(y) + z * dsCw(y) * k)} ${y}`);
+    const pas = k => `M${okraj(-1, k).join('L')}L${okraj(1, k).reverse().join('L')}Z`;
+    const ciara = (z, k) => `M${okraj(z, k).join('L')}`;
+    const kam = []; for (let y = 236; y < H + 10; y += 15 + rnd() * 16) { const s = dsMier(y), z = kam.length % 2 ? 1 : -1, x = dsCx(y) + z * (dsCw(y) * .5 + 3 * s);
+      kam.push(`<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1(4.5 * s + rnd() * 2 * s)}" ry="${f1(2.8 * s)}" fill="var(--dv-kamen)" stroke="var(--ink)" stroke-width="${f1(1.4 + s * .4)}"/>`); }
+    const vnut = []; for (let y = 300; y < H; y += 34 + rnd() * 30) { const s = dsMier(y); vnut.push(`<ellipse cx="${f1(dsCx(y) + (rnd() - .5) * dsCw(y) * .6)}" cy="${f1(y)}" rx="${f1(2.6 * s)}" ry="${f1(1.6 * s)}" fill="var(--ds-cesta-d)" stroke="none"/>`); }
+    const bx = f1(dsCx(612) - dsCw(612) * .42);
+    const cesta = `<path d="M${bx} 604Q450 622 372 610" fill="none" stroke="var(--ink)" stroke-width="22"/><path d="M${bx} 604Q450 622 370 610" fill="none" stroke="var(--dv-cesta)" stroke-width="17"/>
+      <path d="${pas(.5)}" fill="var(--dv-cesta)" stroke="var(--ink)" stroke-width="2.6"/><path d="M${bx} 604Q450 622 380 610" fill="none" stroke="var(--dv-cesta)" stroke-width="17" stroke-linecap="butt"/>
+      <path d="${ciara(-1, .4)}" fill="none" stroke="var(--ds-cesta-d)" stroke-width="2.2" opacity=".55"/><path d="${ciara(1, .4)}" fill="none" stroke="var(--ds-cesta-d)" stroke-width="2.2" opacity=".55"/>
+      <path d="${pas(.16)}" fill="var(--ds-cesta-l)" opacity=".6"/>${vnut.join('')}${kam.join('')}`;
+    // jazierko vľavo vzadu: breh, voda s odleskom, lekná, trstina a kamene
+    const jx = 140, jy = 318;
+    const jazero = `<g class="ds-jazero"><ellipse cx="${jx + 4}" cy="${jy + 3}" rx="80" ry="25" fill="var(--dv-lis-d)" opacity=".45"/>
+      <ellipse cx="${jx}" cy="${jy}" rx="70" ry="19" fill="var(--ds-voda)" stroke="var(--ink)" stroke-width="2.4"/><ellipse cx="${jx - 6}" cy="${jy - 4}" rx="52" ry="10" fill="var(--ds-voda-l)"/>
+      <path d="M${jx - 40} ${jy - 3}q12-4 24 0M${jx + 14} ${jy + 6}q9-3 18 0" fill="none" stroke="#fff" stroke-width="2.2" opacity=".7"/>
+      <ellipse class="dv-noc" cx="${jx + 22}" cy="${jy - 2}" rx="12" ry="3" fill="var(--sun-l)" opacity=".55"/>
+      <g fill="var(--leaf)" stroke="var(--ink)" stroke-width="1.6"><path d="M${jx + 30} ${jy + 4}a9 3.4 0 1 0 1-.1l-6 .6z"/><path d="M${jx - 22} ${jy + 8}a7 2.8 0 1 0 1-.1l-5 .5z"/></g><circle cx="${jx + 31}" cy="${jy + 2}" r="2.4" fill="var(--dv-ruzova)" stroke="var(--ink)" stroke-width="1.2"/>
+      <g stroke="var(--ink)" stroke-width="1.8">${[[-66, 2, 26], [-60, 6, 32], [-54, 4, 22], [62, 3, 24], [68, -2, 30]].map(([dx, dy, h]) => `<path d="M${jx + dx} ${jy + dy}q${dx < 0 ? -2 : 2} ${-h / 2} 0 ${-h}" fill="none" stroke="var(--dv-lis-d)" stroke-width="2.2"/><rect x="${jx + dx - 2.4}" y="${jy + dy - h - 2}" width="4.8" height="10" rx="2.4" fill="var(--dv-drevo-d)"/>`).join('')}</g>
+      <g fill="var(--dv-kamen)" stroke="var(--ink)" stroke-width="1.8"><ellipse cx="${jx - 30}" cy="${jy + 19}" rx="8" ry="4.5"/><ellipse cx="${jx - 18}" cy="${jy + 21}" rx="5" ry="3"/><ellipse cx="${jx + 44}" cy="${jy + 15}" rx="7" ry="4"/></g></g>`;
+    // plot na kopci vpravo vzadu
+    let pp = '', r1 = [], r2 = [];
+    for (let x = 872; x <= 1100; x += 24) { const y = 236 + (x - 872) * .04 + Math.sin(x / 40) * 2;
+      pp += `<path d="M${x - 2.2} ${f1(y)}v-17l2.2-3 2.2 3v17z" fill="var(--dv-drevo)"/>`; r1.push(`${x} ${f1(y - 13)}`); r2.push(`${x} ${f1(y - 6)}`); }
+    const latka = r => `<path d="M${r.join('L')}" fill="none" stroke-width="5.4"/><path d="M${r.join('L')}" fill="none" stroke="var(--dv-drevo)" stroke-width="2.6"/>`;
+    const plot = `<g class="ds-plot" stroke="var(--ink)" stroke-width="1.6">${latka(r1)}${latka(r2)}${pp}</g>`;
+    // textúra lúky: svetlé a tmavé škvrny, trsy trávy, drobné kvietky, kamienky (nie na ceste, jazierku a námestí)
+    const volne = (x, y, m = 10) => Math.abs(x - dsCx(y)) > dsCw(y) / 2 + m && ((x - jx) / 86) ** 2 + ((y - jy) / 30) ** 2 > 1 && ((x - X) / 96) ** 2 + ((y - DS_STROM[1]) / 28) ** 2 > 1;
+    let tex = '';
+    for (let i = 0; i < 18; i++) { const y = 250 + rnd() * 390, x = rnd() * W, s = dsMier(y); tex += `<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1((30 + rnd() * 50) * s)}" ry="${f1((5 + rnd() * 5) * s)}" fill="var(${i % 3 ? '--dv-lis-l' : '--dv-lis-d'})" opacity="${i % 3 ? .16 : .1}"/>`; }
+    for (let i = 0; i < 130; i++) { const y = 236 + rnd() * 410, x = rnd() * W, s = dsMier(y); if (!volne(x, y)) continue;
+      tex += `<path transform="translate(${f1(x)} ${f1(y)}) scale(${(s * (.7 + rnd() * .5)).toFixed(2)})" d="M-5 0q-1-6-4-9M0 0q0-8 1-12M5 0q1-6 5-8" fill="none" stroke="var(--dv-lis-d)" stroke-width="2.2"/>`; }
+    const FK = ['#fff', 'var(--dv-ruzova)', 'var(--sun)', 'var(--coral-l, #FF9E8A)'];
+    for (let i = 0; i < 46; i++) { const y = 250 + rnd() * 390, x = rnd() * W, s = dsMier(y); if (!volne(x, y, 14)) continue;
+      tex += `<g transform="translate(${f1(x)} ${f1(y)}) scale(${s.toFixed(2)})"><path d="M0 0v-7" fill="none" stroke="var(--dv-lis-d)" stroke-width="1.6"/><circle cy="-8" r="3.4" fill="${FK[i % 4]}" stroke="var(--ink)" stroke-width="1.3"/><circle cy="-8" r="1.2" fill="var(--sun)" stroke="none"/></g>`; }
+    for (let i = 0; i < 16; i++) { const y = 260 + rnd() * 380, x = rnd() * W, s = dsMier(y); if (!volne(x, y, 16)) continue;
+      tex += `<g transform="translate(${f1(x)} ${f1(y)}) scale(${s.toFixed(2)})" stroke="var(--ink)" stroke-width="1.6"><ellipse cx="0" cy="-2.5" rx="7" ry="4.2" fill="var(--dv-kamen)"/><path d="M-4 -4q2-2 5-2" fill="none" stroke="#fff" stroke-width="1.4" opacity=".7"/>${i % 2 ? '<ellipse cx="8" cy="-1" rx="3.6" ry="2.4" fill="var(--dv-kamen)"/>' : ''}</g>`; }
     // lúka pri ceste: pár kvetov a krík (nie sú dieťaťa, len krajina)
-    const luka = [[485, 470, .55, 'kvety'], [626, 532, .6, 'tulipany'], [672, 574, .7, 'ker'], [430, 560, .55, 'kvety']].map(([x, y, s, k]) => dedinkaVec(k, { x, y, s })).join('');
-    // cesta: od spodku k námestiu a za stromom ďalej na kopec (obrys = širší tah atramentu pod pieskom)
-    const c1 = `M${X} ${H + 20}C${X - 40} 590 ${X + 50} 520 ${X + 8} 452`, c2 = `M${X + 4} 360C${X - 30} 320 ${X + 34} 280 ${X + 6} 250C${X - 14} 232 ${X + 10} 218 ${X} 208`;
-    const cesta = (d, w) => `<path d="${d}" stroke="var(--ink)" stroke-width="${w + 5}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="var(--dv-cesta)" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="var(--dv-drevo)" stroke-width="2.4" stroke-dasharray=".1 11" fill="none" stroke-linecap="round" opacity=".5"/>`;
-    return `<rect x="-10" y="-10" width="${W + 20}" height="${H + 20}" fill="var(--dv-nebo)"/>
+    const luka = [[485, 470, .55, 'kvety'], [626, 532, .6, 'tulipany'], [672, 574, .7, 'ker'], [430, 560, .55, 'kvety']].map(([x, y, s, k]) => dsZem(x, y, s, 18) + dedinkaVec(k, { x, y, s })).join('');
+    return `<defs><linearGradient id="ds-obzor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--dv-oblak)" stop-opacity="0"/><stop offset="1" stop-color="var(--dv-oblak)" stop-opacity=".55"/></linearGradient></defs>
+      <rect x="-10" y="-10" width="${W + 20}" height="${H + 20}" fill="var(--dv-nebo)"/><rect x="-10" y="110" width="${W + 20}" height="120" fill="url(#ds-obzor)"/>
       <g class="dv-den"><circle cx="${X + 165}" cy="112" r="28" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="${X + 165}" cy="112" r="41" fill="none" stroke="var(--sun)" stroke-width="5" stroke-dasharray=".1 12.5" stroke-linecap="round" opacity=".8"/></g>
       <g class="dv-noc"><path d="M${X + 176} 88a26 26 0 1 0 14 44a21 21 0 0 1-14-44z" fill="var(--sun-l)" stroke="var(--ink)" stroke-width="2.5"/>${hv}</g>
-      <g class="ds-mrak" style="--t:46s">${dedinkaVec('oblak1', { x: 210, y: 116, s: .7 })}</g><g class="ds-mrak ds-mrak2" style="--t:58s">${dedinkaVec('oblak3', { x: 760, y: 70, s: .62 })}</g>
-      ${kopec(214, 34, 'var(--dv-kopec1)', '', 3)}
-      <g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${les}</g>
-      ${kopec(262, 30, 'var(--dv-kopec2)', '', 7)}
-      ${kopec(338, 24, 'var(--dv-kopec3)', ' stroke="var(--dv-lis-d)" stroke-width="2.2" stroke-opacity=".55"', 11)}
-      ${kopec(458, 20, 'var(--dv-kopec4)', ' stroke="var(--dv-lis-d)" stroke-width="2.4" stroke-opacity=".7"', 5)}
-      ${kopec(552, 16, 'var(--dv-zem)', ' stroke="var(--ink)" stroke-width="2.4"', 2)}
-      <g class="ds-cesta">${cesta(c2, 16)}${cesta(c1, 44)}</g>
+      <path d="${hd} V240 H-30Z" fill="var(--ds-hora)"/>${sneh}
+      <g class="ds-mrak" style="--t:46s">${dedinkaVec('oblak1', { x: 210, y: 116, s: .7 })}</g><g class="ds-mrak ds-mrak2" style="--t:58s">${dedinkaVec('oblak3', { x: 760, y: 70, s: .62 })}</g><g class="ds-mrak" style="--t:64s">${dedinkaVec('oblak2', { x: 980, y: 150, s: .45 })}</g>
+      ${kopec(214, 34, 'var(--dv-kopec1)', 3)}
+      ${koruny}<g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${les}</g>
+      ${kopec(262, 30, 'var(--dv-kopec2)', 7)}${plot}
+      ${kopec(338, 24, 'var(--dv-kopec3)', 11, ' stroke="var(--dv-lis-d)" stroke-width="2.2" stroke-opacity=".55"')}
+      ${kopec(458, 20, 'var(--dv-kopec4)', 5, ' stroke="var(--dv-lis-d)" stroke-width="2.4" stroke-opacity=".7"')}
+      ${kopec(552, 16, 'var(--dv-zem)', 2, ' stroke="var(--ink)" stroke-width="2.4"')}
+      <g class="ds-tex" stroke-linecap="round">${tex}</g>${jazero}
+      <g class="ds-cesta" stroke-linejoin="round" stroke-linecap="round">${cesta}</g>
       <g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${luka}</g>`;
   },
   // námestie: kamenný kruh s trávnikom, strom múdrosti z údajov stromu, dve lampy po stranách
@@ -9722,7 +9804,10 @@ const DedScena = {
     const [dx, y, k] = DS_STROM, x = DS_X + dx, t = this.stromInfo();
     const strom = stromSvg({ stupen: t.i, plody: t.naStrome, kos: t.kos, novy: -1, hn: t.hn, zem: false })
       .replace('<svg class="os-strom', `<svg x="${(x - 112 * k).toFixed(1)}" y="${(y + 2 - 254 * k).toFixed(1)}" width="${(224 * k).toFixed(1)}" height="${(268 * k).toFixed(1)}" class="os-strom`);
-    const kruh = `<ellipse cx="${x}" cy="${y}" rx="82" ry="21" fill="var(--dv-kamen)" stroke="var(--ink)" stroke-width="2.4"/><ellipse cx="${x}" cy="${y - 2}" rx="66" ry="14" fill="var(--dv-lis)" stroke="var(--ink)" stroke-width="2"/>
+    // dlažba: kamene po obvode kruhu (predné väčšie), mäkký tieň pod námestím
+    const dl = Array.from({ length: 22 }, (_, i) => { const a = i / 22 * Math.PI * 2, cx = x + Math.cos(a) * 74, cy = y + Math.sin(a) * 17.5, p = Math.sin(a) > 0 ? 1 : .7;
+      return `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${(7 * p).toFixed(1)}" ry="${(3.2 * p).toFixed(1)}" fill="var(--ds-kamen-l)" stroke="var(--ink)" stroke-width="1.3" stroke-opacity=".55"/>`; }).join('');
+    const kruh = `<ellipse cx="${x + 6}" cy="${y + 5}" rx="90" ry="24" fill="var(--ds-tien)" opacity=".14" stroke="none"/><ellipse cx="${x}" cy="${y}" rx="82" ry="21" fill="var(--dv-kamen)" stroke="var(--ink)" stroke-width="2.4"/>${dl}<ellipse cx="${x}" cy="${y - 2}" rx="66" ry="14" fill="var(--dv-lis)" stroke="var(--ink)" stroke-width="2"/>
       <path d="M${x - 52} ${y + 2}q4-5 9-6M${x + 38} ${y - 7}q5-3 10-2" stroke="var(--dv-lis-l)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
       <ellipse cx="${x + 10}" cy="${y - 1}" rx="34" ry="7" fill="var(--ink)" opacity=".14"/>`;
     return `<g class="ds-namestie">${kruh}${this.tuk('strom', t.popis, `<g class="ds-strom${t.hn ? ' schne' : ''}" data-strom>${strom}</g>`)}</g>`;
@@ -9734,22 +9819,22 @@ const DedScena = {
     Object.entries((d && d.miesta) || {}).forEach(([kl, [typ, zrk, volby]]) => {
       const vec = DED_VEC[typ], kres = dedKresba(typ), m = vec && kres && dedMiesto(kl, vec.sirka);
       if (!m || m.rad > rady) return;
-      v.push({ y: m.y, html: DedStav.obal(kl, dedinkaVec(kres, { x: m.x, y: m.y, s: m.s, zrkadlo: !!zrk, ...dedVolby(kres, volby) }), m, typ, !!zrk) }); // 27-dedinka-stavanie.js: pri stavaní sa dá ťuknúť
+      v.push({ y: m.y, html: dsZem(m.x, m.y, m.s, (DS_ZEM_SK[vec.sk] || 24) * (vec.sirka === 2 ? 1.35 : 1)) + DedStav.obal(kl, dedinkaVec(kres, { x: m.x, y: m.y, s: m.s, zrkadlo: !!zrk, ...dedVolby(kres, volby) }), m, typ, !!zrk) }); // 27-dedinka-stavanie.js: pri stavaní sa dá ťuknúť
     });
     v.push(...DedStav.miesta()); // pri stavaní krúžky voľných miest a zamknutý rad
     // zamknutá zem: prvý zamknutý rad má po stranách tabuľku so stromčekom (zem pribudne, keď strom vyrastie)
     if (rady < 5 && !DedStav.zap) { const r = rady + 1, [y, s, g] = DS_RADY[r];
       [-1, 1].forEach(z => v.push({ y, html: this.tuk('zem', 'Ďalšia zem: pribudne, keď strom múdrosti vyrastie', this.tabulka(DS_X + z * (g + 2.1 * DS_RADY[r][3]), y, s), ' ds-zem') })); }
     // hlavný dom
-    { const [dx, y, s] = DS_DOM; v.push({ y, html: this.tuk('dom', 'Môj domček. Vojsť dnu', dedinkaVec('domov', { x: DS_X + dx, y, s }), ' ds-dom') }); }
+    { const [dx, y, s] = DS_DOM; v.push({ y, html: dsZem(DS_X + dx, y, s, 76) + this.tuk('dom', 'Môj domček. Vojsť dnu', dedinkaVec('domov', { x: DS_X + dx, y, s }), ' ds-dom') }); }
     // lampy pri námestí
-    [-1, 1].forEach(z => v.push({ y: 420, html: dedinkaVec('lampa', { x: DS_X + z * 100, y: 418, s: .58, zrkadlo: z > 0 }) }));
+    [-1, 1].forEach(z => v.push({ y: 420, html: dsZem(DS_X + z * 100, 418, .58, 14) + dedinkaVec('lampa', { x: DS_X + z * 100, y: 418, s: .58, zrkadlo: z > 0 }) }));
     // miesta hier
     this.miestaHier().forEach(m => {
       const r = S.get(rekordKluc(m.h.id), null);
       const popis = m.stav === 'stavba' ? `${m.h.n}: stavia sa, odomkne sa pri ${m.h.cena} hviezdach` : m.stav === 'spi' ? `${m.h.n} spí, kým strom vädne` : `${m.h.n}${r != null ? ', rekord ' + rekordText(m.h.id, r) : ''}. Hrať`;
       const telo = m.stav === 'stavba' ? dedinkaVec('lesenie', { x: m.x, y: m.y, s: m.s }) + this.cenovka(m.x + 30 * m.s, m.y + 2, m.h.cena) : dedinkaVec(m.h.id, { x: m.x, y: m.y, s: m.s });
-      v.push({ y: m.y, html: this.tuk('hra:' + m.h.id, popis, telo, ' ds-hra ds-' + m.stav) });
+      v.push({ y: m.y, html: dsZem(m.x, m.y, m.s, 58) + this.tuk('hra:' + m.h.id, popis, telo, ' ds-hra ds-' + m.stav) });
     });
     if (typeof DedCesta !== 'undefined') DedCesta.scena().forEach(x => v.push(x)); // smerovník Cesta mesiaca a čakajúca truhlička (27-dedinka-cesta.js)
     v.push({ y: DS_STROM[1], html: this.namestie() });

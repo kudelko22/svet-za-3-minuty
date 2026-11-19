@@ -1,5 +1,8 @@
 /* 5.1 Moja dedinka: scéna na celú šírku (26-dedinka-scena.js), presun s obláčikmi, izba, smerovník na Domove.
    Scéna je široká krajina; na úzkom displeji sa posúva prstom do strán. Pohyb je len transform a opacity, pokojný. */
+/* farby krajiny scény (deň, noc v Mesačnom režime) */
+:root { --ds-tien: #2A2356; --ds-voda: #7CC8F0; --ds-voda-l: #A8DDF7; --ds-hora: #CBE3F0; --ds-les: #72BE84; --ds-les-d: #4E9C62; --ds-cesta-d: #D9B77E; --ds-cesta-l: #FFF1CF; --ds-kamen-l: #ECE6F8; }
+:root[data-rezim="mesacny"] { --ds-tien: #0B0824; --ds-voda: #2D3F86; --ds-voda-l: #3A52A0; --ds-hora: #2B2862; --ds-les: #2A4C70; --ds-les-d: #223C5E; --ds-cesta-d: #34345E; --ds-cesta-l: #5A5A8E; --ds-kamen-l: #9F99C8; }
 body.ded-v { overflow-x: hidden; }
 body.ded-v main.gut { padding-block: 0; gap: 0; }
 .ds { position: relative; }
@@ -22,10 +25,11 @@ body.ded-v main.gut { padding-block: 0; gap: 0; }
 @keyframes dsTras { 20% { transform: rotate(-3deg); } 45% { transform: rotate(3deg); } 70% { transform: rotate(-1.5deg); } }
 .ds-spi { opacity: .72; }
 .ds-stavba .dv { opacity: .9; }
-/* strom: kresba stromu bez vstupných animácií, len vietor v korune */
-.ds-strom .os-zem, .ds-strom .os-kmen, .ds-strom .os-k, .ds-strom .os-plod, .ds-strom .os-kvet, .ds-strom .os-kos { animation: none; }
+/* strom: kresba stromu bez vstupných animácií; hýbe sa len koruna (kmeň, košík a štítok +N stoja), pokojne */
+.ds-strom .os-zem, .ds-strom .os-kmen, .ds-strom .os-k, .ds-strom .os-plod, .ds-strom .os-kvet, .ds-strom .os-kos, .ds-strom .os-hoj, .ds-strom .os-strom { animation: none; }
+.ds-strom .os-koruna { animation: none; }
 @media (prefers-reduced-motion: no-preference) {
-  .ds-strom .os-strom { transform-box: fill-box; transform-origin: 50% 100%; animation: dsVietor 7s ease-in-out infinite; }
+  .ds-strom .os-koruna { transform-box: fill-box; transform-origin: 50% 100%; animation: dsVietor 9s ease-in-out infinite; }
   .ds-mrak { animation: dsMrak var(--t, 50s) ease-in-out infinite alternate; }
   .ds-mrak2 { animation-direction: alternate-reverse; }
   .ds-hv { animation: dsHv 5s ease-in-out var(--d, 0s) infinite; }
