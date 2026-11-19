@@ -138,6 +138,7 @@ function render(tichy) {
   document.body.classList.toggle('auto-rezim', auto);
   document.body.classList.toggle('dm-rezim', dm);
   document.body.classList.toggle('hra-rezim', hra);
+  document.body.classList.toggle('ded-v', !brana && !auto && !hra && !flow && (st.view === 'dedinka' || st.view === 'izba')); // 5.1: dedinka na celú obrazovku
   if (brana || auto || hra || flow) document.body.classList.remove('domov-v'); // 5.0: trieda Domova nesmie ostať v téme, kvíze, hre a aute
   if (brana) { renderBrana(); return; }
   if (auto) { renderAuto(); return; }
@@ -171,9 +172,10 @@ function render(tichy) {
     if (document.activeElement !== inp) inp.value = st.q;
     fillTemy();
   }
-  ['domov', 'temy', 'hry', 'priatelia', 'ja'].forEach(v => {
+  if (st.view === 'dedinka' || st.view === 'izba') DedScena.po();
+  ['domov', 'temy', 'dedinka', 'priatelia', 'ja'].forEach(v => {
     const b = document.getElementById('nav-' + v);
-    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina' || st.view === 'objavuj')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina' || st.view === 'objavuj')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil')) || (v === 'dedinka' && (st.view === 'hry' || st.view === 'izba'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   socZnacka();
   paintHead();

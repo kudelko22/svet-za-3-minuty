@@ -2924,6 +2924,76 @@ svg.mudra { overflow: visible; }
 @keyframes dvToc { to { rotate: 360deg; } }
 @media (prefers-reduced-motion: no-preference) { .dv .dv-dym { animation: dvDym 4s ease-in-out infinite; } }
 @keyframes dvDym { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(-5px); opacity: .7; } }
+/* 5.1 Moja dedinka: scéna na celú šírku (26-dedinka-scena.js), presun s obláčikmi, izba, smerovník na Domove.
+   Scéna je široká krajina; na úzkom displeji sa posúva prstom do strán. Pohyb je len transform a opacity, pokojný. */
+body.ded-v { overflow-x: hidden; }
+body.ded-v main.gut { padding-block: 0; gap: 0; }
+.ds { position: relative; }
+.ds-scena { position: relative; display: flex; flex-direction: column; justify-content: flex-end; width: 100vw; margin-inline: calc(50% - 50vw); height: calc(100dvh - 160px); overflow-x: auto; overflow-y: hidden;
+  background: var(--dv-nebo); scrollbar-width: none; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+.ds-scena::-webkit-scrollbar { display: none; }
+.ds-svg { display: block; flex: none; height: 100%; width: auto; min-width: 100%; }
+.ds-hore { position: absolute; top: 10px; left: max(0px, calc(50% - 50vw + 16px)); right: max(0px, calc(50% - 50vw + 16px)); display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
+.ds-hore > * { pointer-events: auto; }
+.ds-n { margin: 0; font: 800 1.15rem/1.1 var(--fd); color: var(--text); padding: 6px 14px; border-radius: 999px; background: var(--card); border: var(--obrys, 2.5px solid var(--ink)); }
+.ds-vsetky { box-shadow: 0 3px 0 var(--ink); }
+.ds-izba .ds-hore { justify-content: flex-start; }
+
+/* veci na ťuknutie: jemne sa nadvihnú, pri ťuknutí stlačia; zamknuté zatrasie */
+.ds-tuk { cursor: pointer; transform-box: fill-box; transform-origin: 50% 100%; transition: transform .25s var(--spring, ease); -webkit-tap-highlight-color: transparent; outline: none; }
+@media (hover: hover) { .ds-tuk:hover { transform: scale(1.04); } }
+.ds-tuk:active { transform: scale(.96); }
+.ds-tuk:focus-visible { filter: drop-shadow(0 0 0 var(--sky)) drop-shadow(0 0 4px var(--sky)); }
+.ds-tuk.trasie { animation: dsTras .45s ease-out; }
+@keyframes dsTras { 20% { transform: rotate(-3deg); } 45% { transform: rotate(3deg); } 70% { transform: rotate(-1.5deg); } }
+.ds-spi { opacity: .72; }
+.ds-stavba .dv { opacity: .9; }
+/* strom: kresba stromu bez vstupných animácií, len vietor v korune */
+.ds-strom .os-zem, .ds-strom .os-kmen, .ds-strom .os-k, .ds-strom .os-plod, .ds-strom .os-kvet, .ds-strom .os-kos { animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .ds-strom .os-strom { transform-box: fill-box; transform-origin: 50% 100%; animation: dsVietor 7s ease-in-out infinite; }
+  .ds-mrak { animation: dsMrak var(--t, 50s) ease-in-out infinite alternate; }
+  .ds-mrak2 { animation-direction: alternate-reverse; }
+  .ds-hv { animation: dsHv 5s ease-in-out var(--d, 0s) infinite; }
+}
+@keyframes dsVietor { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(.8deg); } }
+@keyframes dsMrak { to { transform: translateX(46px); } }
+@keyframes dsHv { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+/* hviezdy za hru: vyjdú nad miestom hry a zmiznú */
+.ds-zisk { position: absolute; z-index: 3; display: inline-flex; align-items: center; gap: 3px; transform: translate(-50%, -50%); padding: 4px 10px 4px 12px; border-radius: 999px;
+  background: var(--card); border: 2.5px solid var(--ink); box-shadow: 0 3px 0 var(--ink); font-weight: 800; font-size: 1.1rem; color: var(--text); pointer-events: none; animation: dsZisk 2.6s ease-out both; }
+.ds-zisk .ikn { width: 20px; height: 20px; }
+@keyframes dsZisk { 0% { opacity: 0; transform: translate(-50%, -20%) scale(.7); } 15% { opacity: 1; transform: translate(-50%, -60%) scale(1); } 75% { opacity: 1; transform: translate(-50%, -110%); } 100% { opacity: 0; transform: translate(-50%, -140%); } }
+@media (prefers-reduced-motion: reduce) { @keyframes dsZisk { 0%, 80% { opacity: 1; transform: translate(-50%, -80%); } 100% { opacity: 0; transform: translate(-50%, -80%); } } }
+
+/* izba */
+.ds-izba .ds-scena { background: var(--sun-l); }
+.ds-izba-tx { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); width: min(92%, 420px); margin: 0; padding: 10px 14px; text-align: center; border-radius: 16px;
+  background: var(--card); border: 2.5px solid var(--ink); box-shadow: 0 3px 0 var(--ink); color: var(--text); font-weight: 600; }
+
+/* presun s obláčikmi */
+.ob-prechod { position: fixed; inset: 0; z-index: 300; pointer-events: all; overflow: hidden; }
+.ob-zavoj { position: absolute; inset: 0; background: var(--dv-nebo); opacity: 0; transition: opacity .3s ease .2s; }
+.ob-str { position: absolute; inset: 0; transition: transform .62s cubic-bezier(.3, .7, .25, 1); }
+.ob-l { transform: translateX(-105%); } .ob-p { transform: translateX(105%); }
+.ob { position: absolute; left: var(--x); top: var(--y); width: var(--w); transform: translate(-50%, -50%); }
+.ob .dv-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ob-n { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.9); opacity: 0; transition: opacity .25s, transform .3s; font: 800 2rem/1.1 var(--fd); color: var(--text); white-space: nowrap; }
+.ob-prechod.zatiahni .ob-l, .ob-prechod.zatiahni .ob-p { transform: none; }
+.ob-prechod.zatiahni .ob-zavoj { opacity: 1; }
+.ob-prechod.zatiahni .ob-n { opacity: 1; transform: translate(-50%, -50%); transition-delay: .3s; }
+.ob-prechod.roztiahni .ob-str { transition: transform .7s cubic-bezier(.5, 0, .7, .4); }
+.ob-prechod.roztiahni .ob-zavoj { transition: opacity .35s ease; opacity: 0; }
+.ob-prechod.tiche .ob-str { display: none; }
+.ob-prechod.tiche .ob-zavoj, .ob-prechod.tiche .ob-n { transition: opacity .15s; transition-delay: 0s; }
+
+/* smerovník Moja dedinka na Domove */
+.dom-smer { position: absolute; left: 112px; bottom: 0; z-index: 2; width: 112px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.dom-smer svg { display: block; width: 100%; height: auto; overflow: visible; transform-origin: 50% 100%; transition: transform .2s var(--spring, ease); }
+.dom-smer:active svg { transform: scale(.95) rotate(-2deg); }
+.dom-smer:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; border-radius: 10px; }
+.anim .dom-smer { animation: mudIn .55s var(--spring) .5s both; }
+@media (prefers-reduced-motion: reduce) { .anim .dom-smer { animation: none; } }
 </style>
 </head>
 <body>
@@ -2957,7 +3027,7 @@ svg.mudra { overflow: visible; }
   <div class="gut">
     <button id="nav-domov" data-go="domov"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 11v8a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5v-8z" fill="var(--sun)"/><path d="M10 20.5V16a2 2 0 0 1 4 0v4.500z" fill="var(--violet)"/><path d="M2.8 11.8 12 3.800l9.2 8z" fill="var(--coral)"/></g></svg></span>Domov</button>
     <button id="nav-temy" data-go="temy"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.800C10 5.3 7 4.8 3.5 5.300v13c3.5-.5 6.5 0 8.5 1.500z" fill="var(--sky)"/><path d="M12 6.800c2-1.5 5-2 8.5-1.500v13c-3.5-.5-6.5 0-8.5 1.500z" fill="var(--sky-l)"/><path d="M14.8 10.200c1.2-.4 2.3-.6 3.4-.6M14.8 13.400c1.2-.4 2.3-.6 3.4-.6"/></g></svg></span>Témy</button>
-    <button id="nav-hry" data-go="hry"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10a5 5 0 0 1 4.8 6.300l-1 3.800a2.6 2.6 0 0 1-4.4 1.100L14 17h-4l-2.4 2.200a2.6 2.6 0 0 1-4.4-1.100l-1-3.800A5 5 0 0 1 7 8z" fill="var(--teal)"/><path d="M7.5 11v3.600M5.7 12.800h3.6"/><circle cx="15.4" cy="11.7" r="1.1" fill="var(--sun)"/><circle cx="17.8" cy="13.9" r="1.1" fill="var(--sun)"/></g></svg></span>Hry</button>
+    <button id="nav-dedinka" data-go="dedinka"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20.500v-5.5"/><circle cx="18" cy="11.500" r="3.800" fill="var(--leaf)"/><path d="M4 12.500v8h9.500v-8z" fill="var(--sun)"/><path d="M7.200 20.500v-3.800h3v3.800z" fill="var(--violet)"/><path d="M2.500 13.200 8.750 6.800l6.250 6.400z" fill="var(--coral)"/><path d="M2 20.500h20"/></g></svg></span>Dedinka</button>
     <button id="nav-priatelia" data-go="priatelia"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16.2" cy="9" r="2.8" fill="var(--sky)"/><path d="M13.5 19.500c.3-3.2 1.5-5.2 3.8-5.2 2.3 0 3.8 1.8 4.2 5.200z" fill="var(--sky)"/><circle cx="8.5" cy="8.3" r="3.3" fill="var(--coral)"/><path d="M2.5 19.500c.5-3.8 2.8-6 6-6s5.5 2.2 6 6z" fill="var(--coral)"/></g></svg></span>Priatelia</button>
     <button id="nav-ja" data-go="ja"><span class="ni"><svg class="ikn" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="var(--iko, var(--ink))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 20.500c.8-4.3 3.7-6.5 7.5-6.500s6.7 2.2 7.5 6.500z" fill="var(--violet)"/><circle cx="12" cy="8.3" r="4.2" fill="var(--sun)"/></g></svg></span>Ja</button>
   </div>
@@ -4592,6 +4662,7 @@ try { document.documentElement.style.setProperty('--ik-zamok', cssObr(IK.zamok))
 const IKN = {
   domov: '<path d="M5.5 11v8a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5v-8z" fill="var(--sun)"/><path d="M10 20.5V16a2 2 0 0 1 4 0v4.500z" fill="var(--violet)"/><path d="M2.8 11.8 12 3.800l9.2 8z" fill="var(--coral)"/>',
   temy: '<path d="M12 6.800C10 5.3 7 4.8 3.5 5.300v13c3.5-.5 6.5 0 8.5 1.500z" fill="var(--sky)"/><path d="M12 6.800c2-1.5 5-2 8.5-1.500v13c-3.5-.5-6.5 0-8.5 1.500z" fill="var(--sky-l)"/><path d="M14.8 10.200c1.2-.4 2.3-.6 3.4-.6M14.8 13.400c1.2-.4 2.3-.6 3.4-.6"/>',
+  dedinka: '<path d="M18 20.5v-5.5"/><circle cx="18" cy="11.5" r="3.8" fill="var(--leaf)"/><path d="M4 12.5v8h9.5v-8z" fill="var(--sun)"/><path d="M7.2 20.5v-3.8h3v3.8z" fill="var(--violet)"/><path d="M2.5 13.2 8.75 6.8l6.25 6.4z" fill="var(--coral)"/><path d="M2 20.5h20"/>',
   hry: '<path d="M7 8h10a5 5 0 0 1 4.8 6.300l-1 3.800a2.6 2.6 0 0 1-4.4 1.100L14 17h-4l-2.4 2.200a2.6 2.6 0 0 1-4.4-1.100l-1-3.800A5 5 0 0 1 7 8z" fill="var(--teal)"/><path d="M7.5 11v3.600M5.7 12.800h3.6"/><circle cx="15.4" cy="11.7" r="1.1" fill="var(--sun)"/><circle cx="17.8" cy="13.9" r="1.1" fill="var(--sun)"/>',
   priatelia: '<circle cx="16.2" cy="9" r="2.8" fill="var(--sky)"/><path d="M13.5 19.500c.3-3.2 1.5-5.2 3.8-5.2 2.3 0 3.8 1.8 4.2 5.200z" fill="var(--sky)"/><circle cx="8.5" cy="8.3" r="3.3" fill="var(--coral)"/><path d="M2.5 19.500c.5-3.8 2.8-6 6-6s5.5 2.2 6 6z" fill="var(--coral)"/>',
   ja: '<path d="M4.5 20.500c.8-4.3 3.7-6.5 7.5-6.500s6.7 2.2 7.5 6.500z" fill="var(--violet)"/><circle cx="12" cy="8.3" r="4.2" fill="var(--sun)"/>',
@@ -5477,7 +5548,7 @@ function hryZoznam() {
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;
   const r0 = hore && rek(hore);
   return `<div class="ihrisko">
-    <h1 class="n0 hry-titul">Hry</h1>
+    <div class="hra-top"><button class="btn kruh dve" data-go="dedinka" aria-label="Späť do dedinky">${ikn('zavriet')}</button><h1 class="n0 hry-titul hra-nazov">Všetky hry</h1></div>
     <p class="uvodka">Za hviezdy z tém sa odomykajú hry. Hraním sa hviezdy neminú.</p>
     ${hnStupen() ? `<p class="odkaz hn-info">${ikn('mesiac')}<span>${HN_TEXT[hnStupen()].n}. Kým nepreberieš tému, ${bodyUbudlo()} hviezd spí. ${HN_TEXT[hnStupen()].p}</span></p>` : ''}
     ${hore ? `<button class="naposledy hra-karta" data-hra="${hore.id}" style="--c:${hore.c}" aria-label="Hrať ${esc(hore.n)}">
@@ -5751,7 +5822,7 @@ const views = {
     return `${Domov.krajina(t, hot)}
       <section class="dom-start" aria-label="Dnes">
         <div class="dom-hore"><p class="odkaz dom-rec">${Domov.odkaz(t, hot)}</p>
-          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button>${StromKrajina.html()}</div>
+          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button>${Domov.smerovnik()}${StromKrajina.html()}</div>
         <article class="listok dom-listok hero${hot ? ' hotovy' : ''}">
           <div class="dl-hore">
             <div class="dl-rad"><span class="pec">Téma dňa</span><span class="dop">${datum}</span></div>
@@ -5798,7 +5869,9 @@ const views = {
       <div class="chips" id="filtre"></div>
       <div id="zoznam" class="list"></div>`;
   },
-  hry: () => hryZoznam(), // 5.0: ihrisko, kreslí 09-hry.js
+  hry: () => hryZoznam(), // 5.0: ihrisko, kreslí 09-hry.js; 5.1: Všetky hry v dedinke
+  dedinka: () => DedScena.html(), // 5.1: Moja dedinka, kreslí 26-dedinka-scena.js
+  izba: () => DedIzba.html(),
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
   anglictina: () => Ang.render(),
@@ -7100,7 +7173,7 @@ const PM_STARE_MENU = [
   ['Priatelia', '<circle cx="8.5" cy="8.5" r="3.2"/><circle cx="16" cy="9.5" r="2.6"/><path d="M2.8 19.5c.8-3.4 3-5 5.7-5s4.9 1.6 5.7 5M14 14.6c.6-.3 1.3-.4 2-.4 2.3 0 4.2 1.4 4.9 4.6"/>'],
   ['Ja', '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/>'],
 ];
-const PM_NOVE_MENU = [['Domov', 'domov'], ['Témy', 'temy'], ['Hry', 'hry'], ['Priatelia', 'priatelia'], ['Ja', 'ja']];
+const PM_NOVE_MENU = [['Domov', 'domov'], ['Témy', 'temy'], ['Dedinka', 'dedinka'], ['Priatelia', 'priatelia'], ['Ja', 'ja']];
 
 const Premena = {
   el: null, anim: [], casy: [], koniec: false,
@@ -7405,8 +7478,8 @@ const SPR_KROKY = [
   { v: 'domov', cil: '.objavuj-karta', n: 'Objavuj', nalada: 'happy', p: 'Tu sú kvízy, Iná téma, ktorá ťa prekvapí, a všetky oblasti tém: príroda, ľudia, svet a veda.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťukni na Témy', p: 'Teraz si to vyskúšaj: ťukni na Témy dole.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: 'Témy sú v 4 oblastiach: príroda, ľudia, svet a veda. Ťukni na oblasť alebo hore napíš, čo hľadáš.' },
-  { tap: 'hry', cil: '#nav-hry', n: 'Ťukni na Hry', nalada: 'happy', p: 'Výborne! Teraz ťukni na Hry.' },
-  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Za hviezdy sa odomykajú hry. Vidíš len tie, ktoré sú pre tvoj vek. Hraním sa hviezdy neminú.' },
+  { tap: 'dedinka', cil: '#nav-dedinka', n: 'Ťukni na Dedinku', nalada: 'happy', p: 'Výborne! Teraz ťukni na Dedinku.' },
+  { v: 'dedinka', cil: '.ds-scena', n: 'Tvoja dedinka', nalada: 'cheer', p: 'Toto je tvoja dedinka. V strede rastie strom múdrosti. Každá budova je hra: ťukni na ňu a hráš. Za hviezdy z tém sa postavia ďalšie.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťukni na Priatelia', p: 'Ešte dve zastávky. Ťukni na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
   { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia', p: () => socC() && socC().zapnute ? 'Tu sú tvoji kamaráti. Posielate si nálepky a súťažíte v týždennom rebríčku.' : 'Tu si pridáš kamarátov. Posielate si nálepky a súťažíte v týždennom rebríčku. Zapína to rodič.' },
   { tap: 'ja', cil: '#nav-ja', n: 'Ťukni na Ja', nalada: 'happy', p: 'Posledná zastávka. Ťukni na Ja.' },
@@ -7437,8 +7510,8 @@ const SPR_RODIC = [
   { v: 'objavuj', cil: '.obj-akty', n: 'Kvízy', p: 'Rýchly kvíz má 5 otázok a 2 životy. Pre 9 – 12 rokov je aj ťažký kvíz a výzva s 3 životmi. Po kvíze je prestávka (5, 15 a 30 minút) a hviezdy sú raz za deň.' },
   { tap: 'temy', cil: '#nav-temy', n: 'Ťuknite na Témy', p: 'Teraz si to vyskúšajte: ťuknite dole na Témy.' },
   { v: 'temy', cil: '#filtre', n: 'Všetky témy', p: () => `${TV().length} tém v 4 oblastiach: príroda, ľudia, svet a veda. Dajú sa hľadať a srdiečkom v téme si ich uložíte medzi obľúbené.` },
-  { tap: 'hry', cil: '#nav-hry', n: 'Ťuknite na Hry', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Hry.' },
-  { v: 'hry', cil: '.hra-karta', n: 'Hry', nalada: 'cheer', p: 'Hry sa odomykajú za hviezdy. Dieťa vidí hry podľa svojho veku, malé deti majú ľahšie. Hraním sa hviezdy neminú. Keď sa niekoľko dní neučí, strom vädne a najdrahšie hry si oddýchnu, po prvej téme sa všetko vráti.' },
+  { tap: 'dedinka', cil: '#nav-dedinka', n: 'Ťuknite na Dedinku', nalada: 'happy', p: 'Výborne! Teraz ťuknite na Dedinku.' },
+  { v: 'dedinka', cil: '.ds-scena', n: 'Dedinka', nalada: 'cheer', p: 'Dedinka je miesto na hranie: každá budova je hra a v strede rastie strom múdrosti. Hry sa odomykajú za hviezdy z tém, dieťa vidí hry podľa svojho veku. Hraním sa hviezdy neminú. Keď sa niekoľko dní neučí, strom vädne a najdrahšie hry si oddýchnu, po prvej téme sa všetko vráti.' },
   { tap: 'priatelia', cil: '#nav-priatelia', n: 'Ťuknite na Priatelia', p: 'Ťuknite na Priatelia.', pred: () => { st.socTab = 'spravy'; } },
   { v: 'priatelia', cil: '.soc-intro, .pribehy, main > .muted', n: 'Priatelia zapína rodič', p: 'Deti si posielajú kreslené nálepky, hotové vety aj vlastné krátke slová. Priateľa pridajú len jeho kódom a druhá strana musí súhlasiť. Zapnúť aj vypnúť to môžete len vy.' },
   { tap: 'ja', cil: '#nav-ja', n: 'Ťuknite na Ja', nalada: 'happy', p: 'Posledná časť je profil. Ťuknite na Ja.' },
@@ -7882,6 +7955,7 @@ function render(tichy) {
   document.body.classList.toggle('auto-rezim', auto);
   document.body.classList.toggle('dm-rezim', dm);
   document.body.classList.toggle('hra-rezim', hra);
+  document.body.classList.toggle('ded-v', !brana && !auto && !hra && !flow && (st.view === 'dedinka' || st.view === 'izba')); // 5.1: dedinka na celú obrazovku
   if (brana || auto || hra || flow) document.body.classList.remove('domov-v'); // 5.0: trieda Domova nesmie ostať v téme, kvíze, hre a aute
   if (brana) { renderBrana(); return; }
   if (auto) { renderAuto(); return; }
@@ -7915,9 +7989,10 @@ function render(tichy) {
     if (document.activeElement !== inp) inp.value = st.q;
     fillTemy();
   }
-  ['domov', 'temy', 'hry', 'priatelia', 'ja'].forEach(v => {
+  if (st.view === 'dedinka' || st.view === 'izba') DedScena.po();
+  ['domov', 'temy', 'dedinka', 'priatelia', 'ja'].forEach(v => {
     const b = document.getElementById('nav-' + v);
-    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina' || st.view === 'objavuj')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    if (v === st.view || (v === 'ja' && st.view === 'odznaky') || (v === 'domov' && (st.view === 'misia' || st.view === 'anglictina' || st.view === 'objavuj')) || (v === 'priatelia' && (st.view === 'priatel' || st.view === 'priatelProfil')) || (v === 'dedinka' && (st.view === 'hry' || st.view === 'izba'))) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   socZnacka();
   paintHead();
@@ -7959,6 +8034,7 @@ document.addEventListener('click', e => {
   if (Misie.klik(b, d) || Ang.klik(b, d)) return;
   if (d.vyber) { vyberOdznak(d.vyber, b); return; }
   if (d.hra) { if (st.auto) Auto.stop(false); Hra.start(d.hra, b); return; }
+  if (d.hraSpat !== undefined && st.view === 'dedinka') { DedScena.zHry(); return; } // 5.1: hra spustená v dedinke sa vráti cez obláčiky
   if (d.hraSpat !== undefined) { Hra.zrus(); Zvuk.play('whoosh'); st.view = 'hry'; render(); scrollTo(0, 0); return; }
   if (d.pex) { Hra.pex(+d.pex, b); return; }
   if (d.hv) { Hra.chyt(b); return; }
@@ -8596,6 +8672,256 @@ const Dedinka = {
     return dostal;
   },
 };
+/* 5.1 Moja dedinka: scéna (obloha, kopce, rady miest, strom múdrosti na námestí, hlavný dom, miesta hier), presuny s obláčikmi
+   a izba v hlavnom dome. Kresby vecí: obrazky.js (dedinkaVec), dáta: 25-dedinka-data.js (Dedinka), štýly: 61-dedinka-scena.css.
+   Súradnice scény: šírka DS_W, výška DS_H, stred DS_X. Každá vec stojí pätou na (x, y) a má mierku s (vzadu menšia). */
+const DS_W = 1100, DS_H = 640, DS_X = 550, DS_Y0 = 100; // DS_Y0: horný kúsok oblohy sa neukazuje
+// rady miest (1 vzadu, 5 vpredu): päta y, mierka, polovica stredného pásu (cesta, námestie, hry), krok medzi stĺpcami
+const DS_RADY = { 1: [262, .6, 130, 44], 2: [330, .72, 150, 46], 3: [410, .85, 205, 56], 4: [492, .97, 232, 62], 5: [585, 1.1, 252, 68] };
+// miesto r{rad}c{stĺpec}: stĺpce 1–4 vľavo od stredu (1 najďalej), 5–8 vpravo; široká vec (sirka 2) stojí medzi svojím a ďalším stĺpcom
+function dedMiesto(kl, sirka = 1) {
+  const m = /^r([1-5])c([1-8])$/.exec(kl); if (!m) return null;
+  const [y, s, g, k] = DS_RADY[m[1]], x = c => { const l = c <= 4, i = l ? 4 - c : c - 5; return DS_X + (l ? -1 : 1) * (g + (i + .5) * k); };
+  const c = +m[2]; return { x: sirka === 2 && c < 8 ? (x(c) + x(c + 1)) / 2 : x(c), y, s, rad: +m[1] };
+}
+// pevné miesta hier (posun od stredu, päta, mierka); hra dostane miesto podľa poradia ceny vo svojom vekovom zozname
+const DS_HRY_MIESTA = [[-152, 410, .84], [152, 410, .84], [-116, 330, .72], [116, 330, .72], [-140, 502, .92], [176, 502, .95],
+  [-80, 268, .6], [84, 268, .6], [196, 600, 1.02], [-62, 230, .5], [62, 230, .5], [0, 212, .46]];
+const DS_DOM = [-218, 606, .98]; // hlavný dom vpredu vľavo od cesty
+const DS_STROM = [0, 404, .64]; // strom múdrosti na námestí v strede (mierka kresby stromSvg)
+// voľby položenej veci: reťazec, znak i = i-tá voľba z DEDINKA_VOLBY[kľúč] (poradie kľúčov), '0' = základ, '1' = prvá hodnota, '2' = druhá…
+function dedVolby(kluc, r) {
+  const o = {}, V = (typeof DEDINKA_VOLBY !== 'undefined' && DEDINKA_VOLBY[kluc]) || {};
+  Object.keys(V).forEach((dim, i) => {
+    const n = parseInt((r || '')[i] || '0', 36), v = n > 0 ? V[dim][n - 1] : undefined; if (v === undefined) return;
+    const [a, b] = dim.split('.'); if (b) (o[a] = o[a] || {})[b] = v; else o[a] = v;
+  });
+  return o;
+}
+// kľúč kresby veci z katalógu (nábytková lampa má v kresbách iný kľúč; zámoček je v kresbách, hoci katalóg kresbu ešte nemá)
+const dedKresba = id => { const v = typeof DED_VEC !== 'undefined' && DED_VEC[id]; if (!v) return null; if (id === 'lampa_izba') return 'nab.lampa'; const k = v.kresba ? v.kresba[1] : id; return dedinkaKresby.RAMCEK[k] ? k : null; };
+
+const DedScena = {
+  x: null, // posun scény do strán (ostane pri návrate z hry)
+  navrat: null, // {id, zisk}: z ktorej hry sa dieťa vrátilo (hviezdy sa ukážu pri mieste hry)
+  hry() { return [...HRY_VID()].sort((a, b) => a.cena - b.cena); },
+  // hry v dedinke: odomknuté (aj spiace pri vädnúcom strome) a najbližšia zamknutá ako stavenisko; ostatné ešte nie sú postavené
+  miestaHier() {
+    const vs = this.hry(), mam = bodyHry(); let dalsia = false;
+    return vs.map((h, i) => {
+      const [dx, y, s] = DS_HRY_MIESTA[i] || DS_HRY_MIESTA[DS_HRY_MIESTA.length - 1], ok = mam >= h.cena, spi = !ok && st.body >= h.cena;
+      if (!ok && !spi) { if (dalsia) return null; dalsia = true; }
+      return { h, x: DS_X + dx, y, s, stav: ok ? 'ok' : spi ? 'spi' : 'stavba' };
+    }).filter(Boolean);
+  },
+  stromInfo() {
+    const pocet = st.dni.length, i = stromStupen(pocet), s = seria(), S0 = STROM_STUPNE[i], hn = hnStupen(), naStrome = Math.min(s, S0.plody), kos = Math.max(0, s - S0.plody);
+    return { i, hn, naStrome, kos, popis: `Strom múdrosti: ${S0.n.toLowerCase()}${hn ? ', ' + HN_TEXT[hn].n.toLowerCase() : ''}. Otvoriť` };
+  },
+  // jedna vec scény: obal na ťuknutie (bez transform atribútu, aby sa dal jemne zväčšiť) okolo kresby
+  tuk(ded, popis, telo, tr = '') { return `<g class="ds-tuk${tr}" data-ded="${ded}" role="button" tabindex="0" aria-label="${esc(popis)}">${telo}</g>`; },
+  cenovka(x, y, cena) {
+    return `<g class="ds-cena" transform="translate(${x} ${y})"><path d="M-1.5 0v-14" stroke-width="2.2"/><rect x="-24" y="-31" width="48" height="19" rx="6" fill="var(--dv-drevo)" stroke-width="2.2"/>
+      <path d="M-14 -27.5l1.4 2.9 3.2.4-2.4 2.2.6 3.1-2.8-1.6-2.8 1.6.6-3.1-2.4-2.2 3.2-.4z" fill="var(--sun)" stroke-width="1.2"/>
+      <text x="7" y="-17" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="12" fill="var(--dv-biela)" stroke="none">${cena}</text></g>`;
+  },
+  krajina() {
+    const W = DS_W, H = DS_H, X = DS_X;
+    // kopec: mäkké nepravidelné vlny (pevné „náhodné“ výšky podľa fz), každý rad iný
+    const kopec = (y, amp, f, tr = '', fz = 0) => {
+      const n = 7, kr = W / (n - 1); let d = `M-30 ${y}`, px = -30, py = y;
+      for (let i = 0; i <= n; i++) {
+        const x = i * kr + ((i * 37 + fz * 13) % 41) - 20, h = y - amp * (.3 + (((Math.sin(i * 12.9 + fz * 7.3) * 43758.5) % 1) + 1) % 1 * .7), c = (px + x) / 2;
+        d += ` C${c.toFixed(0)} ${py.toFixed(0)} ${c.toFixed(0)} ${h.toFixed(0)} ${x.toFixed(0)} ${h.toFixed(0)}`; px = x; py = h;
+      }
+      return `<path${tr} d="${d} V${H + 10} H-30Z" fill="${f}"/>`;
+    };
+    const hv = [[90, 60], [210, 74], [330, 92], [470, 66], [610, 86], [740, 60], [900, 74], [1020, 68], [160, 130], [960, 128], [400, 120], [520, 82], [575, 140], [660, 116], [440, 170], [800, 150], [360, 156]].map(([x, y], i) => `<circle class="ds-hv" cx="${x}" cy="${y}" r="${i % 3 ? 1.6 : 2.3}" fill="var(--dv-svetlo)" style="--d:${(i % 5) * 1.3}s"/>`).join('');
+    const les = [[70, 214, .42, 'smrek'], [104, 220, .36, 'smrek'], [300, 206, .34, 'gulaty'], [790, 208, .36, 'gulaty'], [990, 212, .42, 'smrek'], [1030, 218, .34, 'smrek'], [640, 200, .3, 'breza']]
+      .map(([x, y, s, k]) => dedinkaVec(k, { x, y, s })).join('');
+    // lúka pri ceste: pár kvetov a krík (nie sú dieťaťa, len krajina)
+    const luka = [[485, 470, .55, 'kvety'], [626, 532, .6, 'tulipany'], [672, 574, .7, 'ker'], [430, 560, .55, 'kvety']].map(([x, y, s, k]) => dedinkaVec(k, { x, y, s })).join('');
+    // cesta: od spodku k námestiu a za stromom ďalej na kopec (obrys = širší tah atramentu pod pieskom)
+    const c1 = `M${X} ${H + 20}C${X - 40} 590 ${X + 50} 520 ${X + 8} 452`, c2 = `M${X + 4} 360C${X - 30} 320 ${X + 34} 280 ${X + 6} 250C${X - 14} 232 ${X + 10} 218 ${X} 208`;
+    const cesta = (d, w) => `<path d="${d}" stroke="var(--ink)" stroke-width="${w + 5}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="var(--dv-cesta)" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="var(--dv-drevo)" stroke-width="2.4" stroke-dasharray=".1 11" fill="none" stroke-linecap="round" opacity=".5"/>`;
+    return `<rect x="-10" y="-10" width="${W + 20}" height="${H + 20}" fill="var(--dv-nebo)"/>
+      <g class="dv-den"><circle cx="${X + 165}" cy="112" r="28" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="${X + 165}" cy="112" r="41" fill="none" stroke="var(--sun)" stroke-width="5" stroke-dasharray=".1 12.5" stroke-linecap="round" opacity=".8"/></g>
+      <g class="dv-noc"><path d="M${X + 176} 88a26 26 0 1 0 14 44a21 21 0 0 1-14-44z" fill="var(--sun-l)" stroke="var(--ink)" stroke-width="2.5"/>${hv}</g>
+      <g class="ds-mrak" style="--t:46s">${dedinkaVec('oblak1', { x: 210, y: 116, s: .7 })}</g><g class="ds-mrak ds-mrak2" style="--t:58s">${dedinkaVec('oblak3', { x: 760, y: 70, s: .62 })}</g>
+      ${kopec(214, 34, 'var(--dv-kopec1)', '', 3)}
+      <g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${les}</g>
+      ${kopec(262, 30, 'var(--dv-kopec2)', '', 7)}
+      ${kopec(338, 24, 'var(--dv-kopec3)', ' stroke="var(--dv-lis-d)" stroke-width="2.2" stroke-opacity=".55"', 11)}
+      ${kopec(458, 20, 'var(--dv-kopec4)', ' stroke="var(--dv-lis-d)" stroke-width="2.4" stroke-opacity=".7"', 5)}
+      ${kopec(552, 16, 'var(--dv-zem)', ' stroke="var(--ink)" stroke-width="2.4"', 2)}
+      <g class="ds-cesta">${cesta(c2, 16)}${cesta(c1, 44)}</g>
+      <g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${luka}</g>`;
+  },
+  // námestie: kamenný kruh s trávnikom, strom múdrosti z údajov stromu, dve lampy po stranách
+  namestie() {
+    const [dx, y, k] = DS_STROM, x = DS_X + dx, t = this.stromInfo();
+    const strom = stromSvg({ stupen: t.i, plody: t.naStrome, kos: t.kos, novy: -1, hn: t.hn, zem: false })
+      .replace('<svg class="os-strom', `<svg x="${(x - 112 * k).toFixed(1)}" y="${(y + 2 - 254 * k).toFixed(1)}" width="${(224 * k).toFixed(1)}" height="${(268 * k).toFixed(1)}" class="os-strom`);
+    const kruh = `<ellipse cx="${x}" cy="${y}" rx="82" ry="21" fill="var(--dv-kamen)" stroke="var(--ink)" stroke-width="2.4"/><ellipse cx="${x}" cy="${y - 2}" rx="66" ry="14" fill="var(--dv-lis)" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M${x - 52} ${y + 2}q4-5 9-6M${x + 38} ${y - 7}q5-3 10-2" stroke="var(--dv-lis-l)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="${x + 10}" cy="${y - 1}" rx="34" ry="7" fill="var(--ink)" opacity=".14"/>`;
+    return `<g class="ds-namestie">${kruh}${this.tuk('strom', t.popis, `<g class="ds-strom${t.hn ? ' schne' : ''}" data-strom>${strom}</g>`)}</g>`;
+  },
+  // všetky veci zoradené zozadu dopredu (päta vyššie = ďalej), aby sa prekrývali ako v krajine
+  veci() {
+    const d = typeof Dedinka !== 'undefined' ? Dedinka.ziskaj() : null, rady = typeof Dedinka !== 'undefined' ? Dedinka.rady() : 2, v = [];
+    // položené veci dieťaťa (z dát Dedinky, s farbami a zrkadlom)
+    Object.entries((d && d.miesta) || {}).forEach(([kl, [typ, zrk, volby]]) => {
+      const vec = DED_VEC[typ], kres = dedKresba(typ), m = vec && kres && dedMiesto(kl, vec.sirka);
+      if (!m || m.rad > rady) return;
+      v.push({ y: m.y, html: dedinkaVec(kres, { x: m.x, y: m.y, s: m.s, zrkadlo: !!zrk, ...dedVolby(kres, volby) }) });
+    });
+    // zamknutá zem: prvý zamknutý rad má po stranách tabuľku so stromčekom (zem pribudne, keď strom vyrastie)
+    if (rady < 5) { const r = rady + 1, [y, s, g] = DS_RADY[r];
+      [-1, 1].forEach(z => v.push({ y, html: this.tuk('zem', 'Ďalšia zem: pribudne, keď strom múdrosti vyrastie', this.tabulka(DS_X + z * (g + 2.1 * DS_RADY[r][3]), y, s), ' ds-zem') })); }
+    // hlavný dom
+    { const [dx, y, s] = DS_DOM; v.push({ y, html: this.tuk('dom', 'Môj domček. Vojsť dnu', dedinkaVec('domov', { x: DS_X + dx, y, s }), ' ds-dom') }); }
+    // lampy pri námestí
+    [-1, 1].forEach(z => v.push({ y: 420, html: dedinkaVec('lampa', { x: DS_X + z * 100, y: 418, s: .58, zrkadlo: z > 0 }) }));
+    // miesta hier
+    this.miestaHier().forEach(m => {
+      const r = S.get(rekordKluc(m.h.id), null);
+      const popis = m.stav === 'stavba' ? `${m.h.n}: stavia sa, odomkne sa pri ${m.h.cena} hviezdach` : m.stav === 'spi' ? `${m.h.n} spí, kým strom vädne` : `${m.h.n}${r != null ? ', rekord ' + rekordText(m.h.id, r) : ''}. Hrať`;
+      const telo = m.stav === 'stavba' ? dedinkaVec('lesenie', { x: m.x, y: m.y, s: m.s }) + this.cenovka(m.x + 30 * m.s, m.y + 2, m.h.cena) : dedinkaVec(m.h.id, { x: m.x, y: m.y, s: m.s });
+      v.push({ y: m.y, html: this.tuk('hra:' + m.h.id, popis, telo, ' ds-hra ds-' + m.stav) });
+    });
+    v.push({ y: DS_STROM[1], html: this.namestie() });
+    return v.sort((a, b) => a.y - b.y).map(x => x.html).join('');
+  },
+  tabulka(x, y, s) {
+    return `<g transform="translate(${x} ${y}) scale(${s})" stroke-width="${(2.2 / s).toFixed(2)}"><ellipse cx="4" cy="1" rx="20" ry="4" fill="var(--ink)" opacity=".14" stroke="none"/><path d="M-2 0v-30h4v30z" fill="var(--dv-drevo-d)"/>
+      <rect x="-22" y="-52" width="44" height="26" rx="6" fill="var(--dv-drevo)"/><path d="M0 -31v-9M0 -38c-5 0-7-3-7-7 4 0 7 2 7 7zM0 -40c4 0 7-2 7-6-4 0-7 2-7 6z" fill="var(--leaf)"/>
+      <path d="M-17 -31h34" stroke-dasharray="1 4" opacity=".5"/></g>`;
+  },
+  html() {
+    return `<section class="ds" aria-label="Moja dedinka">
+      <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 ${DS_Y0} ${DS_W} ${DS_H - DS_Y0}" preserveAspectRatio="xMidYMax slice" role="group" aria-label="Dedinka"><g stroke-linejoin="round" stroke-linecap="round">
+        ${this.krajina()}<g stroke="var(--ink)" stroke-width="2.2">${this.veci()}</g></g></svg></div>
+      <div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>
+    </section>`;
+  },
+  // po vykreslení: výška scény podľa obrazovky, posun do strán (na strom alebo späť na miesto), hviezdy po hre
+  rozmer() {
+    const sc = document.getElementById('ds-scena'); if (!sc || !sc.getBoundingClientRect) return null;
+    const svg = sc.querySelector('svg'), nav = document.getElementById('nav'), top = sc.getBoundingClientRect().top;
+    const dole = nav && !nav.hidden && nav.getBoundingClientRect().top > top + 200 ? nav.getBoundingClientRect().top : innerHeight, h = Math.max(300, Math.round(dole - top) + 2);
+    // mierka: podľa výšky, najviac 0,95 (na telefóne vidieť viac dedinky, hore pokračuje obloha); široký displej vyplní šírku
+    const vh = DS_H - DS_Y0, sx = sc.scrollLeft, sw = sc.scrollWidth;
+    let k = Math.min(h / vh, .95); if (k * DS_W < sc.clientWidth) k = sc.clientWidth / DS_W;
+    sc.style.height = h + 'px'; svg.style.width = Math.round(k * DS_W) + 'px'; svg.style.height = Math.min(h, Math.round(k * vh)) + 'px';
+    if (sw && sc.scrollWidth !== sw) sc.scrollLeft = sx * sc.scrollWidth / sw; // pri zmene veľkosti ostane ten istý kus dedinky
+    return sc;
+  },
+  po() {
+    try {
+      const sc = this.rozmer(); if (!sc) return;
+      requestAnimationFrame(() => this.rozmer()); setTimeout(() => this.rozmer(), 400); // lišta dole sa ešte môže usádzať
+      const n = this.navrat; this.navrat = null;
+      const el = n && sc.querySelector(`[data-ded="hra:${n.id}"]`);
+      if (el && el.getBoundingClientRect) { const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - s.left - sc.clientWidth / 2; }
+      else sc.scrollLeft = this.x != null ? this.x : (sc.scrollWidth - sc.clientWidth) / 2 - sc.scrollWidth * 60 / DS_W;
+      if (!sc._ds) { sc._ds = 1; sc.addEventListener('scroll', () => { this.x = sc.scrollLeft; }, { passive: true }); }
+      if (el && n.zisk > 0) setTimeout(() => this.zisk(el, n.zisk), tiche ? 50 : 700);
+    } catch (e) { /* test bez prehliadača */ }
+  },
+  // hviezdy za hru: jemne vyjdú nad miestom hry a zmiznú (žiadne okno)
+  zisk(el, n) {
+    const sc = document.getElementById('ds-scena'); if (!sc || !el.isConnected) return;
+    const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(), z = document.createElement('div');
+    z.className = 'ds-zisk cis'; z.setAttribute('role', 'status'); z.innerHTML = `+${n}${ikn('hviezda')}`;
+    z.style.left = (r.left - s.left + sc.scrollLeft + r.width / 2) + 'px'; z.style.top = (r.top - s.top + Math.max(10, r.height * .25)) + 'px';
+    sc.appendChild(z); Zvuk.play('coin'); setTimeout(() => z.remove(), 2600);
+  },
+  hraj(id, el) {
+    const h = HRY.find(x => x.id === id); if (!h) return;
+    if (bodyHry() < h.cena) { Hra.start(id); this.tras(el); return; } // Hra.start povie, koľko chýba (alebo že hra spí)
+    Zvuk.play('whoosh'); Prechod.spusti(h.n, () => Hra.start(id));
+  },
+  zHry() {
+    const h = st.hra; this.navrat = h ? { id: h.id, zisk: h.hotovo && h.hotovo.zisk || 0 } : null;
+    Zvuk.play('whoosh'); Prechod.spusti('Moja dedinka', () => { Hra.zrus(); Render.nova = true; render(); });
+  },
+  tras(el) { if (el && el.classList) { el.classList.remove('trasie'); void el.getBoundingClientRect(); el.classList.add('trasie'); } },
+  klik(el) {
+    const d = el.dataset.ded;
+    if (d === 'strom') { Zvuk.play('pop'); Strom.ukaz(); return; }
+    if (d === 'dom') { Zvuk.play('whoosh'); Prechod.spusti('Môj domček', () => { st.view = 'izba'; Render.nova = true; render(); scrollTo(0, 0); }); return; }
+    if (d === 'zem') { Zvuk.play('tap'); this.tras(el); toast('Keď strom múdrosti vyrastie, dedinka dostane ďalší kus zeme.'); return; }
+    if (d.startsWith('hra:')) this.hraj(d.slice(4), el);
+  },
+};
+
+/* Drevený smerovník Moja dedinka v krajine Domova (časť obrázka, ťuk otvorí dedinku) */
+Domov.smerovnik = () => `<button class="dom-smer" data-go="dedinka" aria-label="Moja dedinka"><svg viewBox="0 0 120 70" aria-hidden="true"><g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+  <ellipse cx="36" cy="68" rx="16" ry="3" fill="var(--ink)" opacity=".18" stroke="none"/><path d="M26 68V30h7v38z" fill="var(--dv-drevo-d)"/>
+  <path d="M4 10h96l14 13-14 13H4a3 3 0 0 1-3-3V13a3 3 0 0 1 3-3z" fill="var(--dv-drevo)"/><path d="M8 15h88" stroke="var(--dv-biela)" stroke-width="2" opacity=".45"/>
+  <text x="52" y="28.5" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="14.5" fill="var(--dv-biela)" stroke="none">Moja dedinka</text>
+  <path d="M23 68l-2-6M28 68v-7M37 68l3-6" stroke="var(--dv-lis-d)" stroke-width="2"/></g></svg></button>`;
+
+/* Izba v hlavnom dome: zatiaľ prázdna (nábytok príde so stavaním). Okno do dedinky ukazuje deň aj noc. */
+const DedIzba = {
+  html() {
+    const okno = `<g transform="translate(300 70)"><rect x="0" y="0" width="200" height="140" rx="14" fill="var(--dv-nebo)" stroke-width="3"/>
+      <circle class="dv-den" cx="150" cy="44" r="16" fill="var(--sun)"/><path class="dv-noc" d="M156 28a16 16 0 1 0 8 28a13 13 0 0 1-8-28z" fill="var(--sun-l)"/>
+      <path d="M0 100Q50 80 100 98T200 92V126a14 14 0 0 1-14 14H14a14 14 0 0 1-14-14z" fill="var(--dv-kopec3)"/>
+      ${dedinkaVec('gulaty', { x: 52, y: 112, s: .5 })}${dedinkaVec('chalupka', { x: 132, y: 116, s: .4 })}
+      <path d="M100 0v140M0 70h200" stroke-width="5" stroke="var(--dv-drevo)"/><rect x="0" y="0" width="200" height="140" rx="14" fill="none" stroke-width="3"/>
+      <rect x="-14" y="138" width="228" height="14" rx="5" fill="var(--dv-drevo)"/></g>`;
+    const parkety = Array.from({ length: 9 }, (_, i) => `<path d="M${i * 100 - 30} 330L${i * 120 - 160} 480" stroke-width="1.6" opacity=".35"/>`).join('');
+    return `<section class="ds ds-izba" aria-label="Môj domček">
+      <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 0 800 480" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Prázdna izba s oknom do dedinky"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="-10" y="-10" width="820" height="350" fill="var(--sun-l)"/><path d="M-10 40h820" stroke-width="2" opacity=".3"/>
+        ${Array.from({ length: 16 }, (_, i) => `<circle cx="${i * 56 + 20}" cy="${i % 2 ? 150 : 250}" r="3" fill="var(--coral-l)" stroke="none"/>`).join('')}
+        <path d="M-10 330H810V490H-10Z" fill="var(--dv-drevo)"/>${parkety}<path d="M-10 330H810" stroke-width="3"/>
+        <rect x="-10" y="318" width="820" height="14" fill="var(--card)"/>
+        ${okno}
+        <g transform="translate(640 330)"><path d="M-40 0V-170a40 40 0 0 1 80 0V0z" fill="var(--violet-d)"/><path d="M-30 -10V-164a30 30 0 0 1 60 0V-10z" fill="var(--violet)" opacity=".5"/><circle cx="24" cy="-80" r="4" fill="var(--sun)"/></g>
+      </g></svg></div>
+      <div class="ds-hore"><button class="btn kruh dve" data-izba-spat aria-label="Späť do dedinky">${ikn('zavriet')}</button><h1 class="ds-n">Môj domček</h1></div>
+      <p class="ds-izba-tx">Izba je zatiaľ prázdna. Čoskoro si sem postavíš posteľ, poličku aj akvárium.</p>
+    </section>`;
+  },
+};
+
+/* Presun s obláčikmi: obláčiky sa zľava a sprava zatiahnu, pod nimi sa vymení obrazovka a roztiahnu sa. Hýbu sa len transform a opacity.
+   Pri obmedzení pohybu len rýchle prelínanie. */
+const Prechod = {
+  bezi: false,
+  el() {
+    const ob = (k, x, y, w, d) => `<i class="ob" style="--x:${x}%;--y:${y}%;--w:${w}vmax;--d:${d}s">${dedinkaKresby.svg(k, { popis: '' })}</i>`;
+    const e = document.createElement('div'); e.className = 'ob-prechod'; e.setAttribute('aria-hidden', 'true');
+    e.innerHTML = `<div class="ob-zavoj"></div>
+      <div class="ob-str ob-l">${ob('oblak2', 18, 2, 46, 0)}${ob('oblak1', 40, 24, 54, .04)}${ob('oblak2', 8, 46, 50, .02)}${ob('oblak1', 36, 70, 56, .06)}${ob('oblak3', 14, 92, 44, .03)}</div>
+      <div class="ob-str ob-p">${ob('oblak1', 62, 10, 52, .03)}${ob('oblak2', 82, 32, 48, 0)}${ob('oblak1', 60, 56, 56, .05)}${ob('oblak2', 84, 78, 46, .02)}${ob('oblak3', 64, 98, 42, .06)}</div>
+      <b class="ob-n"></b>`;
+    return e;
+  },
+  spusti(nazov, akcia) {
+    if (this.bezi) return; this.bezi = true;
+    let e; try { e = this.el(); e.querySelector('.ob-n').textContent = nazov || ''; if (tiche) e.classList.add('tiche'); document.body.appendChild(e); }
+    catch (x) { this.bezi = false; akcia(); return; } // test bez prehliadača
+    const [tz, tr] = tiche ? [160, 200] : [620, 700];
+    requestAnimationFrame(() => requestAnimationFrame(() => e.classList.add('zatiahni')));
+    setTimeout(() => {
+      try { akcia(); } finally {
+        setTimeout(() => { e.classList.add('roztiahni'); e.classList.remove('zatiahni'); setTimeout(() => { e.remove(); this.bezi = false; }, tr); }, tiche ? 30 : 140);
+      }
+    }, tz);
+  },
+};
+
+document.addEventListener('click', e => {
+  const t = e.target && e.target.closest && e.target.closest('[data-ded], [data-izba-spat]'); if (!t || Prechod.bezi) return;
+  if (t.hasAttribute('data-izba-spat')) { Zvuk.play('whoosh'); Prechod.spusti('Moja dedinka', () => { st.view = 'dedinka'; Render.nova = true; render(); }); return; }
+  e.stopImmediatePropagation(); DedScena.klik(t);
+}, true);
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-ded]')) { e.preventDefault(); e.stopImmediatePropagation(); DedScena.klik(e.target); } }, true);
+try { window.addEventListener('resize', () => { if (st.view === 'dedinka' || st.view === 'izba') DedScena.rozmer(); }); } catch (e) { /* test bez prehliadača */ }
 </script>
 <script type="module">
 // Prihlásenie rodiča a profily detí vo Firebase (projekt svet-za-3-minuty).

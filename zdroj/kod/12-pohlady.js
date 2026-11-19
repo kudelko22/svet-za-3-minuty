@@ -6,7 +6,7 @@ const views = {
     return `${Domov.krajina(t, hot)}
       <section class="dom-start" aria-label="Dnes">
         <div class="dom-hore"><p class="odkaz dom-rec">${Domov.odkaz(t, hot)}</p>
-          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button>${StromKrajina.html()}</div>
+          <button class="dom-mud" data-sova aria-label="Sovička Múdra">${mudra(Domov.vyraz(hot))}</button>${Domov.smerovnik()}${StromKrajina.html()}</div>
         <article class="listok dom-listok hero${hot ? ' hotovy' : ''}">
           <div class="dl-hore">
             <div class="dl-rad"><span class="pec">Téma dňa</span><span class="dop">${datum}</span></div>
@@ -53,7 +53,9 @@ const views = {
       <div class="chips" id="filtre"></div>
       <div id="zoznam" class="list"></div>`;
   },
-  hry: () => hryZoznam(), // 5.0: ihrisko, kreslí 09-hry.js
+  hry: () => hryZoznam(), // 5.0: ihrisko, kreslí 09-hry.js; 5.1: Všetky hry v dedinke
+  dedinka: () => DedScena.html(), // 5.1: Moja dedinka, kreslí 26-dedinka-scena.js
+  izba: () => DedIzba.html(),
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
   anglictina: () => Ang.render(),

@@ -84,7 +84,7 @@ st.upravuje.meno = "Ema"; tvorbaKlik(document.createElement("button"), { ulozitD
 if (!window.Cloud.ulozene || window.Cloud.ulozene.vek !== "starsi") throw new Error("tvorba neulozila");
 for (const a of [nahodnyAvatar(), nahodnyAvatar(), nahodnyAvatar()]) postavicka(a, true);
 st.faza = "appka"; st.dietaId = "d1"; st.avatar = nahodnyAvatar(); st.meno = "Emka";
-for (const v of ['domov','objavuj','temy','hry','odznaky','ja','misia','anglictina']) { st.view = v; render(); }
+for (const v of ['domov','objavuj','temy','hry','dedinka','izba','odznaky','ja','misia','anglictina']) { st.view = v; render(); }
 /* MISIA DNA */
 {
   const kl = (d) => Misie.klik(document.createElement("button"), d);
@@ -813,6 +813,21 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   { Dedinka.prevezmi("dtest2", { start: 7, dar: 11, minute: 3, hocico: 1 }); if (Dedinka.d.start !== 7 || Dedinka.d.hocico !== undefined || Object.keys(Dedinka.telo()).some(k => !DED_UPRAVENE_POLE.includes(k)) || "upravene" in Dedinka.telo()) ch("prevzatie z cloudu"); }
   Object.keys(localStorage.d).filter(k => k.includes("dedinka-")).forEach(k => localStorage.removeItem(k));
   window.Cloud = stare.Cloud; Object.assign(st, { dietaId: stare.id, body: stare.body, dni: stare.dni, flow: stare.flow, auto: stare.auto, ang: stare.ang, misia: stare.misia, hra: stare.hra }); Dedinka.id = null; Dedinka.d = null; }
+/* DEDINKA 5.1: obrazovka (scéna, miesta vecí a hier, voľby, izba, smerovník) */
+{ const ch = t => chyby.push("dedinka obrazovka: " + t), b0 = st.body, v0 = st.view;
+  st.body = 0; st.view = "dedinka"; render(); let h = main.innerHTML;
+  if (!h.includes('data-ded="strom"') || !h.includes('data-ded="dom"') || !h.includes('data-go="hry"') || (h.match(/data-ded="hra:/g) || []).length !== 1 || !h.includes('ds-stavba')) ch("nova dedinka: strom, dom, Vsetky hry, jedno stavenisko");
+  st.body = 700; render(); h = main.innerHTML; const n = DedScena.miestaHier();
+  if (n.filter(m => m.stav === "stavba").length !== 1 || n.length !== DedScena.hry().filter(x => x.cena <= 700).length + 1) ch("odomknute hry a jedno stavenisko");
+  if (new Set(DS_HRY_MIESTA.map(m => m.slice(0, 2).join())).size !== DS_HRY_MIESTA.length || DS_HRY_MIESTA.length < Math.max(HRY.filter(x => x.len !== "starsi").length, HRY.filter(x => x.len !== "mladsi").length)) ch("kazda hra ma svoje miesto");
+  HRY.forEach(x => { if (!dedinkaVec(x.id, {})) ch("hra bez budovy " + x.id); });
+  Dedinka.kluceMiest().forEach(k => { const m = dedMiesto(k); if (!m || m.x < 20 || m.x > DS_W - 20) ch("miesto mimo sceny " + k); });
+  if (dedMiesto("r9c1") || dedMiesto("x")) ch("zle miesto");
+  DED_VECI.forEach(v => { const k = dedKresba(v.id); if (!k || !dedinkaVec(k, {})) ch("vec bez kresby " + v.id); });
+  const o = dedVolby("chalupka", "21"); if (o.farby.stena !== DEDINKA_VOLBY.chalupka["farby.stena"][1] || o.farby.strecha !== DEDINKA_VOLBY.chalupka["farby.strecha"][0] || Object.keys(dedVolby("chalupka", "000")).length || Object.keys(dedVolby("sud", "zz")).length) ch("volby z retazca");
+  st.view = "izba"; render(); if (!main.innerHTML.includes("data-izba-spat")) ch("izba bez cesty spat");
+  st.view = "domov"; render(); if (!main.innerHTML.includes('class="dom-smer" data-go="dedinka"')) ch("smerovnik na Domove");
+  st.body = b0; st.view = v0; render(); }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);

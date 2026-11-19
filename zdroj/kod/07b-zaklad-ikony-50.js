@@ -4,6 +4,7 @@
 const IKN = {
   domov: '<path d="M5.5 11v8a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5v-8z" fill="var(--sun)"/><path d="M10 20.5V16a2 2 0 0 1 4 0v4.500z" fill="var(--violet)"/><path d="M2.8 11.8 12 3.800l9.2 8z" fill="var(--coral)"/>',
   temy: '<path d="M12 6.800C10 5.3 7 4.8 3.5 5.300v13c3.5-.5 6.5 0 8.5 1.500z" fill="var(--sky)"/><path d="M12 6.800c2-1.5 5-2 8.5-1.500v13c-3.5-.5-6.5 0-8.5 1.500z" fill="var(--sky-l)"/><path d="M14.8 10.200c1.2-.4 2.3-.6 3.4-.6M14.8 13.400c1.2-.4 2.3-.6 3.4-.6"/>',
+  dedinka: '<path d="M18 20.5v-5.5"/><circle cx="18" cy="11.5" r="3.8" fill="var(--leaf)"/><path d="M4 12.5v8h9.5v-8z" fill="var(--sun)"/><path d="M7.2 20.5v-3.8h3v3.8z" fill="var(--violet)"/><path d="M2.5 13.2 8.75 6.8l6.25 6.4z" fill="var(--coral)"/><path d="M2 20.5h20"/>',
   hry: '<path d="M7 8h10a5 5 0 0 1 4.8 6.300l-1 3.800a2.6 2.6 0 0 1-4.4 1.100L14 17h-4l-2.4 2.200a2.6 2.6 0 0 1-4.4-1.100l-1-3.800A5 5 0 0 1 7 8z" fill="var(--teal)"/><path d="M7.5 11v3.600M5.7 12.800h3.6"/><circle cx="15.4" cy="11.7" r="1.1" fill="var(--sun)"/><circle cx="17.8" cy="13.9" r="1.1" fill="var(--sun)"/>',
   priatelia: '<circle cx="16.2" cy="9" r="2.8" fill="var(--sky)"/><path d="M13.5 19.500c.3-3.2 1.5-5.2 3.8-5.2 2.3 0 3.8 1.8 4.2 5.200z" fill="var(--sky)"/><circle cx="8.5" cy="8.3" r="3.3" fill="var(--coral)"/><path d="M2.5 19.500c.5-3.8 2.8-6 6-6s5.5 2.2 6 6z" fill="var(--coral)"/>',
   ja: '<path d="M4.5 20.500c.8-4.3 3.7-6.5 7.5-6.500s6.7 2.2 7.5 6.500z" fill="var(--violet)"/><circle cx="12" cy="8.3" r="4.2" fill="var(--sun)"/>',

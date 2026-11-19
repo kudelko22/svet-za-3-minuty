@@ -28,7 +28,7 @@ const PM_STARE_MENU = [
   ['Priatelia', '<circle cx="8.5" cy="8.5" r="3.2"/><circle cx="16" cy="9.5" r="2.6"/><path d="M2.8 19.5c.8-3.4 3-5 5.7-5s4.9 1.6 5.7 5M14 14.6c.6-.3 1.3-.4 2-.4 2.3 0 4.2 1.4 4.9 4.6"/>'],
   ['Ja', '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/>'],
 ];
-const PM_NOVE_MENU = [['Domov', 'domov'], ['Témy', 'temy'], ['Hry', 'hry'], ['Priatelia', 'priatelia'], ['Ja', 'ja']];
+const PM_NOVE_MENU = [['Domov', 'domov'], ['Témy', 'temy'], ['Dedinka', 'dedinka'], ['Priatelia', 'priatelia'], ['Ja', 'ja']];
 
 const Premena = {
   el: null, anim: [], casy: [], koniec: false,
