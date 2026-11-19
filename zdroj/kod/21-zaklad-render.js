@@ -174,6 +174,7 @@ function render(tichy) {
     if (document.activeElement !== inp) inp.value = st.q;
     fillTemy();
   }
+  try { if (typeof DedHudba !== "undefined") DedHudba.obnov(); } catch (e) {} // 5.1: hudba v dedinke (28-dedinka-hudba.js)
   if (st.view === 'dedinka' || st.view === 'izba') DedScena.po();
   if (st.view === 'cesta') DedCesta.po();
   ['domov', 'temy', 'dedinka', 'priatelia', 'ja'].forEach(v => {

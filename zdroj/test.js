@@ -853,6 +853,15 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   { Dedinka.prevezmi("dtest2", { start: 7, dar: 11, minute: 3, hocico: 1 }); if (Dedinka.d.start !== 7 || Dedinka.d.hocico !== undefined || Object.keys(Dedinka.telo()).some(k => !DED_UPRAVENE_POLE.includes(k)) || "upravene" in Dedinka.telo()) ch("prevzatie z cloudu"); }
   Object.keys(localStorage.d).filter(k => k.includes("dedinka-")).forEach(k => localStorage.removeItem(k));
   window.Cloud = stare.Cloud; Object.assign(st, { dietaId: stare.id, body: stare.body, dni: stare.dni, flow: stare.flow, auto: stare.auto, ang: stare.ang, misia: stare.misia, hra: stare.hra }); Dedinka.id = null; Dedinka.d = null; }
+/* DEDINKA 5.1: hudba (modul existuje, noty sedia a bez Web Audio nespadne) */
+{ const ch = t => chyby.push("dedinka hudba: " + t);
+  if (typeof DedHudba === "undefined") ch("modul chyba");
+  else {
+    try { DedHudba.obnov(); if (DedHudba.ide() !== false) ch("v teste bez prehliadaca nema hrat"); } catch (e) { ch("spadlo bez Web Audio: " + e.message); }
+    if (DedHudba.TAKT < 16 || DedHudba.TAKT > 32) ch("pocet taktov " + DedHudba.TAKT);
+    for (const [ak, m] of DedHudba.TAKTY) { const z = m.split(" "); let s = 0; for (let k = 0; k < z.length; k += 2) { s += Number(z[k + 1]); if (z[k] !== "-" && !("ABCDEFG".includes(z[k][0]) && "0123456789".includes(z[k][1]))) ch("zla nota " + z[k]); } if (s !== 8) ch("takt nema 8 osmin: " + m); if (!["C", "F", "Am", "G"].includes(ak)) ch("akord " + ak); }
+  }
+}
 /* DEDINKA 5.1: obrazovka (scéna, miesta vecí a hier, voľby, izba, smerovník) */
 { const ch = t => chyby.push("dedinka obrazovka: " + t), b0 = st.body, v0 = st.view;
   st.body = 0; st.view = "dedinka"; render(); let h = main.innerHTML;
