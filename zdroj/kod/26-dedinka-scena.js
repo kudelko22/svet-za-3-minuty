@@ -136,11 +136,13 @@ const DedScena = {
   rozmer() {
     const sc = document.getElementById('ds-scena'); if (!sc || !sc.getBoundingClientRect) return null;
     const svg = sc.querySelector('svg'), nav = document.getElementById('nav'), top = sc.getBoundingClientRect().top, suf = document.getElementById('dst-suflik');
+    // pri stavaní (27-dedinka-stavanie.js) končí scéna nad šuflíkom; pod ňou pokračuje zem (výplň zdola)
     const dole = suf ? suf.getBoundingClientRect().top + 18 : nav && !nav.hidden && nav.getBoundingClientRect().top > top + 200 ? nav.getBoundingClientRect().top : innerHeight, h = Math.max(300, Math.round(dole - top) + 2);
-    // mierka: podľa výšky, najviac 0,95 (na telefóne vidieť viac dedinky, hore pokračuje obloha); široký displej vyplní šírku
-    const vh = DS_H - DS_Y0, sx = sc.scrollLeft, sw = sc.scrollWidth;
-    let k = Math.min(h / vh, .95); if (k * DS_W < sc.clientWidth) k = sc.clientWidth / DS_W;
-    sc.style.height = h + 'px'; svg.style.width = Math.round(k * DS_W) + 'px'; svg.style.height = Math.min(h, Math.round(k * vh)) + 'px';
+    const pod = suf ? Math.max(0, Math.round(innerHeight - dole)) : 0;
+    // mierka: podľa výšky, najviac 0,95 (na telefóne vidieť viac dedinky, hore pokračuje obloha); široký displej vyplní šírku. Izba má vlastný rozmer 800 × 480.
+    const izba = st.view === 'izba', W = izba ? 800 : DS_W, vh = izba ? 480 : DS_H - DS_Y0, sx = sc.scrollLeft, sw = sc.scrollWidth;
+    let k = Math.min(h / vh, .95); if (k * W < sc.clientWidth) k = sc.clientWidth / W; if (izba && suf) k = Math.min(h / vh, sc.clientWidth / 560); // pri zariaďovaní izby skoro celá izba naraz (miesta sú v strede)
+    sc.style.height = (h + pod) + 'px'; sc.style.paddingBottom = pod + 'px'; svg.style.width = Math.round(k * W) + 'px'; svg.style.height = Math.min(h, Math.round(k * vh)) + 'px';
     if (sw && sc.scrollWidth !== sw) sc.scrollLeft = sx * sc.scrollWidth / sw; // pri zmene veľkosti ostane ten istý kus dedinky
     return sc;
   },
@@ -152,8 +154,8 @@ const DedScena = {
       const n = this.navrat; this.navrat = null;
       const el = n && sc.querySelector(`[data-ded="hra:${n.id}"]`);
       if (el && el.getBoundingClientRect) { const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - s.left - sc.clientWidth / 2; }
-      else sc.scrollLeft = this.x != null ? this.x : (sc.scrollWidth - sc.clientWidth) / 2 - sc.scrollWidth * 60 / DS_W;
-      if (!sc._ds) { sc._ds = 1; sc.addEventListener('scroll', () => { this.x = sc.scrollLeft; }, { passive: true }); }
+      else sc.scrollLeft = st.view === 'izba' ? (sc.scrollWidth - sc.clientWidth) / 2 : this.x != null ? this.x : (sc.scrollWidth - sc.clientWidth) / 2 - sc.scrollWidth * 60 / DS_W;
+      if (!sc._ds) { sc._ds = 1; sc.addEventListener('scroll', () => { if (st.view === 'dedinka') this.x = sc.scrollLeft; }, { passive: true }); }
       if (el && n.zisk > 0) setTimeout(() => this.zisk(el, n.zisk), tiche ? 50 : 700);
     } catch (e) { /* test bez prehliadača */ }
   },

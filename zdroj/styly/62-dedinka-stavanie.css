@@ -95,7 +95,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .dst-a:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .dst-riadok { display: flex; flex-direction: column; gap: 4px; flex: none; }
 .dst-riadok > span { font-weight: 700; font-size: .88rem; color: var(--muted); }
-.dst-volby { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -14px; padding: 2px 14px 4px; }
+.dst-volby { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin-inline: -14px; padding: 7px 14px 8px; }
 .dst-volby::-webkit-scrollbar { display: none; }
 .dst-v { flex: none; width: 42px; height: 42px; padding: 0; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--f, var(--card)); cursor: pointer; }
 .dst-v.tx { width: auto; padding: 0 12px; border-radius: 999px; background: var(--card); font: 800 .85rem/1 var(--fd); color: var(--text); }
@@ -105,3 +105,8 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .dst-v[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--card), 0 0 0 6px var(--sun-d); }
 .dst-v.tx[aria-pressed="true"] { background: var(--sun); }
 @media (prefers-reduced-motion: reduce) { .dst-k, .dst-a { transition: none; } }
+/* scéna pri stavaní: končí nad šuflíkom, pod ňou pokračuje zem (na širokom displeji aj vedľa šuflíka) */
+.dst-zap .ds-scena { box-sizing: border-box; background: var(--dv-zem); }
+.ds-izba.dst-zap .ds-scena { background: linear-gradient(var(--sun-l) 50%, var(--dv-drevo) 50%); }
+.ds-izba .dst-hore { justify-content: space-between; }
+.dst-n { max-width: 260px; }

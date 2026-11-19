@@ -11,8 +11,8 @@ const DST_SKUPINY = [
 // stupeň stromu múdrosti, od ktorého sa vec dá kúpiť (drahšie veci prídu, keď strom rastie; nič sa neminie ani nestratí)
 const dstStupen = v => v.cena <= 60 ? 0 : v.cena <= 150 ? 1 : v.cena <= 300 ? 2 : v.cena <= 500 ? 3 : 4;
 // miesta v izbe (súradnice izby 800 × 480): [x, päta y, mierka, 'p' podlaha alebo 's' stena]; na stenu ide len obraz
-const DST_IZBA = { s1: [95, 352, 1.8, 'p'], s2: [232, 352, 1.8, 'p'], s3: [378, 352, 1.8, 'p'], s4: [522, 352, 1.8, 'p'],
-  s5: [175, 452, 2.2, 'p'], s6: [430, 456, 2.2, 'p'], s7: [165, 196, 2.3, 's'], s8: [742, 200, 2.3, 's'] };
+const DST_IZBA = { s1: [180, 352, 1.7, 'p'], s2: [292, 352, 1.7, 'p'], s3: [404, 352, 1.7, 'p'], s4: [516, 352, 1.7, 'p'],
+  s5: [245, 452, 2.1, 'p'], s6: [500, 456, 2.1, 'p'], s7: [222, 196, 2.2, 's'], s8: [557, 198, 2.2, 's'] };
 // mená volieb a ich hodnôt pre šuflík (farby sa ukazujú ako krúžky)
 const DST_VOLBA_N = { 'farby.stena': 'Stena', 'farby.strecha': 'Strecha', 'farby.dvere': 'Dvere', okna: 'Okná', komin: 'Komín', sezona: 'Ročné obdobie', plod: 'Plody', farba: 'Farba', material: 'Materiál' };
 const DST_HODNOTA_N = { stvorec: 'Štvorcové', okruhle: 'Okrúhle', oblukove: 'Oblúkové', maly: 'Malý', siroky: 'Široký', ziadny: 'Žiadny', jar: 'Jar', leto: 'Leto', jesen: 'Jeseň', zima: 'Zima',
@@ -268,7 +268,20 @@ var DedStav = { // var: render() sa volá aj skôr, než sa tento súbor načít
   // po vykreslení: zapamätaný posun šuflíka, jednorazové animácie sa už neopakujú
   po() {
     if (this.kde !== st.view) { if (this.kde) { this.spat = []; this.reset(); } this.kde = st.view; }
-    this.novy = null; this.otocene = null;
+    // keď sa vyberie vec alebo nová vec do ruky, scéna sa posunie, aby bolo vidieť ju alebo svietiace miesta
+    const cil = this.oznac && this.oznac !== this._o ? this.oznac : this.vyber && this.vyber.id !== this._v ? '*' : null;
+    this._o = this.oznac; this._v = this.vyber && this.vyber.id; this.novy = null; this.otocene = null;
+    if (cil && this.zap) setTimeout(() => this.ukaz(cil), 40);
+  },
+  ukaz(cil) {
+    try {
+      const sc = document.getElementById('ds-scena'); if (!sc) return;
+      const s = sc.getBoundingClientRect(), vid = r => r.left >= s.left + 10 && r.right <= s.right - 10;
+      const els = cil === '*' ? [...sc.querySelectorAll('.dst-ok')] : [sc.querySelector('[data-ded="vec:' + cil + '"]')].filter(Boolean);
+      if (!els.length || els.some(e => vid(e.getBoundingClientRect()))) return;
+      const r = els.map(e => e.getBoundingClientRect()).sort((a, b) => Math.abs(a.left - s.left - s.width / 2) - Math.abs(b.left - s.left - s.width / 2))[0];
+      sc.scrollTo({ left: sc.scrollLeft + r.left + r.width / 2 - s.left - sc.clientWidth / 2, behavior: tiche ? 'auto' : 'smooth' });
+    } catch (e) { /* test bez prehliadača */ }
   },
 };
 
