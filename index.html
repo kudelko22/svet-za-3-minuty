@@ -3367,6 +3367,14 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .hra .kv { display: grid; justify-items: stretch; gap: 14px; font: inherit; color: inherit; }
 .hra .kv svg { width: 100%; }
 .hra .kv .kv-it svg { height: 100%; }
+
+/* 5.1 doladenie Do košíkov: vzor v košíku je väčší a jasný (bol malý a vyblednutý), košík má farbu svojej skupiny */
+.kos { background: color-mix(in srgb, var(--kc) 14%, var(--card)); }
+.kos-n { align-self: center; }
+.kos-vnutri { min-height: 60px; margin: 6px 0 -20px; }
+.kos-mini { width: 60px; height: 60px; margin: 0 -12px; filter: drop-shadow(0 2px 0 rgba(42, 35, 86, .18)); }
+.kosy-4 .kos-mini { width: 48px; height: 48px; margin: 0 -10px; }
+.kos-mini.prazdny { opacity: .92; }
 /* 5.1: pokojnejšia appka. Pohyb ostáva len tam, kde má dôvod (hlavné tlačidlo, odpočet, hra). Dôvody v opravy-51.md. */
 /* 1. kartičky, ikony a medaily nepodskakujú, keď nič nerobia */
 .act-e, .tile-e, .misia-obr, .medaila.velka, .odznak.ma .medaila, .dlazdica:not(.zamknuta) .hr-obr svg,
@@ -5839,7 +5847,7 @@ const KV_HRY = {
       const a = r % 6, b = (a + 1 + nahodne(5)) % 6, ci = nahodne(6), c = KV_FARBY[ci], d = KV_FARBY[(ci + 1 + nahodne(5)) % 6];
       const inyIdx = nahodne(4);
       const moz = Array.from({ length: 4 }, (_, i) => ({ z: i, html: i === inyIdx ? (r % 2 === 0 ? tvar(b, c) : tvar(a, d)) : tvar(a, c) }));
-      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [inyIdx], tr: 'skryty' };
+      return { prompt: '', otazka: 'Tri sú rovnaké. Ktorý je iný?', moz, sprav: [inyIdx], tr: 'skryty' };
     });
   },
   tien() {
@@ -5858,7 +5866,7 @@ const KV_HRY = {
     S.set('ine-bolo-' + kto, [...bolo, ...vyber].slice(-(vsetky.length - KV_KOL)));
     return vyber.map(i => {
       const x = INE_SADY[i], moz = mix(4).map(p => { const n = [...x.t, x.j][p]; return { z: n, nap: n, html: `<span class="kv-it">${ineSvg(INE_OBR[n]())}</span><small class="kv-nap">${esc(n)}</small>` }; });
-      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
+      return { prompt: '', otazka: 'Tri patria k sebe. Ktorý sem nepatrí?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
     });
   },
   poradie(mal) {

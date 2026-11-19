@@ -134,3 +134,11 @@
 .hra .kv { display: grid; justify-items: stretch; gap: 14px; font: inherit; color: inherit; }
 .hra .kv svg { width: 100%; }
 .hra .kv .kv-it svg { height: 100%; }
+
+/* 5.1 doladenie Do košíkov: vzor v košíku je väčší a jasný (bol malý a vyblednutý), košík má farbu svojej skupiny */
+.kos { background: color-mix(in srgb, var(--kc) 14%, var(--card)); }
+.kos-n { align-self: center; }
+.kos-vnutri { min-height: 60px; margin: 6px 0 -20px; }
+.kos-mini { width: 60px; height: 60px; margin: 0 -12px; filter: drop-shadow(0 2px 0 rgba(42, 35, 86, .18)); }
+.kosy-4 .kos-mini { width: 48px; height: 48px; margin: 0 -10px; }
+.kos-mini.prazdny { opacity: .92; }
