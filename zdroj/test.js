@@ -367,6 +367,36 @@ if (new Set(ODZNAKY.map(o => o.id)).size !== ODZNAKY.length || ODZNAKY.length > 
     clearTimeout(h.dalsia);
     if (h.spravne !== KV_KOL - 1) chyby.push("kv spravne " + id + " " + h.spravne);
     Hra.zrus(); } }
+/* NOVE_HRY_51: každá nová hra na každej úrovni od výberu po výsledok; prvé kolo s chybou, ostatné správne, potom sa odomkne ďalšia úroveň */
+{ const ries = (h, chyba) => { const k = h.kola[h.i], K = d => Hra51.klik(null, d);
+    if (h.id === 'kosiky') { if (chyba) K({ h51: 'kos', k: String((k.k + 1) % k.kosy.length) }); K({ h51: 'kos', k: String(k.k) }); }
+    else if (h.id === 'skryte') { if (chyba) { const z = k.veci.find(v => !v.strom && !v.krik && !k.ciele.includes(v.i)); K({ h51: 'sk', i: String(z.i) }); } k.ciele.forEach(i => K({ h51: 'sk', i: String(i) })); }
+    else if (h.id === 'slabiky') { if (chyba) { const z = k.moz.findIndex(m => m !== k.sl[0]); K({ h51: 'sl', j: String(z) }); } k.sl.forEach(s => K({ h51: 'sl', j: String(k.moz.findIndex((m, j) => m === s && !h.vzate.includes(j))) })); }
+    else if (h.id === 'ypsilon') { if (chyba) K({ h51: 'yp', p: k.moz.find(m => m !== k.p) }); K({ h51: 'yp', p: k.p }); }
+    else if (h.id === 'hodiny') { if (chyba) K({ h51: 'hod', t: k.moz.find(m => m !== k.sprav) }); K({ h51: 'hod', t: k.sprav }); }
+    else if (h.id === 'cesticka') { const cesta = k.hv ? [...cesCesta(k.m, k.s, k.hv), ...cesCesta(k.m, k.hv, k.g)] : cesCesta(k.m, k.s, k.g); if (cesta.length !== k.opt) chyby.push('cesticka opt');
+      const chod = () => { K({ h51: 'chod' }); let n = 0; while (h.ide && n++ < 40) { clearTimeout(h.dalsia); h.cesKrok(); } clearTimeout(h.dalsia); };
+      if (k.plan) { if (chyba) { for (let i = 0; i <= k.n; i++) K({ h51: 'sip', s: 'h' }); for (let i = 0; i <= k.n; i++) K({ h51: 'sip', s: 'l' }); chod(); if (!h.chyba || h.odp) chyby.push('cesticka zly plan'); h.poz = k.s.slice(); h.hv = !k.hv; while (h.plan.length) K({ h51: 'zmaz' }); }
+        cesta.forEach(s => K({ h51: 'sip', s })); chod(); }
+      else { if (chyba) { const s = Object.keys(CES_SMER).find(s => !cesKrok(k, h.poz, s)); if (s) K({ h51: 'sip', s }); else h.chyba = true; } cesta.forEach(s => K({ h51: 'sip', s })); } } };
+  for (const vek of ['mladsi', 'starsi']) { st.vek = vek; st.body = 3000; const mal = vek === 'mladsi', ids = HRY_VID().map(x => x.id).filter(x => HRY51[x]);
+    if (ids.join() !== (mal ? 'kosiky,skryte,slabiky,cesticka,hodiny' : 'kosiky,skryte,ypsilon,cesticka,hodiny')) chyby.push('51 hry podla veku ' + ids);
+    for (const id of ids) { if (!OBR_HRY[id] || !dedinkaVec(id, {}) || !dedinkaKresby.RAMCEK[id]) chyby.push('51 bez kresby ' + id);
+      const vs = Hra51.urovne(id, mal); if (vs.length < 3 || vs.length > 5) chyby.push('51 pocet urovni ' + id); S.set(h51Kluc(id), 1);
+      for (let u = 1; u <= vs.length; u++) {
+        Hra.start(id); const h = st.hra; if (!h || !h.n51 || h.faza !== 'vyber' || h.uroven !== u) { chyby.push('51 start ' + id + ' ' + u); break; } render();
+        if ((main.innerHTML.match(/data-h51="ur"/g) || []).length !== vs.length || (main.innerHTML.match(/h51-ur zamk/g) || []).length !== vs.length - u) chyby.push('51 vyber ' + id + ' ' + u);
+        Hra51.zacni(u + 1); if (h.faza !== 'vyber') chyby.push('51 zamknuta uroven ' + id);
+        Hra51.zacni(u); if (h.faza !== 'hra' || !h.kola.length) { chyby.push('51 uroven ' + id + ' ' + u); break; } render();
+        const n = h.kola.length;
+        for (let i = 0; i < n; i++) { if (h.i !== i || h.odp) { chyby.push('51 kolo ' + id + ' ' + u + ' ' + i); break; } ries(h, i === 0); if (!h.odp) { chyby.push('51 nevyriesene ' + id + ' ' + u + ' ' + i); break; } if (i === 0 && h.spravne) chyby.push('51 chyba sa ratala ' + id); render(); clearTimeout(h.dalsia); Hra51.dalej(h); }
+        if (!h.hotovo || h.hotovo.hodnota !== n - 1) { chyby.push('51 vysledok ' + id + ' ' + u + ' ' + (h.hotovo && h.hotovo.hodnota)); break; }
+        const vy = vysledokHry(h); if (u < vs.length ? !vy.includes('Odomkla sa úroveň ' + (u + 1)) : !vy.includes('Úroveň ' + u)) chyby.push('51 vysledok text ' + id + ' ' + u);
+        if (Hra51.odomknute(id, mal) !== Math.min(vs.length, u + 1)) chyby.push('51 odomknutie ' + id + ' ' + u);
+        if (!(rekordText(id, n - 1) || '').includes('hneď správne')) chyby.push('51 rekord ' + id);
+        Hra.zrus(); }
+      if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(OBR_HRY[id] + Hra51.vyberHtml(Hra51.novy(id, mal)))) chyby.push('51 emoji ' + id); } }
+  st.vek = 'mladsi'; }
 /* KRTKO_42 */ for (const vek of ["mladsi", "starsi"]) { st.vek = vek; st.body = 2000; Hra.start("krtko"); const h = st.hra;
   if (!h || h.id !== "krtko" || h.beh || HRY.find(x => x.id === "krtko").cena !== 500) { chyby.push("krtko start " + vek); continue; } render();
   if ((main.innerHTML.match(/data-krt=/g) || []).length !== 9 || !main.innerHTML.includes("data-hv-start") || !main.innerHTML.includes("krt-z")) chyby.push("krtko pole " + vek);
@@ -418,7 +448,7 @@ Hra.start("hviezdy"); Hra.zrus(); if (st.hra) chyby.push("hra zrus");
   if (HRY.find(x => x.id === "ine").len) chyby.push("ine: ma byt pre oba vekove skupiny");
   st.vek = vekPred; st.body = bodyPred;
 }
-if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,pocitaj,iny,hadaj,tien,sova,hviezdy") chyby.push("nove hry");
+if (noveHry(100, 420).map(x => x.id).join() !== "pexeso,pocitaj,iny,hadaj,tien,sova,hviezdy,kosiky,skryte,slabiky") chyby.push("nove hry " + noveHry(100, 420).map(x => x.id));
 if (!odmenyHtml({ noveHry: noveHry(140, 160) }).includes("Pexeso")) chyby.push("odmena hra");
 st.view = "ja"; render(); st.view = "domov"; render();
 /* TAZKE_TEST */

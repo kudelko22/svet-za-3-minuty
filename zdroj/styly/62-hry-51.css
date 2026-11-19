@@ -1,0 +1,136 @@
+/* 5.1: nové hry s úrovňami (09b-hry-51.js). Ruka ako ostatné hry 5.0: atramentový obrys, plný tieň dole, mierne nakrivo. */
+:root { --ces-a: #A8E3A6; --ces-b: #B9EAB2; }
+:root[data-rezim="mesacny"] { --ces-a: #2E5E5C; --ces-b: #356A66; }
+.h51 { display: grid; gap: 14px; }
+.h51-tras { animation: shake .45s; }
+
+/* výber úrovne */
+.h51-uvod { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: center; padding: 10px 14px 10px 6px; rotate: -.8deg; }
+.h51-uvod .hr-obr { height: 74px; }
+.h51-uvod p { margin: 0; font: 500 .98rem/1.4 var(--fb); }
+.h51-urovne { display: grid; gap: 10px; }
+.h51-ur { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; width: 100%; padding: 10px 12px; text-align: left; color: var(--text);
+  background: var(--card); border: var(--obrys); border-radius: 16px 18px 15px 19px; box-shadow: 0 4px 0 var(--ink); cursor: pointer;
+  animation: h51Dopad .45s var(--spring) both; animation-delay: calc(var(--i) * 60ms); rotate: calc((var(--i) - 1.5) * .35deg); }
+.h51-ur:active { translate: 0 3px; box-shadow: 0 1px 0 var(--ink); }
+.h51-c { display: grid; place-items: center; width: 46px; height: 46px; border: var(--obrys); border-radius: 50%; background: var(--sun); font: 800 1.35rem/1 var(--fd); color: #2A2356; }
+.h51-c .ikn { width: 22px; height: 22px; }
+.h51-t { display: grid; gap: 2px; min-width: 0; }
+.h51-t b { font: 800 1.05rem/1.2 var(--fd); }
+.h51-t small { font: 500 .86rem/1.3 var(--fb); color: var(--muted); }
+.h51-ok, .h51-hraj { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: var(--obrys-m); background: var(--teal); }
+.h51-hraj { background: var(--sun); animation: h51Hup 1.6s ease-in-out infinite; }
+.h51-ok .ikn, .h51-hraj .ikn { width: 20px; height: 20px; --iko: #2A2356; }
+.h51-ur.teraz { background: var(--sun-l); }
+:root[data-rezim="mesacny"] .h51-ur.teraz { background: #3A3180; }
+.h51-ur.zamk { cursor: default; background: transparent; border-style: dashed; box-shadow: none; opacity: .8; }
+.h51-ur.zamk .h51-c { background: var(--sand); }
+.h51-ur:disabled { opacity: .75; }
+.h51-nova { display: inline-flex; gap: 8px; align-items: center; justify-content: center; font-weight: 700; }
+.h51-nova .ikn { width: 22px; height: 22px; }
+@keyframes h51Dopad { from { opacity: 0; translate: 0 -18px; } }
+@keyframes h51Hup { 50% { translate: 0 -4px; } }
+
+/* Do košíkov */
+.kos-vec { justify-self: center; display: grid; justify-items: center; gap: 2px; min-width: 150px; padding: 12px 22px 8px; rotate: -1.5deg; }
+.kos-vec .kv-it { width: 104px; height: 104px; }
+.kos-vec.vlozena { animation: kosLet .55s ease-in both; }
+@keyframes kosLet { 40% { translate: 0 -10px; scale: 1.05; } to { translate: 0 120px; scale: .3; opacity: 0; } }
+.kosy { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.kosy-3 { grid-template-columns: repeat(3, 1fr); }
+.kosy-4 { grid-template-columns: repeat(2, 1fr); }
+.kos { position: relative; display: grid; justify-items: center; align-content: end; gap: 0; min-height: 150px; padding: 8px 4px 6px; color: var(--text);
+  background: var(--card); border: var(--obrys); border-radius: 16px 18px 14px 18px; box-shadow: 0 4px 0 var(--ink); cursor: pointer; }
+.kos:nth-child(2n) { rotate: .8deg; } .kos:nth-child(2n+1) { rotate: -.8deg; }
+.kos:active { translate: 0 3px; box-shadow: 0 1px 0 var(--ink); }
+.kos-n { align-self: start; padding: 3px 9px; border: var(--obrys-m); border-radius: 10px; background: var(--kc); font: 800 .86rem/1.15 var(--fd); color: #2A2356; text-align: center; margin-bottom: auto; }
+.kos-vnutri { display: flex; justify-content: center; margin: 8px 0 -16px; position: relative; z-index: 1; min-height: 40px; }
+.kos-mini { width: 40px; height: 40px; margin: 0 -6px; animation: pop .4s var(--spring) both; }
+.kos-mini svg { width: 100%; height: 100%; display: block; }
+.kos-mini.prazdny { opacity: .45; animation: none; }
+.kos-obr { width: 100%; max-width: 110px; height: auto; display: block; position: relative; z-index: 2; }
+.kos.ciel { animation: okPop .5s var(--spring); background: var(--teal-l); }
+.kosy-3 .kos-n { font-size: .78rem; padding: 3px 5px; }
+
+/* Kto sa skryl? */
+.skr-ulohe { display: flex; gap: 10px; align-items: center; padding: 8px 12px; rotate: -.6deg; }
+.skr-ciel { flex: none; width: 54px; height: 54px; display: grid; place-items: center; border: var(--obrys-m); border-radius: 50%; background: var(--sun-l); }
+.skr-ciel svg { width: 42px; height: 42px; }
+.skr-ulohe b { flex: 1; font: 800 1.05rem/1.25 var(--fd); }
+.skr-body { display: flex; gap: 5px; }
+.skr-body i { width: 14px; height: 14px; border: 2.5px solid var(--ink); border-radius: 50%; background: var(--card); }
+.skr-body i.ok { background: var(--teal); animation: okPop .4s var(--spring); }
+.skr-pole { padding: 0; overflow: hidden; border-radius: 18px 20px 17px 21px; rotate: .5deg; }
+.frame .skr-svg { display: block; width: 100%; height: auto; aspect-ratio: auto; touch-action: manipulation; }
+.skr-vec { cursor: pointer; }
+.skr-vec:focus-visible { outline: none; }
+.skr-vec:focus-visible rect { stroke: var(--violet); stroke-width: 3; stroke-dasharray: 4 4; }
+.skr-kruh { animation: skrKruh .45s var(--spring) both; transform-box: fill-box; transform-origin: center; }
+.skr-x { animation: pop .3s var(--spring) both; }
+@keyframes skrKruh { from { scale: .3; opacity: 0; } }
+
+/* Slabikový vláčik */
+.slab-obr { justify-self: center; padding: 10px 26px; }
+.slab-obr .kv-it { width: 110px; height: 110px; }
+.vlacik { display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 4px 6px; border-bottom: 4px solid var(--ink); position: relative; }
+.vlacik::after { content: ''; position: absolute; left: 0; right: 0; bottom: -10px; height: 4px; background: repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 16px); }
+.vl-loko { width: 64px; height: 57px; flex: none; }
+.vagon { position: relative; display: grid; place-items: center; min-width: 62px; height: 50px; padding: 0 6px; margin-bottom: 7px; border: var(--obrys); border-radius: 9px; background: var(--card);
+  border-style: dashed; font: 800 1.35rem/1 var(--fd); color: #2A2356; }
+.vagon::before, .vagon::after { content: ''; position: absolute; bottom: -11px; width: 13px; height: 13px; border-radius: 50%; background: var(--ink); }
+.vagon::before { left: 8px; } .vagon::after { right: 8px; }
+.vagon.plny { background: var(--vc); border-style: solid; animation: okPop .4s var(--spring); }
+.vlacik.ide { animation: vlakIde 1.2s .25s ease-in both; }
+@keyframes vlakIde { 20% { translate: -6px 0; } to { translate: 120% 0; } }
+.slab-moz .kv-btn { min-width: 78px; font: 800 1.35rem/1 var(--fd); }
+
+/* I alebo Y? */
+.tabula { position: relative; display: grid; place-items: center; min-height: 150px; padding: 18px 12px 26px; border: 8px solid var(--dv-drevo); outline: 3px solid var(--ink); outline-offset: -1px;
+  border-radius: 14px; background: #2F6B4F; box-shadow: 0 5px 0 var(--ink); rotate: -.8deg; }
+.tab-slovo { font: 800 2.5rem/1.1 var(--fd); color: #F4F8EE; letter-spacing: .02em; text-align: center; }
+.tab-medz { display: inline-block; min-width: .6em; height: 1.05em; margin: 0 .03em; vertical-align: -.12em; border-bottom: 4px dashed #F4F8EE; }
+.tab-medz.plna { min-width: 0; margin: 0; border-bottom-color: transparent; color: var(--sun); animation: pop .35s var(--spring); }
+.krieda { position: absolute; right: 18px; bottom: 6px; width: 34px; height: 9px; border-radius: 3px; background: #F4F8EE; border: 2px solid var(--ink); rotate: -8deg; }
+.yps-moz { grid-template-columns: repeat(2, 1fr); }
+.yps-moz .kv-btn { min-height: 76px; font: 800 2.2rem/1 var(--fd); }
+
+/* Cestička */
+.ces-pole { padding: 6px; justify-self: center; width: min(100%, 340px); rotate: .5deg; }
+.frame .ces-svg { display: block; width: 100%; height: auto; aspect-ratio: auto; }
+.ces-sova { transition: transform .32s var(--spring); }
+.ces-hv { animation: h51Hup 1.4s ease-in-out infinite; }
+.ces-min { font: 600 .8rem/1 var(--fb); color: var(--muted); }
+.ces-plan { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; min-height: 40px; padding: 6px 8px; border: var(--obrys-m); border-style: dashed; border-radius: 14px; background: var(--card); }
+.ces-plan small { align-self: center; font: 500 .86rem/1.2 var(--fb); color: var(--muted); }
+.ces-krok { display: grid; place-items: center; width: 30px; height: 30px; border: 2.5px solid var(--ink); border-radius: 9px; background: var(--sun); animation: pop .3s var(--spring) both; }
+.ces-krok .ikn { width: 18px; height: 18px; rotate: var(--r); --iko: #2A2356; }
+.ces-krok.teraz { background: var(--teal); scale: 1.18; }
+.ces-ovl { display: flex; gap: 14px; align-items: center; justify-content: center; }
+.ces-kriz { display: grid; grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(3, 50px); gap: 4px; }
+.ces-sip { width: 58px; height: 50px; min-height: 0; padding: 0; }
+.ces-sip .ikn { width: 28px; height: 28px; }
+.ces-sip[data-s="h"] { grid-column: 2; grid-row: 1; } .ces-sip[data-s="h"] .ikn { rotate: -90deg; }
+.ces-sip[data-s="l"] { grid-column: 1; grid-row: 2; } .ces-sip[data-s="l"] .ikn { rotate: 180deg; }
+.ces-sip[data-s="p"] { grid-column: 3; grid-row: 2; }
+.ces-sip[data-s="d"] { grid-column: 2; grid-row: 3; } .ces-sip[data-s="d"] .ikn { rotate: 90deg; }
+.ces-akcie { display: grid; gap: 8px; }
+.ces-zmaz { min-height: 46px; }
+.ces-chod { min-height: 56px; padding: 0 16px; }
+.ces-kroky { min-width: 70px; text-align: center; font: 700 .95rem/1.2 var(--fd); color: var(--muted); }
+
+/* Koľko je hodín? */
+.hod-karta { justify-self: center; padding: 12px; border-radius: 50%; rotate: -1deg; }
+.hod-svg { display: block; width: min(62vw, 230px); height: auto; }
+.hod-hod, .hod-min { transition: transform .5s var(--spring); }
+.hod-moz .kv-btn { min-height: 62px; font: 800 1.35rem/1 var(--fd); }
+.hod-moz.slovom .kv-btn { font-size: 1.02rem; line-height: 1.2; padding: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .h51-ur, .h51-hraj, .kos-vec.vlozena, .kos-mini, .vlacik.ide, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
+  .ces-sova, .hod-hod, .hod-min { transition: none; }
+}
+
+/* oprava: .kv v 24-domov-strom.css (týždeň a strom 5.1) má rovnaké meno ako obal hier 4.1 a prepisoval ich (úzka karta, obrázky 32 px) */
+.hra .kv { display: grid; justify-items: stretch; gap: 14px; font: inherit; color: inherit; }
+.hra .kv svg { width: 100%; }
+.hra .kv .kv-it svg { height: 100%; }
