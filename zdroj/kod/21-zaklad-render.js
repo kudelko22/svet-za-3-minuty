@@ -139,6 +139,8 @@ function render(tichy) {
   document.body.classList.toggle('dm-rezim', dm);
   document.body.classList.toggle('hra-rezim', hra);
   document.body.classList.toggle('ded-v', !brana && !auto && !hra && !flow && (st.view === 'dedinka' || st.view === 'izba')); // 5.1: dedinka na celú obrazovku
+  if (DedStav && st.view !== 'dedinka' && st.view !== 'izba') DedStav.zap = false; // 5.1: stavanie sa končí odchodom z dedinky
+  document.body.classList.toggle('ded-stav', !brana && !auto && !hra && !flow && (st.view === 'dedinka' || st.view === 'izba') && !!DedStav && DedStav.zap); // pri stavaní bez hornej lišty a menu
   if (brana || auto || hra || flow) document.body.classList.remove('domov-v'); // 5.0: trieda Domova nesmie ostať v téme, kvíze, hre a aute
   if (brana) { renderBrana(); return; }
   if (auto) { renderAuto(); return; }

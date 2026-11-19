@@ -785,7 +785,7 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   if (!Dedinka.presun("r1c1", "r1c7").ok || Dedinka.d.miesta.r1c1 || !Dedinka.d.miesta.r1c7) ch("presun");
   if (Dedinka.presun("r1c7", "r1c4").ok) ch("presun na obsadene"); if (!Dedinka.otoc("r1c7") || Dedinka.d.miesta.r1c7[1] !== 0) ch("otocenie");
   if (!Dedinka.kup("postel").ok || Dedinka.poloz("postel", "r1c8").ok) ch("nabytok patri len do izby");
-  if (!Dedinka.polozIzba("postel", "s3").ok || Dedinka.d.izba.s3 !== "postel") ch("izba"); if (Dedinka.predaj("postel", "s3").vrat !== 35) ch("predaj z izby");
+  if (!Dedinka.polozIzba("postel", "s3").ok || Dedinka.d.izba.s3[0] !== "postel") ch("izba"); if (Dedinka.predaj("postel", "s3").vrat !== 35) ch("predaj z izby");
   { const dar0 = Dedinka.d.dar, min0 = Dedinka.d.minute; st.body = 1234 + 1000; Dedinka.d.minute = 0; Dedinka.d.dar = 0; if (Dedinka.mesec() !== 1000) ch("mesec = body - start + dar - minute"); Dedinka.d.minute = 5000; if (Dedinka.mesec() !== 0) ch("mesec nie je zaporny"); Dedinka.d.minute = min0; Dedinka.d.dar = dar0; st.body = 1234; }
   { const z = Dedinka.cisti({ start: -5, dar: 1e9, minute: "x", zem: 99, miesta: { r9c9: ["sud", 0, ""], r1c1: ["sud", 1, "AB!?zz"], r1c2: ["nie-je", 0, ""] }, batoh: { sud: 1e9, nieje: 3 }, truhly: { cakaju: ["drevo", "zle"], temy: -4 }, cesta: { vzate: [0, 5, 31, "7"] } });
     if (z.start !== 0 || z.dar !== 100000 || z.minute !== 0 || z.zem !== 5 || Object.keys(z.miesta).join() !== "r1c1" || z.miesta.r1c1[2] !== "zz" || z.batoh.sud !== 99 || z.batoh.nieje || z.truhly.cakaju.join() !== "drevo" || z.truhly.temy !== 0 || z.cesta.vzate.join() !== "5,7") ch("cistenie dokumentu " + JSON.stringify(z));
@@ -828,6 +828,55 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   st.view = "izba"; render(); if (!main.innerHTML.includes("data-izba-spat")) ch("izba bez cesty spat");
   st.view = "domov"; render(); if (!main.innerHTML.includes('class="dom-smer" data-go="dedinka"')) ch("smerovnik na Domove");
   st.body = b0; st.view = v0; render(); }
+/* DEDINKA 5.1: stavanie (kúpa a položenie, posun, otočenie, voľby, uschovanie, predaj, Späť, limity, izba) */
+{ const ch = t => chyby.push("dedinka stavanie: " + t), stare = { id: st.dietaId, body: st.body, dni: st.dni, view: st.view, Cloud: window.Cloud };
+  window.Cloud = undefined; Object.assign(st, { dietaId: "dstav1", body: 0, dni: [], view: "dedinka" }); Dedinka.id = null; Dedinka.d = null;
+  const D = DedStav, el = { dataset: {} }, tuk = ded => D.klik({ dataset: { ded } }), akc = (dst, o = {}) => D.akcia({ dataset: { dst, ...o } });
+  let d = Dedinka.ziskaj(); D.zacni();
+  if (!D.zap || !main.innerHTML.includes("dst-suflik") || !main.innerHTML.includes('data-ded="miesto:r1c1"') || !main.innerHTML.includes('data-ded="zam:r3c1"') || !main.innerHTML.includes('data-ded="vec:r2c2"')) ch("rezim stavania: krúžky, zamknutý rad, ťuk na vec");
+  if (D.klik({ dataset: { ded: "hra:pexeso" } }) !== true || st.hra) ch("pri stavani sa hra nespusti");
+  // kúpa a položenie, Späť do 10 s vráti hviezdy
+  akc("karta", { k: "obchod" }); akc("sk", { k: "strom" }); akc("vec", { id: "jablon", z: "obchod" });
+  if (!D.vyber || D.vyber.id !== "jablon") ch("vyber z obchodu");
+  if (!main.innerHTML.includes("dst-ok")) ch("svietiace miesta pre vybranú vec");
+  tuk("miesto:r1c1"); if (!d.miesta.r1c1 || d.miesta.r1c1[0] !== "jablon" || Dedinka.mesec() !== 55 || D.oznac !== "r1c1") ch("kupa a polozenie " + Dedinka.mesec());
+  akc("spat"); if (d.miesta.r1c1 || Dedinka.mesec() !== 100 || Dedinka.vlastni("jablon")) ch("Spat vrati nakup aj hviezdy");
+  akc("vec", { id: "jablon", z: "obchod" }); tuk("miesto:r1c1"); D.spat[D.spat.length - 1].cas -= 11000; akc("spat");
+  if (d.miesta.r1c1 || Dedinka.batoh().jablon !== 1 || Dedinka.mesec() !== 55) ch("po 10 s ide vec do batohu, hviezdy ostanu minute");
+  // položenie z batohu, posun, otočenie, voľby
+  akc("karta", { k: "batoh" }); akc("vec", { id: "jablon", z: "batoh" }); tuk("miesto:r1c2"); if (!d.miesta.r1c2 || Dedinka.batoh().jablon) ch("polozenie z batohu");
+  D.oznac = "r1c2"; akc("posun"); tuk("miesto:r2c2"); if (!d.miesta.r1c2 || D.posun !== true) ch("posun na obsadene sa nesmie");
+  tuk("miesto:r2c6"); if (d.miesta.r1c2 || !d.miesta.r2c6 || D.oznac !== "r2c6") ch("posun");
+  akc("otoc"); if (d.miesta.r2c6[1] !== 1) ch("otocenie");
+  akc("volba", { i: 0, h: 3 }); akc("volba", { i: 1, h: 2 }); if (d.miesta.r2c6[2] !== "32") ch("volby " + d.miesta.r2c6[2]);
+  akc("spat"); if (d.miesta.r2c6[2] !== "") ch("viac zmien farby = jeden krok Spat");
+  akc("spat"); if (d.miesta.r2c6[1] !== 0) ch("Spat otocenia"); akc("spat"); if (!d.miesta.r1c2 || d.miesta.r2c6) ch("Spat posunu");
+  // uschovanie a predaj (raz sa opýta), darček sa nepredá
+  D.oznac = "r1c2"; akc("uschovaj"); if (d.miesta.r1c2 || Dedinka.batoh().jablon !== 1) ch("uschovat"); akc("spat"); if (!d.miesta.r1c2) ch("Spat uschovania");
+  D.oznac = "r1c2"; akc("predaj"); if (!d.miesta.r1c2 || D.istota !== "r1c2") ch("predaj sa najprv opyta");
+  akc("predaj"); if (d.miesta.r1c2 || Dedinka.mesec() !== 77) ch("predaj vrati polovicu " + Dedinka.mesec());
+  akc("spat"); if (!d.miesta.r1c2 || Dedinka.mesec() !== 55) ch("Spat predaja");
+  D.oznac = "r2c2"; akc("predaj"); akc("predaj"); if (!d.miesta.r2c2) ch("darovanu chalupku nejde predat");
+  // limity: zamknutá vec podľa stupňa stromu, málo hviezd, široká vec nie cez cestu, zamknutý rad
+  D.reset(); akc("vec", { id: "stodola", z: "obchod" }); if (D.vyber) ch("stodola je zamknuta pri semienku");
+  st.dni = Array.from({ length: 8 }, (_, i) => "2026-01-" + String(i + 1).padStart(2, "0")); d.dar += 1000;
+  akc("vec", { id: "stodola", z: "obchod" }); if (!D.vyber) ch("stodola sa odomkne s velkym stromom");
+  if (D.mozeNa("stodola", "r1c4") || !D.mozeNa("stodola", "r1c5") || D.mozeNa("stodola", "r1c8")) ch("siroka vec: nie cez cestu, nie za okraj");
+  tuk("miesto:r1c4"); if (d.miesta.r1c4) ch("siroka vec na c4");
+  d.dar -= Dedinka.mesec() - 3; D.reset(); akc("vec", { id: "kvety", z: "obchod" }); if (D.vyber) ch("malo hviezd");
+  d.dar += 500; Dedinka.obnov(); D.reset(); if (Dedinka.rady() < 4) ch("zem po raste stromu"); akc("vec", { id: "kvety", z: "obchod" }); tuk("miesto:r5c1"); if (d.miesta.r5c1) ch("zamknuty rad");
+  D.reset(); akc("vec", { id: "postel", z: "obchod" }); if (D.vyber) ch("nabytok nie von");
+  // izba: nábytok na pevné miesta, obraz len na stenu, posun a voľby ako vonku
+  D.reset(); st.view = "izba"; render(); D.po(); if (!main.innerHTML.includes('data-ded="miesto:s1"') || !main.innerHTML.includes("dst-suflik")) ch("izba pri stavani");
+  akc("vec", { id: "postel", z: "obchod" }); tuk("miesto:s7"); if (d.izba.s7) ch("postel na stenu");
+  tuk("miesto:s1"); if (!d.izba.s1 || d.izba.s1[0] !== "postel") ch("postel do izby");
+  akc("volba", { i: 0, h: 2 }); akc("otoc"); if ((d.izba.s1 || []).join() !== "postel,1,2") ch("volby v izbe");
+  akc("posun"); tuk("miesto:s5"); if (d.izba.s1 || !d.izba.s5) ch("posun v izbe");
+  akc("vec", { id: "obraz", z: "obchod" }); tuk("miesto:s2"); tuk("miesto:s8"); if (d.izba.s2 || !d.izba.s8) ch("obraz len na stenu");
+  if (!/dv-postel/.test(DedIzba.html())) ch("nabytok sa kresli v izbe");
+  akc("hotovo"); if (D.zap || main.innerHTML.includes("dst-suflik") || !DedIzba.html().includes("dv-postel")) ch("Hotovo");
+  { const z = Dedinka.cisti({ izba: { s1: "stol", s2: ["kreslo", 1, "3"], s3: ["sud", 0, ""] } }).izba; if (z.s1.join() !== "stol,0," || z.s2.join() !== "kreslo,1,3" || z.s3) ch("cistenie izby"); }
+  Object.assign(st, { dietaId: stare.id, body: stare.body, dni: stare.dni, view: stare.view }); window.Cloud = stare.Cloud; Dedinka.id = null; Dedinka.d = null; D.reset(); D.zap = false; D.spat = []; render(); }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);

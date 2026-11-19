@@ -60,7 +60,9 @@ const Dedinka = {
     for (const k of Object.keys(d.miesta)) { const v = d.miesta[k]; d.miesta[k] = [v[0], v[1] ? 1 : 0, typeof v[2] === 'string' ? v[2].replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY) : '']; }
     const kolko = (m) => mapa(m, (k, v) => DED_VEC[k] && Number.isFinite(+v) && +v > 0);
     d.batoh = kolko(r.batoh); d.dary = kolko(r.dary); for (const k of Object.keys(d.batoh)) d.batoh[k] = ci(d.batoh[k], 1, 99, 1); for (const k of Object.keys(d.dary)) d.dary[k] = ci(d.dary[k], 1, 99, 1);
-    d.izba = mapa(r.izba, (k, v) => DED_SLOT.test(k) && DED_VEC[v] && DED_VEC[v].sk === 'nabytok');
+    // izba: { s3: [typ, zrkadlo, voľby] } ako miesta vonku (starší zápis { s3: typ } sa prevedie)
+    d.izba = mapa(r.izba, (k, v) => { const id = Array.isArray(v) ? v[0] : v; return DED_SLOT.test(k) && DED_VEC[id] && DED_VEC[id].sk === 'nabytok'; });
+    for (const k of Object.keys(d.izba)) { const v = [].concat(d.izba[k]); d.izba[k] = [v[0], v[1] ? 1 : 0, typeof v[2] === 'string' ? v[2].replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY) : '']; }
     const c = r.cesta && typeof r.cesta === 'object' ? r.cesta : {};
     d.cesta = { mes: /^\d{4}-\d\d$/.test(c.mes) ? c.mes : '', kroky: ci(c.kroky, 0, 1e5, 0), vzate: (Array.isArray(c.vzate) ? c.vzate : []).map(Number).filter(x => x >= 1 && x <= DED_ZASTAVOK).slice(0, DED_ZASTAVOK) };
     if (c.min && typeof c.min === 'object') d.cesta.min = mapa(c.min, (k, v) => /^\d{4}-\d\d$/.test(k) && v && Number.isFinite(+v.s)); // staršie mesiace s nevyzdvihnutými zastávkami: { 'rrrr-mm': { s: kroky, v: [vzaté] } }
@@ -115,7 +117,7 @@ const Dedinka = {
   // ---------- mešec ----------
   mesiac: (dt = new Date()) => key(dt).slice(0, 7),
   mesec() { const d = this.ziskaj(); return d ? Math.max(0, Math.round(st.body - d.start + d.dar - d.minute)) : 0; },
-  vlastni(id) { const d = this.ziskaj(); if (!d) return 0; return (d.batoh[id] || 0) + Object.values(d.miesta).filter(v => v[0] === id).length + Object.values(d.izba).filter(v => v === id).length; },
+  vlastni(id) { const d = this.ziskaj(); if (!d) return 0; return (d.batoh[id] || 0) + Object.values(d.miesta).filter(v => v[0] === id).length + Object.values(d.izba).filter(v => v[0] === id).length; },
   predajne(id) { const d = this.ziskaj(); return d ? Math.max(0, this.vlastni(id) - (d.dary[id] || 0)) : 0; }, // koľko kusov je kúpených (darované sa len uschovávajú)
   // ---------- kúpa a predaj ----------
   kup(id) {
@@ -133,7 +135,7 @@ const Dedinka = {
     const d = this.ziskaj(), v = DED_VEC[id];
     if (!d || !v || v.nekupne) return { ok: false, chyba: 'nepredajne' };
     if (!this.predajne(id)) return { ok: false, chyba: 'darovane' };
-    if (miesto) { if (d.miesta[miesto] && d.miesta[miesto][0] === id) delete d.miesta[miesto]; else if (d.izba[miesto] === id) delete d.izba[miesto]; else return { ok: false, chyba: 'tam-nie-je' }; }
+    if (miesto) { if (d.miesta[miesto] && d.miesta[miesto][0] === id) delete d.miesta[miesto]; else if (d.izba[miesto] && d.izba[miesto][0] === id) delete d.izba[miesto]; else return { ok: false, chyba: 'tam-nie-je' }; }
     else if (d.batoh[id]) { if (!--d.batoh[id]) delete d.batoh[id]; }
     else return { ok: false, chyba: 'nie-je-v-batohu' };
     const vrat = Math.floor(v.cena / 2); d.minute = Math.max(0, d.minute - vrat); this.uloz();
@@ -178,15 +180,34 @@ const Dedinka = {
     if (!this.mozeNa(d.miesta[z][0], na, z)) return { ok: false, chyba: 'obsadene' };
     d.miesta[na] = d.miesta[z]; delete d.miesta[z]; this.uloz(); return { ok: true };
   },
-  otoc(kluc) { const d = this.ziskaj(); if (!d || !d.miesta[kluc]) return false; d.miesta[kluc][1] = d.miesta[kluc][1] ? 0 : 1; this.uloz(); return true; },
-  farby(kluc, f) { const d = this.ziskaj(); if (!d || !d.miesta[kluc]) return false; d.miesta[kluc][2] = String(f || '').replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY); this.uloz(); return true; },
+  vec(kluc) { const d = this.ziskaj(); return !d ? null : DED_SLOT.test(kluc) ? d.izba[kluc] || null : d.miesta[kluc] || null; }, // položená vec vonku alebo v izbe: [typ, zrkadlo, voľby]
+  otoc(kluc) { const v = this.vec(kluc); if (!v) return false; v[1] = v[1] ? 0 : 1; this.uloz(); return true; },
+  farby(kluc, f) { const v = this.vec(kluc); if (!v) return false; v[2] = String(f || '').replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY); this.uloz(); return true; },
+  // Späť pri stavaní: nákup do 10 s sa vráti celý (vec zmizne, hviezdy sú späť); predaj sa vráti (vec na miesto alebo do batohu, hviezdy späť)
+  vratKupu(id, kluc) {
+    const d = this.ziskaj(), v = DED_VEC[id]; if (!d || !v) return { ok: false, chyba: 'nezname' };
+    if (kluc) { const x = this.vec(kluc); if (!x || x[0] !== id) return { ok: false, chyba: 'tam-nie-je' }; delete (DED_SLOT.test(kluc) ? d.izba : d.miesta)[kluc]; }
+    else if (d.batoh[id]) { if (!--d.batoh[id]) delete d.batoh[id]; } else return { ok: false, chyba: 'nie-je-v-batohu' };
+    d.minute = Math.max(0, d.minute - v.cena); this.uloz(); return { ok: true, vrat: v.cena };
+  },
+  vratPredaj(id, vrat, kluc, vec) {
+    const d = this.ziskaj(); if (!d || !DED_VEC[id] || this.mesec() < vrat) return { ok: false, chyba: 'malo-hviezd' };
+    if (kluc) { if (this.vec(kluc) || (!DED_SLOT.test(kluc) && !this.mozeNa(id, kluc))) return { ok: false, chyba: 'obsadene' }; (DED_SLOT.test(kluc) ? d.izba : d.miesta)[kluc] = vec ? [...vec] : [id, 0, '']; }
+    else d.batoh[id] = (d.batoh[id] || 0) + 1;
+    d.minute += vrat; this.uloz(); return { ok: true };
+  },
   // izba prvého domčeka: nábytok na pevných miestach s1..s8
-  polozIzba(id, slot) {
+  polozIzba(id, slot, o = {}) {
     const d = this.ziskaj(), v = DED_VEC[id]; if (!d || !v || v.sk !== 'nabytok' || !DED_SLOT.test(slot)) return { ok: false, chyba: 'nezname' };
     if (!d.batoh[id]) return { ok: false, chyba: 'nie-je-v-batohu' }; if (d.izba[slot]) return { ok: false, chyba: 'obsadene' };
-    if (!--d.batoh[id]) delete d.batoh[id]; d.izba[slot] = id; this.uloz(); return { ok: true };
+    if (!--d.batoh[id]) delete d.batoh[id]; d.izba[slot] = [id, o.zrk ? 1 : 0, String(o.farby || '').replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY)]; this.uloz(); return { ok: true };
   },
-  odoberIzba(slot) { const d = this.ziskaj(); if (!d || !d.izba[slot]) return { ok: false, chyba: 'tam-nie-je' }; const id = d.izba[slot]; delete d.izba[slot]; d.batoh[id] = (d.batoh[id] || 0) + 1; this.uloz(); return { ok: true, id }; },
+  presunIzba(z, na) {
+    const d = this.ziskaj(); if (!d || !d.izba[z] || !DED_SLOT.test(na)) return { ok: false, chyba: 'tam-nie-je' };
+    if (z === na) return { ok: true }; if (d.izba[na]) return { ok: false, chyba: 'obsadene' };
+    d.izba[na] = d.izba[z]; delete d.izba[z]; this.uloz(); return { ok: true };
+  },
+  odoberIzba(slot) { const d = this.ziskaj(); if (!d || !d.izba[slot]) return { ok: false, chyba: 'tam-nie-je' }; const id = d.izba[slot][0]; delete d.izba[slot]; d.batoh[id] = (d.batoh[id] || 0) + 1; this.uloz(); return { ok: true, id }; },
   batoh() { const d = this.ziskaj(); return d ? { ...d.batoh } : {}; },
   // ---------- zem podľa stupňa stromu ----------
   zemPodlaStupna: i => Math.min(DED_RADY, Math.max(DED_ZEM_START, i + 1)), // stupne 0 a 1: 2 rady, potom po jednom (stupeň 4: všetkých 5)

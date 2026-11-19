@@ -1,0 +1,107 @@
+/* 5.1 Moja dedinka: režim stavania (27-dedinka-stavanie.js). Šuflík dole má pevnú výšku, scéna nad ním sa zmenší, aby bolo vidieť všetky rady.
+   Pohyb len s dôvodom: vec dopadne a zvíri prach, voľné miesto pre vybranú vec jemne dýcha. Pri obmedzení pohybu nič. */
+body.ded-stav #top, body.ded-stav #nav { display: none; }
+.dst-stavat { position: absolute; right: max(16px, calc(50% - 50vw + 16px)); bottom: 16px; z-index: 2; padding-inline: 18px 22px; }
+.dst-stavat .ikn { width: 26px; height: 26px; }
+
+/* horná lišta pri stavaní */
+.dst-hore { gap: 8px; }
+.dst-hore .btn.kruh[disabled] { opacity: .45; box-shadow: inset 0 -4px 0 var(--cta-d); }
+.dst-n { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.05rem; text-align: center; }
+.dst-mesec { display: inline-flex; align-items: center; gap: 4px; flex: none; padding: 6px 12px 6px 9px; border-radius: 999px; background: var(--card); border: 2.5px solid var(--ink); font: 800 1.05rem/1 var(--fd); color: var(--text); }
+.dst-mesec .ikn { width: 20px; height: 20px; }
+.dst-hotovo { flex: none; }
+.dst-hotovo .ikn { width: 18px; height: 18px; }
+@media (max-width: 380px) { .dst-n { display: none; } .dst-hore { justify-content: space-between; } }
+
+/* položené veci a miesta v scéne */
+.dst-vec { cursor: pointer; }
+.dst-ram { fill: var(--sun); fill-opacity: .16; stroke: var(--sun-d); stroke-width: 3; stroke-dasharray: 7 5; }
+.dst-pad { transform-box: fill-box; transform-origin: 50% 100%; }
+.dst-zdvih .dst-pad { transform: translateY(-8px); opacity: .7; }
+.dst-el { fill: var(--dv-biela); fill-opacity: .5; stroke: var(--dv-biela); stroke-width: 2.4; stroke-dasharray: 6 4; }
+.dst-ok .dst-el { fill: var(--sun); fill-opacity: .6; stroke: var(--sun-d); stroke-width: 2.8; }
+.dst-plus { stroke: var(--ink); stroke-width: 3; fill: none; stroke-linecap: round; }
+.dst-nie { opacity: .35; }
+.dst-zam .dst-el { fill: var(--ink); fill-opacity: .08; stroke: var(--ink); stroke-opacity: .35; }
+.dst-zam .ikn, .dst-zam g { opacity: .8; }
+.dst-zam g { fill: none; stroke: var(--ink); stroke-width: 2; }
+.dst-st .dst-el { fill-opacity: .35; }
+.ds-izba .dst-el { stroke: var(--dv-drevo-d); fill: var(--card); }
+.ds-izba .dst-ok .dst-el { fill: var(--sun); stroke: var(--sun-d); }
+.dst-prach circle { fill: var(--dv-biela); stroke: none; opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .dst-ok .dst-el { animation: dstDych 1.6s ease-in-out infinite; }
+  .dst-dopad .dst-pad { animation: dstDopad .6s cubic-bezier(.3, .8, .35, 1) both; }
+  .dst-dopad .dst-prach circle { transform-box: fill-box; transform-origin: 50% 50%; animation: dstPrach .7s ease-out .3s both; }
+  .dst-otoc .dst-pad { animation: dstOtoc .35s ease-out; }
+  .dst-zdvih .dst-pad { transition: transform .2s ease-out; }
+}
+@keyframes dstDych { 0%, 100% { fill-opacity: .45; } 50% { fill-opacity: .85; } }
+@keyframes dstDopad { 0% { transform: translateY(-46px); opacity: 0; } 45% { transform: translateY(0) scale(1); opacity: 1; } 60% { transform: scale(1.07, .9); } 80% { transform: scale(.98, 1.03); } 100% { transform: none; } }
+@keyframes dstPrach { 0% { opacity: .9; transform: translate(0, 0) scale(.6); } 100% { opacity: 0; transform: translate(var(--dx), -6px) scale(1.6); } }
+@keyframes dstOtoc { 0% { transform: scaleX(1); } 50% { transform: scaleX(.1); } 100% { transform: scaleX(1); } }
+
+/* šuflík dole */
+.dst-suflik { position: fixed; z-index: 5; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%, 620px); height: min(300px, 44dvh); display: flex; flex-direction: column; gap: 8px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: var(--card); border: 2.5px solid var(--ink); border-bottom: 0; border-radius: 24px 24px 0 0;
+  box-shadow: 0 -4px 0 color-mix(in srgb, var(--ink) 12%, transparent); overflow-y: auto; overscroll-behavior: contain; color: var(--text); }
+.dst-suflik::before { content: ''; flex: none; align-self: center; width: 42px; height: 5px; margin: -2px 0 0; border-radius: 9px; background: var(--line, var(--sand)); }
+.dst-karty { display: flex; gap: 8px; flex: none; }
+.dst-karty button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; border-radius: 14px; border: 2.5px solid var(--ink); background: var(--bg, var(--card));
+  font: 800 1rem/1 var(--fd); color: var(--text); cursor: pointer; }
+.dst-karty button[aria-selected="true"] { background: var(--sun); color: var(--cta-t, var(--text)); box-shadow: inset 0 -4px 0 var(--sun-d); }
+.dst-karty .ikn { width: 22px; height: 22px; }
+.dst-poc { font-style: normal; min-width: 22px; padding: 2px 6px; border-radius: 999px; background: var(--card); border: 2px solid var(--ink); font-size: .8rem; color: var(--text); }
+.dst-sk { display: flex; gap: 6px; flex: none; overflow-x: auto; scrollbar-width: none; margin-inline: -14px; padding-inline: 14px; }
+.dst-sk::-webkit-scrollbar { display: none; }
+.dst-sk button { flex: none; min-height: 38px; padding: 0 13px; border-radius: 999px; border: 2.5px solid var(--ink); background: var(--card); font: 800 .9rem/1 var(--fd); color: var(--text); cursor: pointer; }
+.dst-sk button[aria-pressed="true"] { background: var(--violet); color: #fff; }
+.dst-rada { margin: 0; flex: none; min-height: 1.3em; font-weight: 600; font-size: .92rem; color: var(--muted); }
+.dst-odkaz { margin-left: 4px; padding: 3px 9px; border-radius: 999px; border: 2px solid var(--ink); background: var(--sun-l); font: 800 .85rem/1.2 var(--fd); color: var(--text); cursor: pointer; }
+.dst-pas { display: flex; gap: 10px; flex: none; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; margin-inline: -14px; padding: 2px 14px 8px; }
+.dst-pas::-webkit-scrollbar { display: none; }
+.dst-prazdny { margin: 8px 0; font-weight: 600; color: var(--muted); }
+/* karta veci: obrázok, meno, dole vždy rovnaký pásik (cena, zámok alebo počet v batohu) */
+.dst-k { position: relative; flex: none; width: 96px; height: 124px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px 7px; scroll-snap-align: start;
+  border-radius: 16px; border: 2.5px solid var(--ink); background: var(--card); box-shadow: 0 3px 0 var(--ink); color: var(--text); cursor: pointer; transition: transform .15s; }
+.dst-k:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.dst-k.vyb { background: var(--sun-l); border-color: var(--sun-d); box-shadow: 0 0 0 3px var(--sun), 0 3px 0 var(--ink); }
+.dst-obr { flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; }
+.dst-obr .dv-svg { width: 100%; height: 100%; max-height: 58px; }
+.dst-kn { font: 800 .8rem/1.1 var(--fd); text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dst-cena { display: inline-flex; align-items: center; gap: 3px; padding: 2px 9px 2px 6px; border-radius: 999px; background: var(--sun-l); border: 2px solid var(--ink); font: 800 .82rem/1.1 var(--fd); color: var(--text); white-space: nowrap; }
+.dst-cena .ikn { width: 15px; height: 15px; }
+.dst-k.malo .dst-cena { background: var(--card); }
+.dst-k.malo .dst-obr, .dst-k.zam .dst-obr { opacity: .45; }
+.dst-zam { background: var(--card); font-size: .72rem; max-width: 100%; overflow: hidden; }
+.dst-ma { background: var(--teal-l); }
+.dst-pocet { background: var(--sky-l); }
+
+/* panel vybranej veci: akcie a voľby */
+.dst-vh { display: flex; align-items: center; gap: 10px; flex: none; }
+.dst-vh > .dst-obr { flex: none; width: 52px; height: 52px; }
+.dst-vh > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.dst-vh b { font: 800 1.15rem/1.1 var(--fd); }
+.dst-vh small { font-weight: 600; color: var(--muted); }
+.dst-vh .btn.kruh { width: 42px; height: 42px; flex: none; }
+.dst-akcie { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: none; }
+.dst-a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 62px; padding: 6px 2px; border-radius: 14px; border: 2.5px solid var(--ink); background: var(--card);
+  box-shadow: 0 3px 0 var(--ink); font: 800 .8rem/1.1 var(--fd); color: var(--text); cursor: pointer; }
+.dst-a .ikn { width: 26px; height: 26px; }
+.dst-a i { font-style: normal; color: var(--ok-t, var(--teal-d)); }
+.dst-a[aria-pressed="true"], .dst-a.istota { background: var(--sun); box-shadow: inset 0 -4px 0 var(--sun-d), 0 3px 0 var(--ink); }
+.dst-a[aria-disabled="true"] { opacity: .55; box-shadow: none; }
+.dst-a:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.dst-riadok { display: flex; flex-direction: column; gap: 4px; flex: none; }
+.dst-riadok > span { font-weight: 700; font-size: .88rem; color: var(--muted); }
+.dst-volby { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -14px; padding: 2px 14px 4px; }
+.dst-volby::-webkit-scrollbar { display: none; }
+.dst-v { flex: none; width: 42px; height: 42px; padding: 0; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--f, var(--card)); cursor: pointer; }
+.dst-v.tx { width: auto; padding: 0 12px; border-radius: 999px; background: var(--card); font: 800 .85rem/1 var(--fd); color: var(--text); }
+.dst-v.dst-vz { background: var(--card); display: grid; place-items: center; }
+.dst-v .dst-obr.mini { width: 30px; height: 30px; }
+.dst-v .dv-svg { max-height: 30px; }
+.dst-v[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--card), 0 0 0 6px var(--sun-d); }
+.dst-v.tx[aria-pressed="true"] { background: var(--sun); }
+@media (prefers-reduced-motion: reduce) { .dst-k, .dst-a { transition: none; } }

@@ -100,10 +100,11 @@ const DedScena = {
     Object.entries((d && d.miesta) || {}).forEach(([kl, [typ, zrk, volby]]) => {
       const vec = DED_VEC[typ], kres = dedKresba(typ), m = vec && kres && dedMiesto(kl, vec.sirka);
       if (!m || m.rad > rady) return;
-      v.push({ y: m.y, html: dedinkaVec(kres, { x: m.x, y: m.y, s: m.s, zrkadlo: !!zrk, ...dedVolby(kres, volby) }) });
+      v.push({ y: m.y, html: DedStav.obal(kl, dedinkaVec(kres, { x: m.x, y: m.y, s: m.s, zrkadlo: !!zrk, ...dedVolby(kres, volby) }), m, typ, !!zrk) }); // 27-dedinka-stavanie.js: pri stavaní sa dá ťuknúť
     });
+    v.push(...DedStav.miesta()); // pri stavaní krúžky voľných miest a zamknutý rad
     // zamknutá zem: prvý zamknutý rad má po stranách tabuľku so stromčekom (zem pribudne, keď strom vyrastie)
-    if (rady < 5) { const r = rady + 1, [y, s, g] = DS_RADY[r];
+    if (rady < 5 && !DedStav.zap) { const r = rady + 1, [y, s, g] = DS_RADY[r];
       [-1, 1].forEach(z => v.push({ y, html: this.tuk('zem', 'Ďalšia zem: pribudne, keď strom múdrosti vyrastie', this.tabulka(DS_X + z * (g + 2.1 * DS_RADY[r][3]), y, s), ' ds-zem') })); }
     // hlavný dom
     { const [dx, y, s] = DS_DOM; v.push({ y, html: this.tuk('dom', 'Môj domček. Vojsť dnu', dedinkaVec('domov', { x: DS_X + dx, y, s }), ' ds-dom') }); }
@@ -125,17 +126,17 @@ const DedScena = {
       <path d="M-17 -31h34" stroke-dasharray="1 4" opacity=".5"/></g>`;
   },
   html() {
-    return `<section class="ds" aria-label="Moja dedinka">
+    return `<section class="ds${DedStav.zap ? ' dst-zap' : ''}" aria-label="Moja dedinka">
       <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 ${DS_Y0} ${DS_W} ${DS_H - DS_Y0}" preserveAspectRatio="xMidYMax slice" role="group" aria-label="Dedinka"><g stroke-linejoin="round" stroke-linecap="round">
         ${this.krajina()}<g stroke="var(--ink)" stroke-width="2.2">${this.veci()}</g></g></svg></div>
-      <div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>
+      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}`}
     </section>`;
   },
   // po vykreslení: výška scény podľa obrazovky, posun do strán (na strom alebo späť na miesto), hviezdy po hre
   rozmer() {
     const sc = document.getElementById('ds-scena'); if (!sc || !sc.getBoundingClientRect) return null;
-    const svg = sc.querySelector('svg'), nav = document.getElementById('nav'), top = sc.getBoundingClientRect().top;
-    const dole = nav && !nav.hidden && nav.getBoundingClientRect().top > top + 200 ? nav.getBoundingClientRect().top : innerHeight, h = Math.max(300, Math.round(dole - top) + 2);
+    const svg = sc.querySelector('svg'), nav = document.getElementById('nav'), top = sc.getBoundingClientRect().top, suf = document.getElementById('dst-suflik');
+    const dole = suf ? suf.getBoundingClientRect().top + 18 : nav && !nav.hidden && nav.getBoundingClientRect().top > top + 200 ? nav.getBoundingClientRect().top : innerHeight, h = Math.max(300, Math.round(dole - top) + 2);
     // mierka: podľa výšky, najviac 0,95 (na telefóne vidieť viac dedinky, hore pokračuje obloha); široký displej vyplní šírku
     const vh = DS_H - DS_Y0, sx = sc.scrollLeft, sw = sc.scrollWidth;
     let k = Math.min(h / vh, .95); if (k * DS_W < sc.clientWidth) k = sc.clientWidth / DS_W;
@@ -144,6 +145,7 @@ const DedScena = {
     return sc;
   },
   po() {
+    DedStav.po();
     try {
       const sc = this.rozmer(); if (!sc) return;
       requestAnimationFrame(() => this.rozmer()); setTimeout(() => this.rozmer(), 400); // lišta dole sa ešte môže usádzať
@@ -174,6 +176,7 @@ const DedScena = {
   },
   tras(el) { if (el && el.classList) { el.classList.remove('trasie'); void el.getBoundingClientRect(); el.classList.add('trasie'); } },
   klik(el) {
+    if (DedStav.klik(el)) return; // stavanie (27-dedinka-stavanie.js)
     const d = el.dataset.ded;
     if (d === 'strom') { Zvuk.play('pop'); Strom.ukaz(); return; }
     if (d === 'dom') { Zvuk.play('whoosh'); Prechod.spusti('Môj domček', () => { st.view = 'izba'; Render.nova = true; render(); scrollTo(0, 0); }); return; }
@@ -199,17 +202,18 @@ const DedIzba = {
       <path d="M100 0v140M0 70h200" stroke-width="5" stroke="var(--dv-drevo)"/><rect x="0" y="0" width="200" height="140" rx="14" fill="none" stroke-width="3"/>
       <rect x="-14" y="138" width="228" height="14" rx="5" fill="var(--dv-drevo)"/></g>`;
     const parkety = Array.from({ length: 9 }, (_, i) => `<path d="M${i * 100 - 30} 330L${i * 120 - 160} 480" stroke-width="1.6" opacity=".35"/>`).join('');
-    return `<section class="ds ds-izba" aria-label="Môj domček">
-      <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 0 800 480" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Prázdna izba s oknom do dedinky"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+    return `<section class="ds ds-izba${DedStav.zap ? ' dst-zap' : ''}" aria-label="Môj domček">
+      <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 0 800 480" preserveAspectRatio="xMidYMax slice" role="group" aria-label="Izba s oknom do dedinky"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
         <rect x="-10" y="-10" width="820" height="350" fill="var(--sun-l)"/><path d="M-10 40h820" stroke-width="2" opacity=".3"/>
         ${Array.from({ length: 16 }, (_, i) => `<circle cx="${i * 56 + 20}" cy="${i % 2 ? 150 : 250}" r="3" fill="var(--coral-l)" stroke="none"/>`).join('')}
         <path d="M-10 330H810V490H-10Z" fill="var(--dv-drevo)"/>${parkety}<path d="M-10 330H810" stroke-width="3"/>
         <rect x="-10" y="318" width="820" height="14" fill="var(--card)"/>
         ${okno}
         <g transform="translate(640 330)"><path d="M-40 0V-170a40 40 0 0 1 80 0V0z" fill="var(--violet-d)"/><path d="M-30 -10V-164a30 30 0 0 1 60 0V-10z" fill="var(--violet)" opacity=".5"/><circle cx="24" cy="-80" r="4" fill="var(--sun)"/></g>
+        ${DedStav.izbaVeci()}
       </g></svg></div>
-      <div class="ds-hore"><button class="btn kruh dve" data-izba-spat aria-label="Späť do dedinky">${ikn('zavriet')}</button><h1 class="ds-n">Môj domček</h1></div>
-      <p class="ds-izba-tx">Izba je zatiaľ prázdna. Čoskoro si sem postavíš posteľ, poličku aj akvárium.</p>
+      ${DedStav.zap ? DedStav.hore('Môj domček') + DedStav.suflik() : `<div class="ds-hore"><button class="btn kruh dve" data-izba-spat aria-label="Späť do dedinky">${ikn('zavriet')}</button><h1 class="ds-n">Môj domček</h1></div>
+      ${Object.keys((Dedinka.ziskaj() || {}).izba || {}).length ? '' : '<p class="ds-izba-tx">Izba je zatiaľ prázdna. Ťukni na Stavať a postav si posteľ, poličku aj akvárium.</p>'}${DedStav.tlacidlo()}`}
     </section>`;
   },
 };
