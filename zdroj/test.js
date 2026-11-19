@@ -828,6 +828,42 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   st.view = "izba"; render(); if (!main.innerHTML.includes("data-izba-spat")) ch("izba bez cesty spat");
   st.view = "domov"; render(); if (!main.innerHTML.includes('class="dom-smer" data-go="dedinka"')) ch("smerovnik na Domove");
   st.body = b0; st.view = v0; render(); }
+/* DEDINKA 5.1: Cesta mesiaca (obrazovka, zimné odmeny, úlohy týždňa dávajú kroky, truhličky na výber) */
+{ const stare = { Cloud: window.Cloud, id: st.dietaId, body: st.body, view: st.view, dni: st.dni }, ch = t => chyby.push("cesta: " + t);
+  window.Cloud = undefined; Object.assign(st, { dietaId: "dtest9", body: 0, dni: [] }); Dedinka.id = null; Dedinka.d = null; const d = Dedinka.ziskaj();
+  // zimna cesta: 30 zastavok, kazda ma kresbu, vlastne odmeny sa neopakuju (okrem viackrat kupovatelnych), truhlicky na 5., 10., ... a zlata na konci
+  { const z = DED_CESTY["2026-12"]; if (z.n !== "Zimná cesta") ch("nazov zimnej cesty");
+    const vsetky = Array.from({ length: 30 }, (_, k) => Dedinka.cestaOdmena("2026-12", k + 1)), ids = vsetky.filter(o => o.typ === "vec").map(o => o.id);
+    if (vsetky.filter(o => o.typ === "truhla").map(o => o.t).join() !== "striebro,striebro,striebro,striebro,striebro,zlato" || ids.length !== 24) ch("truhlicky na zastavkach");
+    const dupl = ids.filter((id, i) => ids.indexOf(id) !== i && !DED_VEC[id].viac); if (dupl.length) ch("zimna cesta opakuje " + dupl);
+    if (!ids.includes("snehuliak") || !ids.includes("iglu")) ch("snehuliak a iglu");
+    ids.forEach(id => { if (!DedCesta.vecSvg(id)) ch("odmena bez kresby " + id); });
+    ["drevo", "striebro", "zlato", "vitaj"].forEach(t => { if (!DedCesta.truhlaSvg(t).includes("tr-veko") || !DedCesta.truhlaSvg(t, true).includes("otv")) ch("kresba truhlicky " + t); });
+    Object.keys(DED_CESTY).forEach(m => { if (!DED_CESTY[m].n) ch("mesiac bez nazvu " + m); }); }
+  // obrazovka cesty: 30 zastavok, postup, tlacidlo na vyzdvihnutie, ulohy tyzdna
+  d.cesta.mes = Dedinka.mesiac(); d.cesta.kroky = 85; d.cesta.vzate = []; d.cesta.ul = null; st.view = "cesta"; render(); let h = main.innerHTML;
+  if ((h.match(/data-cesta-stop=/g) || []).length !== 30 || (h.match(/ct-stop dost/g) || []).length !== 2 || !h.includes("data-cesta-vezmi") || !h.includes("Ešte 35 krokov")) ch("obrazovka cesty");
+  if (!h.includes("Úlohy týždňa") || (h.match(/<li class="ct-ul/g) || []).length !== 3 || h.includes("odpočít")) ch("ulohy tyzdna na obrazovke");
+  // vyzdvihnutie cez dedinku, nic sa neminie ani nepadne po mesiaci
+  { const r = Dedinka.cestaVezmi(1); if (!r.ok || !Dedinka.batoh()[r.odmena.id] && !r.hviezdy) ch("odmena zastavky 1 do batohu"); }
+  // ulohy: kazda splnena da kroky na ceste, raz
+  { const k0 = d.cesta.kroky; Dedinka.ulohaPostup("temy3", 3); if (d.cesta.kroky !== k0 + 15 || Dedinka.ulohaPostup("temy3", 1) !== false || d.cesta.kroky !== k0 + 15) ch("uloha temy3 dava 15 krokov raz");
+    Dedinka.ulohaPostup("hry2", 1); if (d.cesta.kroky !== k0 + 15) ch("hry2 po jednej hre este nie"); Dedinka.ulohaPostup("hry2", 1); Dedinka.ulohaPostup("strom4", 4);
+    if (d.cesta.kroky !== k0 + 40 || Dedinka.ulohy().filter(u => u.hotovo).length !== 3) ch("vsetky ulohy = 40 krokov"); }
+  { const n = Dedinka.ulohy(); if (n.length < 3 || n.length > 5 || n.some(u => !u.n || u.kroky < 1)) ch("3 az 5 uloh"); }
+  // truhlicka: vyber 1 z 3 bez nahody, vec ide do batohu, hviezdy do daru; v dedinke stoji a ide otvorit
+  { d.truhly.cakaju = ["striebro"]; st.view = "dedinka"; render(); h = main.innerHTML;
+    if (!h.includes('data-ded="truhla"') || !h.includes('data-ded="cesta"') || !h.includes("ds-truhla")) ch("truhlicka a smerovnik v dedinke");
+    const n = Dedinka.truhlaNabidka("striebro"); n.forEach(id => { if (!DedCesta.vecSvg(id)) ch("ponuka bez kresby " + id); });
+    const b0 = Dedinka.batoh()[n[1]] || 0, dar0 = d.dar, r = Dedinka.truhlaOtvor("striebro", n[1]);
+    if (!r.ok || (Dedinka.batoh()[n[1]] || 0) !== b0 + 1 || d.dar !== dar0 + 20 || Dedinka.cakajuTruhly().length) ch("vyber z truhlicky");
+    render(); if (main.innerHTML.includes('data-ded="truhla"')) ch("prazdna truhlicka nestoji v dedinke"); }
+  // prechod medzi mesiacmi: nevyzdvihnute zastavky ostanu a dajú sa vziat, nic sa nestrati
+  { d.cesta.kroky = 130; d.cesta.vzate = [1]; d.cesta.mes = "2026-12"; const dost0 = Dedinka.cestaStav("2026-12").dostupne; Dedinka.obnov(); const aktualny = Dedinka.mesiac();
+    if (aktualny !== "2026-12") { const stary = Dedinka.cestaStav("2026-12"); if (!stary || stary.dostupne !== dost0 || d.cesta.kroky !== 0) ch("stary mesiac po prechode");
+      st.view = "cesta"; DedCesta.mes = "2026-12"; render(); if (!main.innerHTML.includes("Zimná cesta") || !main.innerHTML.includes("Späť na tento mesiac")) ch("obrazovka starej cesty");
+      const r = Dedinka.cestaVezmi(2, "2026-12"); if (!r.ok) ch("vziat po mesiaci"); DedCesta.mes = null; } }
+  Dedinka.id = null; Dedinka.d = null; window.Cloud = stare.Cloud; Object.assign(st, { dietaId: stare.id, body: stare.body, view: stare.view, dni: stare.dni }); render(); }
 render();
 if (chyby.length) { console.log('CHYBY', chyby); process.exit(1); }
 console.log('OK', T.length, 'tem,', Object.keys(KAT).length, 'kategorii, body', st.body, 'hotove', st.done.length);

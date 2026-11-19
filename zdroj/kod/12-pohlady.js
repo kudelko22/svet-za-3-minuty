@@ -56,6 +56,7 @@ const views = {
   hry: () => hryZoznam(), // 5.0: ihrisko, kreslí 09-hry.js; 5.1: Všetky hry v dedinke
   dedinka: () => DedScena.html(), // 5.1: Moja dedinka, kreslí 26-dedinka-scena.js
   izba: () => DedIzba.html(),
+  cesta: () => DedCesta.html(), // 5.1: Cesta mesiaca, kreslí 27-dedinka-cesta.js
   odznaky: () => zbierkaOdznakov(),
   misia: () => Misie.render(),
   anglictina: () => Ang.render(),

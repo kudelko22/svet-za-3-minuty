@@ -37,7 +37,10 @@ const DED_UPRAVENE_POLE = ['v', 'start', 'dar', 'minute', 'zem', 'miesta', 'bato
 // Cesta mesiaca: 30 zastávok po 40 krokoch (krok = získaná hviezda alebo splnená úloha týždňa); každá 5. strieborná truhlička, 30. zlatá
 const DED_KROKOV = 40, DED_ZASTAVOK = 30, DED_HRY_DEN = 20;
 const DED_CESTY = {
-  '2026-12': { n: 'Zimná cesta', odmeny: { 12: 'snehuliak', 24: 'iglu' } }, // kľúč = zastávka, hodnota = id veci; ostatné dopočíta cestaOdmena
+  // kľúč = zastávka, hodnota = id veci; zastávky 5, 10, … sú strieborné truhličky, 30. zlatá; chýbajúce dopočíta cestaOdmena
+  '2026-12': { n: 'Zimná cesta', odmeny: { 1: 'smrek', 2: 'lucerny', 3: 'lavicka', 4: 'vlajocky', 6: 'smrek', 7: 'lampa', 8: 'kamene', 9: 'kamen_cesta', 11: 'seno', 12: 'snehuliak', 13: 'ker',
+    14: 'sud', 16: 'plot', 17: 'zajac', 18: 'smrek', 19: 'strasiak', 21: 'zivyplot', 22: 'ovca', 23: 'smrek', 24: 'iglu', 26: 'hojdacka', 27: 'smrek', 28: 'ker', 29: 'studna' } },
+  '2027-01': { n: 'Ľadové kráľovstvo', odmeny: {} }, '2027-02': { n: 'Karneval', odmeny: {} },
 };
 const DED_ULOHY = [
   { id: 'temy3', n: 'Prečítaj 3 témy dňa', ciel: 3, kroky: 15 }, { id: 'hry2', n: 'Zahraj 2 rôzne hry', ciel: 2, kroky: 10 }, { id: 'strom4', n: 'Polej strom 4 dni', ciel: 4, kroky: 15 },
@@ -247,7 +250,7 @@ const Dedinka = {
     const d = this.ziskaj(), x = DED_ULOHY.find(u => u.id === id); if (!d || !x) return false;
     const u = this.ulohaStav(d); if (u.h.includes(id)) return false;
     u.p[id] = (u.p[id] || 0) + n;
-    if (u.p[id] >= x.ciel) { u.h.push(id); d.cesta.kroky = Math.min(1e5, d.cesta.kroky + x.kroky); this.uloz(); return true; }
+    if (u.p[id] >= x.ciel) { u.h.push(id); d.cesta.kroky = Math.min(1e5, d.cesta.kroky + x.kroky); this.uloz(); if (typeof DedCesta !== 'undefined') DedCesta.ulohaHotova(x); return true; }
     this.uloz(); return false;
   },
   // ---------- truhličky ----------
