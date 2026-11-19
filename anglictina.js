@@ -44,14 +44,14 @@ jedlo|soup|polievka|súp|2
 jedlo|rice|ryža|rajs|2
 jedlo|chicken|kura|čikin|2
 jedlo|carrot|mrkva|kerot|2
-jedlo|potato|zemiak|poteitou|2
+jedlo|potato|zemiak|potejtou|2
 jedlo|tomato|paradajka|tomejtou|2
 jedlo|orange|pomaranč|orindž|1
 jedlo|ice cream|zmrzlina|ajs krím|1
 jedlo|sandwich|obložený chlieb|senvidž|2
 domov|house|dom|haus|1
 domov|door|dvere|dór|1
-domov|window|okno|window|1
+domov|window|okno|windou|1
 domov|table|stôl|tejbl|1
 domov|chair|stolička|čér|1
 domov|bed|posteľ|bed|1
@@ -78,7 +78,7 @@ telo|foot|noha, chodidlo|fut|1
 telo|eye|oko|aj|1
 telo|ear|ucho|ír|1
 telo|nose|nos|nouz|1
-telo|mouth|ústa|maus|1
+telo|mouth|ústa|mauth|1
 telo|hair|vlasy|hér|1
 telo|hat|klobúk|het|1
 telo|shoes|topánky|šúz|1
@@ -127,7 +127,7 @@ priroda|moon|mesiac|mún|1
 priroda|star|hviezda|stár|1
 priroda|tree|strom|trí|1
 priroda|flower|kvetina|flauer|1
-priroda|river|rieka|river|2
+priroda|river|rieka|rivr|2
 priroda|mountain|hora|mauntin|2
 priroda|sea|more|sí|2
 priroda|grass|tráva|grás|2
@@ -150,7 +150,7 @@ mesto|street|ulica|strít|2
 mesto|shop|obchod|šop|2
 mesto|park|park|párk|1
 mesto|bridge|most|bridž|2
-mesto|airplane|lietadlo|érplejn|2
+mesto|plane|lietadlo|plejn|2
 mesto|left|vľavo|left|2
 mesto|right|vpravo|rajt|2
 cas|day|deň|dej|1
@@ -390,7 +390,7 @@ doprava|submarine|ponorka|sabmarín|2
 doprava|ambulance|sanitka|embjulens|2
 doprava|engine|motor|endžin|2
 doprava|traffic light|semafor|trafik lajt|2
-doprava|journey|cesta, plavba|džörni|2
+doprava|journey|dlhá cesta|džörni|2
 povolania|job|práca, povolanie|džob|1
 povolania|work|pracovať|wörk|1
 povolania|student|študent|stjúdnt|1
@@ -546,7 +546,7 @@ otazky|who|kto|hú|1
 otazky|how|ako|hau|1
 otazky|name|meno|nejm|1
 otazky|very|veľmi|veri|1
-otazky|goodnight|dobrú noc|gudnajt|1
+otazky|good night|dobrú noc|gud najt|1
 otazky|why|prečo|waj|2
 otazky|when|kedy|wen|2
 otazky|welcome|vitaj|welkam|2
@@ -789,6 +789,55 @@ sport|medal|medaila|medl|2
 sport|helmet|prilba|helmit|2
 sport|chess|šach|čes|2
 sport|seek|hľadať|sík|2
+otazky|good morning|dobré ráno|gud mórnink|1
+otazky|how are you|ako sa máš|hau ár jú|1
+otazky|thanks|vďaka|thenks|1
+otazky|you|ty|jú|1
+otazky|he|on|hí|1
+otazky|she|ona|ší|1
+otazky|we|my|wí|1
+otazky|they|oni|dej|2
+otazky|my|môj|maj|1
+otazky|your|tvoj|jór|1
+zvierata|pet|domáce zviera|pet|1
+zvierata|turkey|moriak|törki|2
+zvierata|bull|býk|bul|2
+jedlo|yoghurt|jogurt|jogrt|1
+jedlo|ketchup|kečup|kečap|2
+jedlo|cereal|cereálie|sírial|2
+domov|home|domov|houm|1
+domov|sink|umývadlo|sink|2
+domov|wardrobe|skriňa|wódroub|2
+cisla|seventeen|sedemnásť|sevntín|2
+cisla|eighteen|osemnásť|ejtín|2
+cisla|nineteen|devätnásť|najntín|2
+cisla|seventy|sedemdesiat|sevnti|2
+cisla|eighty|osemdesiat|ejti|2
+cisla|million|milión|milijn|2
+cas|tonight|dnes večer|tunajt|2
+cas|season|ročné obdobie|sízn|2
+cas|snowy|zasnežený|snoui|2
+cas|stormy|búrlivý|štórmi|2
+skola|pencil case|peračník|pensl kejs|1
+skola|uniform|školská uniforma|júnifórm|2
+skola|classmate|spolužiak|klásmejt|2
+telo|teeth|zuby|títh|1
+telo|feet|chodidlá|fít|1
+telo|lips|pery|lips|2
+telo|nail|necht|nejl|2
+slovesa|like|mať rád|lajk|1
+slovesa|have|mať|hev|1
+slovesa|meet|stretnúť sa|mít|1
+slovesa|share|deliť sa|šér|1
+slovesa|cut|strihať|kat|1
+slovesa|turn|otočiť sa, odbočiť|törn|2
+slovesa|pick|zbierať|pik|2
+pocity|fine|v poriadku|fajn|1
+predlozky|over|ponad|ouvr|2
+predlozky|with|s|wid|1
+predlozky|from|z, od|from|1
+predlozky|to|k, do|tú|1
+predlozky|at|pri, na|et|2
 `.trim().split('\n').map(r => { const [g, en, sk, cit, u] = r.split('|'); return { g, en, sk, cit, u: +u }; });
 const ANG_VETY = `
 The cat is on the bed.|Mačka je na posteli.|bed|domov|1
@@ -824,12 +873,12 @@ Can you help me, please?|Môžeš mi pomôcť, prosím?|help|slovesa|2
 The soup is hot.|Polievka je horúca.|hot|cas|2
 I put my shoes on.|Obúvam si topánky.|shoes|telo|2
 Grandma has a big garden.|Babka má veľkú záhradu.|garden|domov|2
-Turn left at the shop.|Odbočte vľavo pri obchode.|left|mesto|2
+Turn left at the shop.|Odboč vľavo pri obchode.|left|mesto|2
 I drink water every day.|Každý deň pijem vodu.|water|jedlo|2
 The teacher has a long ruler.|Učiteľka má dlhé pravítko.|ruler|skola|2
 Tomorrow we go to the sea.|Zajtra ideme k moru.|sea|priroda|2
 I have a pencil and a pen.|Mám ceruzku a pero.|pencil|skola|2
-The monkey eats a banana.|Opica je banán.|banana|jedlo|2
+The monkey eats a banana.|Opica papá banán.|banana|jedlo|2
 It is snowing and the wind is cold.|Sneží a vietor je studený.|wind|cas|2
 My grandpa reads in the kitchen.|Môj dedko číta v kuchyni.|kitchen|domov|2
 The train is faster than the bus.|Vlak je rýchlejší ako autobus.|train|mesto|2
@@ -931,7 +980,7 @@ The helicopter flies over the town.|Vrtuľník letí nad mestom.|helicopter|dopr
 We go on a trip by train.|Ideme na výlet vlakom.|trip|doprava|1
 The submarine is under the sea.|Ponorka je pod morom.|submarine|doprava|2
 The nurse helps the doctor.|Zdravotná sestra pomáha lekárovi.|nurse|povolania|2
-The pilot flies the airplane.|Pilot lieta lietadlom.|pilot|povolania|2
+The pilot flies the plane.|Pilot lieta lietadlom.|pilot|povolania|2
 The firefighter has a red truck.|Hasič má červený nákladiak.|firefighter|povolania|1
 My dad has a new job.|Môj otec má novú prácu.|job|povolania|1
 The postman brings a letter.|Poštár nosí list.|postman|povolania|2
@@ -1116,6 +1165,78 @@ I like swimming.|Rád plávam.|swimming|sport|1
 We go fishing.|Ideme na ryby.|fishing|sport|2
 Dad plays chess with me.|Otec hrá so mnou šach.|chess|sport|2
 Let's play hide and seek.|Poďme sa hrať na schovávačku.|hide|sport|1
+Good morning!|Dobré ráno!|good morning|otazky|1
+Good night!|Dobrú noc!|good night|otazky|1
+How are you?|Ako sa máš?|how are you|otazky|1
+Thanks for the gift.|Vďaka za darček.|thanks|otazky|1
+I am fine, thank you.|Mám sa dobre, ďakujem.|fine|pocity|1
+Nice to meet you.|Teší ma.|meet|slovesa|1
+What is your favourite colour?|Aká je tvoja obľúbená farba?|colour|farby|1
+My favourite colour is green.|Moja obľúbená farba je zelená.|green|farby|1
+I like blue and yellow.|Mám rád modrú a žltú.|yellow|farby|1
+My dog is brown.|Môj pes je hnedý.|brown|farby|2
+This is my father.|Toto je môj otec.|father|ludia|1
+I love my family.|Mám rád svoju rodinu.|family|ludia|1
+My grandma is kind.|Moja babka je láskavá.|grandma|ludia|2
+I have a brother and a sister.|Mám brata a sestru.|sister|ludia|1
+I have a pencil case.|Mám peračník.|pencil case|skola|1
+This is my teacher.|Toto je moja učiteľka.|teacher|skola|1
+Sit down, please.|Sadni si, prosím.|sit|slovesa|1
+Stand up, please.|Postav sa, prosím.|stand|slovesa|1
+Listen to the teacher.|Počúvaj učiteľku.|listen|slovesa|2
+Read the story.|Prečítaj si príbeh.|story|skola|1
+I am thirsty.|Mám smäd.|thirsty|pocity|1
+Do you like cheese?|Máš rád syr?|cheese|jedlo|1
+I eat an egg for breakfast.|Na raňajky jem vajce.|egg|jedlo|1
+Can I have some juice, please?|Môžem dostať džús, prosím?|juice|jedlo|1
+The cake is sweet.|Torta je sladká.|cake|jedlo|1
+I like yoghurt.|Mám rád jogurt.|yoghurt|jedlo|1
+The cow says moo.|Krava robí mú.|cow|zvierata|1
+The pig is pink.|Prasiatko je ružové.|pig|zvierata|1
+The horse can run fast.|Kôň vie rýchlo behať.|horse|zvierata|1
+The frog jumps into the water.|Žaba skáče do vody.|frog|zvierata|1
+The elephant is very big.|Slon je veľmi veľký.|elephant|zvierata|2
+The mouse is small and grey.|Myš je malá a sivá.|mouse|zvierata|1
+I have a pet.|Mám domáce zviera.|pet|zvierata|1
+I am eight years old.|Mám osem rokov.|eight|cisla|1
+One, two, three, go!|Raz, dva, tri, štart!|three|cisla|1
+Five and five is ten.|Päť a päť je desať.|five|cisla|1
+I have twenty stickers.|Mám dvadsať nálepiek.|twenty|cisla|2
+It is windy today.|Dnes fúka vietor.|windy|cas|1
+I like snow.|Mám rád sneh.|snow|cas|1
+It is warm in spring.|Na jar je teplo.|spring|cas|1
+In autumn the leaves fall.|Na jeseň padá lístie.|autumn|cas|2
+What day is it today?|Aký je dnes deň?|today|cas|2
+I go to bed at night.|V noci idem spať.|night|cas|1
+Wash your face.|Umy si tvár.|face|telo|1
+I brush my teeth.|Čistím si zuby.|teeth|telo|1
+Touch your nose.|Dotkni sa nosa.|nose|telo|1
+Clap your hands.|Zatlieskaj rukami.|clap|hudba|2
+I have two feet.|Mám dve nohy.|feet|telo|1
+I live in a small house.|Bývam v malom dome.|house|domov|1
+There is a lamp on the table.|Na stole je lampa.|lamp|domov|1
+Sit on the chair.|Sadni si na stoličku.|chair|domov|1
+I am at home.|Som doma.|home|domov|1
+Wash your hands in the sink.|Umy si ruky v umývadle.|sink|domov|2
+I can swim.|Viem plávať.|swim|slovesa|2
+I can ride a bike.|Viem jazdiť na bicykli.|ride|slovesa|2
+I like football.|Mám rád futbal.|football|sport|1
+We play tennis.|Hráme tenis.|tennis|sport|1
+Can I play with you?|Môžem sa s tebou hrať?|with|predlozky|1
+Come with me.|Poď so mnou.|with|predlozky|1
+The ball is under the chair.|Lopta je pod stoličkou.|under|predlozky|1
+The book is in the bag.|Kniha je v taške.|in|predlozky|1
+The cat is on the sofa.|Mačka je na pohovke.|on|predlozky|1
+The bird is behind the tree.|Vták je za stromom.|behind|predlozky|2
+The school is near the park.|Škola je blízko parku.|near|predlozky|1
+I go by bus.|Idem autobusom.|bus|mesto|1
+Turn right.|Odboč vpravo.|right|mesto|2
+I like to read.|Rád čítam.|like|slovesa|1
+I have a new toy.|Mám novú hračku.|have|slovesa|1
+Share your toys, please.|Podeľ sa o hračky, prosím.|share|slovesa|1
+I am proud of you.|Som na teba hrdý.|proud|pocity|2
+Are you hungry?|Si hladný?|hungry|pocity|1
+I am excited!|Teším sa!|excited|pocity|2
 `.trim().split('\n').map(r => { const [en, sk, v, g, u] = r.split('|'); return { en, sk, v, g, u: +u }; });
 
 /* ===== Nové anglické lekcie (4.6) =====
@@ -1162,10 +1283,10 @@ Let's play hide and seek.|Poďme sa hrať na schovávačku.|hide|sport|1
       o: ['Čo vieš robiť rýchlo? Povedz to po anglicky.', 'Koho si dnes objal?', 'Prečo je dobré povedať please?'],
       z: [ok('Ako sa po anglicky povie skákať?', 'jump', ['run', 'wait'], 'Čítaj džamp.'), sk('Čo znamená hug?', 'Objať', ['Usmiať sa', 'Čakať'], 'Čítaj hag.'), ok('Ako sa po anglicky povie čakať?', 'wait', ['look', 'smile'], 'Čítaj wejt.')], r: ['vdome', 'oblecenie'] },
     { id: 'en-priroda', k: 'anglictina', vek: 'mladsi', t: 'V prírode po anglicky', s: '',
-      m: 'Príroda je nature, čítaj nejčr. Strom je tree, čítaj trí, a kvetina flower, čítaj flauer. Ruža je rose, čítaj rouz, a semienko seed, čítaj síd. Rieka je river, čítaj river, a hora mountain, čítaj mauntin. Keď niečo uvidíš, povieš I see a tree.',
+      m: 'Príroda je nature, čítaj nejčr. Strom je tree, čítaj trí, a kvetina flower, čítaj flauer. Ruža je rose, čítaj rouz, a semienko seed, čítaj síd. Rieka je river, čítaj rivr, a hora mountain, čítaj mauntin. Keď niečo uvidíš, povieš I see a tree.',
       p: 'Na prechádzke ukazujte na veci okolo a hovorte po anglicky: tree, flower, river. Doma ich nakreslite.',
       o: ['Čo si videl pri poslednej prechádzke? Povedz to po anglicky.', 'Aká je tvoja obľúbená kvetina?', 'Čo vyrastie zo seed?'],
-      z: [ok('Ako sa po anglicky povie semienko?', 'seed', ['rose', 'tree'], 'Čítaj síd.'), sk('Čo znamená river?', 'Rieka', ['Hora', 'Kvetina'], 'Čítaj river.'), ok('Ako sa po anglicky povie ruža?', 'rose', ['flower', 'river'], 'Čítaj rouz.')], r: ['les', 'pocasie'] },
+      z: [ok('Ako sa po anglicky povie semienko?', 'seed', ['rose', 'tree'], 'Čítaj síd.'), sk('Čo znamená river?', 'Rieka', ['Hora', 'Kvetina'], 'Čítaj rivr.'), ok('Ako sa po anglicky povie ruža?', 'rose', ['flower', 'river'], 'Čítaj rouz.')], r: ['les', 'pocasie'] },
     { id: 'en-povolania', k: 'anglictina', t: 'Povolania po anglicky', s: '',
       m: 'Lekár je doctor, čítaj doktr, a hasič firefighter, čítaj fajrfajtr. Policajt je policeman, čítaj polísmen, a spevák singer, čítaj singr. Žiak je pupil, čítaj pjúpl, a práca job, čítaj džob. Keď sa niekto spýta What do you want to be, čítaj wot dú jú wont tú bí, odpovieš I want to be a doctor.',
       p: 'Spýtajte sa jeden druhého, čím chcete byť, a odpovedzte celou vetou: I want to be a pilot.',
