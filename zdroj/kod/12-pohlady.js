@@ -24,8 +24,6 @@ const views = {
       </section>
       ${location.hostname.endsWith('github.io') ? `
       <a class="presun" href="https://svet-za-3-minuty.web.app/">Appka má novú adresu: <b>svet-za-3-minuty.web.app</b>. Ťuknite sem a pridajte si ju na plochu.</a>` : ''}
-      ${Pripomienka.html()}
-      ${Domov.tyzden()}
       <div class="dom-nal">${Ang.karta()}<button class="nalepka objavuj-karta" data-go="objavuj" style="--c:var(--sun-l)"><span class="ikb">${ikn('lupa')}</span><b>Objavuj</b><small>Kvízy, iná téma a všetky oblasti</small></button></div>
       ${Domov.odmena()}
       ${Plocha.karta()}

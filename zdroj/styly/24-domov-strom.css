@@ -41,40 +41,10 @@
 @keyframes krStromIn { from { transform: translateY(14px) scale(.7); opacity: 0; } }
 @media (min-width: 420px) { .kr-strom { right: 6px; } }
 
-/* okno stromu: krajina hore, karta so stupňom, týždeň s okruhom */
-.strom-okno { place-items: start center; padding: 0; background: var(--bg); }
-.strom-okno .os-obsah { gap: 12px; padding: 0 16px 20px; }
-.so-hlava { position: absolute; z-index: 2; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(env(safe-area-inset-top) + 12px) 16px 0; }
-.so-hlava .n1 { margin: 0; }
-.strom-okno .so-scena { height: min(46vh, 340px); }
-/* okno stromu stojí v tej istej krajine ako Domov (Domov.krajina bez cieľa cesty), cestička vedie k stromu */
-.so-domov { background: var(--sc-sky); }
-.so-domov .dom-krajina { inset: 0; height: auto; z-index: 0; }
-.so-domov .so-strom { z-index: 1; left: auto; right: 2%; width: min(64%, 250px, 30vh); translate: 0; }
-:root:not([data-rezim="mesacny"]) .so-domov.hn .dom-krajina { filter: saturate(.55) brightness(1.03); }
 .so-bub { position: absolute; z-index: 2; left: 12px; top: calc(env(safe-area-inset-top) + 64px); max-width: min(190px, 52%); margin: 0; font-size: .92rem; animation: recIn .45s var(--spring) .5s both; transform-origin: 10% 100%; }
-.so-mal { margin: 0; font: 800 .75rem/1.3 var(--fb); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .so-karta { display: grid; justify-items: start; gap: 8px; width: 100%; margin-top: -34px; text-align: left; }
 .so-karta .n0, .so-karta .tx { margin: 0; }
-.so-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.so-cesta { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); width: 100%; margin: 2px 0; padding: 0; list-style: none; }
-.so-cesta::before { content: ""; position: absolute; left: 8%; right: 8%; top: 15px; border-top: 4px dotted var(--sc-pathdot); }
-.so-cesta li { position: relative; display: grid; justify-items: center; gap: 4px; font: 700 .78rem/1 var(--fd); color: var(--muted); }
-.so-cesta i { display: grid; place-items: center; width: 30px; height: 30px; border: 2.5px dashed var(--muted); border-radius: 50%; background: var(--card); color: #fff; }
-.so-cesta .hot i { border: var(--obrys-m); background: var(--teal); box-shadow: inset 0 -3px 0 var(--teal-d); }
-.so-cesta .tu i { width: 36px; height: 36px; margin-top: -3px; border: var(--obrys-m); background: var(--sun); box-shadow: inset 0 -4px 0 var(--sun-d); }
-.so-cesta .tu { color: var(--text); }
-.so-cesta .ikn { width: 18px; height: 18px; }
-.so-cesta .tu .ikn { width: 24px; height: 24px; }
-.so-tyz { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
-.so-tyz .n2 { margin: 0; }
-.so-tyz .btn { max-width: 62%; overflow: hidden; }
-.so-tyz .okruh-tl-ik { display: inline-grid; flex: none; width: 20px; height: 20px; margin-right: 6px; }
-.so-tyz .okruh-tl-ik svg { width: 100%; height: 100%; }
 .so-dni { width: 100%; }
-.so-dni .dom-den { cursor: default; }
-.so-tip { margin: 0; text-align: center; }
-.strom-okno .btn.wide { width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   .os-strom *, .kr-strom, .so-bub { animation: none !important; }
@@ -85,3 +55,73 @@ html { --st-z0: #8BDD90; --st-z1: var(--leaf); --st-z2: var(--leaf-d); --st-10: 
   --st-20: #EDCE76; --st-21: #D8AE48; --st-22: #B4892B; --st-30: #BFAD82; --st-31: #A38F62; --st-32: #83714B; }
 html[data-rezim="mesacny"] { --st-z0: #5DB59A; --st-z1: #3A9A7E; --st-z2: #24705E; --st-10: #A9B474; --st-11: #8A9A57; --st-12: #6B7B40;
   --st-20: #C2A66A; --st-21: #A3874B; --st-22: #826836; --st-30: #978C78; --st-31: #7C715D; --st-32: #615747; }
+
+/* 5.1: kvapka = jeden deň učenia (týždeň v okne Môj strom aj v hlavičke). hot = poliaty, tu = dnes ešte nie, zme = bez učenia, bud = budúci */
+.kv { display: inline-grid; justify-items: center; gap: 3px; font: 800 .74rem/1 var(--fd); color: var(--muted); }
+.kv svg { width: var(--kvs, 32px); height: var(--kvs, 32px); overflow: visible; }
+.kv-k { fill: var(--card); stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+.kv-c { fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.kv.hot .kv-k { fill: var(--sky); }
+.kv.hot, .kv.tu { color: var(--text); }
+.kv.tu .kv-k { stroke-dasharray: 3.2 2.6; fill: color-mix(in srgb, var(--sky) 16%, var(--card)); }
+.kv.tu small { color: var(--link); }
+.kv.zme .kv-k { fill: color-mix(in srgb, var(--muted) 18%, var(--card)); stroke: color-mix(in srgb, var(--ink) 40%, transparent); }
+.kv.bud .kv-k { fill: none; stroke: color-mix(in srgb, var(--muted) 70%, transparent); stroke-dasharray: 2 3; }
+.kv.bud small { opacity: .7; }
+
+/* hlavička Domova: stromček s kvapkou (plná = dnes poliaty) */
+.tyz-strom { position: relative; display: grid; place-items: center; width: 52px; height: 44px; padding: 0; border: var(--obrys-m); border-radius: 16px; background: var(--card); box-shadow: 0 3px 0 var(--ink); cursor: pointer; }
+.tyz-strom .tsm { display: block; width: 40px; margin-top: -6px; }
+.tyz-strom .tsm .os-strom * { animation: none !important; }
+.tyz-strom > .kv { --kvs: 22px; position: absolute; right: -7px; bottom: -7px; filter: drop-shadow(0 2px 0 var(--ink)); }
+.tyz-strom > .kv.tu svg { animation: kvVolaj 2.4s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes kvVolaj { 0%, 70%, 100% { transform: none; } 80% { transform: scale(1.18) rotate(-8deg); } 90% { transform: scale(1.1) rotate(6deg); } }
+.tyz-strom.schne { background: var(--sun-l); }
+.tyz-strom:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.tyz-strom[hidden] { display: none; }
+@media (max-width: 380px) { .top-r { gap: 8px; } .stars { padding-right: 10px; } }
+
+/* okno Môj strom: karta zdola nad stmaveným Domovom */
+.strom-okno { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; background: rgb(24 20 63 / .55); animation: zavojIn .25s ease-out both; }
+.strom-okno.pryc { opacity: 0; transition: opacity .3s; }
+.ms-karta { position: relative; width: min(100%, 480px); max-height: calc(100dvh - env(safe-area-inset-top) - 12px); overflow: auto; overscroll-behavior: contain;
+  padding: 8px 16px calc(env(safe-area-inset-bottom) + 18px); background: var(--fon); border: var(--obrys); border-bottom: 0; border-radius: 28px 28px 0 0; animation: msIn .45s cubic-bezier(.2, 1.15, .35, 1) both; }
+.strom-okno.pryc .ms-karta { animation: msOut .3s ease-in both; }
+@keyframes msIn { from { transform: translateY(100%); } }
+@keyframes msOut { to { transform: translateY(100%); } }
+.ms-ucho { display: block; width: 44px; height: 5px; margin: 0 auto 6px; border-radius: 3px; background: var(--muted); opacity: .5; }
+.ms-hl { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ms-hl .n1 { margin: 0; }
+.ms-sc { position: relative; height: 178px; overflow: hidden; border: var(--obrys); border-radius: 22px; background: linear-gradient(var(--sc-sky), color-mix(in srgb, var(--sc-sky) 60%, var(--card))); }
+:root:not([data-rezim="mesacny"]) .ms-sc.hn { filter: saturate(.7); }
+.ms-kopec { position: absolute; left: -10%; right: -10%; bottom: -60px; height: 110px; border-radius: 50%; background: var(--sc-front); border-top: 3px solid var(--ink); }
+.ms-str { position: absolute; right: 6%; bottom: 6px; width: 136px; }
+.ms-sova { position: absolute; left: 10px; bottom: 8px; width: 76px; padding: 0; border: 0; background: none; cursor: pointer; }
+.ms-sova svg { display: block; width: 100%; height: auto; }
+.ms-bub { position: absolute; z-index: 2; left: 12px; top: 10px; max-width: 50%; margin: 0; padding: 8px 12px; background: var(--card); border: var(--obrys); border-radius: 16px 16px 16px 4px; font: 700 .95rem/1.25 var(--fd); color: var(--text); animation: recIn .45s var(--spring) .35s both; }
+.ms-sc .os-listy { z-index: 1; }
+.ms-h { margin: 14px 0 6px; font: 800 1.02rem/1.2 var(--fd); color: var(--text); }
+.ms-tyz { display: flex; justify-content: space-between; padding: 10px 6px 8px; background: var(--card); border: var(--obrys); border-radius: 18px; }
+.ms-den { display: grid; justify-items: center; min-width: 38px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+span.ms-den { cursor: default; }
+button.ms-den:active .kv svg { transform: translateY(2px); }
+.ms-rast { position: relative; display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 10px 6px; background: var(--card); border: var(--obrys); border-radius: 18px; }
+.ms-rast::before { content: ""; position: absolute; left: 22px; right: 22px; bottom: 16px; border-top: 3px dotted color-mix(in srgb, var(--muted) 60%, transparent); }
+.ms-st { position: relative; display: grid; justify-items: center; width: 44px; }
+.ms-st .os-strom { width: var(--v); }
+.ms-st .os-strom * { animation: none !important; }
+.ms-st.bud .os-strom { filter: grayscale(1); opacity: .35; }
+.ms-st.tu::after { content: ""; position: absolute; inset: -4px -2px -2px; border: 3px solid var(--sun); border-radius: 14px; }
+.ms-ok { position: absolute; right: 0; top: -2px; display: grid; place-items: center; width: 16px; height: 16px; border: 2px solid var(--ink); border-radius: 50%; background: var(--leaf); color: #fff; }
+.ms-ok .ikn { width: 10px; height: 10px; }
+.ms-veta { margin: 6px 2px 0; font: 600 .98rem/1.35 var(--fb); color: var(--text); }
+.ms-veta b { font-weight: 800; }
+.ms-tl { width: 100%; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.ms-tl .ikn { width: 24px; height: 24px; }
+.ms-hotovo { margin: 14px 0 0; padding: 12px; border: 3px dashed color-mix(in srgb, var(--leaf) 70%, var(--ink)); border-radius: 16px; background: color-mix(in srgb, var(--leaf) 16%, var(--card)); text-align: center; font: 800 1rem/1.3 var(--fd); color: var(--text); }
+.ms-okr { display: flex; align-items: center; gap: 8px; margin-top: 14px; font: 600 .9rem/1.25 var(--fb); color: var(--text); }
+.ms-okr-t { flex: 1; min-width: 0; }
+.ms-okr-t small { display: block; color: var(--muted); font-weight: 700; }
+.ms-preh { display: inline-flex; align-items: center; gap: 6px; margin: 8px 0 0; padding: 6px 2px; border: 0; background: none; font: 700 .9rem/1.2 var(--fb); color: var(--link); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.ms-preh .ikn { width: 18px; height: 18px; }
+@media (prefers-reduced-motion: reduce) { .ms-karta, .strom-okno.pryc .ms-karta, .ms-bub, .tyz-strom > .kv.tu svg { animation: none !important; } }

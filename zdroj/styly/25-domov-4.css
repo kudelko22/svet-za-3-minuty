@@ -6,35 +6,8 @@
 .okruh-karta { position: relative; display: grid; gap: 12px; width: min(100%, 420px); max-height: calc(100dvh - 32px); overflow: auto; padding: 18px 16px 16px; border: var(--obrys); border-radius: 24px 26px 24px 28px; background: var(--card); color: var(--text); box-shadow: 0 6px 0 var(--ink); animation: oknoIn .35s var(--spring) both; }
 .okruh-karta > .tx { color: var(--muted); }
 .tyzs-hl { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.tyz-strom[hidden] { display: none; }
 .snd[hidden] { display: none; }
-.ts-z { animation: tsZ 2.4s ease-in-out infinite; }
-.ts-i { animation: tsIskra 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-.ts-i2 { animation-delay: .9s; }
-@keyframes tsZ { 50% { opacity: .35; } }
-@keyframes tsIskra { 50% { opacity: .4; scale: .6; } }
-.ts-list { animation: tsList 3s ease-in infinite; transform-box: fill-box; }
-@keyframes tsList { 0% { opacity: 0; transform: translate(0, -4px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(-3px, 9px) rotate(40deg); } }
 
-/* okno týždňa: vyrastie zo stromčeka v hlavičke; karta so záložkou Týždeň */
-.tyzs-okno { animation: zavojIn .3s ease-out both; }
-.tyzs-okno.pryc { transition: opacity .3s; }
-.tyzs-karta { overflow: visible; margin-top: 16px; padding-top: 24px; animation: tyzsIn .5s cubic-bezier(.2, 1.2, .35, 1) both; transform-origin: 50% 50%; }
-.tyzs-okno.pryc .tyzs-karta { animation: tyzsOut .3s ease-in both; }
-@keyframes tyzsIn { from { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } 40% { opacity: 1; } }
-@keyframes tyzsOut { to { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -40vh)) scale(.06); } }
-.tyzs-st { display: flex; flex-wrap: wrap; gap: 6px; }
-.tyzs-st .st.zhas { background: var(--sand); }
-.tyzs-tip { text-align: center; }
-.tyzs-karta .dom-okr { flex-wrap: wrap; }
-.tyzs-strom { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px 8px 8px; border: var(--obrys); border-radius: var(--r-karta); background: var(--leaf-l); color: var(--text); box-shadow: 0 4px 0 var(--ink); text-align: left; }
-.tyzs-strom.schne { background: var(--sun-l); }
-.tyzs-strom:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
-.tyzs-strom-k { flex: none; width: 64px; }
-.tyzs-strom-k .os-strom * { animation: none !important; }
-.tyzs-strom-t { flex: 1; display: grid; gap: 3px; min-width: 0; }
-.tyzs-strom-t b { font: 800 1.19rem/1.15 var(--fd); }
-.tyzs-strom > .ikn { flex: none; }
 
 /* Prehľad týždňa */
 .tyz-karta { width: min(100%, 560px); gap: 12px; }
@@ -73,7 +46,7 @@ button.tp-den { cursor: pointer; } button.tp-den:active { transform: translateY(
 .okruh-volba:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .okruh-volba[aria-pressed="true"] { background: var(--sun-l); box-shadow: 0 4px 0 var(--ink), 0 0 0 3px var(--sun) inset; }
 .okruh-ik.ikb { margin: 0; }
-@media (prefers-reduced-motion: reduce) { .ts-z, .ts-i, .tyzs-karta, .ts-list, .tp-den, .okruh-karta { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tp-den, .okruh-karta { animation: none; } }
 
 .precvic-pozn { margin: 6px 0 0; font-size: .95rem; color: var(--text); opacity: .8; }
 .precvic-stitok { display: inline-flex; margin: 4px 0; }
