@@ -7,7 +7,19 @@ function noveUpravovanie(prve) {
 }
 // Účet rodiča (3.5): odomknutie PIN-om je len v pamäti, samo sa zamkne po 5 minútach nečinnosti, pri zmene dieťaťa a pri odhlásení
 const Rodic = {
-  odomknute: false, do: 0, MINUT: 5, po: null,
+  odomknute: false, do: 0, MINUT: 5, po: null, volny: false, cakaDieta: null,
+  // 5.1: výber dieťaťa. Účet rodiča je povinný: bez neho najprv tvorba (potom sa dieťa otvorí samo).
+  // Prepnutie na súrodenca chráni PIN. Bez PIN-u: prvý výber po prihlásení (rodič práve zadal heslo, st.dietaId ešte nie je),
+  // to isté dieťa znova, rodina s jedným dieťaťom (nie je na koho prepnúť), jedno vybratie hneď z odomknutého panelu rodiča.
+  // Bez internetu (profil rodiča sa nenačítal) sa nič neblokuje. Vráti text pre toast, keď sa výber zastavil, inak ''.
+  kontrolaVyberu(id) {
+    const C = window.Cloud, r = C && C.rodic;
+    if (!r || !r.nacitane) return '';
+    if (!r.profil) { this.cakaDieta = id; this.chod('rodicTvorba'); return 'Najprv rodič vytvorí svoj účet s PIN-om.'; }
+    const volny = this.volny; this.volny = false;
+    if (volny || this.jeOdomknute() || !st.dietaId || id === st.dietaId || (C.deti || []).length < 2) return '';
+    this.poOdomknuti(() => C.vyber(id)); return 'Iné dieťa vyberá rodič. Zadajte PIN.';
+  },
   // akcia len pre rodiča (odhlásenie): hneď, ak je panel odomknutý, inak najprv PIN a potom akcia
   poOdomknuti(fn) { if (this.jeOdomknute()) { fn(); return; } this.po = fn; this.chod('rodicPin'); },
   odomkni() { this.odomknute = true; this.do = Date.now() + this.MINUT * 60000; },

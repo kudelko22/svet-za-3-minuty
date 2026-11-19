@@ -61,7 +61,7 @@ document.addEventListener('click', e => {
     Hlas.stop(); Hra.zrus(); Zvuk.play('whoosh'); if (window.Cloud) window.Cloud.ulozHned();
     Object.assign(st, { flow: null, faza: 'vyber' }); render(); scrollTo(0, 0); return;
   }
-  if (d.dieta) { Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
+  if (d.dieta) { const k = Rodic.kontrolaVyberu(d.dieta); if (k) { Zvuk.play('whoosh'); toast(k); return; } Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
   if (d.noveDieta !== undefined && maRodica() && !Rodic.jeOdomknute()) { Zvuk.play('whoosh'); toast('Nové dieťa pridáva rodič. Zadajte PIN.'); Rodic.chod('rodicPin'); return; }
   if (d.noveDieta !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); return; }
   if (d.upravit !== undefined) {
