@@ -115,3 +115,35 @@
 
 /* zlúčenie 5.1: v dedinke je Stavať hore pod Všetky hry (na oblohe), dole by zakrylo smerovník Cesta a truhličku; v izbe ostáva dole */
 .ds:not(.ds-izba) > .dst-stavat { top: 62px; bottom: auto; }
+
+/* 5.1 vizuál truhličiek: žiara, iskry, priblíženie, dvojité zatrasenie, pružiace veko, odlet vybranej veci */
+.tr-v-dedinke .tr-zar, .tr-truhla .tr-zar { opacity: .7; }
+.tr-t-zlato .tr-truhla .tr-zar { opacity: 1; }
+.tr-otv .tr-luc { transform-box: fill-box; transform-origin: 50% 100%; }
+.tr-truhla { overflow: visible; }
+.tr-iskra { position: absolute; left: 50%; top: 40%; width: 9px; height: 9px; margin: -4px; background: var(--sun); border: 2px solid var(--ink); border-radius: 2px; transform: rotate(45deg) scale(0); opacity: 0; pointer-events: none; }
+.tr-iskra.b { background: #fff; width: 6px; height: 6px; margin: -3px; }
+.tr-zlata-osl, .tr-okno.zlata-osl::before { content: ''; }
+.tr-okno.zlata-osl::before { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--sun) 70%, transparent), transparent 60%); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .tr-v-dedinke .tr-zar, .tr-okno:not(.otvorena) .tr-truhla .tr-zar { animation: trZar 3.2s ease-in-out infinite; }
+  .tr-v-dedinke { animation-duration: 8s !important; }
+  .tr-okno:not(.otvorena):not(.tras) .tr-truhla { animation-duration: 8s; }
+  .tr-okno.tras .tr-truhla { animation: trTras2 .7s ease-in-out both; }
+  .tr-okno.otvorena .tr-truhla { animation: trSkok .5s var(--spring, ease-out); }
+  .tr-okno.otvorena .tr-otv .tr-veko { animation: trVeko .55s cubic-bezier(.3, 1.6, .5, 1) both; }
+  .tr-okno.otvorena .tr-iskra { animation: trIskra .9s ease-out var(--d, 0s) both; }
+  .tr-okno.zlata-osl::before { animation: trZablesk 1s ease-out; }
+  .tr-okno.hotovo .tr-karta.vybrana { animation: trOdlet .75s cubic-bezier(.5, -.2, .7, .2) both; }
+  .tr-okno.hotovo .tr-karta:not(.vybrana) { animation: trZmizni .35s ease-in both; }
+  .tr-okno.otvorena .tr-luc { animation: trLuc 1s ease-out both; }
+}
+@keyframes trZar { 50% { opacity: 1; } }
+@keyframes trTras2 { 0% { transform: scale(1); } 30% { transform: scale(1.12); } 40% { transform: scale(1.12) translateX(-5px) rotate(-4deg); } 50% { transform: scale(1.12) translateX(5px) rotate(4deg); } 62% { transform: scale(1.12) translateX(-4px) rotate(-3deg); } 74% { transform: scale(1.12) translateX(4px) rotate(3deg); } 100% { transform: scale(1.1); } }
+@keyframes trVeko { 0% { transform: translate(0, 0) rotate(0); } 55% { transform: translate(-2px, -4px) rotate(-30deg); } 100% { transform: translate(-2px, -4px) rotate(-17deg); } }
+@keyframes trIskra { 0% { opacity: 1; transform: translate(0, 0) rotate(45deg) scale(.4); } 70% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(225deg) scale(1); } }
+@keyframes trZablesk { 0% { opacity: 0; } 25% { opacity: .9; } 100% { opacity: 0; } }
+@keyframes trLuc { 0% { opacity: 0; transform: scaleY(.3); } 100% { opacity: .5; transform: none; } }
+@keyframes trOdlet { 0% { transform: none; } 30% { transform: translateY(-14px) scale(1.25); } 100% { transform: translate(40vw, 60vh) scale(.2); opacity: 0; } }
+@keyframes trZmizni { to { opacity: 0; transform: scale(.6); } }
+.tr-okno.hotovo .tr-karta.vybrana { opacity: 1; }

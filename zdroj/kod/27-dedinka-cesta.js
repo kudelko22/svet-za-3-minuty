@@ -10,18 +10,32 @@ const DedCesta = {
   // ---------- kresby ----------
   // truhlička okolo (0,0) = stred spodku; otv = veko odklopené (lúč svetla zvnútra)
   truhla(t, otv = false) {
-    const [dr, tm, ok] = TRUHLA_FARBY[t] || TRUHLA_FARBY.drevo, zl = t === 'zlato' || t === 'striebro';
+    const [dr, tm, ok] = TRUHLA_FARBY[t] || TRUHLA_FARBY.drevo, zl = t === 'zlato', st = t === 'striebro', kov = zl ? '#FFE48A' : st ? '#E6EBF6' : '#7C7788', kovT = zl ? '#C98A06' : st ? '#8E9BB8' : '#55505F', nit = zl ? '#FFF6D0' : st ? '#FFFFFF' : '#B9B5C6';
+    const nity = [[-28, -10], [-12, -10], [12, -10], [28, -10], [-28, -22], [28, -22]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.7" fill="${nit}" stroke-width="1.2"/>`).join('');
+    const nityV = [-30, 30].map(x => `<circle cx="${x}" cy="-40" r="1.7" fill="${nit}" stroke-width="1.2"/>`).join('');
     return `<ellipse cx="3" cy="1" rx="44" ry="6" fill="var(--ink)" opacity=".16" stroke="none"/>
+      <g class="tr-zar" fill="var(--sun)" stroke="none" opacity="0"><ellipse cx="0" cy="-22" rx="50" ry="38" opacity=".18"/><ellipse cx="0" cy="-22" rx="42" ry="31" opacity=".22"/><ellipse cx="0" cy="-22" rx="34" ry="24" opacity=".3"/></g>
       <path d="M-36 -26h72v24a4 4 0 0 1-4 4h-64a4 4 0 0 1-4-4z" fill="${dr}"/>
-      <path d="M-36 -26h72v7h-72z" fill="${tm}" opacity=".35" stroke="none"/><path d="M-20 -26v28M20 -26v28" stroke-width="2" fill="none" opacity=".6"/>
-      <path d="M-34 -8h68" stroke="${tm}" stroke-width="3.5" fill="none" opacity=".7"/>
-      ${otv ? `<ellipse cx="0" cy="-28" rx="30" ry="8" fill="var(--sun-l)" stroke="none"/>` : ''}
+      <path d="M-36 -26h72v8h-72z" fill="${tm}" opacity=".3" stroke="none"/>
+      <path d="M-36 -14h72M-36 -6h72" stroke="${tm}" stroke-width="1.2" fill="none" opacity=".35"/>
+      <path d="M-33 -2h66" stroke="#fff" stroke-width="2" fill="none" opacity=".25" stroke-linecap="round"/>
+      <g fill="${kov}"><path d="M-27 -26h14v28h-14z"/><path d="M13 -26h14v28H13z"/></g>
+      <path d="M-24 -23v22M16 -23v22" stroke="#fff" stroke-width="1.8" opacity=".5" fill="none"/>
+      <path d="M-36 -26l9 0M27 -26l9 0" stroke="${kovT}" stroke-width="1" fill="none" opacity=".5"/>${nity}
+      <path d="M-36 -2l8-0v4h-4a4 4 0 0 1-4-4zM36 -2l-8 0v4h4a4 4 0 0 0 4-4z" fill="${kovT}" stroke="none" opacity=".55"/>
+      ${otv ? `<ellipse cx="0" cy="-27" rx="31" ry="7" fill="var(--ink)" opacity=".5" stroke="none"/><ellipse cx="0" cy="-27.5" rx="27" ry="5" fill="var(--sun-l)" stroke="none"/><path class="tr-luc" d="M-24 -27L-44 -66h88L24 -27z" fill="var(--sun-l)" opacity=".5" stroke="none"/>` : ''}
       <g class="tr-veko"><path d="M-38 -26v-9a22 22 0 0 1 22-22h32a22 22 0 0 1 22 22v9z" fill="${dr}"/>
-        <path d="M-36 -33a20 20 0 0 1 20-21h32" fill="none" stroke="#fff" stroke-width="3" opacity=".4"/><path d="M-20 -26v-31M20 -26v-31" stroke-width="2" fill="none" opacity=".6"/>
-        <path d="M-38 -30h76" stroke="${tm}" stroke-width="3.5" fill="none" opacity=".7"/></g>
-      <rect x="-7" y="-33" width="14" height="14" rx="4" fill="${ok}"/><circle cx="0" cy="-27" r="2" fill="var(--ink)" stroke="none"/>
-      ${t === 'vitaj' ? `<path d="M-6 -59c-7-6-16-3-14 4 6 2 12 0 14-4zM6 -59c7-6 16-3 14 4-6 2-12 0-14-4z" fill="var(--coral)"/>` : ''}
-      ${zl ? `<path d="M-30 -48l2 4 4 .6-3 3 .8 4-3.8-2-3.8 2 .8-4-3-3 4-.6z" fill="#fff" opacity=".7" stroke="none"/>` : ''}`;
+        <path d="M-38 -30h76v4h-76z" fill="${tm}" opacity=".3" stroke="none"/>
+        <path d="M-27 -26v-30M13 -26v-30" stroke="none" fill="none"/>
+        <path d="M-28 -26v-24a24 24 0 0 1 14-7h0v31zM14 -26v-31h0a24 24 0 0 1 14 7v24z" fill="${kov}"/>
+        <path d="M-25 -30v-17M17 -30v-17" stroke="#fff" stroke-width="1.8" opacity=".5" fill="none"/>
+        <path d="M-35 -34a20 20 0 0 1 19-20h18" fill="none" stroke="#fff" stroke-width="3" opacity=".45"/>${nityV}
+        <path d="M-6 -33h12v8h-12z" fill="${kovT}"/></g>
+      <path d="M-9 -34h18v18a3 3 0 0 1-3 3h-12a3 3 0 0 1-3-3z" fill="${ok}"/><path d="M-6 -31h4" stroke="#fff" stroke-width="2" opacity=".6" fill="none"/>
+      <circle cx="0" cy="-25" r="2.6" fill="var(--ink)" stroke="none"/><path d="M-1 -24l-1 6h4l-1-6z" fill="var(--ink)" stroke="none"/>
+      ${zl ? `<circle cx="-20" cy="-42" r="3.2" fill="var(--coral)" stroke-width="1.5"/><circle cx="20" cy="-42" r="3.2" fill="var(--sky)" stroke-width="1.5"/><path d="M-6 -58l3-5 3 3 3-3 3 5z" fill="#FFF0B3" stroke-width="1.6" transform="translate(0 2)"/>` : ''}
+      ${zl || st ? `<path d="M-31 -50l1.6 3.6 3.6.6-2.8 2.6.8 3.6-3.2-1.8-3.2 1.8.8-3.6-2.8-2.6 3.6-.6z" fill="#fff" opacity=".75" stroke="none"/>` : ''}
+      ${t === 'vitaj' ? `<path d="M-3 -57c-7-8-18-5-16 3 6 3 13 1 16-3zM3 -57c7-8 18-5 16 3-6 3-13 1-16-3z" fill="var(--coral)"/><circle cx="0" cy="-57" r="3" fill="var(--coral)"/>` : ''}`;
   },
   truhlaSvg(t, otv = false) {
     return `<svg class="tr-svg${otv ? ' otv' : ''}" viewBox="-50 -66 100 76" aria-hidden="true"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${this.truhla(t, otv)}</g></svg>`;
@@ -143,6 +157,58 @@ const DedCesta = {
     if (document.querySelector('.tr-okno')) return;
     const ponuka = Dedinka.truhlaNabidka(t); if (!ponuka.length || !Dedinka.cakajuTruhly().includes(t)) return;
     Oslavy.pridaj(() => {
+      const el = document.createElement('div'); el.className = 'tr-okno tr-t-' + t; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', this.truhlaMeno(t));
+      const luce = Array.from({ length: 16 }, (_, k) => { const a = k * 22.5 * Math.PI / 180, b = (k * 22.5 + 10) * Math.PI / 180; return `<path d="M180 210L${(180 + 600 * Math.cos(a)).toFixed(0)} ${(210 + 600 * Math.sin(a)).toFixed(0)}L${(180 + 600 * Math.cos(b)).toFixed(0)} ${(210 + 600 * Math.sin(b)).toFixed(0)}z"/>`; }).join('');
+      const hv = DED_TRUHLY[t].hviezdy;
+      el.innerHTML = `<svg class="osr-luce tr-luce" viewBox="0 0 360 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${luce}</g></svg>
+        <button class="btn kruh dve tr-pozdejsie" data-tr="zavri" aria-label="Neskôr">${ikn('zavriet')}</button>
+        <div class="tr-obsah"><h2 class="tr-n">${esc(this.truhlaMeno(t))}</h2><p class="tr-tx" id="tr-tx">Ťukni na truhličku.</p>
+          <button class="tr-truhla" data-tr="otvor" aria-label="Otvoriť truhličku">${this.truhlaSvg(t)}${this.truhlaSvg(t, true).replace('tr-svg', 'tr-svg tr-otv')}</button>
+          <div class="tr-karty" role="radiogroup" aria-label="Vyber si jednu vec">${ponuka.map((id, k) => `<button class="tr-karta" role="radio" aria-checked="false" data-tr-vec="${id}" style="--k:${k}">
+            <span class="tr-karta-ik">${this.vecSvg(id)}</span><span class="tr-karta-n">${esc(DED_VEC[id].n)}</span></button>`).join('')}</div>
+          <p class="tr-vysl" id="tr-vysl" aria-live="polite"></p>
+          <div class="tr-akcie"><button class="btn wide" data-tr="vyber" disabled>Toto chcem${ikn('sipka', 'za')}</button></div>
+          ${hv ? `<p class="tr-hv">${ikn('hviezda')}+${hv} hviezd navyše</p>` : ''}</div>`;
+      document.body.appendChild(el); Zvuk.play('whoosh');
+      let stav = 'caka', vyber = null;
+      const zavri = () => { document.removeEventListener('keydown', kl); el.classList.add('pryc'); setTimeout(() => { el.remove(); Oslavy.dalsia(); if (st.view === 'cesta' || st.view === 'dedinka') render(); }, 300); };
+      const kl = e => { if (e.key === 'Escape' && stav !== 'hotovo') zavri(); };
+      document.addEventListener('keydown', kl);
+      const casy = []; const po = (fn, ms) => casy.push(setTimeout(fn, ms));
+      const ukaz = () => { if (stav === 'vyber' || stav === 'hotovo') return; stav = 'vyber'; el.classList.add('vyber'); const x = el.querySelector('#tr-tx'); x.textContent = 'Vyber si jednu vec.'; };
+      // iskry z truhličky: drevená pár, strieborná viac, zlatá najviac a so zlatým zábleskom
+      const iskry = () => {
+        const n = t === 'zlato' ? 26 : t === 'striebro' ? 14 : 7, tr = el.querySelector('.tr-truhla'); if (!tr) return;
+        for (let k = 0; k < n; k++) { const i = document.createElement('i'), a = (-90 + (k / n - .5) * 200 + (k % 3) * 7) * Math.PI / 180, r = 50 + (k * 37 % 60);
+          i.className = 'tr-iskra' + (k % 3 === 0 ? ' b' : ''); i.style.cssText = `--dx:${(Math.cos(a) * r).toFixed(0)}px;--dy:${(Math.sin(a) * r - 10).toFixed(0)}px;--d:${(k % 5) * 40}ms`; tr.appendChild(i); }
+        if (t === 'zlato') { el.classList.add('zlata-osl'); po(() => Zvuk.play('oslava-stredna'), 250); }
+      };
+      const otvorTruhlu = () => {
+        if (stav === 'vyber' || stav === 'hotovo') return;
+        if (stav === 'otv') { casy.forEach(clearTimeout); el.classList.remove('tras'); el.classList.add('otvorena'); ukaz(); return; } // ťuknutie počas animácie ju preskočí
+        stav = 'otv';
+        if (tiche) { el.classList.add('otvorena'); ukaz(); Zvuk.play('star'); return; }
+        el.classList.add('tras'); Zvuk.play('tap'); po(() => Zvuk.play('tap'), 260);
+        po(() => { el.classList.remove('tras'); el.classList.add('otvorena'); Zvuk.play('star'); vibruj(25); iskry(); }, 700);
+        po(ukaz, 1400);
+      };
+      el.addEventListener('click', e => {
+        e.stopPropagation(); const b = e.target.closest('[data-ct-os]'); if (!b) return; Zvuk.play('tap');
+        zavri(b.dataset.ctOs === 'otvor' ? () => { Oslavy.dalsia(); this.otvor(o.t); } : null);
+      });
+      const b = el.querySelector('[data-ct-os]'); if (b && b.focus) b.focus({ preventScroll: true });
+    });
+  },
+  // malá oslava: úloha týždňa splnená, kroky pribudli (tichý štítok, žiadne okno)
+  ulohaHotova(u) {
+    try { Zvuk.play('oslava-mala'); toast(`Úloha splnená: ${u.n}. +${krokyText(u.kroky)} na ceste.`); } catch (e) { /* test bez prehliadača */ }
+  },
+  // ---------- truhlička: otvorenie a výber 1 z 3 (bez náhody) ----------
+  // čaká a hojdá sa → ťuk: zatrasie sa, veko odskočí a lúče → 3 karty → výber potvrdí tlačidlo → vec skočí do batohu. Pri obmedzení pohybu len výber.
+  otvor(t) {
+    if (document.querySelector('.tr-okno')) return;
+    const ponuka = Dedinka.truhlaNabidka(t); if (!ponuka.length || !Dedinka.cakajuTruhly().includes(t)) return;
+    Oslavy.pridaj(() => {
       const el = document.createElement('div'); el.className = 'tr-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', this.truhlaMeno(t));
       const luce = Array.from({ length: 16 }, (_, k) => { const a = k * 22.5 * Math.PI / 180, b = (k * 22.5 + 10) * Math.PI / 180; return `<path d="M180 210L${(180 + 600 * Math.cos(a)).toFixed(0)} ${(210 + 600 * Math.sin(a)).toFixed(0)}L${(180 + 600 * Math.cos(b)).toFixed(0)} ${(210 + 600 * Math.sin(b)).toFixed(0)}z"/>`; }).join('');
       const hv = DED_TRUHLY[t].hviezdy;
@@ -175,13 +241,13 @@ const DedCesta = {
           el.querySelectorAll('[data-tr-vec]').forEach(x => { const on = x === k; x.classList.toggle('vybrana', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); });
           const v = el.querySelector('[data-tr="vyber"]'); v.disabled = false; return;
         }
-        if (!b) return; const a = b.dataset.tr;
+        if (!b) { if (stav === 'otv') otvorTruhlu(); return; } const a = b.dataset.tr;
         if (a === 'otvor') otvorTruhlu();
         else if (a === 'zavri') { if (stav !== 'hotovo') zavri(); else zavri(); }
         else if (a === 'vyber' && stav === 'vyber' && vyber) {
           const r = Dedinka.truhlaOtvor(t, vyber); if (!r.ok) { toast('Nepodarilo sa. Skús znova.'); return; }
           stav = 'hotovo'; Zvuk.play('dopad1'); vibruj(20);
-          el.classList.add('hotovo'); el.querySelector('#tr-tx').textContent = 'Dobrý výber.';
+          el.classList.add('hotovo'); if (!tiche) Zvuk.play('whoosh'); el.querySelector('#tr-tx').textContent = 'Dobrý výber.';
           el.querySelector('#tr-vysl').textContent = `${DED_VEC[vyber].n} je v tvojom batohu.`;
           const v = el.querySelector('[data-tr="vyber"]'); v.disabled = false; v.innerHTML = 'Hotovo' + ikn('check'); v.setAttribute('data-tr', 'zavri');
           if (typeof Dedinka !== 'undefined' && Dedinka.cakajuTruhly().length) { const x = el.querySelector('.tr-hv'); if (x) x.textContent = 'Ďalšia truhlička ťa ešte čaká.'; }
