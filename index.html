@@ -3228,6 +3228,9 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .tr-hv { display: inline-flex; align-items: center; gap: 4px; margin: 0; padding: 3px 12px; border-radius: 999px; background: var(--card); border: 2.5px solid var(--ink); font-weight: 700; font-size: .88rem; color: var(--text); }
 .tr-hv .ikn { width: 18px; height: 18px; }
 @media (prefers-reduced-motion: reduce) { .tr-okno, .tr-okno.pryc, .tr-karta, .ct-pas-v { animation: none; transition: none; } }
+
+/* zlúčenie 5.1: v dedinke je Stavať hore pod Všetky hry (na oblohe), dole by zakrylo smerovník Cesta a truhličku; v izbe ostáva dole */
+.ds:not(.ds-izba) > .dst-stavat { top: 62px; bottom: auto; }
 /* 5.1: nové hry s úrovňami (09b-hry-51.js). Ruka ako ostatné hry 5.0: atramentový obrys, plný tieň dole, mierne nakrivo. */
 :root { --ces-a: #A8E3A6; --ces-b: #B9EAB2; }
 :root[data-rezim="mesacny"] { --ces-a: #2E5E5C; --ces-b: #356A66; }
