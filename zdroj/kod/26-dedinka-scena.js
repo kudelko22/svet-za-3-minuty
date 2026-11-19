@@ -13,7 +13,7 @@ function dedMiesto(kl, sirka = 1) {
 // pevné miesta hier (posun od stredu, päta, mierka); hra dostane miesto podľa poradia ceny vo svojom vekovom zozname
 const DS_HRY_MIESTA = [[-152, 410, .84], [152, 410, .84], [-116, 330, .72], [116, 330, .72], [-140, 502, .92], [176, 502, .95],
   [-80, 268, .6], [84, 268, .6], [196, 600, 1.02], [-62, 230, .5], [62, 230, .5], [0, 212, .46],
-  [-200, 455, .88], [214, 455, .88], [-182, 372, .78], [186, 372, .78], [-118, 566, 1]]; // 5.1: miesta pre nové hry (09b-hry-51.js)
+  [-200, 455, .88], [214, 455, .88], [-240, 376, .78], [232, 378, .78], [-118, 566, 1]]; // 5.1: miesta pre nové hry (09b-hry-51.js)
 const DS_DOM = [-218, 606, .98]; // hlavný dom vpredu vľavo od cesty
 const DS_STROM = [0, 404, .64]; // strom múdrosti na námestí v strede (mierka kresby stromSvg)
 // voľby položenej veci: reťazec, znak i = i-tá voľba z DEDINKA_VOLBY[kľúč] (poradie kľúčov), '0' = základ, '1' = prvá hodnota, '2' = druhá…
