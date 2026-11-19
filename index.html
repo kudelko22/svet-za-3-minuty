@@ -6051,41 +6051,7 @@ Object.assign(KRESBY_HIER, {
 });
 for (const k of ['kosiky', 'skryte', 'slabiky', 'ypsilon', 'cesticka', 'hodiny']) Object.defineProperty(OBR_HRY, k, { enumerable: true, configurable: true, get() { const v = `<svg class="hra-kresba" viewBox="0 0 120 80" aria-hidden="true"><g ${HI} stroke-width="3">${KRESBY_HIER[k]()}</g></svg>`; Object.defineProperty(OBR_HRY, k, { value: v, enumerable: true }); return v; } });
 
-/* ---------- budovy v dedinke (kreslené okolo päty 0, 0 ako ostatné hry v obrazky.js) ---------- */
-(() => {
-  if (typeof dedinkaKresby === 'undefined') return;
-  const K = dedinkaKresby, hv = (x, y, r, f = 'var(--sun)') => { let d = ''; for (let i = 0; i < 10; i++) { const q = i % 2 ? r * .46 : r, a = -Math.PI / 2 + i * Math.PI / 5; d += (i ? 'L' : 'M') + (x + q * Math.cos(a)).toFixed(1) + ' ' + (y + q * Math.sin(a)).toFixed(1); } return `<path d="${d}Z" fill="${f}" stroke-width="1.3"/>`; };
-  const okno = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="var(--dv-okno)"/><path d="M${x + w / 2} ${y}v${h}" stroke-width="1.5"/><rect class="dv-noc" x="${x - 4}" y="${y - 4}" width="${w + 8}" height="${h + 8}" rx="6" fill="var(--dv-svetlo)" opacity=".18" stroke="none"/>`;
-  const dvere = (x, c, h = 16) => `<path d="M${x - 6} 0V${-h + 6}a6 6 0 0 1 12 0V0z" fill="${c}"/><circle cx="${x + 3}" cy="-7" r="1.1" fill="var(--ink)" stroke="none"/>`;
-  const B = {
-    // trhový stánok s pásikavou markízou a troma košíkmi
-    kosiky: () => `<path d="M-30 0v-46M30 0v-46" stroke-width="3.2"/><rect x="-34" y="-22" width="68" height="22" rx="2" fill="var(--dv-drevo)"/><path d="M-30 -11h60" stroke-dasharray="1 6" opacity=".45"/>
-      ${[[-21, 'var(--coral)', 'var(--sun)'], [0, 'var(--sun)', 'var(--leaf)'], [21, 'var(--leaf)', 'var(--violet)']].map(([x, a, b]) => `<circle cx="${x - 4}" cy="-28" r="5" fill="${a}" stroke-width="1.5"/><circle cx="${x + 4}" cy="-29" r="5" fill="${b}" stroke-width="1.5"/><path d="M${x - 10} -27h20l-3 10h-14z" fill="var(--dv-drevo-d)"/><path d="M${x - 8} -22h16" stroke-width="1.1"/>`).join('')}
-      <path d="M-38 -44l7-18h62l7 18z" fill="var(--dv-biela)"/>${[0, 2, 4].map(i => `<path d="M${-38 + i * 15.2} -44l${7 - i * 2.8} -18h12.4l${-1.4 - i * .1} 18z" fill="var(--teal)" stroke="none"/>`).join('')}<path d="M-38 -44l7-18h62l7 18z" fill="none"/>
-      ${[0, 1, 2, 3, 4].map(i => `<path d="M${-38 + i * 15.2} -44a7.6 6 0 0 0 15.2 0" fill="${i % 2 ? 'var(--dv-biela)' : 'var(--teal)'}"/>`).join('')}<rect x="-13" y="-76" width="26" height="14" rx="3" fill="var(--sun-l)"/><circle cx="0" cy="-69" r="4.2" fill="var(--coral)" stroke-width="1.4"/><path d="M0 -73q1-3 4-3" fill="none" stroke-width="1.3"/>`,
-    // pozorovateľňa (posed) s veľkou lupou
-    skryte: () => `<path d="M-20 0l9-46h4L-16 0zM20 0l-9-46h-4L16 0z" fill="var(--dv-drevo-d)"/><path d="M-15 -14h30M-13 -28h26" stroke-width="3"/><path d="M-3 0v-44M5 0v-44" stroke-width="1.6"/><path d="M-3 -8h8M-3 -18h8M-3 -28h8M-3 -38h8" stroke-width="1.4"/>
-      <rect x="-19" y="-70" width="38" height="26" rx="2" fill="var(--dv-drevo)"/><rect x="-13" y="-65" width="26" height="12" rx="2" fill="var(--ink)" opacity=".85"/><circle cx="-5" cy="-59" r="2.4" fill="var(--sun-l)" stroke="none" class="dv-oko"/><circle cx="5" cy="-59" r="2.4" fill="var(--sun-l)" stroke="none" class="dv-oko"/>
-      <path d="M-25 -68L0 -88 25 -68z" fill="var(--leaf-d)"/><g transform="translate(25 -80)"><circle r="9" fill="var(--sky-l)" stroke-width="2.6"/><path d="M-4 -3a5 5 0 0 1 4-3" fill="none" stroke="var(--dv-biela)" stroke-width="1.6"/><path d="M6 7l7 8" stroke-width="4.5"/><path d="M6 7l7 8" stroke="var(--coral)" stroke-width="1.8"/></g>`,
-    // slabikový vláčik s dvoma vagónikmi
-    slabiky: () => `<path d="M-42 0h86" stroke-width="2.4"/><path d="M-40 -6V-28h16v-12h6v12h4v22z" fill="var(--coral)"/><rect x="-38" y="-24" width="9" height="8" rx="1.5" fill="var(--dv-okno)" stroke-width="1.5"/><circle cx="-23" cy="-48" r="4" fill="var(--dv-biela)" stroke-width="1.5"/><circle cx="-17" cy="-56" r="3" fill="var(--dv-biela)" stroke-width="1.5"/>
-      ${[[-11, 'var(--sun)', 'MA'], [15, 'var(--teal)', 'LA']].map(([x, c, t]) => `<rect x="${x}" y="-27" width="23" height="21" rx="3" fill="${c}"/><text x="${x + 11.5}" y="-11.5" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="11" fill="var(--ink)" stroke="none">${t}</text><circle cx="${x + 6}" cy="-4" r="4" fill="var(--ink)"/><circle cx="${x + 17}" cy="-4" r="4" fill="var(--ink)"/>`).join('')}
-      <circle cx="-34" cy="-4" r="4.5" fill="var(--ink)"/><circle cx="-23" cy="-4" r="4.5" fill="var(--ink)"/><path d="M-14 -14h3M12 -14h3" stroke-width="2.4"/>`,
-    // škola so zvoničkou a tabuľou i / y
-    ypsilon: () => `<rect x="-30" y="-40" width="60" height="40" rx="2" fill="var(--sky-l)"/><path d="M-35 -38L0 -60 35 -38z" fill="var(--coral)"/><rect x="-6" y="-74" width="12" height="16" fill="var(--dv-biela)"/><path d="M-9 -73L0 -84 9 -73z" fill="var(--coral-d)"/><path d="M-3 -61a3 3 0 0 1 6 0v-6a3 3 0 0 0-6 0z" fill="var(--sun)" stroke-width="1.2"/>
-      <rect x="-26" y="-33" width="20" height="16" rx="1.5" fill="var(--leaf-d)"/><text x="-16" y="-20.5" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="11" fill="var(--dv-biela)" stroke="none">i y</text>${okno(9, -33, 14, 12)}${dvere(0, 'var(--violet-d)')}`,
-    // domček cestovateľa s mapou a smerovníkom
-    cesticka: () => `<rect x="-28" y="-38" width="46" height="38" rx="2" fill="var(--sun-l)"/><path d="M-33 -36L-5 -58 23 -36z" fill="var(--teal)"/><rect x="-24" y="-32" width="26" height="20" rx="2" fill="var(--dv-biela)"/><path d="M-20 -16q4-8 10-6t8-8" fill="none" stroke="var(--coral)" stroke-width="1.6" stroke-dasharray="1 3"/><path d="M-3 -31l3 3M0 -31l-3 3" stroke="var(--coral)" stroke-width="1.6"/><circle cx="-19" cy="-26" r="2.4" fill="var(--leaf)" stroke-width="1"/>
-      ${dvere(10, 'var(--dv-drevo-d)', 15)}<path d="M30 0v-56" stroke-width="3.4"/><path d="M30 -54h14l5 5-5 5H30z" fill="var(--coral)"/><path d="M30 -40H17l-5 5 5 5h13z" fill="var(--violet)"/><path d="M33 -49h8M17 -35h9" stroke="var(--dv-biela)" stroke-width="1.5"/>`,
-    // hodinová veža
-    hodiny: () => `<rect x="-17" y="-72" width="34" height="72" rx="2" fill="var(--violet-l)"/><path d="M-22 -70L0 -98 22 -70z" fill="var(--violet)"/><circle cy="-100" r="2.6" fill="var(--sun)"/><circle cy="-54" r="12" fill="var(--dv-biela)" stroke-width="2.4"/>
-      ${[0, 1, 2, 3].map(i => { const a = i * Math.PI / 2; return `<path d="M${(Math.sin(a) * 9).toFixed(1)} ${(-54 - Math.cos(a) * 9).toFixed(1)}L${(Math.sin(a) * 11).toFixed(1)} ${(-54 - Math.cos(a) * 11).toFixed(1)}" stroke-width="1.5"/>`; }).join('')}<path d="M0 -54v-8" stroke="var(--violet-d)" stroke-width="2.2"/><path d="M0 -54l5 3" stroke="var(--coral)" stroke-width="2.6"/><circle cy="-54" r="1.6" fill="var(--ink)" stroke="none"/>
-      ${okno(-6, -34, 12, 10)}${dvere(0, 'var(--coral-d)', 14)}${hv(-24, -84, 4)}`,
-  };
-  Object.assign(K.SKUPINY.hra, B);
-  Object.assign(K.RAMCEK, { kosiky: [-40, -78, 80, 80], skryte: [-27, -91, 62, 93], slabiky: [-44, -60, 90, 62], ypsilon: [-37, -86, 74, 88], cesticka: [-35, -60, 86, 62], hodiny: [-28, -105, 50, 107] });
-  K.ZOZNAM.hra.push(...Object.keys(B));
-})();
+/* budovy týchto hier v dedinke sú v obrazky.js (dedinkaKresby, skupina hra) */
 
 /* ---------- spoločný rámec hier 5.1 ---------- */
 const H51_DOBRE = .7; // podiel kôl hneď správne, ktorý odomkne ďalšiu úroveň
@@ -9324,21 +9290,24 @@ const DED_SKUPINY = [
 const DED_VECI = [
   ['stan', 'Stan', 'domcek', 60, 'DOM'], ['chalupka', 'Chalúpka', 'domcek', 150, 'DOM'], ['hrib', 'Hríbik', 'domcek', 180, 'DOM'],
   ['stodola', 'Stodola', 'domcek', 200, 'DOM', 0, 2], ['vezicka', 'Vežička', 'domcek', 240, 'DOM'], ['mlyn', 'Mlyn', 'domcek', 400, 'DOM', 0, 2],
-  ['zamocek', 'Zámoček', 'domcek', 1500, 'DOM', 0, [2, 'z']], ['iglu', 'Iglu', 'domcek', 0, 'DOM', 0, 'n'],
+  ['zamocek', 'Zámoček', 'domcek', 1500, 'DOM', 0, [2, 'z']], ['iglu', 'Iglu', 'domcek', 0, 'DOM', 0, 'n'], ['sklenik', 'Skleník', 'domcek', 300, 'DOM'], ['zvonica', 'Zvonica', 'domcek', 450, 'DOM'],
   ['ker', 'Krík', 'strom', 15, 'STROM', 0, 'v'], ['gulaty', 'Guľatý strom', 'strom', 30, 'STROM', 0, 'v'], ['smrek', 'Smrek', 'strom', 35, 'STROM', 0, 'v'],
   ['breza', 'Breza', 'strom', 40, 'STROM', 0, 'v'], ['jablon', 'Jabloň', 'strom', 45, 'STROM', 0, 'v'], ['jesen', 'Jesenný strom', 'strom', 50, 'STROM', 0, 'v'],
   ['ceresna', 'Čerešňa', 'strom', 60, 'STROM', 0, 'v'], ['palma', 'Palma', 'strom', 120, 'STROM', 0, 'v'],
-  ['kvety', 'Kvietky', 'kvety', 10, 'MALE', 0, 'v'], ['huby', 'Huby', 'kvety', 12, 'MALE', 0, 'v'], ['tulipany', 'Tulipány', 'kvety', 15, 'MALE', 0, 'v'], ['slnecnica', 'Slnečnica', 'kvety', 20, 'MALE', 0, 'v'],
+  ['kvety', 'Kvietky', 'kvety', 10, 'MALE', 0, 'v'], ['huby', 'Huby', 'kvety', 12, 'MALE', 0, 'v'], ['tulipany', 'Tulipány', 'kvety', 15, 'MALE', 0, 'v'], ['slnecnica', 'Slnečnica', 'kvety', 20, 'MALE', 0, 'v'], ['zahradka', 'Záhradka', 'kvety', 55, 'MALE', 0, 'v'],
   ['kamen_cesta', 'Kamienky', 'plot', 10, 'MALE', 0, 'v'], ['plot', 'Plot', 'plot', 12, 'MALE', 0, 'v'], ['zivyplot', 'Živý plot', 'plot', 18, 'MALE', 0, 'v'], ['mostik', 'Mostík', 'plot', 90, 'MALE', 0, 2],
   ['sliepka', 'Sliepka', 'zviera', 60, 'ZVER'], ['kacka', 'Kačka', 'zviera', 70, 'ZVER'], ['zajac', 'Zajko', 'zviera', 80, 'ZVER'], ['jez', 'Ježko', 'zviera', 90, 'ZVER'],
-  ['macka', 'Mačka', 'zviera', 100, 'ZVER'], ['ovca', 'Ovečka', 'zviera', 110, 'ZVER'], ['pes', 'Psík', 'zviera', 130, 'ZVER'],
+  ['macka', 'Mačka', 'zviera', 100, 'ZVER'], ['ovca', 'Ovečka', 'zviera', 110, 'ZVER'], ['pes', 'Psík', 'zviera', 130, 'ZVER'], ['budka', 'Psík v búdke', 'zviera', 170, 'ZVER'],
   ['schranka', 'Schránka', 'ozdoba', 20, 'MALE'], ['sud', 'Sud', 'ozdoba', 15, 'MALE'], ['kamene', 'Kamene', 'ozdoba', 15, 'MALE'], ['seno', 'Kopa sena', 'ozdoba', 20, 'MALE'],
   ['vlajocky', 'Vlajočky', 'ozdoba', 25, 'MALE'], ['lampa', 'Lampa', 'ozdoba', 30, 'MALE'], ['lavicka', 'Lavička', 'ozdoba', 35, 'MALE'], ['lucerny', 'Lampióny', 'ozdoba', 40, 'MALE'],
   ['strasiak', 'Strašiak', 'ozdoba', 45, 'MALE'], ['hojdacka', 'Hojdačka', 'ozdoba', 90, 'MALE'], ['studna', 'Studňa', 'ozdoba', 110, 'MALE'], ['jazierko', 'Jazierko', 'ozdoba', 140, 'MALE', 0, 2],
   ['fontana', 'Fontána', 'ozdoba', 250, 'MALE'], ['socha', 'Socha hviezdy', 'ozdoba', 300, 'MALE'], ['snehuliak', 'Snehuliak', 'ozdoba', 0, 'MALE', 0, 'n'],
+  ['polienka', 'Polienka', 'ozdoba', 20, 'MALE', 0, 'v'], ['vetrnik', 'Veterník', 'ozdoba', 25, 'MALE', 0, 'v'], ['lampas', 'Lampáš', 'ozdoba', 35, 'MALE'], ['vtacibudka', 'Vtáčia búdka', 'ozdoba', 40, 'MALE'], ['piesok', 'Pieskovisko', 'ozdoba', 70, 'MALE'],
+  ['vozik', 'Vozík s tekvicami', 'ozdoba', 85, 'MALE'], ['ul', 'Včelí úľ', 'ozdoba', 95, 'MALE'], ['obluk', 'Kvetinový oblúk', 'ozdoba', 120, 'MALE'], ['rybnik', 'Jazierko s mólom', 'ozdoba', 220, 'MALE', 0, 2],
   ['kvetinac', 'Kvetináč', 'nabytok', 15, 'NAB'], ['stolicka', 'Stolička', 'nabytok', 20, 'NAB'], ['obraz', 'Obraz', 'nabytok', 25, 'NAB'], ['koberec', 'Koberec', 'nabytok', 30, 'NAB'],
   ['lampa_izba', 'Lampa do izby', 'nabytok', 30, 'NAB', 'lampa'], ['stol', 'Stôl', 'nabytok', 40, 'NAB'], ['globus', 'Glóbus', 'nabytok', 50, 'NAB'], ['kreslo', 'Kreslo', 'nabytok', 60, 'NAB'],
   ['postel', 'Posteľ', 'nabytok', 70, 'NAB'], ['polica', 'Polica', 'nabytok', 80, 'NAB'], ['akvarium', 'Akvárium', 'nabytok', 150, 'NAB'], ['dalekohlad', 'Ďalekohľad', 'nabytok', 250, 'NAB'],
+  ['macko', 'Macko', 'nabytok', 45, 'NAB'], ['hracky', 'Truhlica s hračkami', 'nabytok', 65, 'NAB'], ['skrina', 'Skriňa', 'nabytok', 90, 'NAB'], ['kukucka', 'Kukučkové hodiny', 'nabytok', 120, 'NAB'], ['krb', 'Krb', 'nabytok', 200, 'NAB'],
 ].map(([id, n, sk, cena, z, k, p]) => { const f = [].concat(p || []); return { id, n, sk, cena, kresba: f.includes('z') ? null : [z, k || id], sirka: f.includes(2) ? 2 : 1, viac: f.includes('v'), nekupne: f.includes('n') }; });
 const DED_VEC = Object.fromEntries(DED_VECI.map(v => [v.id, v]));
 const DED_RADY = 5, DED_STLPCE = 8, DED_IZBA = 8, DED_ZEM_START = 2, DED_MAX_MIEST = 120, DED_MAX_BATOH = 200;

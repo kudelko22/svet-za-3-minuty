@@ -12,21 +12,24 @@ const DED_SKUPINY = [
 const DED_VECI = [
   ['stan', 'Stan', 'domcek', 60, 'DOM'], ['chalupka', 'Chalúpka', 'domcek', 150, 'DOM'], ['hrib', 'Hríbik', 'domcek', 180, 'DOM'],
   ['stodola', 'Stodola', 'domcek', 200, 'DOM', 0, 2], ['vezicka', 'Vežička', 'domcek', 240, 'DOM'], ['mlyn', 'Mlyn', 'domcek', 400, 'DOM', 0, 2],
-  ['zamocek', 'Zámoček', 'domcek', 1500, 'DOM', 0, [2, 'z']], ['iglu', 'Iglu', 'domcek', 0, 'DOM', 0, 'n'],
+  ['zamocek', 'Zámoček', 'domcek', 1500, 'DOM', 0, [2, 'z']], ['iglu', 'Iglu', 'domcek', 0, 'DOM', 0, 'n'], ['sklenik', 'Skleník', 'domcek', 300, 'DOM'], ['zvonica', 'Zvonica', 'domcek', 450, 'DOM'],
   ['ker', 'Krík', 'strom', 15, 'STROM', 0, 'v'], ['gulaty', 'Guľatý strom', 'strom', 30, 'STROM', 0, 'v'], ['smrek', 'Smrek', 'strom', 35, 'STROM', 0, 'v'],
   ['breza', 'Breza', 'strom', 40, 'STROM', 0, 'v'], ['jablon', 'Jabloň', 'strom', 45, 'STROM', 0, 'v'], ['jesen', 'Jesenný strom', 'strom', 50, 'STROM', 0, 'v'],
   ['ceresna', 'Čerešňa', 'strom', 60, 'STROM', 0, 'v'], ['palma', 'Palma', 'strom', 120, 'STROM', 0, 'v'],
-  ['kvety', 'Kvietky', 'kvety', 10, 'MALE', 0, 'v'], ['huby', 'Huby', 'kvety', 12, 'MALE', 0, 'v'], ['tulipany', 'Tulipány', 'kvety', 15, 'MALE', 0, 'v'], ['slnecnica', 'Slnečnica', 'kvety', 20, 'MALE', 0, 'v'],
+  ['kvety', 'Kvietky', 'kvety', 10, 'MALE', 0, 'v'], ['huby', 'Huby', 'kvety', 12, 'MALE', 0, 'v'], ['tulipany', 'Tulipány', 'kvety', 15, 'MALE', 0, 'v'], ['slnecnica', 'Slnečnica', 'kvety', 20, 'MALE', 0, 'v'], ['zahradka', 'Záhradka', 'kvety', 55, 'MALE', 0, 'v'],
   ['kamen_cesta', 'Kamienky', 'plot', 10, 'MALE', 0, 'v'], ['plot', 'Plot', 'plot', 12, 'MALE', 0, 'v'], ['zivyplot', 'Živý plot', 'plot', 18, 'MALE', 0, 'v'], ['mostik', 'Mostík', 'plot', 90, 'MALE', 0, 2],
   ['sliepka', 'Sliepka', 'zviera', 60, 'ZVER'], ['kacka', 'Kačka', 'zviera', 70, 'ZVER'], ['zajac', 'Zajko', 'zviera', 80, 'ZVER'], ['jez', 'Ježko', 'zviera', 90, 'ZVER'],
-  ['macka', 'Mačka', 'zviera', 100, 'ZVER'], ['ovca', 'Ovečka', 'zviera', 110, 'ZVER'], ['pes', 'Psík', 'zviera', 130, 'ZVER'],
+  ['macka', 'Mačka', 'zviera', 100, 'ZVER'], ['ovca', 'Ovečka', 'zviera', 110, 'ZVER'], ['pes', 'Psík', 'zviera', 130, 'ZVER'], ['budka', 'Psík v búdke', 'zviera', 170, 'ZVER'],
   ['schranka', 'Schránka', 'ozdoba', 20, 'MALE'], ['sud', 'Sud', 'ozdoba', 15, 'MALE'], ['kamene', 'Kamene', 'ozdoba', 15, 'MALE'], ['seno', 'Kopa sena', 'ozdoba', 20, 'MALE'],
   ['vlajocky', 'Vlajočky', 'ozdoba', 25, 'MALE'], ['lampa', 'Lampa', 'ozdoba', 30, 'MALE'], ['lavicka', 'Lavička', 'ozdoba', 35, 'MALE'], ['lucerny', 'Lampióny', 'ozdoba', 40, 'MALE'],
   ['strasiak', 'Strašiak', 'ozdoba', 45, 'MALE'], ['hojdacka', 'Hojdačka', 'ozdoba', 90, 'MALE'], ['studna', 'Studňa', 'ozdoba', 110, 'MALE'], ['jazierko', 'Jazierko', 'ozdoba', 140, 'MALE', 0, 2],
   ['fontana', 'Fontána', 'ozdoba', 250, 'MALE'], ['socha', 'Socha hviezdy', 'ozdoba', 300, 'MALE'], ['snehuliak', 'Snehuliak', 'ozdoba', 0, 'MALE', 0, 'n'],
+  ['polienka', 'Polienka', 'ozdoba', 20, 'MALE', 0, 'v'], ['vetrnik', 'Veterník', 'ozdoba', 25, 'MALE', 0, 'v'], ['lampas', 'Lampáš', 'ozdoba', 35, 'MALE'], ['vtacibudka', 'Vtáčia búdka', 'ozdoba', 40, 'MALE'], ['piesok', 'Pieskovisko', 'ozdoba', 70, 'MALE'],
+  ['vozik', 'Vozík s tekvicami', 'ozdoba', 85, 'MALE'], ['ul', 'Včelí úľ', 'ozdoba', 95, 'MALE'], ['obluk', 'Kvetinový oblúk', 'ozdoba', 120, 'MALE'], ['rybnik', 'Jazierko s mólom', 'ozdoba', 220, 'MALE', 0, 2],
   ['kvetinac', 'Kvetináč', 'nabytok', 15, 'NAB'], ['stolicka', 'Stolička', 'nabytok', 20, 'NAB'], ['obraz', 'Obraz', 'nabytok', 25, 'NAB'], ['koberec', 'Koberec', 'nabytok', 30, 'NAB'],
   ['lampa_izba', 'Lampa do izby', 'nabytok', 30, 'NAB', 'lampa'], ['stol', 'Stôl', 'nabytok', 40, 'NAB'], ['globus', 'Glóbus', 'nabytok', 50, 'NAB'], ['kreslo', 'Kreslo', 'nabytok', 60, 'NAB'],
   ['postel', 'Posteľ', 'nabytok', 70, 'NAB'], ['polica', 'Polica', 'nabytok', 80, 'NAB'], ['akvarium', 'Akvárium', 'nabytok', 150, 'NAB'], ['dalekohlad', 'Ďalekohľad', 'nabytok', 250, 'NAB'],
+  ['macko', 'Macko', 'nabytok', 45, 'NAB'], ['hracky', 'Truhlica s hračkami', 'nabytok', 65, 'NAB'], ['skrina', 'Skriňa', 'nabytok', 90, 'NAB'], ['kukucka', 'Kukučkové hodiny', 'nabytok', 120, 'NAB'], ['krb', 'Krb', 'nabytok', 200, 'NAB'],
 ].map(([id, n, sk, cena, z, k, p]) => { const f = [].concat(p || []); return { id, n, sk, cena, kresba: f.includes('z') ? null : [z, k || id], sirka: f.includes(2) ? 2 : 1, viac: f.includes('v'), nekupne: f.includes('n') }; });
 const DED_VEC = Object.fromEntries(DED_VECI.map(v => [v.id, v]));
 const DED_RADY = 5, DED_STLPCE = 8, DED_IZBA = 8, DED_ZEM_START = 2, DED_MAX_MIEST = 120, DED_MAX_BATOH = 200;
