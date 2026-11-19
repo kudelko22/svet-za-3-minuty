@@ -587,7 +587,7 @@ const Hra = {
     }
     h.krok++;
     if (h.krok === h.seq.length) {
-      h.faza = 'cakaj'; simonStav('Výborne!'); mudraHra('radost', 900);
+      h.faza = 'cakaj'; simonStav('Sedí!'); mudraHra('radost', 900);
       h.dalsia = setTimeout(() => { if (st.hra !== h) return; h.seq.push(Math.floor(Math.random() * 4)); this.ukaz(h); }, 850);
     }
   },
@@ -736,7 +736,7 @@ function obnovSklad() {
 const ikonaHry = id => ['pexeso', 'skladacka'].includes(id) ? 'znova' : id === 'opakuj' ? 'hraj' : ['sova', 'krtko', 'hviezdy'].includes(id) ? 'hviezda' : 'check';
 function vysledokHry(h) {
   const v = h.hotovo, t = h.id === 'skladacka' ? byId(h.t) : null, dobre = v.hodnota > 0 || ['pexeso', 'skladacka'].includes(h.id);
-  const nadpis = !dobre ? 'Skús to ešte raz!' : ['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) || h.n51 ? 'Super!' : 'Hotovo!';
+  const nadpis = !dobre ? 'Skús to ešte raz!' : ['hviezdy', 'bubliny', 'opakuj', 'sova', 'pocitaj', 'iny', 'tien', 'poradie', 'krtko', 'slovo', 'ine'].includes(h.id) || h.n51 ? 'Pekne!' : 'Hotovo!';
   const rek = v.novy ? `<span class="pec vysl-pec">${ikn('pohar')}Nový rekord</span>` : v.prvy ? `<span class="pec vysl-pec">${ikn('pohar')}Prvý rekord</span>`
     : v.stary != null ? `<p class="vysl-rek">${ikn('pohar')}Rekord: <b>${rekordText(h.id, v.stary)}</b></p>` : '';
   return `<div class="vysl${dobre ? ' dobre' : ''}" role="dialog" aria-modal="true" aria-labelledby="vysl-n">
@@ -808,7 +808,7 @@ function hryZoznam() {
   const dlazdica = h => { const r = rek(h);
     return `<button class="dlazdica hra-karta" data-hra="${h.id}" style="--c:${h.c};--i:${i++}" aria-label="${esc(h.n)}${r != null ? ', rekord ' + esc(rekordText(h.id, r)) : ', nová hra'}">
       <span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
-      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : '<span class="pec" style="--pc:var(--link)">Nová</span>'}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
+      <span class="pata">${r != null ? `<span class="st">${ikn('pohar')}${rekordText(h.id, r).replace(' hneď správne', '').replace(' správne', '')}</span>` : ''}<span class="dl-hraj">${ikn('hraj')}</span></span></button>`; };
   const zamknuta = h => `<button class="dlazdica hra-karta zamknuta${spi(h) ? ' spi' : ''}" data-hra="${h.id}" style="--i:${i++}" aria-label="${esc(h.n)}, ${spi(h) ? 'spí, kým strom vädne' : `zamknutá, cena ${h.cena}, chýba ${h.cena - st.body}`}">
       <span class="zmk">${ikn(spi(h) ? 'mesiac' : 'zamok')}</span><span class="hr-obr">${OBR_HRY[h.id]}</span><b>${h.n}</b>
       <span class="pata">${spi(h) ? `<span class="pec" style="--pc:var(--link)">Spí</span><small>preber tému</small>` : `<span class="cena">${ikn('hviezda')}${h.cena}</span><small>chýba ${h.cena - st.body}</small>`}</span></button>`;

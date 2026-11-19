@@ -121,7 +121,7 @@ const Auto = {
     const bezHlasu = a.stav === 'rucne', v = a.vysledok, gen = ++a.gen;
     a.stav = 'koniec'; a.zostava = null; renderAuto();
     Zvuk.play('win'); FX.rain(80);
-    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Výborne${st.meno ? ', ' + st.meno : ''}! Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} hviezd.` : '')
+    const veta = a.precvic ? `Dobre si si to zopakoval${st.meno ? ', ' + st.meno : ''}. Bolo to len na precvičenie.` : `Hotovo${st.meno ? ', ' + st.meno : ''}. Téma je prebratá.` + (v.zisk ? ` Získavaš ${v.zisk} hviezd.` : '')
       + v.noveOdznaky.map(o => ` Nový odznak: ${o.n}.`).join('') + v.noveOdmeny.map(r => ` Pre postavičku máš ${NAZVY_ODMIEN[r.kluc]}.`).join('') + (v.noveHry || []).map(x => ` Odomkla sa nová hra ${x.n}.`).join('')
       + (a.pokracovat && a.dalsia && !a.precvic ? ' O chvíľu pokračujeme ďalšou témou.' : '');
     const pokracuj = () => {
@@ -135,7 +135,7 @@ const Auto = {
     };
     setTimeout(() => {
       if (st.auto !== a || a.gen !== gen) return;
-      const kratko = a.precvic ? ['Dobre si si to zopakoval.'] : ['Výborne! Téma je prebratá.', ...(a.pokracovat && a.dalsia && !a.precvic ? ['O chvíľu pokračujeme ďalšou témou.'] : [])];
+      const kratko = a.precvic ? ['Dobre si si to zopakoval.'] : ['Téma je prebratá.', ...(a.pokracovat && a.dalsia && !a.precvic ? ['O chvíľu pokračujeme ďalšou témou.'] : [])];
       if (bezHlasu) pokracuj(); else povedzAuto(Nahravky.moze(kratko) ? kratko : veta, pokracuj);
     }, 1500);
   },
@@ -213,7 +213,7 @@ function renderAuto() {
     main.innerHTML = `<div class="auto auto-koniec">${hore}
       <div class="au-vyhra"><svg class="au-luce" viewBox="0 0 200 120" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${Array.from({ length: 14 }, (_, i) => { const u1 = (180 + i * 13) * Math.PI / 180, u2 = u1 + 6.5 * Math.PI / 180; return `<path d="M100 130L${(100 + 260 * Math.cos(u1)).toFixed(1)} ${(130 + 260 * Math.sin(u1)).toFixed(1)}L${(100 + 260 * Math.cos(u2)).toFixed(1)} ${(130 + 260 * Math.sin(u2)).toFixed(1)}Z"/>`; }).join('')}</svg>
         <div class="au-mudra">${mudra('oslava', { extra: true, tien: false })}</div></div>
-      <h1 class="au-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Výborne'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
+      <h1 class="au-t">${a.precvic ? 'Dobre si si to zopakoval' : 'Hotovo'}${st.meno ? ', ' + esc(st.meno) : ''}${a.precvic ? '.' : '!'}</h1>
       <p class="au-pod">${a.precvic ? `Tému „${esc(t.t)}“ si si zopakoval len na precvičenie.` : `Téma „${esc(t.t)}“ je prebratá.`}</p>
       ${v.zisk ? `<div class="au-zisk">${ikn('hviezda')}<span class="cis">+${v.zisk}</span> hviezd</div>` : ''}
       ${odmenyHtml(v)}

@@ -120,7 +120,7 @@ const DedCesta = {
         <section class="karta osr-karta"><span class="pec osr-stitok">Zastávka ${i}</span><h2 class="n0">${esc(inf.n)}!</h2>
           <p class="tx">${truhla ? (zlata ? 'Koniec cesty! Čaká ťa zlatá truhlička.' : 'Čaká ťa truhlička. Vyberieš si z troch vecí.') : duplikat ? 'Túto vec už máš, preto dostávaš 10 hviezd.' : 'Je v tvojom batohu.'}</p>
           ${duplikat ? `<span class="cena osr-cena">${ikn('hviezda')}+${r.hviezdy}</span>` : ''}
-          ${truhla ? `<button class="btn wide" data-ct-os="otvor">Otvoriť${ikn('sipka', 'za')}</button><button class="btn wide dve" data-ct-os="zavri">Neskôr</button>` : `<button class="btn wide" data-ct-os="zavri">Super!</button>`}</section></div>`;
+          ${truhla ? `<button class="btn wide" data-ct-os="otvor">Otvoriť${ikn('sipka', 'za')}</button><button class="btn wide dve" data-ct-os="zavri">Neskôr</button>` : `<button class="btn wide" data-ct-os="zavri">Zavrieť</button>`}</section></div>`;
       document.body.appendChild(el);
       Zvuk.play(zlata ? 'oslava-velka' : 'oslava-stredna'); vibruj(30); setTimeout(() => el.classList.add('dopadla'), 60);
       const kl = e => { if (e.key === 'Escape') zavri(); };
@@ -181,7 +181,7 @@ const DedCesta = {
         else if (a === 'vyber' && stav === 'vyber' && vyber) {
           const r = Dedinka.truhlaOtvor(t, vyber); if (!r.ok) { toast('Nepodarilo sa. Skús znova.'); return; }
           stav = 'hotovo'; Zvuk.play('dopad1'); vibruj(20);
-          el.classList.add('hotovo'); el.querySelector('#tr-tx').textContent = 'Super výber!';
+          el.classList.add('hotovo'); el.querySelector('#tr-tx').textContent = 'Dobrý výber.';
           el.querySelector('#tr-vysl').textContent = `${DED_VEC[vyber].n} je v tvojom batohu.`;
           const v = el.querySelector('[data-tr="vyber"]'); v.disabled = false; v.innerHTML = 'Hotovo' + ikn('check'); v.setAttribute('data-tr', 'zavri');
           if (typeof Dedinka !== 'undefined' && Dedinka.cakajuTruhly().length) { const x = el.querySelector('.tr-hv'); if (x) x.textContent = 'Ďalšia truhlička ťa ešte čaká.'; }

@@ -548,7 +548,7 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
     if (!!prazdne !== pismenaOdpovedi(q)) zle.push(q.q.slice(0, 30));
     if (!prazdne && !q.a.every(a => emo(a[0]).includes('<img'))) zle.push('bez img ' + q.q.slice(0, 30));
   }
-  st.vek = 'starsi'; if (!pismenaOdpovedi(T[0].z[0])) zle.push('starsi bez pismen');
+  st.vek = 'starsi'; if (!pismenaOdpovedi(naVek(T[0].z[0]))) zle.push('starsi bez pismen'); const bezH = T.flatMap(t => t.z).find(q => !q.h && q.a.every(a => String(a[0]).trim())); if (bezH && pismenaOdpovedi(naVek(bezH))) zle.push('starsi bez h ma pismena');
   st.vek = st0;
   if (zle.length) chyby.push('odpovede s prazdnym obrazkom bez pismen: ' + zle.slice(0, 5).join(' | ')); }
 /* V24_TEST */

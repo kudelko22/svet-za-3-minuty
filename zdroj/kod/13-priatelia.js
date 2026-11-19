@@ -74,7 +74,7 @@ function rebricekHtml() {
   const top = z.slice(0, 3), poradie = top.length === 3 ? [1, 0, 2] : [1, 0];
   const ostatni = z.slice(3), moje = z.findIndex(x => x.ja), pred = z[moje - 1];
   const chyba = pred ? Math.max(1, pred.b - ja.b + (pred.s >= ja.s ? 1 : 0)) : 0;
-  const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Super, len tak ďalej!' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
+  const povz = moje === 0 ? (ja.b > 0 ? 'Si na prvom mieste. Len tak ďalej.' : 'Nový týždeň sa začal. Kto prvý preberie tému, bude na vrchu!')
     : `Na ${moje === 1 ? 'prvé' : moje + '.'} miesto ti chýba ${prBody(chyba)}. Zvládneš to!`;
   return `${hl}<div class="pr-podium-o"><div class="pr-podium${top.length === 2 ? ' dvaja' : ''}">${poradie.map(i => stup(top[i], i)).join('')}</div>
     ${ostatni.length ? `<div class="pr-reb" role="table" aria-label="Ďalšie miesta"><div class="pr-r hlav" role="row"><span></span><span></span><span></span><span role="columnheader">séria</span><span role="columnheader">hviezdy</span></div>
@@ -88,7 +88,7 @@ Object.assign(views, {
   priatelia() {
     const So = socC();
     if (!So || !So.nacitane) return `<div class="pr pr-nacitava" aria-busy="true"><div class="pr-vrch">${prHlava(0)}<div class="pribehy">${'<span class="pr-tien"></span>'.repeat(4)}</div></div>
-      <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p></div>`;
+      <div class="pr-kostra">${'<span></span>'.repeat(3)}</div><p class="pr-mala">Načítavam priateľov…</p><p class="pr-mala pr-neskoro">Trvá to dlhšie. Možno si bez internetu, skús to neskôr.</p></div>`;
     if (!So.zapnute) return `<div class="pr"><div class="pr-vrch">${prHlava(0)}</div>
       <section class="karta soc-intro"><span class="zal" style="--c:var(--sun)">${ikn('stit')}Pre rodiča</span>${prMudra('ahoj', 'S priateľmi si budeš posielať nálepky a vety. Zapne ich rodič.')}
         <p>Priatelia si posielajú kreslené nálepky a hotové vety. Priatelia si môžu písať aj vlastné slová. Vidia navzájom postavičku, meno, sériu, hviezdy, témy a odznaky. Nikdy e-mail, vek ani fotku.</p>

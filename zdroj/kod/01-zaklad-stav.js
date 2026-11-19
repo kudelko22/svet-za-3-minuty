@@ -8,7 +8,7 @@ const EMO_ODP = /(\p{RI}\p{RI}|[0-9#*]\uFE0F?\u20E3|\p{Extended_Pictographic}(?:
 const emoSubor = e => 'e/' + [...e].map(c => c.codePointAt(0).toString(16)).filter(x => x !== 'fe0f').join('-') + '.svg';
 const emo = text => String(text).split(EMO_ODP).map((g, i) => i % 2 ? `<img class="emo" src="${emoSubor(g)}" alt="${g}" draggable="false" onerror="this.replaceWith(this.alt)">` : esc(g)).join('');
 const TBG = ['#D6E6FF', '#D9F8E6', '#FFE3C7'];
-const POCHVALA = ['Výborne!', 'Super!', 'Presne tak!', 'Paráda!', 'Si šikovný!', 'Bomba!'];
+const POCHVALA = ['Presne tak!', 'To je ono!', 'Sedí!', 'Trafené!', 'Tak je to!', 'Dobre!'];
 const tiche = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Pokrok dieťaťa ukladá Cloud (modul Firebase dole) do jeho profilu; v telefóne ostávajú len nastavenia

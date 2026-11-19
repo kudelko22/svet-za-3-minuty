@@ -40,7 +40,7 @@ const ANGT = () => T.filter(t => t.k === 'anglictina' && preVek(t));
 // väčšie deti: namiesto ľahkých nesprávnych odpovedí ťažšie (q.h); pôvodná otázka ostáva v povodna
 const naVek = q => st.vek === 'starsi' && q.h ? { ...q, a: [q.a[0], ...q.h.map(t => ['', t])], povodna: q } : q;
 // 4.8.2: obrázky pri odpovediach len keď ich má každá odpoveď otázky, inak písmená A–D (aby správna odpoveď nebola prázdna)
-const pismenaOdpovedi = q => st.vek === 'starsi' || q.a.some(a => !String(a[0]).trim());
+const pismenaOdpovedi = q => q.a.some(a => !String(a[0]).trim());
 const dni = n => n === 1 ? 'deň' : n > 1 && n < 5 ? 'dni' : 'dní';
 /* Precvičovanie (4.3): vynechaný deň sa dá zahrať dodatočne, ale bez hviezdičiek, série, stromu a odmien.
    Jeden príznak `precvic` na aktivite (téma, auto, angličtina); všetky miesta, čo niečo udeľujú, idú cez Precvic.teraz() / pripisBody(). */

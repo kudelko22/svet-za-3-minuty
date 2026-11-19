@@ -283,7 +283,7 @@ function oslavaOdznaku(nove) {
         <section class="karta osr-karta"><h2 class="n0">${esc(o.n)}!</h2><p class="tx">${esc(o.p)}: hotovo. Pečiatka je v tvojom pase.</p>
           ${ini.length ? `<p class="osr-ini">A ešte ${ini.length === 1 ? 'jedna nová pečiatka' : ini.length + (ini.length < 5 ? ' nové pečiatky' : ' nových pečiatok')}: ${ini.map(x => esc(x.n)).join(', ')}.</p>` : ''}
           <span class="cena osr-cena">${ikn('hviezda')}+${nove.length * 2} čaká v pase</span>
-          ${mozno ? `<button class="btn wide" data-osr="pas">Do pasu${ikn('sipka', 'za')}</button><button class="btn wide dve" data-osr="zavri">Neskôr</button>` : '<button class="btn wide" data-osr="zavri">Super!</button>'}</section></div>`;
+          ${mozno ? `<button class="btn wide" data-osr="pas">Do pasu${ikn('sipka', 'za')}</button><button class="btn wide dve" data-osr="zavri">Neskôr</button>` : '<button class="btn wide" data-osr="zavri">Zavrieť</button>'}</section></div>`;
     document.body.appendChild(el);
     Zvuk.play('whoosh'); setTimeout(() => { Zvuk.play('dopad1'); vibruj(30); el.classList.add('dopadla'); }, 520); setTimeout(() => Zvuk.play('star'), 760);
     const kl = e => { if (e.key === 'Escape') zavri(); };

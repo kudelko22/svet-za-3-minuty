@@ -54,7 +54,7 @@ function prehladRodica(d = st) {
     <section class="rd-blok"><h2 class="rd-h">Tento týždeň prebraté</h2>
       ${tyzden.length ? tyzden.map(([id, k]) => `<div class="rd-riadok"><span class="pr-ik">${ikKat(byId(id).k)}</span><span class="rd-t"><b>${esc(byId(id).t)}</b></span><span class="rd-den">${den(k)}</span></div>`).join('') : '<p class="rd-pozn">Tento týždeň zatiaľ nič.</p>'}</section>
     <section class="rd-blok"><h2 class="rd-h">Na čo sa ešte pozrieť</h2>
-      ${chyby.length ? chyby.map(c => `<div class="rd-riadok">${ikn('lupa')}<span class="rd-t"><b>${esc(c.q.q)}</b><small>Správne: ${esc(c.q.a[0][1])}</small></span></div>`).join('') : '<p class="rd-pozn">Žiadne chyby v kvízoch. Výborne!</p>'}</section>
+      ${chyby.length ? chyby.map(c => `<div class="rd-riadok">${ikn('lupa')}<span class="rd-t"><b>${esc(c.q.q)}</b><small>Správne: ${esc(c.q.a[0][1])}</small></span></div>`).join('') : '<p class="rd-pozn">Zatiaľ žiadne chyby v kvízoch.</p>'}</section>
     ${prehladHnitia(d)}
     ${prehladPriatelov(d)}
   </section>`;

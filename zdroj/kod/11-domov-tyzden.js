@@ -174,7 +174,7 @@ const Domov = {
   vyraz(hot) { return hot ? (Misie.splnenaDnes() ? 'oslava' : 'radost') : hnStupen() ? 'povzbudenie' : 'ahoj'; },
   odkaz(t, hot) {
     const m = st.meno ? esc(st.meno) : '', ahoj = m ? `Ahoj, ${m}!` : 'Ahoj!';
-    if (hot) return Misie.splnenaDnes() ? `Dnes je všetko hotové${m ? ', ' + m : ''}! Zajtra ideme ďalej.` : 'Výborne! Téma je hotová. Skúsiš aj misiu?';
+    if (hot) return Misie.splnenaDnes() ? `Dnes je všetko hotové${m ? ', ' + m : ''}! Zajtra ideme ďalej.` : 'Téma je hotová. Skúsiš aj misiu?';
     if (!st.dni.length) return `${ahoj} Som Múdra. Poď so mnou na prvú výpravu.`;
     if (hnStupen()) return `${ahoj} Poď, jedna téma strom hneď oživí.`;
     return `${ahoj} Dnes ideme ${DOM_CIELE[this.ciel(t)]}.`;

@@ -111,7 +111,7 @@ const Novinky = {
       <div class="nov-zoznam">${z.map((n, i) => `<div class="nov-polozka" style="--i:${i}"><span class="nov-obr${n.siroky ? ' siroky' : ''}">${n.obr()}</span><div><b>${n.n}</b><small>${n.p}</small></div></div>`).join('')}</div>
       <div class="perf"></div>
       <div class="nov-dole">${z.some(n => n.v >= 55 && n.v < 67) ? '<button class="btn wide dve" data-novinky-tour>Ukáž mi novinky</button>' : ''}
-      <button class="btn wide" data-novinky-ok>Super, poďme na to!</button></div></div>`;
+      <button class="btn wide" data-novinky-ok>Dobre, ideme</button></div></div>`;
     document.body.appendChild(el);
     Zvuk.play('cink'); setTimeout(() => FX.burst(innerWidth / 2, innerHeight * .25, 24, ['star', 'dot']), 300);
     const b = el.querySelector('[data-novinky-ok]');
