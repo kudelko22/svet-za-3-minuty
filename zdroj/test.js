@@ -237,6 +237,16 @@ for (const v of ['domov','objavuj','temy','hry','dedinka','izba','odznaky','ja',
       if (!new RegExp("(^|[^A-Za-z])" + v.v + "([^A-Za-z]|$)", "i").test(v.en)) throw new Error("ang: slovo nie je vo vete " + v.en); } }
   for (const g of Object.keys(ANG_SKUPINY)) { const w = ANG_SLOVA.filter(x => x.g === g);
     if (w.length < 14 || w.filter(x => x.u === 1).length < 4 || ANG_VETY.filter(x => x.g === g).length < 5) throw new Error("ang: skupina malá " + g); }
+  // 5.1: tvar dat anglictiny (prazdne preklady, nepovolene znaky, americke tvary, duplicity)
+  { const pis = /^[A-Za-zÀ-ɏ' ]+$/, cit = /^[A-Za-zÀ-ɏ ]+$/, skz = /^[A-Za-zÀ-ɏ0-9 ,.!?'-]+$/, eng = /^[A-Za-z0-9 ,.!?']+$/, ame = /(^|[^A-Za-z])(color|colors|favorite|neighbor|gray|airplane|mom|soccer|theater|vacation|cookie|candy|pajamas|apartment|movie|garbage|sidewalk)([^A-Za-z]|$)/i;
+    const hl = (t, x) => { if (typeof t !== "string" || t !== t.trim() || /  /.test(t)) throw new Error("ang: medzery " + x); };
+    for (const w of ANG_SLOVA) { for (const k of ["en", "sk", "cit"]) hl(w[k], w.en); if (!pis.test(w.en) || !cit.test(w.cit) || !skz.test(w.sk)) throw new Error("ang: znaky slova " + w.en);
+      if (ame.test(w.en)) throw new Error("ang: americky tvar " + w.en); }
+    const vs = new Set(); for (const v of ANG_VETY) { hl(v.en, v.en); hl(v.sk, v.en);
+      if (!eng.test(v.en) || !skz.test(v.sk)) throw new Error("ang: znaky vety " + v.en);
+      if (!/^[A-Z]/.test(v.en) || !/[.!?]$/.test(v.en) || !/[.!?]$/.test(v.sk)) throw new Error("ang: koniec/zaciatok vety " + v.en);
+      if (ame.test(v.en)) throw new Error("ang: americky tvar vo vete " + v.en);
+      if (vs.has(v.sk)) throw new Error("ang: rovnaky preklad vety " + v.sk); vs.add(v.sk); } }
   { const sirka = ANG_SLOVA.filter(w => w.u === 1).length; if (sirka < 280 || ANG_SLOVA.filter(w => w.u === 2).length < 280) throw new Error("ang: obtiaznost nerovnomerna"); }
   { const novych = ["ovocie","doprava","povolania","hudba","divoke","vesmir","veci","opacne","otazky","predlozky"]; for (const g of novych) if (!ANG_SKUPINY[g]) throw new Error("ang: skupina " + g);
     for (const vek of ["mladsi", "starsi"]) { st.vek = vek; const videne = new Set(), poz = [0, 0, 0];
