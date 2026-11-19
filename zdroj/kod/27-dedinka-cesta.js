@@ -57,16 +57,16 @@ const DedCesta = {
   },
   html() {
     const d = Dedinka.ziskaj(), s = d && Dedinka.cestaStav(this.mes || undefined);
-    const hore = `<div class="ds-hore ct-hore"><button class="btn kruh dve" data-cesta-spat aria-label="Späť do dedinky">${ikn('zavriet')}</button></div>`;
+    const hore = `<button class="btn kruh dve ct-x" data-cesta-spat aria-label="Späť do dedinky">${ikn('zavriet')}</button>`;
     if (!s) return `<section class="ct" aria-label="Cesta mesiaca">${hore}<p class="ct-prazdno">Cesta sa pripravuje.</p></section>`;
     const dosl = Math.min(DED_ZASTAVOK, Math.floor(s.kroky / DED_KROKOV)), tento = s.mes === d.cesta.mes, proc = s.dalsia ? (DED_KROKOV - s.dalsia) / DED_KROKOV : 1;
     const ul = tento ? Dedinka.ulohy() : [], cak = Dedinka.cakajuTruhly(), staremesiace = tento ? Object.keys(d.cesta.min || {}).sort() : [];
     // stopy: medailóny na vlnovke zhora nadol; vyplnená časť cesty siaha po aktuálnu zastávku
-    const R = 94, H = DED_ZASTAVOK * R + 56, px = i => 50 + [0, 22, 0, -22][i % 4], py = i => 52 + i * R;
+    const R = 106, H = DED_ZASTAVOK * R + 56, px = i => 50 + [0, 22, 0, -22][i % 4], py = i => 52 + i * R;
     const body = Array.from({ length: DED_ZASTAVOK + 1 }, (_, i) => [i === 0 ? 50 : px(i - 1), i === 0 ? 14 : py(i - 1)]);
     const cesta = body.map((p, i) => { if (!i) return `M${p[0]} ${p[1]}`; const q = body[i - 1], m = (q[1] + p[1]) / 2; return `C${q[0]} ${m} ${p[0]} ${m} ${p[0]} ${p[1]}`; }).join('');
     const stopy = s.zastavky.map(z => {
-      const o = this.odmenaInfo(z.odmena), stav = z.vzate ? 'vzate' : z.dost ? 'dost' : (z.i === dosl + 1 ? 'dalsia' : 'caka');
+      const o = this.odmenaInfo(z.odmena), stav = z.vzate ? 'vzate' : z.dost ? 'dost' : (z.i === dosl + 1 ? 'nasl' : 'caka');
       const popis = `Zastávka ${z.i}: ${o.n}. ${z.vzate ? 'Vyzdvihnuté' : z.dost ? 'Vyzdvihnúť' : 'Ešte ' + (z.i === dosl + 1 ? krokyText(s.dalsia) : 'nie')}`;
       return `<div class="ct-stop ${stav}${o.truhla ? ' ct-tr' : ''}" style="left:${px(z.i - 1)}%;top:${py(z.i - 1)}px">
         <button class="ct-med" data-cesta-stop="${z.i}" aria-label="${esc(popis)}"><span class="ct-ik">${o.ikona}</span>${z.vzate ? `<span class="ct-ok">${ikn('check')}</span>` : ''}</button>
@@ -74,8 +74,8 @@ const DedCesta = {
     }).join('');
     const uloha = u => `<li class="ct-ul${u.hotovo ? ' hotovo' : ''}"><span class="ct-ul-pip" aria-hidden="true">${u.hotovo ? ikn('check') : ''}</span><span class="ct-ul-n">${esc(u.n)}</span>
       <span class="ct-ul-p" aria-label="${u.postup} z ${u.ciel}">${Array.from({ length: u.ciel }, (_, i) => `<i class="${i < u.postup ? 'z' : ''}"></i>`).join('')}</span><span class="cena ct-ul-k">+${u.kroky}</span></li>`;
-    return `<section class="ct${tento ? '' : ' ct-stary'}" aria-label="Cesta mesiaca">${hore}
-      <header class="ct-hlava"><h1 class="ct-nadpis">${esc(s.n)}</h1><p class="ct-mes">${this.nazovMesiaca(s.mes)}</p>
+    return `<section class="ct${tento ? "" : " ct-stary"}" aria-label="Cesta mesiaca">
+      <header class="ct-hlava">${hore}<h1 class="ct-nadpis">${esc(s.n)}</h1><p class="ct-mes">${this.nazovMesiaca(s.mes)}</p>
         <div class="ct-pas"><span class="ct-pas-v" style="width:${Math.round(proc * 100)}%"></span></div>
         <p class="ct-tx">${s.dalsia ? `Zastávka ${dosl} z ${DED_ZASTAVOK}. Ešte ${krokyText(s.dalsia)} do ďalšej.` : 'Cesta je prejdená.'}</p>
         <p class="ct-pozn">Každá získaná hviezda a každá splnená úloha je jeden krok. Nič nepadá, odmeny počkajú.</p>
@@ -86,13 +86,13 @@ const DedCesta = {
       ${staremesiace.length ? `<div class="ct-stare">${staremesiace.map(m => { const t = Dedinka.cestaStav(m); return t && t.dostupne > 0 ? `<button class="btn dve" data-cesta-mes="${m}">Z minulého mesiaca ti čakajú odmeny: ${esc(t.n)} (${t.dostupne})</button>` : ''; }).join('')}</div>` : ''}
       ${!tento ? `<div class="ct-stare"><button class="btn dve" data-cesta-mes="">Späť na tento mesiac</button></div>` : ''}
       <div class="ct-cesta" style="height:${H}px"><svg class="ct-vlnka" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">
-        <path d="${cesta}" pathLength="100" class="ct-zakl"/><path d="${cesta}" pathLength="100" class="ct-hotova" style="stroke-dasharray:${(Math.min(1, (dosl + proc) / DED_ZASTAVOK) * 100).toFixed(2)} 100"/></svg>${stopy}</div>
+        <path d="${cesta}" class="ct-obrys"/><path d="${cesta}" pathLength="100" class="ct-zakl"/><path d="${cesta}" pathLength="100" class="ct-hotova" style="stroke-dasharray:${(Math.min(1, (dosl + proc) / DED_ZASTAVOK) * 100).toFixed(2)} 100"/></svg>${stopy}</div>
     </section>`;
   },
   po() {
     try {
-      const e = document.querySelector('.ct-stop.dost, .ct-stop.dalsia'); // posun na najbližšiu odmenu alebo zastávku
-      if (e && e.getBoundingClientRect) window.scrollTo(0, Math.max(0, e.getBoundingClientRect().top + scrollY - 260));
+      const e = document.querySelector('.ct-stop.dost, .ct-stop.nasl'); // posun na najbližšiu odmenu alebo zastávku
+      if (e && e.getBoundingClientRect) setTimeout(() => { try { window.scrollTo(0, Math.max(0, e.getBoundingClientRect().top + window.pageYOffset - 300)); } catch (x) { /* test */ } }, 30);
     } catch (x) { /* test bez prehliadača */ }
   },
   spat() { Zvuk.play('whoosh'); Prechod.spusti('Moja dedinka', () => { st.view = 'dedinka'; Render.nova = true; render(); }); },
