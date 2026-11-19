@@ -1,0 +1,22 @@
+/* Moja dedinka: farby kresieb vecí (obrazky.js, dedinkaVec). Ostatné farby kresieb berú paletu priamo (--sun, --coral, --card, ...).
+   Noc sa prepína Mesačným režimom; .dv-nocny je to isté pre ukážkovú stránku kresieb. */
+:root {
+  --dv-drevo: #B7794A; --dv-drevo-d: #8A5433; --dv-ruzova: #FFB3C7; --dv-biela: #FFFFFF; --dv-kamen: #D9D2EE; --dv-sneh: #F4F8FF; --dv-krem: #F4EEE8; --dv-krtko: #6B5B7A;
+  --dv-lis: var(--leaf); --dv-lis-d: var(--leaf-d); --dv-lis-l: var(--leaf-l);
+  --dv-oblak: #FFFFFF; --dv-cesta: #F5E0B0; --dv-nebo: #BFE3FF; --dv-kopec1: #A9DDB4; --dv-kopec2: #8ED39A; --dv-kopec3: #74C783; --dv-kopec4: #62BC74; --dv-zem: #56B169;
+  --dv-okno: var(--sky-l); --dv-svetlo: var(--sun-l); --dv-lesenie: var(--sand);
+}
+:root[data-rezim="mesacny"], .dv-nocny {
+  --dv-drevo: #8F5E43; --dv-drevo-d: #6E452F; --dv-ruzova: #FFB3C7; --dv-biela: #E9E4FF; --dv-kamen: #8C86B8; --dv-sneh: #E9E4FF; --dv-krem: #E6DDE6; --dv-krtko: #8A7A9C;
+  --dv-lis: #3FA36A; --dv-lis-d: #2A7A55; --dv-lis-l: #9AD4B0;
+  --dv-oblak: #5B55A6; --dv-cesta: #4A4A7A; --dv-nebo: #211C4E; --dv-kopec1: #2E3C73; --dv-kopec2: #2A4A6E; --dv-kopec3: #245566; --dv-kopec4: #1F5F5A; --dv-zem: #1C5A50;
+  --dv-okno: #FFD766; --dv-svetlo: #FFD766; --dv-lesenie: #3A3570;
+}
+.dv-noc { display: none; }
+.dv-den { display: inline; }
+:root[data-rezim="mesacny"] .dv-den, .dv-nocny .dv-den { display: none; }
+:root[data-rezim="mesacny"] .dv-noc, .dv-nocny .dv-noc { display: inline; }
+@media (prefers-reduced-motion: no-preference) { .dv .vrtula { animation: dvToc 9s linear infinite; transform-box: fill-box; transform-origin: center; } }
+@keyframes dvToc { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: no-preference) { .dv .dv-dym { animation: dvDym 4s ease-in-out infinite; } }
+@keyframes dvDym { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(-5px); opacity: .7; } }
