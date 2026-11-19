@@ -863,6 +863,10 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   HRY.forEach(x => { if (!dedinkaVec(x.id, {})) ch("hra bez budovy " + x.id); });
   Dedinka.kluceMiest().forEach(k => { const m = dedMiesto(k); if (!m || m.x < 20 || m.x > DS_W - 20) ch("miesto mimo sceny " + k); });
   if (dedMiesto("r9c1") || dedMiesto("x")) ch("zle miesto");
+  [1, 2, 3, 4, 5].forEach(r => { if ((DS_DOPLNKY[r] || []).reduce((n, g) => n + g[2].length, 0) !== DED_DOPLNKY[r]) ch("doplnkove miesta rad " + r); });
+  for (let r = 1; r <= 5; r++) for (let c = 1; c <= 8; c++) if (!dedKlucOk("r" + r + "c" + c)) ch("stary kluc miesta " + r + c);
+  if (dedKlucOk("r2d12") || dedKlucOk("r1d1") || !dedKlucOk("r5d14") || dedMiesto("r2d12")) ch("kluc doplnkoveho miesta");
+  { const p = Dedinka.cisti({ miesta: { r2d1: ["jablon", 0, ""], r2d2: ["stodola", 0, ""], r2c3: ["ker", 0, ""] } }).miesta; if (!p.r2d1 || p.r2d2 || !p.r2c3) ch("cistenie doplnkovych miest"); }
   DED_VECI.forEach(v => { const k = dedKresba(v.id); if (!k || !dedinkaVec(k, {})) ch("vec bez kresby " + v.id); });
   const o = dedVolby("chalupka", "21"); if (o.farby.stena !== DEDINKA_VOLBY.chalupka["farby.stena"][1] || o.farby.strecha !== DEDINKA_VOLBY.chalupka["farby.strecha"][0] || Object.keys(dedVolby("chalupka", "000")).length || Object.keys(dedVolby("sud", "zz")).length) ch("volby z retazca");
   st.view = "izba"; render(); if (!main.innerHTML.includes("data-izba-spat")) ch("izba bez cesty spat");

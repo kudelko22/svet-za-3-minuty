@@ -32,7 +32,10 @@ const DED_VEC = Object.fromEntries(DED_VECI.map(v => [v.id, v]));
 const DED_RADY = 5, DED_STLPCE = 8, DED_IZBA = 8, DED_ZEM_START = 2, DED_MAX_MIEST = 120, DED_MAX_BATOH = 200;
 // voľby vecí (strecha, steny, dvere, materiál, farba, variant...) nesie položená vec ako krátky reťazec [0-9a-z]: jeden znak = jedna voľba, poradie určuje kresba; zmena je zadarmo
 const DED_VOLBY = 16;
-const DED_KLUC = /^r([1-5])c([1-8])$/, DED_SLOT = /^s([1-8])$/;
+const DED_KLUC = /^r([1-5])(?:c([1-8])|d([1-9]|1[0-9]))$/, DED_SLOT = /^s([1-8])$/;
+// 5.1: doplnkové miesta r{rad}d{n} medzi radmi a pri jazierku (len pre úzke veci); počet v rade, polohy v 26-dedinka-scena.js (DS_DOPLNKY)
+const DED_DOPLNKY = [0, 0, 11, 8, 7, 14];
+const dedKlucOk = k => { const m = DED_KLUC.exec(k); return !!m && (!!m[2] || +m[3] <= DED_DOPLNKY[m[1]]); };
 const DED_UPRAVENE_POLE = ['v', 'start', 'dar', 'minute', 'zem', 'miesta', 'batoh', 'dary', 'izba', 'cesta', 'truhly', 'hryDen', 'hryHv'];
 // Cesta mesiaca: 30 zastávok po 40 krokoch (krok = získaná hviezda alebo splnená úloha týždňa); každá 5. strieborná truhlička, 30. zlatá
 const DED_KROKOV = 40, DED_ZASTAVOK = 30, DED_HRY_DEN = 20;
@@ -59,7 +62,7 @@ const Dedinka = {
     const d = Dedinka.prazdny(ci(r.start, 0, 1e6, 0), ci(r.dar, 0, 1e5, 100));
     d.minute = ci(r.minute, 0, 1e6, 0); d.zem = ci(r.zem, DED_ZEM_START, DED_RADY, DED_ZEM_START);
     const mapa = (m, ok) => { const o = {}; if (m && typeof m === 'object') for (const k of Object.keys(m)) if (ok(k, m[k])) o[k] = m[k]; return o; };
-    d.miesta = mapa(r.miesta, (k, v) => DED_KLUC.test(k) && Array.isArray(v) && DED_VEC[v[0]] && DED_VEC[v[0]].sk !== 'nabytok');
+    d.miesta = mapa(r.miesta, (k, v) => dedKlucOk(k) && Array.isArray(v) && DED_VEC[v[0]] && DED_VEC[v[0]].sk !== 'nabytok' && (DED_KLUC.exec(k)[2] || DED_VEC[v[0]].sirka === 1));
     for (const k of Object.keys(d.miesta)) { const v = d.miesta[k]; d.miesta[k] = [v[0], v[1] ? 1 : 0, typeof v[2] === 'string' ? v[2].replace(/[^0-9a-z]/g, '').slice(0, DED_VOLBY) : '']; }
     const kolko = (m) => mapa(m, (k, v) => DED_VEC[k] && Number.isFinite(+v) && +v > 0);
     d.batoh = kolko(r.batoh); d.dary = kolko(r.dary); for (const k of Object.keys(d.batoh)) d.batoh[k] = ci(d.batoh[k], 1, 99, 1); for (const k of Object.keys(d.dary)) d.dary[k] = ci(d.dary[k], 1, 99, 1);
@@ -146,19 +149,21 @@ const Dedinka = {
   },
   // ---------- miesta ----------
   // mriežka 5 radov x 8 stĺpcov, kľúč r{rad}c{stĺpec} (od 1; rad 1 je vzadu); široké veci zaberú aj stĺpec vpravo
-  kluceMiest: () => { const a = []; for (let r = 1; r <= DED_RADY; r++) for (let c = 1; c <= DED_STLPCE; c++) a.push('r' + r + 'c' + c); return a; },
+  kluceMiest: () => { const a = []; for (let r = 1; r <= DED_RADY; r++) { for (let c = 1; c <= DED_STLPCE; c++) a.push('r' + r + 'c' + c); for (let n = 1; n <= DED_DOPLNKY[r]; n++) a.push('r' + r + 'd' + n); } return a; },
   rady() { const d = this.ziskaj(); return d ? d.zem : DED_ZEM_START; }, // odomknuté rady 1..rady
   obsadene(kluc) { // kto zaberá miesto: { kluc, typ } alebo null (aj sused široké veci vľavo)
     const d = this.ziskaj(), m = DED_KLUC.exec(kluc); if (!d || !m) return null;
     if (d.miesta[kluc]) return { kluc, typ: d.miesta[kluc][0] };
+    if (!m[2]) return null; // doplnkové miesto zaberá len samo seba
     const l = 'r' + m[1] + 'c' + (+m[2] - 1);
     if (+m[2] > 1 && d.miesta[l] && DED_VEC[d.miesta[l][0]].sirka === 2) return { kluc: l, typ: d.miesta[l][0] };
     return null;
   },
   mozeNa(id, kluc, okrem) { // je možné položiť vec na miesto? (okrem = miesto, z ktorého sa vec presúva)
     const d = this.ziskaj(), v = DED_VEC[id], m = DED_KLUC.exec(kluc);
-    if (!d || !v || !m || v.sk === 'nabytok') return false;
+    if (!d || !v || !m || v.sk === 'nabytok' || !dedKlucOk(kluc)) return false;
     if (+m[1] > d.zem) return false;
+    if (!m[2]) { const o = this.obsadene(kluc); return v.sirka === 1 && (!o || o.kluc === okrem); } // doplnkové miesto: len úzka vec
     const cs = v.sirka === 2 ? [+m[2], +m[2] + 1] : [+m[2]];
     if (cs[cs.length - 1] > DED_STLPCE) return false;
     return cs.every(c => { const o = this.obsadene('r' + m[1] + 'c' + c); return !o || o.kluc === okrem; });
