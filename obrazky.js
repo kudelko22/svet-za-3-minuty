@@ -1637,7 +1637,8 @@ const okno = (x, y, w = 11, h = 11, kv) => { const T2 = OKNO_TVAR, cx = x + w / 
     + `<rect class="dv-noc" x="${x - 4}" y="${y - 4}" width="${w + 8}" height="${h + 8}" rx="6" fill="${T.svetlo}" opacity=".2" stroke="none"/>`; };
 const dvere = (x = 0, c = D.violetD, h = 18) => `<rect x="${x - 8}" y="-1.8" width="16" height="2.8" rx="1.2" fill="${T.stone}" stroke-width="1.1"/><path d="M${x - 6} 0V${-h + 6}a6 6 0 0 1 12 0V0z" fill="${c}"/>` + cary(`M${x - 2} -1.5V${-h + 2.5}M${x + 2} -1.5V${-h + 2.5}`, .3, 1) + tienP(`M${x + 2.5} 0V${-h + .6}a6 6 0 0 1 3.5 5.4V0z`) + `<circle cx="${x + 3.4}" cy="${f1(-h * .42)}" r="1.2" fill="${D.sun}" stroke-width=".8"/>`;
 const komin = (x, y, w, h, c = D.coralD) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>` + cary(`M${x} ${y + 6}h${w}M${x} ${y + 12}h${w}M${f1(x + w / 2)} ${y + 1}v5M${f1(x + w * .3)} ${y + 6}v6M${f1(x + w * .72)} ${y + 12}v5`, .35, 1) + `<rect x="${f1(x + w * .62)}" y="${y + 1}" width="${f1(w * .38)}" height="${h - 1}" ${SH}/><rect x="${x - 1.5}" y="${y - 3}" width="${w + 3}" height="4" rx="1.5" fill="${D.coral}"/>`;
-const dym = (x, y) => `<g class="dv-dym">${[[x, y, 3.2], [x + 4, y - 9, 4.2], [x, y - 19, 5.2]].map(([a, b, r]) => `<circle cx="${a}" cy="${b}" r="${r}" fill="${D.white}" stroke-width="1.3" opacity=".9"/>`).join('')}</g>`;
+/* dym: tri obláčiky vychádzajú z komína (x, y), stúpajú, zväčšujú sa, unášajú doprava a miznú (60-dedinka-kresby.css); bez pohybu stoja nad sebou */
+const dym = (x, y) => `<g class="dv-dym">${[0, 1, 2].map(i => `<circle class="dv-dym${i}" cx="${x}" cy="${y}" r="3.4" fill="${D.white}" stroke-width="1.2" opacity=".9"/>`).join('')}</g>`;
 const kvet5 = (x, y, r, f, st = D.sun) => `<g transform="translate(${f1(x)} ${f1(y)})">${[0, 72, 144, 216, 288].map(a => `<circle cy="${f1(-r * .6)}" r="${f1(r * .5)}" fill="${f}" stroke-width=".9" transform="rotate(${a})"/>`).join('')}<circle r="${f1(r * .38)}" fill="${st}" stroke-width=".8"/></g>`;
 const kvietky = xs => xs.map(([x, f]) => `<path d="M${x} 0v-7" stroke="${T.leafD}" stroke-width="1.6"/><path d="M${x} -3q-3-1-4-4q3 0 4 3z" fill="${T.leaf}" stroke-width="1"/>${kvet5(x, -9, 3.2, f)}`).join('');
 const oko = (x, y, r = 1.5) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${D.ink}" stroke="none"/><circle cx="${f1(x + r * .35)}" cy="${f1(y - r * .4)}" r="${f1(r * .42)}" fill="var(--dv-biela)" stroke="none"/>`;
@@ -1649,7 +1650,7 @@ Object.assign(DOM, {
   chalupka: (c = {}) => { const k = c.komin || 'maly', st = c.stena || D.sunL, sr = c.strecha || D.coral;
     return (k === 'ziadny' ? '' : k === 'siroky' ? komin(8, -70, 14, 30) : komin(11, -64, 8, 24)) + stena(-24, -38, 48, 38, st) + podmur(-24, 48) + strecha(-31, 31, -35, 0, -63, sr)
       + `<circle cy="-46" r="4.2" fill="${T.okno}" stroke-width="1.6"/><path d="M0 -50v8M-4 -46h8" stroke-width="1.1"/>` + okno(-19, -30, 11, 11, 1) + okno(8, -30, 11, 11, 1) + dvere(0, c.dvere, 19)
-      + kvietky([[-15, D.coral], [-20, D.sun], [15, D.pink], [20, D.coral]]) + (k === 'ziadny' ? '' : dym(15, k === 'siroky' ? -78 : -72)); },
+      + kvietky([[-15, D.coral], [-20, D.sun], [15, D.pink], [20, D.coral]]) + (k === 'ziadny' ? '' : dym(15, k === 'siroky' ? -76 : -70)); },
   vezicka: (c = {}) => `<path d="M-14 -2c-2-8 2-14-1-36" fill="none" stroke="${T.leafD}" stroke-width="1.3"/>` + stena(-15, -60, 30, 60, c.stena || D.skyL, 'kamen') + podmur(-15, 30, 4) + strecha(-20, 20, -58, 0, -94, c.strecha || D.violet)
     + `<path d="M0 -94v-8" stroke-width="1.8"/><path d="M0 -102h8l-2.5 2.5 2.5 2.5H0z" fill="${D.coral}" stroke-width="1.2"/><circle cy="-94" r="2.4" fill="${D.sun}" stroke-width="1.2"/>`
     + `<circle class="dv-noc" cy="-45" r="10" fill="${T.svetlo}" opacity=".2" stroke="none"/><circle cy="-45" r="6.5" fill="${T.okno}" stroke-width="2"/><path d="M0 -51.5v13M-6.5 -45h13" stroke-width="1.3"/>` + lesk('M-3.6 -47.6a4 4 0 0 1 2.8-2.4', .9, 1.3)
@@ -1686,7 +1687,7 @@ Object.assign(DOM, {
       + okno(-28, -42, 12, 12, 1) + okno(16, -42, 12, 12, 1)
       + `<rect x="-13" y="-24" width="3" height="22" fill="${D.wood}" stroke-width="1.2"/><rect x="10" y="-24" width="3" height="22" fill="${D.wood}" stroke-width="1.2"/><path d="M-16 -23h32l-4-8h-24z" fill="${tm(sr, D.coralD)}"/>` + cary('M-13 -27h26', .3) + dvere(0, c.dvere, 21)
       + `<path d="M0 -90v-14" stroke-width="2.2"/><path d="M0 -104h16l-4 5 4 5H0z" fill="${D.sun}" stroke-width="1.4"/>` + `<rect x="18" y="-17" width="9" height="6" rx="1" fill="${D.card}" stroke-width="1.1"/><path d="M20 -14h5" stroke-width="1" opacity=".6"/>`
-      + kvietky([[-25, D.coral], [-20, D.sun], [21, D.pink], [26, D.coral]]) + (k === 'ziadny' ? '' : dym(24, -108)); },
+      + kvietky([[-25, D.coral], [-20, D.sun], [21, D.pink], [26, D.coral]]) + (k === 'ziadny' ? '' : dym(24.5, -106)); },
   zvonica: (c = {}) => { const st = c.stena || D.card, sr = c.strecha || D.coral;
     return stena(-14, -46, 28, 46, st, 'kamen') + podmur(-14, 28, 4) + `<rect x="-12" y="-68" width="24" height="22" fill="${st}"/>` + tienP('M5 -67h6v21H5z') + `<path d="M-8 -47v-11a8 8 0 0 1 16 0v11z" fill="${D.violetD}"/>`
       + `<path d="M-8 -59h16" stroke-width="1.6"/><path d="M0 -59v2" stroke-width="1.4"/><path d="M-5.5 -48c0-6 1-10 5.5-10s5.5 4 5.5 10z" fill="${D.sun}"/><circle cy="-47" r="1.6" fill="${D.sunD}" stroke-width="1"/>` + lesk('M-3 -50c0-3 .5-5 2-6', .9, 1.2)
@@ -1834,10 +1835,10 @@ Object.assign(ZVER, {
     + `<ellipse cx="15" cy="-15.4" rx="6.4" ry="7" fill="var(--dv-krtko)"/><path d="${blob(15, -22, 5.4, 3.2, 7)}" fill="var(--dv-biela)" stroke-width="1.3"/>` + ociS(12.6, -15.6, 1.9) + ociS(17.4, -15.6, 1.9) + `<path d="M13.8 -11.4q1.2 1 2.4 0" fill="none" stroke="var(--dv-biela)" stroke-width="1"/>` + lic(10.6, -12.6, 1.6) + lic(19.4, -12.6, 1.6),
   // sliepka: okrúhla ako vajíčko, hrebienok, zobáčik spredu, krídelko
   sliepka: (c = 'var(--dv-biela)') => { const t = tm(c, 'var(--dv-krem)');
-    return `<path d="M-2 0v-4M2.6 0v-4M-4.4 0h4.4M.4 0h4.6" stroke-width="3.6"/><path d="M-2 0v-4M2.6 0v-4M-4.4 0h4.4M.4 0h4.6" stroke="${D.sun}" stroke-width="1.8"/><g transform="translate(0 -3.4)">` + [[-10.6, -18, -70], [-12, -15, -45], [-12.4, -11.6, -20]].map(([x, y, a]) => `<ellipse cx="${x}" cy="${y}" rx="4.6" ry="2" fill="${t}" transform="rotate(${a} ${x} ${y})"/>`).join('')
+    return `<path d="M-2 0v-4M2.6 0v-4M-4.4 0h4.4M.4 0h4.6" stroke-width="3.6"/><path d="M-2 0v-4M2.6 0v-4M-4.4 0h4.4M.4 0h4.6" stroke="${D.sun}" stroke-width="1.8"/><g transform="translate(0 -3.4)">` + [[-8.6, -18, -70], [-9.6, -15, -45], [-10, -11.6, -20]].map(([x, y, a]) => `<ellipse cx="${x}" cy="${y}" rx="4.6" ry="2" fill="${t}" transform="rotate(${a} ${x} ${y})"/>`).join('')
       + `<path d="M-11 -9c0-10 5-19 11-19s11 9 11 19c0 6-5 9-11 9s-11-3-11-9z" fill="${c}"/>` + tienP('M5 -26c4 4 6 11 6 17 0 5-3 8-7 8 3-3 4-7 4-11 0-5-1-10-3-14z') + lesk('M-7.6 -15c0-4 2-8 4.6-10', .65, 1.4)
       + `<path d="M-3.6 -28c-.4-2.6 1.4-3.6 2.6-2.2.4-2.6 3-2.6 3.2 0 1.6-1 3 .6 2 2.4z" fill="${D.coral}" stroke-width="1"/>`
-      + `<path d="M4 -10c1.6-4.4 6.4-5.6 8.4-2.4q-.6 2.4-2.6 2.2q-1 2-2.8 1.4q-1.4 1.6-3 -1.2z" fill="${t}" stroke-width="1.1"/>`
+      + `<path d="M1.6 -11c1.4-3.6 5.4-4.6 7.2-2q-.6 2-2.2 1.8q-.8 1.6-2.4 1.2q-1.2 1.4-2.6-1z" fill="${t}" stroke-width="1.1"/>`
       + oci(-3.4, -19.6, 1.8) + oci(3.4, -19.6, 1.8) + `<path d="M-1.8 -17.6L0 -19l1.8 1.4L0 -15.4z" fill="${D.sun}" stroke-width=".9"/><path d="M-.8 -15.4c-.6 1.4 0 2.6.8 2.6s1.4-1.2.8-2.6z" fill="${D.coral}" stroke-width=".8"/>` + lic(-6.4, -16.2, 1.8) + lic(6.4, -16.2, 1.8) + '</g>'; },
   // kačička: sedí, guľatá hlavička, plochý oranžový zobák
   kacka: (c = D.sun) => { const t = tm(c, 'var(--dv-krem)');
@@ -1941,7 +1942,7 @@ Object.assign(HRA, {
     + `<path d="M-42 0c-6-10 0-21 10-19 3-10 17-10 21-1 8-2 14 7 11 14 3 1 3 6 0 6z" fill="${T.leaf}"/>` + tienP('M-14 -12c3 3 4 8 0 12h-6z') + lesk('M-36 -11c1-4 4-6 7-7', .7, 1.6) + `<circle cx="-30" cy="-10" r="4.6" fill="var(--dv-biela)" stroke-width="1.1"/><circle cx="-19.6" cy="-10" r="4.6" fill="var(--dv-biela)" stroke-width="1.1"/>` + oci(-29.2, -9.4, 2.2) + oci(-18.8, -9.4, 2.2),
   // Slabikový vláčik: rušeň a vagóniky MA a LA na koľajniciach
   slabiky: () => `<path d="M-46 0h94" stroke-width="2.4"/>` + cary('M-42 0v2M-30 0v2M-18 0v2M-6 0v2M6 0v2M18 0v2M30 0v2M42 0v2', .5, 1.6)
-    + `<path d="M-44 -6V-30h17v-12h7v12h5v24z" fill="${D.coral}"/><rect x="-44" y="-47" width="13" height="5" rx="1.6" fill="${D.coralD}"/><rect x="-42" y="-42" width="9" height="12" fill="${D.coralD}"/>` + tienP('M-20 -30h5v24h-5z') + `<rect x="-29" y="-26" width="9" height="8" rx="1.5" fill="${T.okno}" stroke-width="1.5"/>` + dym(-36, -53)
+    + `<path d="M-44 -6V-30h17v-12h7v12h5v24z" fill="${D.coral}"/><rect x="-44" y="-47" width="13" height="5" rx="1.6" fill="${D.coralD}"/><rect x="-42" y="-42" width="9" height="12" fill="${D.coralD}"/>` + tienP('M-20 -30h5v24h-5z') + `<rect x="-29" y="-26" width="9" height="8" rx="1.5" fill="${T.okno}" stroke-width="1.5"/>` + dym(-37.5, -50)
     + [[-12, D.sun, 'MA'], [17, D.teal, 'LA']].map(([x, c, t]) => `<rect x="${x}" y="-31" width="27" height="25" rx="3" fill="${c}"/>` + tienP(`M${x + 20} -30h6v23h-6z`) + `<rect x="${x + 2.5}" y="-28.5" width="22" height="17" rx="2.6" fill="${D.card}"/>` + txt(x + 13.5, -15, 13, t)
       + `<circle cx="${x + 6.5}" cy="-4" r="4" fill="${D.violetD}"/><circle cx="${x + 20.5}" cy="-4" r="4" fill="${D.violetD}"/>`).join('')
     + `<circle cx="-37" cy="-4.6" r="4.6" fill="${D.violetD}"/><circle cx="-25" cy="-4.6" r="4.6" fill="${D.violetD}"/><path d="M-15 -15h3M15 -15h2" stroke-width="2.4"/>`,
@@ -2126,7 +2127,7 @@ const RAMCEK = {
   plot: [-26, -26, 52, 29],
   zivyplot: [-26, -22, 52, 25],
   mostik: [-33, -24, 66, 27],
-  sliepka: [-19, -38, 33, 41],
+  sliepka: [-17, -38, 30, 41],
   kacka: [-18, -30, 38, 33],
   zajac: [-14, -45, 29, 48],
   jez: [-19, -26, 43, 29],

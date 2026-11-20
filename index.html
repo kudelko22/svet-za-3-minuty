@@ -2930,8 +2930,15 @@ svg.mudra { overflow: visible; }
 :root[data-rezim="mesacny"] .dv-noc, .dv-nocny .dv-noc { display: inline; }
 @media (prefers-reduced-motion: no-preference) { .dv .vrtula { animation: dvToc 9s linear infinite; transform-box: fill-box; transform-origin: center; } }
 @keyframes dvToc { to { rotate: 360deg; } }
-@media (prefers-reduced-motion: no-preference) { .dv .dv-dym { animation: dvDym 4s ease-in-out infinite; } }
-@keyframes dvDym { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(-5px); opacity: .7; } }
+/* dym z komína: bez pohybu tri obláčiky nad sebou, s pohybom každý stúpa, rastie, unáša sa doprava a zmizne (posunuté o tretinu) */
+.dv .dv-dym circle { transform-box: fill-box; transform-origin: center; }
+.dv .dv-dym circle.dv-dym1 { transform: translate(4px, -9px) scale(1.25); }
+.dv .dv-dym circle.dv-dym2 { transform: translate(1px, -19px) scale(1.5); opacity: .75; }
+@media (prefers-reduced-motion: no-preference) {
+  .dv .dv-dym circle { animation: dvDym 7.5s linear infinite; }
+  .dv .dv-dym circle.dv-dym1 { animation-delay: -2.5s; } .dv .dv-dym circle.dv-dym2 { animation-delay: -5s; }
+}
+@keyframes dvDym { 0% { transform: translate(0, 0) scale(.55); opacity: 0; } 12% { opacity: .95; } 45% { transform: translate(2.5px, -11px) scale(1.15); opacity: .9; } 100% { transform: translate(8px, -27px) scale(1.75); opacity: 0; } }
 /* 5.1 Moja dedinka: scéna na celú šírku (26-dedinka-scena.js), presun s obláčikmi, izba, smerovník na Domove.
    Scéna je široká krajina; na úzkom displeji sa posúva prstom do strán. Pohyb je len transform a opacity, pokojný. */
 /* farby krajiny scény (deň, noc v Mesačnom režime) */
