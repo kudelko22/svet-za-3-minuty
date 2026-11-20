@@ -159,3 +159,9 @@
 .ct-hlava .ct-x { width: 44px; height: 44px; }
 .ct-hlava { padding-top: 26px; }
 .ds-cesta-vstup { min-height: 44px; }
+/* vstup na Cestu v jednom rade so Stavať (druhý rad panelu hore): rovnaká výška a vzdialenosť, bez voľného visenia */
+.ds-cesta-vstup { top: 62px; min-height: 0; padding-inline: 10px 12px; font-size: .95rem; gap: 5px; box-shadow: 0 4px 0 var(--ink); }
+.ds-cesta-vstup .ds-cv-ik { width: 22px; height: 22px; }
+.ds-cesta-vstup { font-size: .84rem; padding-inline: 8px 9px; gap: 4px; max-width: calc(100vw - 32px - 138px - 8px); }
+.ds-cesta-vstup .ds-cv-ik { width: 18px; height: 18px; } .ds-cesta-vstup .ds-cv-n { min-width: 20px; height: 20px; }
+.ds-cesta-vstup { left: max(0px, calc(50% - 50vw + 16px)); }

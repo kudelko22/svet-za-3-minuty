@@ -3283,6 +3283,12 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .ct-hlava .ct-x { width: 44px; height: 44px; }
 .ct-hlava { padding-top: 26px; }
 .ds-cesta-vstup { min-height: 44px; }
+/* vstup na Cestu v jednom rade so Stavať (druhý rad panelu hore): rovnaká výška a vzdialenosť, bez voľného visenia */
+.ds-cesta-vstup { top: 62px; min-height: 0; padding-inline: 10px 12px; font-size: .95rem; gap: 5px; box-shadow: 0 4px 0 var(--ink); }
+.ds-cesta-vstup .ds-cv-ik { width: 22px; height: 22px; }
+.ds-cesta-vstup { font-size: .84rem; padding-inline: 8px 9px; gap: 4px; max-width: calc(100vw - 32px - 138px - 8px); }
+.ds-cesta-vstup .ds-cv-ik { width: 18px; height: 18px; } .ds-cesta-vstup .ds-cv-n { min-width: 20px; height: 20px; }
+.ds-cesta-vstup { left: max(0px, calc(50% - 50vw + 16px)); }
 /* 5.1: nové hry s úrovňami (09b-hry-51.js). Ruka ako ostatné hry 5.0: atramentový obrys, plný tieň dole, mierne nakrivo. */
 :root { --ces-a: #A8E3A6; --ces-b: #B9EAB2; }
 :root[data-rezim="mesacny"] { --ces-a: #2E5E5C; --ces-b: #356A66; }
@@ -10539,7 +10545,7 @@ const DedCesta = {
   // zreteľný vstup na Cestu v hornej časti dedinky (vľavo pod nadpisom, oproti Stavať); počet = čakajúce odmeny
   vstup() {
     const c = typeof Dedinka !== 'undefined' && Dedinka.cestaStav(), n = ((c && c.dostupne) || 0) + Dedinka.cakajuTruhly().length;
-    return `<button class="btn maly ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
+    return `<button class="btn ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
   },
   klik(d) {
     if (d === 'cesta') { Zvuk.play('whoosh'); Prechod.spusti('Cesta mesiaca', () => { this.mes = null; st.view = 'cesta'; Render.nova = true; render(); scrollTo(0, 0); }); return true; }
