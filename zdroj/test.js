@@ -573,6 +573,28 @@ Object.assign(st, { body: zalohaV22.body, odznaky: zalohaV22.odznaky, vek: zaloh
 { const stare = T.filter(t => String(ART[t.id]).includes("ez(")); if (stare.length) chyby.push("temy len z emoji: " + stare.map(t => t.id).join(" "));
   Novinky.ukaz(NOVINKY); localStorage.removeItem("svet3:videl-verziu"); Novinky.bolo = false; st.faza = "appka"; st.flow = null; st.hra = null; Novinky.skontroluj();
   if (!Novinky.caka && S.get("videl-verziu", 0) !== VERZIA_APPKY) chyby.push("novinky verzia"); Novinky.caka = false; }
+/* UVOD51_TEST: úvod do dedinky 5.1 (29-uvod-dedinka.js): len vo verzii 5.1, raz na zariadenie, preskočenie, bez Web Animations nespadne */
+{ const U = Uvod51, pl = U.plati, po = U.pohyb, ce = document.createElement;
+  if (!U.plati("5.1") || !U.plati("5.1.2") || U.plati("5.0.1") || U.plati("5.10") || U.plati("5.2")) chyby.push("uvod51 plati");
+  U.plati = () => true; localStorage.removeItem("svet3:videl-uvod51");
+  if (!U.caka(VERZIA_APPKY - 1)) chyby.push("uvod51 ma cakat");
+  if (U.caka(VERZIA_APPKY)) chyby.push("uvod51 novy pouzivatel");
+  U.zapis(); if (U.caka(VERZIA_APPKY - 1)) chyby.push("uvod51 druhy raz");
+  localStorage.removeItem("svet3:videl-uvod51");
+  // bez Web Animations (a pri obmedzení pohybu): rovno koniec
+  if (!U.spusti([]) || !U.koniec || !U.el) chyby.push("uvod51 bez animacii");
+  if (U.z.length !== UD_NOVINKY.length) chyby.push("uvod51 predvolene novinky");
+  U.zrus(); if (U.el || U.koniec) chyby.push("uvod51 zrus");
+  // s Web Animations: časová os, Preskočiť dokončí všetko
+  const an = [], fe = () => { const e = ce(); e.animate = () => { const a = { f: 0, finish() { this.f = 1; }, cancel() {}, finished: new Promise(() => {}) }; an.push(a); return a; };
+    e.querySelector = () => fe(); e.querySelectorAll = () => [fe(), fe()]; return e; };
+  document.createElement = fe; U.pohyb = () => true;
+  try { if (!U.spusti([{ obr: () => "", n: "A", p: "B" }])) chyby.push("uvod51 spusti"); } finally { document.createElement = ce; U.pohyb = po; }
+  if (an.length < 30 || U.koniec) chyby.push("uvod51 casova os " + an.length);
+  if (U.z.length !== 1) chyby.push("uvod51 novinky z NOVINKY");
+  U.naKoniec(false); if (!U.koniec || an.some(a => !a.f)) chyby.push("uvod51 preskocit");
+  U.zrus(); U.plati = pl;
+  if (localStorage.getItem("svet3:videl-uvod51")) chyby.push("uvod51 spustenie nema zapisovat"); }
 /* V25_TEST */
 { const vety = new Set(), pridaj = c => (Array.isArray(c) ? c : [c]).forEach(x => { const n = normVeta(x); if (n) vety.add(n); });
   const zaloha = { vek: st.vek, flow: st.flow };
