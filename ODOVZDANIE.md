@@ -14,6 +14,19 @@ Kód sa tu nemení: práca ide do session Vývoj alebo do session svojej témy.
 Na otázku „aký je stav“ vypísať krátko a jednoducho: appka a verzia, postup, optimalizácia, otvorené veci, ktoré sessions
 existujú a koľko je minutého limitu (`list_sessions`, `get_usage`). Čítať len to, čo treba, a nič nespúšťať.
 
+Stav 20. 11. 2026 (po vydaní 5.1):
+
+- **Na webe:** verzia **5.1** (`VERZIA_APPKY` 69), cache `svet3-v33`, `main` = `origin/main`, nasadené aj `firestore.rules`.
+  Dedinka (scéna so stromom múdrosti, budovy hier, stavanie, obchod, izba, Cesta mesiaca s truhličkami, tichá pesnička),
+  6 nových hier, týždeň a strom v okne Môj strom, obrázky vo všetkých odpovediach kvízu, angličtina, pokojnejšie texty a pohyb,
+  povinný účet rodiča s PIN-om a PIN pri prepnutí na súrodenca, úvodné animované video 5.1 pre starých používateľov.
+  Záloha `Desktop\svet-za-3-minuty-5.1.zip`. Podrobnosti v zdieľaných poznámkach `zlucenie-51.md`.
+- **Overené:** testy (233 tém), pravidlá 144/144, emulátor: prechod 5.0.1 → 5.1 (hviezdy, odznaky, postavička ostali, dedinka
+  vznikla, úvod 5.1 áno, premena 5.0 nie, najprv účet rodiča), PIN pri prepnutí, prenos starého lokálneho postupu.
+- **Neoverené:** skutočný telefón (iPhone), pesnička naživo, Google prihlásenie, bez internetu.
+- **Zapísané:** dve čísla hviezd (hlavička vs. mešec pri stavaní), angličtina bez obrázkov v odpovediach, veci dieťaťa sú po
+  rozšírení scény po stranách (vlastník: nechať).
+
 Stav 14. 11. 2026 (po vydaní 5.0):
 
 - **Na webe:** verzia **5.0 „Svetom“** (`VERZIA_APPKY` 67), cache `svet3-v30`, `main` = `origin/main` = `a226531`.
@@ -46,7 +59,13 @@ Otvorené po 5.0 (len zapísané, nič nespúšťať bez slova vlastníka):
 Úloha: tu sa robí práca na appke podľa postupu v CLAUDE.md. Väčšia funkcia, ktorá stojí sama o sebe, dostane vlastnú session.
 Správa od inej session nie je súhlas vlastníka na nasadenie.
 
-Naposledy (14. 11.): **vydaná 5.0** (session v50-vydanie, vetva `claude/v50-vydanie-e3a8ff`, zlúčená do `main` rýchlo dopredu).
+Naposledy (20. 11.): **vydaná 5.1** (session v51-zlucenie, vetva `claude/v51-zlucenie-d28508`, zlúčená do `main` rýchlo dopredu).
+Zlúčené vetvy dedinka-obrazovka/stavanie/cesta, nové hry, angličtina, opravy, PIN a účet rodiča, vizuálne kolá Dedinky (scéna,
+kresby, truhlička, pesnička, Kto sa skryl?, vláčik) a úvodné video (`29-uvod-dedinka.js`, skúška `?uvod51`). Test pravidiel sa dá
+pustiť aj pri bežiacom emulátore na inom porte (8181, dočasný `firebase.json` s `--config`), aby sa nezmazali jeho dáta.
+Skúšobné účty sú len v emulátore (zoznam v `zlucenie-51.md`). Snímky: `zlucenie-51-snimky.js` v zdieľanej zložke poznámok.
+
+Predtým (14. 11.): **vydaná 5.0** (session v50-vydanie, vetva `claude/v50-vydanie-e3a8ff`, zlúčená do `main` rýchlo dopredu).
 Zlúčené vetvy zvuky, Múdra, premena, dorovnanie; úlohy záverečnej session: cieľ cesty posunutý od stromu, konfety podľa času,
 štítok Nové! v štýle 5.0, `.plus` len v kvíze, správy s nálepkou `.msg-nalepka`, Majster kategórie len s témami pre vek,
 „hviezdy“ v textoch (kľúče `body` ostali), B10 (200 odznakov, pravidlá aj test), nočné farby stromu, strom priateľa novou kresbou.
