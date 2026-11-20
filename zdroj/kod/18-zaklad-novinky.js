@@ -1,6 +1,14 @@
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane.
    Pri prechode na 5.0 (PREMENA_V v 23-premena.js) sa namiesto okna hrá úvodná premena a na jej konci sú novinky s v >= PREMENA_V. */
 const NOVINKY = [
+  // 5.1: Dedinka (20. 11.); prvé štyri ukáže aj koniec úvodu do dedinky (29-uvod-dedinka.js)
+  { v: 69, obr: () => dedinkaKresby.svg('domov', { popis: '' }), n: 'Moja dedinka', p: 'Tvoja vlastná krajina. V strede rastie strom múdrosti.' },
+  { v: 69, obr: () => ikn('hry'), n: 'Každá budova je hra', p: 'Ťukni na budovu a hraj. Pribudlo šesť nových hier: košíky, slabiky, hodiny a ďalšie.' },
+  { v: 69, obr: () => dedinkaKresby.svg('chalupka', { popis: '' }), n: 'Stavaj a farbi', p: 'Za hviezdy si kúp domčeky, stromy a zvieratká.' },
+  { v: 69, obr: () => DedCesta.truhlaSvg('drevo'), n: 'Cesta mesiaca', p: 'Každá hviezda je krok. Na ceste čakajú truhličky.' },
+  { v: 69, obr: () => ikn('strom'), n: 'Môj strom', p: 'Týždeň a strom múdrosti sú v jednom okne. Ťukni na stromček hore.' },
+  { v: 69, obr: () => ikn('bublina'), n: 'Obrázky a angličtina', p: 'Každá odpoveď v kvíze má obrázok. Angličtina má viac slov a viet.' },
+  { v: 69, obr: () => ikn('zamok'), n: 'Pre rodiča', p: 'Účet rodiča s PIN-om je povinný. PIN chráni aj prepínanie medzi deťmi.' },
   // 5.0.1: milšia Múdra (16. 11.)
   { v: 68, obr: () => mudra('ahoj'), n: 'Milšia Múdra', p: 'Múdra má nové, lesklé oči a mäkšiu tvár. Keď večer zaspí, zavrie oči a sladko spí.' },
   // Verzia 5.0 Svetom: tieto vety ukáže koniec úvodnej premeny (v = PREMENA_V)

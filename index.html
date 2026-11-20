@@ -3635,16 +3635,16 @@ html.ud-bezi, html.ud-bezi body { overflow: hidden; }
 <canvas id="fx" aria-hidden="true"></canvas>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="temy.js?v=68"></script>
-<script src="obrazky.js?v=68"></script>
-<script src="misie.js?v=68"></script>
-<script src="kvizy.js?v=68"></script>
-<script src="tyzden.js?v=68"></script>
-<script src="anglictina.js?v=68"></script>
-<script src="rodic-brana.js?v=68"></script>
-<script src="rodic-panel.js?v=68"></script>
+<script src="temy.js?v=69"></script>
+<script src="obrazky.js?v=69"></script>
+<script src="misie.js?v=69"></script>
+<script src="kvizy.js?v=69"></script>
+<script src="tyzden.js?v=69"></script>
+<script src="anglictina.js?v=69"></script>
+<script src="rodic-brana.js?v=69"></script>
+<script src="rodic-panel.js?v=69"></script>
 <script>
-const VERZIA_APPKY = 68; const VERZIA_NAZOV = '5.0.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
+const VERZIA_APPKY = 69; const VERZIA_NAZOV = '5.1'; // číslo pre telefón a novinky; názov ukazuje profil // zvýšiť pri každom nahratí, aby bolo v profile vidno, či telefón má novú verziu
 const DNI = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
 const DUHA = ['#FF5A5F', '#FF8A3D', '#2FBF71', '#4C7DFF', '#B36BFF', '#16BFAE', '#FF6FA8'];
 const PASTEL = ['#FFE1E1', '#FFE7C7', '#FFF3B0', '#D9F8E6', '#D6E6FF', '#EBDDFF', '#FFD9EA'];
@@ -8107,6 +8107,14 @@ const Ang = {
 /* Okno „Čo je nové“: raz po veľkej aktualizácii; nový používateľ ho nedostane.
    Pri prechode na 5.0 (PREMENA_V v 23-premena.js) sa namiesto okna hrá úvodná premena a na jej konci sú novinky s v >= PREMENA_V. */
 const NOVINKY = [
+  // 5.1: Dedinka (20. 11.); prvé štyri ukáže aj koniec úvodu do dedinky (29-uvod-dedinka.js)
+  { v: 69, obr: () => dedinkaKresby.svg('domov', { popis: '' }), n: 'Moja dedinka', p: 'Tvoja vlastná krajina. V strede rastie strom múdrosti.' },
+  { v: 69, obr: () => ikn('hry'), n: 'Každá budova je hra', p: 'Ťukni na budovu a hraj. Pribudlo šesť nových hier: košíky, slabiky, hodiny a ďalšie.' },
+  { v: 69, obr: () => dedinkaKresby.svg('chalupka', { popis: '' }), n: 'Stavaj a farbi', p: 'Za hviezdy si kúp domčeky, stromy a zvieratká.' },
+  { v: 69, obr: () => DedCesta.truhlaSvg('drevo'), n: 'Cesta mesiaca', p: 'Každá hviezda je krok. Na ceste čakajú truhličky.' },
+  { v: 69, obr: () => ikn('strom'), n: 'Môj strom', p: 'Týždeň a strom múdrosti sú v jednom okne. Ťukni na stromček hore.' },
+  { v: 69, obr: () => ikn('bublina'), n: 'Obrázky a angličtina', p: 'Každá odpoveď v kvíze má obrázok. Angličtina má viac slov a viet.' },
+  { v: 69, obr: () => ikn('zamok'), n: 'Pre rodiča', p: 'Účet rodiča s PIN-om je povinný. PIN chráni aj prepínanie medzi deťmi.' },
   // 5.0.1: milšia Múdra (16. 11.)
   { v: 68, obr: () => mudra('ahoj'), n: 'Milšia Múdra', p: 'Múdra má nové, lesklé oči a mäkšiu tvár. Keď večer zaspí, zavrie oči a sladko spí.' },
   // Verzia 5.0 Svetom: tieto vety ukáže koniec úvodnej premeny (v = PREMENA_V)
