@@ -1828,17 +1828,17 @@ Object.assign(ZVER, {
       + `<path d="M0 -18.8v1.4" stroke-width="1"/><path d="M-1.2 -16.8q1.2 2.4 2.4 0z" fill="${D.coral}" stroke-width=".8"/>` + usmev(0, -17.4, 1.5) + lic(-7.6, -18.6) + lic(7.6, -18.6)
       + `<path d="M-7 -13.4q7 3.2 14 0" fill="none" stroke="${D.coral}" stroke-width="2.6"/><circle cy="-11.4" r="1.8" fill="${D.sun}" stroke-width=".9"/>`; },
   // ovečka: kučeravé telo z boku, tmavá hlavička spredu s chumáčom a ušami
-  ovca: () => `<path d="M-9 0v-6M-4 0v-5M4 0v-5M9 0v-6" stroke="var(--dv-krtko)" stroke-width="3.2"/><path d="${blob(-1, -13, 15, 10, 11)}" fill="var(--dv-biela)"/>` + tienP('M2 -5c5 0 9-2 11-6 1 4-1 7-5 8-3 1-5 0-6-2z')
+  ovca: () => `${[-9, -4, 4, 9].map(x => `<rect x="${x - 1.9}" y="-8" width="3.8" height="8" rx="1.6" fill="var(--dv-krtko)" stroke-width="1.4"/>`).join('')}<path d="${blob(-1, -13, 15, 10, 11)}" fill="var(--dv-biela)"/>` + tienP('M2 -5c5 0 9-2 11-6 1 4-1 7-5 8-3 1-5 0-6-2z')
     + cary('M-11 -14q1.6-1.8 3.2 0q1.6-1.8 3.2 0M-4 -19q1.6-1.8 3.2 0q1.6-1.8 3.2 0M-8 -8q1.6-1.8 3.2 0M2 -11q1.6-1.8 3.2 0', .28, 1.1) + lesk('M-12 -18q2-4 7-5', .7, 1.6)
     + `<ellipse cx="8.6" cy="-18.4" rx="3.6" ry="1.8" fill="var(--dv-krtko)" transform="rotate(-20 8.6 -18.4)"/><ellipse cx="21.4" cy="-18.4" rx="3.6" ry="1.8" fill="var(--dv-krtko)" transform="rotate(20 21.4 -18.4)"/><ellipse cx="8.4" cy="-18.4" rx="1.8" ry=".8" fill="${D.pink}" stroke="none" transform="rotate(-20 8.4 -18.4)"/><ellipse cx="21.6" cy="-18.4" rx="1.8" ry=".8" fill="${D.pink}" stroke="none" transform="rotate(20 21.6 -18.4)"/>`
     + `<ellipse cx="15" cy="-15.4" rx="6.4" ry="7" fill="var(--dv-krtko)"/><path d="${blob(15, -22, 5.4, 3.2, 7)}" fill="var(--dv-biela)" stroke-width="1.3"/>` + ociS(12.6, -15.6, 1.9) + ociS(17.4, -15.6, 1.9) + `<path d="M13.8 -11.4q1.2 1 2.4 0" fill="none" stroke="var(--dv-biela)" stroke-width="1"/>` + lic(10.6, -12.6, 1.6) + lic(19.4, -12.6, 1.6),
   // sliepka: okrúhla ako vajíčko, hrebienok, zobáčik spredu, krídelko
   sliepka: (c = 'var(--dv-biela)') => { const t = tm(c, 'var(--dv-krem)');
-    return `<path d="M-2 0v-3.4M2.6 0v-3.4M-4.4 0h4.4M.4 0h4.6" stroke="${D.sunD}" stroke-width="1.8"/>` + [[-10.6, -18, -70], [-12, -15, -45], [-12.4, -11.6, -20]].map(([x, y, a]) => `<ellipse cx="${x}" cy="${y}" rx="4.6" ry="2" fill="${t}" transform="rotate(${a} ${x} ${y})"/>`).join('')
+    return `<path d="M-2 0v-4M2.6 0v-4M-4.4 0h4.4M.4 0h4.6" stroke-width="3.6"/><path d="M-2 0v-4M2.6 0v-4M-4.4 0h4.4M.4 0h4.6" stroke="${D.sun}" stroke-width="1.8"/><g transform="translate(0 -3.4)">` + [[-10.6, -18, -70], [-12, -15, -45], [-12.4, -11.6, -20]].map(([x, y, a]) => `<ellipse cx="${x}" cy="${y}" rx="4.6" ry="2" fill="${t}" transform="rotate(${a} ${x} ${y})"/>`).join('')
       + `<path d="M-11 -9c0-10 5-19 11-19s11 9 11 19c0 6-5 9-11 9s-11-3-11-9z" fill="${c}"/>` + tienP('M5 -26c4 4 6 11 6 17 0 5-3 8-7 8 3-3 4-7 4-11 0-5-1-10-3-14z') + lesk('M-7.6 -15c0-4 2-8 4.6-10', .65, 1.4)
       + `<path d="M-3.6 -28c-.4-2.6 1.4-3.6 2.6-2.2.4-2.6 3-2.6 3.2 0 1.6-1 3 .6 2 2.4z" fill="${D.coral}" stroke-width="1"/>`
       + `<path d="M4 -10c1.6-4.4 6.4-5.6 8.4-2.4q-.6 2.4-2.6 2.2q-1 2-2.8 1.4q-1.4 1.6-3 -1.2z" fill="${t}" stroke-width="1.1"/>`
-      + oci(-3.4, -19.6, 1.8) + oci(3.4, -19.6, 1.8) + `<path d="M-1.8 -17.6L0 -19l1.8 1.4L0 -15.4z" fill="${D.sun}" stroke-width=".9"/><path d="M-.8 -15.4c-.6 1.4 0 2.6.8 2.6s1.4-1.2.8-2.6z" fill="${D.coral}" stroke-width=".8"/>` + lic(-6.4, -16.2, 1.8) + lic(6.4, -16.2, 1.8); },
+      + oci(-3.4, -19.6, 1.8) + oci(3.4, -19.6, 1.8) + `<path d="M-1.8 -17.6L0 -19l1.8 1.4L0 -15.4z" fill="${D.sun}" stroke-width=".9"/><path d="M-.8 -15.4c-.6 1.4 0 2.6.8 2.6s1.4-1.2.8-2.6z" fill="${D.coral}" stroke-width=".8"/>` + lic(-6.4, -16.2, 1.8) + lic(6.4, -16.2, 1.8) + '</g>'; },
   // kačička: sedí, guľatá hlavička, plochý oranžový zobák
   kacka: (c = D.sun) => { const t = tm(c, 'var(--dv-krem)');
     return `<path d="M-12 -9c-3-2-5-6-4-9 2 0 4 2 6 4z" fill="${c}"/><ellipse cx="-1" cy="-7" rx="12" ry="7.4" fill="${c}"/>` + tienP('M4 -13c4 1 7 4 7 6 0 4-4 7-9 7 3-2 4-5 4-7 0-2-1-4-2-6z')
@@ -2081,7 +2081,7 @@ function zem(kluc, vnutri) {
 }
 const TRS = 'M-5 1c1-3 1-5 .5-8c1.5 1.5 2 3.5 2 5c.5-3 1.5-6 3-8c.5 3 .3 6 0 8c1-2 2.5-3.5 4-4c-.8 2.2-1.5 4-2 7z';
 function trava(kluc, vnutri) {
-  if (vnutri || BEZ_TIEN[kluc] || /^(iglu|snehuliak|rybka|oblakd|prazdne|mudrost)$/.test(kluc)) return '';
+  if (vnutri || BEZ_TIEN[kluc] || najdi(kluc)?.skupina === 'zver' || /^(iglu|snehuliak|rybka|oblakd|prazdne|mudrost)$/.test(kluc)) return '';
   const w = (RAMCEK[kluc] || [0, 0, 40])[2], x = Math.max(9, w * .4), m = Math.min(.95, .5 + w / 190);
   return [[-x, m], [x - 2, m * .85]].concat(w > 70 ? [[x * .6, m * .6]] : []).map(([a, k]) => `<path transform="translate(${a.toFixed(1)} 0) scale(${k.toFixed(2)})" d="${TRS}" fill="var(--dv-lis)" stroke="var(--dv-lis-d)" stroke-width="1.2"/>`).join('');
 }
@@ -2124,7 +2124,7 @@ const RAMCEK = {
   plot: [-26, -26, 52, 29],
   zivyplot: [-26, -22, 52, 25],
   mostik: [-33, -24, 66, 27],
-  sliepka: [-19, -34, 33, 37],
+  sliepka: [-19, -38, 33, 41],
   kacka: [-18, -30, 38, 33],
   zajac: [-14, -45, 29, 48],
   jez: [-19, -26, 43, 29],
