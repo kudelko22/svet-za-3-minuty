@@ -169,7 +169,7 @@ const HRY51 = {
       const k = h.kola[h.i], n = k.ciele.length, nasiel = h.vzate.length;
       return `<div class="card skr-ulohe"><span class="skr-ciel">${dedinkaKresby.svg(k.c, {})}</span><b>${n > 1 ? `Nájdi všetky: ${esc(SKR_MENA[k.c][1])}` : `Nájdi ${esc(SKR_MENA[k.c][0])}`}</b>
         <span class="skr-body">${Array.from({ length: n }, (_, i) => `<i class="${i < nasiel ? 'ok' : ''}"></i>`).join('')}</span></div>
-        <div class="frame skr-pole"><svg class="skr-svg" viewBox="0 0 360 290" role="group" aria-label="Dedinka, v ktorej sa niečo skrylo">${skrPozadie()}<g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${k.veci.map((v, i) => skrVec(v, i, h.vzate.includes(i))).join('')}</g>${h.zle.map(z => `<g class="skr-x" transform="translate(${z[0]} ${z[1]})"><path d="M-7 -7l14 14M7 -7l-14 14" stroke="var(--coral)" stroke-width="4" stroke-linecap="round"/></g>`).join('')}</svg></div>`;
+        <div class="frame skr-pole"><svg class="skr-svg" viewBox="0 0 360 290" role="group" aria-label="Dedinka, v ktorej sa niečo skrylo">${skrPozadie()}<g class="skr-pady">${k.veci.map(skrPad).join('')}</g><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${k.veci.map((v, i) => skrVec(v, i)).join('')}</g><g class="skr-kruhy">${k.veci.filter(v => h.vzate.includes(v.i)).map(skrKruh).join('')}</g>${h.zle.map(z => `<g class="skr-x" transform="translate(${z[0]} ${z[1]})"><path d="M-7 -7l14 14M7 -7l-14 14" stroke="var(--coral)" stroke-width="4" stroke-linecap="round"/></g>`).join('')}</svg></div>`;
     },
     klik(h, d) {
       if (d.h51 !== 'sk') return;
@@ -323,16 +323,33 @@ function skrScena(c, n, kolko, skryt) {
   const ine = mix(SKR_INE.length).map(i => SKR_INE[i]).filter(k => k !== c);
   for (let i = 0; veci.filter(v => !v.krik).length < n && por.length; i++) vec(ine[i % ine.length], por.shift(), false);
   // stromy vzadu (nedajú sa ťuknúť, len krajina)
-  const stromy = [0, 1, 2, 3].map(i => ({ k: SKR_STROMY[(i + nahodne(5)) % 5], x: 25 + i * 100 + nahodne(40), y: 112 + nahodne(8), s: .85, strom: true }));
+  const stromy = [0, 1, 2, 3].map(i => ({ k: SKR_STROMY[(i + nahodne(5)) % 5], x: 25 + i * 100 + nahodne(40), y: 120 + nahodne(8), s: .9, strom: true }));
   return { c, ciele: ciele.map(x => x + stromy.length), veci: [...stromy, ...veci].map((v, i) => ({ ...v, i })).sort((a, b) => a.y - b.y || (a.krik ? 1 : -1)) };
 }
-const skrPozadie = () => `<rect width="360" height="290" fill="var(--dv-nebo)"/><circle cx="318" cy="34" r="17" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" class="skr-slnko"/><path d="M0 106Q60 72 130 98T260 88T360 96V290H0z" fill="var(--dv-kopec2)" stroke="var(--ink)" stroke-width="2.5"/><path d="M0 132Q90 108 180 124T360 118V290H0z" fill="var(--dv-zem)" stroke="var(--ink)" stroke-width="2.5"/>`;
-// vec v scéne: ťukacia plocha je väčšia ako kresba (malé prsty); index i ostáva z poradia pred zoradením
-function skrVec(v, poz, najdena) {
+// pozadie: nebo, mraky, vzdialený kopec a zelená lúka; päty stromov (y 120 a viac) stoja vždy v zelenej, nad líniou trávy (y 90 až 106)
+const SKR_KVET = [[22, 160, 'coral'], [70, 150, 'sun'], [96, 262, 'violet'], [150, 150, 'coral'], [196, 244, 'sun'], [244, 156, 'violet'], [300, 166, 'coral'], [338, 252, 'sun'], [48, 282, 'sun'], [316, 280, 'violet']];
+const skrPozadie = () => `<rect width="360" height="290" fill="var(--dv-nebo)"/><circle cx="318" cy="34" r="17" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" class="skr-slnko"/><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" pointer-events="none">${dedinkaVec('oblak1', { x: 66, y: 44, s: .62 })}${dedinkaVec('oblak2', { x: 196, y: 30, s: .5 })}</g><path d="M0 84Q60 50 130 76T260 64T360 74V290H0z" fill="var(--dv-kopec2)" stroke="var(--ink)" stroke-width="2.5"/><path d="M0 106Q90 90 180 100T360 94V290H0z" fill="var(--dv-zem)" stroke="var(--ink)" stroke-width="2.5"/><g pointer-events="none" stroke="var(--ink)" stroke-width="1.2">${SKR_KVET.map(([x, y, c]) => '<circle cx="' + x + '" cy="' + y + '" r="2.6" fill="var(--' + c + ')"/>').join('')}</g>`;
+// vec v scéne: viditeľná kresba sama chytí ťuknutie (bez neviditeľných plôch navrchu); stromy a kríky ťuknutie prepúšťajú, aby sa dalo ťuknúť na vykúkajúcu vec za krížkom
+function skrVec(v, poz) {
   const html = dedinkaVec(v.k, { x: v.x, y: v.y, s: v.s, zrkadlo: v.zrk, ...(v.f ? { farba: v.f } : {}) });
-  if (v.strom || v.krik) return html;
-  const r = dedinkaKresby.RAMCEK[v.k] || [-20, -40, 40, 40], p = 7;
-  return `<g class="skr-vec${najdena ? ' najdena' : ''}" data-h51="sk" data-i="${v.i}" role="button" tabindex="0" aria-label="Vec ${poz + 1}">${html}<rect x="${(v.x + r[0] * v.s - p).toFixed(1)}" y="${(v.y + r[1] * v.s - p).toFixed(1)}" width="${(r[2] * v.s + 2 * p).toFixed(1)}" height="${(r[3] * v.s + 2 * p).toFixed(1)}" fill="transparent" stroke="none"/>${najdena ? `<ellipse class="skr-kruh" cx="${(v.x + (r[0] + r[2] / 2) * v.s).toFixed(1)}" cy="${(v.y + (r[1] + r[3] / 2) * v.s).toFixed(1)}" rx="${(r[2] * v.s / 2 + 7).toFixed(1)}" ry="${(r[3] * v.s / 2 + 6).toFixed(1)}" fill="none" stroke="var(--teal)" stroke-width="4"/>` : ''}</g>`;
+  if (v.strom || v.krik) return `<g pointer-events="none">${html}</g>`;
+  return `<g class="skr-vec" data-h51="sk" data-i="${v.i}" role="button" tabindex="0" aria-label="Vec ${poz + 1}">${html}</g>`;
+}
+// rámček veci v súradniciach scény (pri zrkadlení sa preklopí)
+function skrRamec(v) {
+  const r = dedinkaKresby.RAMCEK[v.k] || [-20, -40, 40, 40], x0 = v.zrk ? -(r[0] + r[2]) : r[0];
+  return [v.x + x0 * v.s, v.y + r[1] * v.s, r[2] * v.s, r[3] * v.s];
+}
+// neviditeľná plocha okolo veci, pod všetkými kresbami: chytí len ťuknutie mimo viditeľných vecí a najbližšia (nižšia) vec vyhrá
+function skrPad(v) {
+  if (v.strom || v.krik) return '';
+  const [x, y, w, h] = skrRamec(v), p = 6;
+  return `<rect data-h51="sk" data-i="${v.i}" x="${(x - p).toFixed(1)}" y="${(y - p).toFixed(1)}" width="${(w + 2 * p).toFixed(1)}" height="${(h + 2 * p).toFixed(1)}" rx="8" fill="transparent" stroke="none"/>`;
+}
+// zelený kruh okolo nájdenej veci, vždy navrchu a bez ťukania
+function skrKruh(v) {
+  const [x, y, w, h] = skrRamec(v);
+  return `<ellipse class="skr-kruh" cx="${(x + w / 2).toFixed(1)}" cy="${(y + h / 2).toFixed(1)}" rx="${(w / 2 + 7).toFixed(1)}" ry="${(h / 2 + 6).toFixed(1)}" fill="none" stroke="var(--teal)" stroke-width="4" pointer-events="none"/>`;
 }
 
 /* Slabikový vláčik: slová podľa úrovne [slabiky, obrázok] */
@@ -438,5 +455,5 @@ function hodinySvg(h, m) {
     <g class="hod-hod" transform="rotate(${ah})"><path d="M-6 8L-5 -40 0 -50 5 -40 6 8z" fill="var(--coral)" stroke-width="3"/></g><g class="hod-min" transform="rotate(${am})"><path d="M-4 10L-3.5 -70 0 -80 3.5 -70 4 10z" fill="var(--violet-d)" stroke-width="3"/></g><circle r="8" fill="var(--sun)" stroke-width="3"/></g></svg>`;
 }
 // Kto sa skryl?: veci v scéne sú SVG skupiny, nie tlačidlá, preto vlastný poslucháč (aj Enter a medzerník)
-document.addEventListener('click', e => { const g = e.target.closest && e.target.closest('g[data-h51]'); if (g) Hra51.klik(g, g.dataset); });
+document.addEventListener('click', e => { const g = e.target.closest && e.target.closest('g[data-h51],rect[data-h51]'); if (g) Hra51.klik(g, g.dataset); });
 document.addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const g = e.target.closest && e.target.closest('g[data-h51]'); if (g) { e.preventDefault(); Hra51.klik(g, g.dataset); } });

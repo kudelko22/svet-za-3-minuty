@@ -377,6 +377,24 @@ if (new Set(ODZNAKY.map(o => o.id)).size !== ODZNAKY.length || ODZNAKY.length > 
     clearTimeout(h.dalsia);
     if (h.spravne !== KV_KOL - 1) chyby.push("kv spravne " + id + " " + h.spravne);
     Hra.zrus(); } }
+/* SKRYTE_TUK: ťuk na každú vec označí práve tú vec (kruh a plocha patria jej indexu, nie poradiu po zoradení), stromy a kríky ťuk prepúšťajú */
+for (const mal of [true, false]) for (let u = 1; u <= (mal ? 4 : 5); u++) for (let r = 0; r < 3; r++) {
+  const kola = HRY51.skryte.kola(u, mal), k = kola[r], kl = k.veci.filter(v => !v.strom && !v.krik), meno = 'skryte ' + (mal ? 'm' : 's') + u;
+  if (new Set(k.veci.map(v => v.i)).size !== k.veci.length) chyby.push(meno + ' index nie je jedinecny');
+  k.ciele.forEach(i => { const v = k.veci.find(x => x.i === i); if (!v || v.k !== k.c) chyby.push(meno + ' cielom nie je ' + k.c); });
+  for (const v of kl) {
+    const h = { vzate: [v.i], zle: [], kola, i: r }, s = HRY51.skryte.html(h), g = s.match(new RegExp('<g class="skr-vec" data-h51="sk" data-i="' + v.i + '"', 'g')) || [], p = s.match(new RegExp('<rect data-h51="sk" data-i="' + v.i + '"', 'g')) || [];
+    if (g.length !== 1 || p.length !== 1) chyby.push(meno + ' vec ' + v.i + ' kresba/plocha ' + g.length + '/' + p.length);
+    const kr = s.match(/<ellipse class="skr-kruh" cx="[0-9.]+" cy="[0-9.]+"/g) || [], pad = new RegExp('<rect data-h51="sk" data-i="' + v.i + '" x="([0-9.-]+)" y="([0-9.-]+)" width="([0-9.]+)" height="([0-9.]+)"').exec(s);
+    if (kr.length !== 1) { chyby.push(meno + ' kruhov ' + kr.length); continue; }
+    const [, cx, cy] = /cx="([0-9.]+)" cy="([0-9.]+)"/.exec(kr[0]);
+    if (!pad || Math.abs(+cx - (+pad[1] + +pad[3] / 2)) > 1 || Math.abs(+cy - (+pad[2] + +pad[4] / 2)) > 1) chyby.push(meno + ' kruh nie je na veci ' + v.i);
+  }
+  for (const v of k.veci.filter(x => x.strom || x.krik)) if (new RegExp('data-i="' + v.i + '"').test(HRY51.skryte.html({ vzate: [], zle: [], kola, i: r }))) chyby.push(meno + ' strom/krik sa da tuknut');
+}
+{ st.vek = 'starsi'; st.body = 3000; S.set(h51Kluc('skryte'), 5); Hra.start('skryte'); Hra51.zacni(3); const h = st.hra, k = h.kola[0];
+  for (const i of k.ciele) { const pred = h.vzate.length; Hra51.klik(null, { h51: 'sk', i: String(i) }); if (!h.vzate.includes(i) && h.i === 0) chyby.push('skryte tuk neoznacil ciel ' + i); if (h.i === 0 && h.vzate.length !== pred + 1) chyby.push('skryte tuk oznacil viac'); }
+  clearTimeout(h.dalsia); Hra.zrus(); }
 /* NOVE_HRY_51: každá nová hra na každej úrovni od výberu po výsledok; prvé kolo s chybou, ostatné správne, potom sa odomkne ďalšia úroveň */
 { const ries = (h, chyba) => { const k = h.kola[h.i], K = d => Hra51.klik(null, d);
     if (h.id === 'kosiky') { if (chyba) K({ h51: 'kos', k: String((k.k + 1) % k.kosy.length) }); K({ h51: 'kos', k: String(k.k) }); }
