@@ -3271,6 +3271,18 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 @keyframes trOdlet { 0% { transform: none; } 30% { transform: translateY(-14px) scale(1.25); } 100% { transform: translate(40vw, 60vh) scale(.2); opacity: 0; } }
 @keyframes trZmizni { to { opacity: 0; transform: scale(.6); } }
 .tr-okno.hotovo .tr-karta.vybrana { opacity: 1; }
+
+/* vstup na Cestu v dedinke: vľavo pod nadpisom, súmerne so Stavať */
+.ds-cesta-vstup { position: absolute; top: 134px; left: max(16px, calc(50% - 50vw + 16px)); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding-inline: 10px 12px; background: var(--card); color: var(--text); }
+.ds-cv-ik { width: 20px; height: 20px; flex: none; }
+.ds-cv-n { display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 999px; background: var(--coral); color: #fff; border: 2px solid var(--ink); font: 800 .78rem/1 var(--fd); }
+.ct-hlava .ct-x { width: 40px; }
+.ct-hlava { padding-top: 22px; }
+/* telefón 360-390 px: čitateľné popisy (plné pozadie, bez prečiarknutia cestou), väčšie ťuknutie na Späť */
+.ct-nazov { max-width: 150px; white-space: nowrap; background: var(--card); border: 2px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+.ct-hlava .ct-x { width: 44px; height: 44px; }
+.ct-hlava { padding-top: 26px; }
+.ds-cesta-vstup { min-height: 44px; }
 /* 5.1: nové hry s úrovňami (09b-hry-51.js). Ruka ako ostatné hry 5.0: atramentový obrys, plný tieň dole, mierne nakrivo. */
 :root { --ces-a: #A8E3A6; --ces-b: #B9EAB2; }
 :root[data-rezim="mesacny"] { --ces-a: #2E5E5C; --ces-b: #356A66; }
@@ -9926,7 +9938,7 @@ const DedScena = {
     return `<section class="ds${DedStav.zap ? ' dst-zap' : ''}" aria-label="Moja dedinka">
       <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 ${DS_Y0} ${DS_W} ${DS_H - DS_Y0}" preserveAspectRatio="xMidYMax slice" role="group" aria-label="Dedinka"><g stroke-linejoin="round" stroke-linecap="round">
         ${this.krajina(this.chodniky())}<g stroke="var(--ink)" stroke-width="2.2">${this.veci()}</g></g></svg></div>
-      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}`}
+      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}${DedCesta.vstup()}`}
     </section>`;
   },
   // po vykreslení: výška scény podľa obrazovky, posun do strán (na strom alebo späť na miesto), hviezdy po hre
@@ -10377,22 +10389,34 @@ var DedHudba = (() => {
     [[0, 0, .3], [2, 1, .2], [4, 2, .17], [6, 1, .2]].forEach(([e, j, v]) => o.push({ t: e * OSMINA, f: hz(a[j]), d: 1.6, v }));
     return o;
   }
-  // jeden klavírny tón: harmonické s rôznym doznievaním, rýchly nábeh, tlmený filter
+  // jeden klavírny tón: struny mierne rozladené (zbor), nepatrne neharmonické alikvoty (kovový nádych strún), kladivko (šumový úder),
+  // dvojstupňový útlm (rýchly pokles po údere, potom dlhé doznievanie) a jas, ktorý po údere rýchlo klesá
+  const SUM = new WeakMap();
+  function sum(c) { let b = SUM.get(c); if (!b) { b = c.createBuffer(1, Math.floor(c.sampleRate * .06), c.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; SUM.set(c, b); } return b; }
   function klavir(c, ciel, t0, f, v) {
+    const nizky = f < 200, dz = Math.min(4.2, 1.2 + 3.2 * (200 / Math.max(f, 120)) ** .6), jas = Math.min(7000, f * (nizky ? 6 : 9));
     const g = c.createGain(), filt = c.createBiquadFilter();
-    filt.type = 'lowpass'; filt.frequency.value = Math.min(6000, f * 7); filt.Q.value = .3;
-    const dz = Math.min(3.2, DOZNENIE + 2.4 * (220 / Math.max(f, 110)));
-    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .006);
-    g.gain.exponentialRampToValueAtTime(v * .35, t0 + .25); g.gain.exponentialRampToValueAtTime(.0001, t0 + dz);
+    filt.type = 'lowpass'; filt.Q.value = .2; filt.frequency.setValueAtTime(jas, t0); filt.frequency.exponentialRampToValueAtTime(Math.max(f * 2.5, 500), t0 + .5);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .004);
+    g.gain.exponentialRampToValueAtTime(v * .42, t0 + .18); g.gain.exponentialRampToValueAtTime(v * .2, t0 + .9); g.gain.exponentialRampToValueAtTime(.0001, t0 + dz);
     g.connect(filt); filt.connect(ciel);
-    [[1, 1], [2, .42], [3, .22], [4, .1], [5, .05]].forEach(([n, s], k) => {
-      const o = c.createOscillator(), h = c.createGain();
-      o.type = 'sine'; o.frequency.value = f * n * (k ? 1.0008 : 1);
-      h.gain.setValueAtTime(s, t0); if (k) h.gain.exponentialRampToValueAtTime(s * .05, t0 + dz / (1 + k * .5)); // vyššie harmonické doznejú rýchlejšie
+    const strun = nizky ? [0] : [-1.6, 1.6]; // cent
+    for (const ct of strun) for (let n = 1; n <= 7; n++) {
+      const fn = f * n * Math.sqrt(1 + .0004 * n * n) * Math.pow(2, ct / 1200);
+      if (fn > 9000) break;
+      const o = c.createOscillator(), h = c.createGain(), s = (strun.length === 1 ? 1 : .55) * (Math.sin(Math.PI * n * .12) ** 2 * 1.5 + .12) / n ** .85; // kladivko udiera pri 1/8 struny
+      o.type = 'sine'; o.frequency.value = fn;
+      h.gain.setValueAtTime(s, t0); h.gain.exponentialRampToValueAtTime(s * .08, t0 + dz / (1 + n * .55));
       o.connect(h); h.connect(g); o.start(t0); o.stop(t0 + dz + .1);
-    });
+    }
+    // úder kladivka: krátky tlmený šum
+    const b = c.createBufferSource(), bf = c.createBiquadFilter(), bg = c.createGain();
+    b.buffer = sum(c); bf.type = 'bandpass'; bf.frequency.value = Math.min(3500, f * 3); bf.Q.value = .8;
+    bg.gain.setValueAtTime(v * .5, t0); bg.gain.exponentialRampToValueAtTime(.0001, t0 + .05);
+    b.connect(bf); bf.connect(bg); bg.connect(ciel); b.start(t0); b.stop(t0 + .06);
   }
-  function takt(c, ciel, i, t0) { for (const n of tony(i % TAKT)) klavir(c, ciel, t0 + n.t, n.f, n.v); }
+  // človek nehrá presne: tóny sú o chvíľku posunuté a nie rovnako silné
+  function takt(c, ciel, i, t0) { for (const n of tony(i % TAKT)) klavir(c, ciel, t0 + n.t + Math.random() * .018, n.f, n.v * (.88 + Math.random() * .22)); }
   function dozvuk(c) {
     const len = Math.floor(c.sampleRate * 1.8), b = c.createBuffer(2, len, c.sampleRate);
     for (let k = 0; k < 2; k++) { const d = b.getChannelData(k); let p = 0; for (let i = 0; i < len; i++) { p = p * .6 + (Math.random() * 2 - 1) * .4; d[i] = p * Math.exp(-i / (c.sampleRate * .45)); } }
@@ -10502,7 +10526,7 @@ const DedCesta = {
     const v = [], d = typeof Dedinka !== 'undefined' ? Dedinka.ziskaj() : null; if (!d) return v;
     const s = Dedinka.cestaStav(), cak = Dedinka.cakajuTruhly(), t = cak.includes('zlato') ? 'zlato' : cak.includes('striebro') ? 'striebro' : cak.includes('drevo') ? 'drevo' : cak[0];
     const cakaOdmena = s ? s.dostupne : 0, X = DS_X;
-    const smer = `<g transform="translate(${X + 84} 628) scale(.9)" stroke-width="2.4"><ellipse cx="6" cy="1" rx="30" ry="5" fill="var(--ink)" opacity=".16" stroke="none"/>
+    const smer = `<g transform="translate(${X + 70} 628) scale(.9)" stroke-width="2.4"><ellipse cx="6" cy="1" rx="30" ry="5" fill="var(--ink)" opacity=".16" stroke="none"/>
       <path d="M-3 0v-50h7v50z" fill="var(--dv-drevo-d)"/><path d="M-30 -62h70l12 11-12 11h-70a3 3 0 0 1-3-3v-16a3 3 0 0 1 3-3z" fill="var(--dv-drevo)"/>
       <path d="M-26 -57h60" stroke="var(--dv-biela)" stroke-width="2" opacity=".45"/>
       <text x="2" y="-46" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="13" fill="var(--dv-biela)" stroke="none">Cesta</text>
@@ -10511,6 +10535,11 @@ const DedCesta = {
     v.push({ y: 628, html: DedScena.tuk('cesta', `Cesta mesiaca${s ? ': ' + s.n : ''}${cakaOdmena ? ', čaká odmena' : ''}. Otvoriť`, smer) });
     if (t) v.push({ y: 618, html: DedScena.tuk('truhla', `${this.truhlaMeno(t)} čaká. Otvoriť`, `<g transform="translate(${X - 84} 618) scale(.78)"><g class="tr-v-dedinke">${this.truhla(t)}</g></g>`, ' ds-truhla') });
     return v;
+  },
+  // zreteľný vstup na Cestu v hornej časti dedinky (vľavo pod nadpisom, oproti Stavať); počet = čakajúce odmeny
+  vstup() {
+    const c = typeof Dedinka !== 'undefined' && Dedinka.cestaStav(), n = ((c && c.dostupne) || 0) + Dedinka.cakajuTruhly().length;
+    return `<button class="btn maly ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
   },
   klik(d) {
     if (d === 'cesta') { Zvuk.play('whoosh'); Prechod.spusti('Cesta mesiaca', () => { this.mes = null; st.view = 'cesta'; Render.nova = true; render(); scrollTo(0, 0); }); return true; }
@@ -10713,9 +10742,10 @@ const DedCesta = {
 };
 
 document.addEventListener('click', e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-cesta-spat], [data-cesta-stop], [data-cesta-vezmi], [data-cesta-truhla], [data-cesta-mes]'); if (!t || Prechod.bezi) return;
+  const t = e.target && e.target.closest && e.target.closest('[data-cesta-spat], [data-cesta-stop], [data-cesta-vezmi], [data-cesta-truhla], [data-cesta-mes], [data-cesta-vstup]'); if (!t || Prechod.bezi) return;
   e.stopImmediatePropagation();
-  if (t.hasAttribute('data-cesta-spat')) DedCesta.spat();
+  if (t.hasAttribute('data-cesta-vstup')) DedCesta.klik('cesta');
+  else if (t.hasAttribute('data-cesta-spat')) DedCesta.spat();
   else if (t.hasAttribute('data-cesta-stop')) DedCesta.stop(+t.dataset.cestaStop);
   else if (t.hasAttribute('data-cesta-vezmi')) DedCesta.vezmiVsetko();
   else if (t.hasAttribute('data-cesta-truhla')) { const c = Dedinka.cakajuTruhly(); if (c.length) DedCesta.otvor(c.includes('zlato') ? 'zlato' : c.includes('striebro') ? 'striebro' : c.includes('drevo') ? 'drevo' : c[0]); }
