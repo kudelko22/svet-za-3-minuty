@@ -147,3 +147,10 @@
 @keyframes trOdlet { 0% { transform: none; } 30% { transform: translateY(-14px) scale(1.25); } 100% { transform: translate(40vw, 60vh) scale(.2); opacity: 0; } }
 @keyframes trZmizni { to { opacity: 0; transform: scale(.6); } }
 .tr-okno.hotovo .tr-karta.vybrana { opacity: 1; }
+
+/* vstup na Cestu v dedinke: vľavo pod nadpisom, súmerne so Stavať */
+.ds-cesta-vstup { position: absolute; top: 134px; left: max(16px, calc(50% - 50vw + 16px)); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding-inline: 10px 12px; background: var(--card); color: var(--text); }
+.ds-cv-ik { width: 20px; height: 20px; flex: none; }
+.ds-cv-n { display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 999px; background: var(--coral); color: #fff; border: 2px solid var(--ink); font: 800 .78rem/1 var(--fd); }
+.ct-hlava .ct-x { width: 40px; }
+.ct-hlava { padding-top: 22px; }

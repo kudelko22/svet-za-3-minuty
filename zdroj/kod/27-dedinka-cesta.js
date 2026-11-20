@@ -48,7 +48,7 @@ const DedCesta = {
     const v = [], d = typeof Dedinka !== 'undefined' ? Dedinka.ziskaj() : null; if (!d) return v;
     const s = Dedinka.cestaStav(), cak = Dedinka.cakajuTruhly(), t = cak.includes('zlato') ? 'zlato' : cak.includes('striebro') ? 'striebro' : cak.includes('drevo') ? 'drevo' : cak[0];
     const cakaOdmena = s ? s.dostupne : 0, X = DS_X;
-    const smer = `<g transform="translate(${X + 84} 628) scale(.9)" stroke-width="2.4"><ellipse cx="6" cy="1" rx="30" ry="5" fill="var(--ink)" opacity=".16" stroke="none"/>
+    const smer = `<g transform="translate(${X + 70} 628) scale(.9)" stroke-width="2.4"><ellipse cx="6" cy="1" rx="30" ry="5" fill="var(--ink)" opacity=".16" stroke="none"/>
       <path d="M-3 0v-50h7v50z" fill="var(--dv-drevo-d)"/><path d="M-30 -62h70l12 11-12 11h-70a3 3 0 0 1-3-3v-16a3 3 0 0 1 3-3z" fill="var(--dv-drevo)"/>
       <path d="M-26 -57h60" stroke="var(--dv-biela)" stroke-width="2" opacity=".45"/>
       <text x="2" y="-46" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="13" fill="var(--dv-biela)" stroke="none">Cesta</text>
@@ -57,6 +57,11 @@ const DedCesta = {
     v.push({ y: 628, html: DedScena.tuk('cesta', `Cesta mesiaca${s ? ': ' + s.n : ''}${cakaOdmena ? ', čaká odmena' : ''}. Otvoriť`, smer) });
     if (t) v.push({ y: 618, html: DedScena.tuk('truhla', `${this.truhlaMeno(t)} čaká. Otvoriť`, `<g transform="translate(${X - 84} 618) scale(.78)"><g class="tr-v-dedinke">${this.truhla(t)}</g></g>`, ' ds-truhla') });
     return v;
+  },
+  // zreteľný vstup na Cestu v hornej časti dedinky (vľavo pod nadpisom, oproti Stavať); počet = čakajúce odmeny
+  vstup() {
+    const c = typeof Dedinka !== 'undefined' && Dedinka.cestaStav(), n = ((c && c.dostupne) || 0) + Dedinka.cakajuTruhly().length;
+    return `<button class="btn maly ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
   },
   klik(d) {
     if (d === 'cesta') { Zvuk.play('whoosh'); Prechod.spusti('Cesta mesiaca', () => { this.mes = null; st.view = 'cesta'; Render.nova = true; render(); scrollTo(0, 0); }); return true; }
@@ -259,9 +264,10 @@ const DedCesta = {
 };
 
 document.addEventListener('click', e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-cesta-spat], [data-cesta-stop], [data-cesta-vezmi], [data-cesta-truhla], [data-cesta-mes]'); if (!t || Prechod.bezi) return;
+  const t = e.target && e.target.closest && e.target.closest('[data-cesta-spat], [data-cesta-stop], [data-cesta-vezmi], [data-cesta-truhla], [data-cesta-mes], [data-cesta-vstup]'); if (!t || Prechod.bezi) return;
   e.stopImmediatePropagation();
-  if (t.hasAttribute('data-cesta-spat')) DedCesta.spat();
+  if (t.hasAttribute('data-cesta-vstup')) DedCesta.klik('cesta');
+  else if (t.hasAttribute('data-cesta-spat')) DedCesta.spat();
   else if (t.hasAttribute('data-cesta-stop')) DedCesta.stop(+t.dataset.cestaStop);
   else if (t.hasAttribute('data-cesta-vezmi')) DedCesta.vezmiVsetko();
   else if (t.hasAttribute('data-cesta-truhla')) { const c = Dedinka.cakajuTruhly(); if (c.length) DedCesta.otvor(c.includes('zlato') ? 'zlato' : c.includes('striebro') ? 'striebro' : c.includes('drevo') ? 'drevo' : c[0]); }

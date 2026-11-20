@@ -3267,6 +3267,13 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 @keyframes trOdlet { 0% { transform: none; } 30% { transform: translateY(-14px) scale(1.25); } 100% { transform: translate(40vw, 60vh) scale(.2); opacity: 0; } }
 @keyframes trZmizni { to { opacity: 0; transform: scale(.6); } }
 .tr-okno.hotovo .tr-karta.vybrana { opacity: 1; }
+
+/* vstup na Cestu v dedinke: vľavo pod nadpisom, súmerne so Stavať */
+.ds-cesta-vstup { position: absolute; top: 134px; left: max(16px, calc(50% - 50vw + 16px)); z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding-inline: 10px 12px; background: var(--card); color: var(--text); }
+.ds-cv-ik { width: 20px; height: 20px; flex: none; }
+.ds-cv-n { display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 999px; background: var(--coral); color: #fff; border: 2px solid var(--ink); font: 800 .78rem/1 var(--fd); }
+.ct-hlava .ct-x { width: 40px; }
+.ct-hlava { padding-top: 22px; }
 /* 5.1: nové hry s úrovňami (09b-hry-51.js). Ruka ako ostatné hry 5.0: atramentový obrys, plný tieň dole, mierne nakrivo. */
 :root { --ces-a: #A8E3A6; --ces-b: #B9EAB2; }
 :root[data-rezim="mesacny"] { --ces-a: #2E5E5C; --ces-b: #356A66; }
@@ -9843,7 +9850,7 @@ const DedScena = {
     return `<section class="ds${DedStav.zap ? ' dst-zap' : ''}" aria-label="Moja dedinka">
       <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 ${DS_Y0} ${DS_W} ${DS_H - DS_Y0}" preserveAspectRatio="xMidYMax slice" role="group" aria-label="Dedinka"><g stroke-linejoin="round" stroke-linecap="round">
         ${this.krajina()}<g stroke="var(--ink)" stroke-width="2.2">${this.veci()}</g></g></svg></div>
-      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}`}
+      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}${DedCesta.vstup()}`}
     </section>`;
   },
   // po vykreslení: výška scény podľa obrazovky, posun do strán (na strom alebo späť na miesto), hviezdy po hre
@@ -10419,7 +10426,7 @@ const DedCesta = {
     const v = [], d = typeof Dedinka !== 'undefined' ? Dedinka.ziskaj() : null; if (!d) return v;
     const s = Dedinka.cestaStav(), cak = Dedinka.cakajuTruhly(), t = cak.includes('zlato') ? 'zlato' : cak.includes('striebro') ? 'striebro' : cak.includes('drevo') ? 'drevo' : cak[0];
     const cakaOdmena = s ? s.dostupne : 0, X = DS_X;
-    const smer = `<g transform="translate(${X + 84} 628) scale(.9)" stroke-width="2.4"><ellipse cx="6" cy="1" rx="30" ry="5" fill="var(--ink)" opacity=".16" stroke="none"/>
+    const smer = `<g transform="translate(${X + 70} 628) scale(.9)" stroke-width="2.4"><ellipse cx="6" cy="1" rx="30" ry="5" fill="var(--ink)" opacity=".16" stroke="none"/>
       <path d="M-3 0v-50h7v50z" fill="var(--dv-drevo-d)"/><path d="M-30 -62h70l12 11-12 11h-70a3 3 0 0 1-3-3v-16a3 3 0 0 1 3-3z" fill="var(--dv-drevo)"/>
       <path d="M-26 -57h60" stroke="var(--dv-biela)" stroke-width="2" opacity=".45"/>
       <text x="2" y="-46" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="13" fill="var(--dv-biela)" stroke="none">Cesta</text>
@@ -10428,6 +10435,11 @@ const DedCesta = {
     v.push({ y: 628, html: DedScena.tuk('cesta', `Cesta mesiaca${s ? ': ' + s.n : ''}${cakaOdmena ? ', čaká odmena' : ''}. Otvoriť`, smer) });
     if (t) v.push({ y: 618, html: DedScena.tuk('truhla', `${this.truhlaMeno(t)} čaká. Otvoriť`, `<g transform="translate(${X - 84} 618) scale(.78)"><g class="tr-v-dedinke">${this.truhla(t)}</g></g>`, ' ds-truhla') });
     return v;
+  },
+  // zreteľný vstup na Cestu v hornej časti dedinky (vľavo pod nadpisom, oproti Stavať); počet = čakajúce odmeny
+  vstup() {
+    const c = typeof Dedinka !== 'undefined' && Dedinka.cestaStav(), n = ((c && c.dostupne) || 0) + Dedinka.cakajuTruhly().length;
+    return `<button class="btn maly ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
   },
   klik(d) {
     if (d === 'cesta') { Zvuk.play('whoosh'); Prechod.spusti('Cesta mesiaca', () => { this.mes = null; st.view = 'cesta'; Render.nova = true; render(); scrollTo(0, 0); }); return true; }
@@ -10630,9 +10642,10 @@ const DedCesta = {
 };
 
 document.addEventListener('click', e => {
-  const t = e.target && e.target.closest && e.target.closest('[data-cesta-spat], [data-cesta-stop], [data-cesta-vezmi], [data-cesta-truhla], [data-cesta-mes]'); if (!t || Prechod.bezi) return;
+  const t = e.target && e.target.closest && e.target.closest('[data-cesta-spat], [data-cesta-stop], [data-cesta-vezmi], [data-cesta-truhla], [data-cesta-mes], [data-cesta-vstup]'); if (!t || Prechod.bezi) return;
   e.stopImmediatePropagation();
-  if (t.hasAttribute('data-cesta-spat')) DedCesta.spat();
+  if (t.hasAttribute('data-cesta-vstup')) DedCesta.klik('cesta');
+  else if (t.hasAttribute('data-cesta-spat')) DedCesta.spat();
   else if (t.hasAttribute('data-cesta-stop')) DedCesta.stop(+t.dataset.cestaStop);
   else if (t.hasAttribute('data-cesta-vezmi')) DedCesta.vezmiVsetko();
   else if (t.hasAttribute('data-cesta-truhla')) { const c = Dedinka.cakajuTruhly(); if (c.length) DedCesta.otvor(c.includes('zlato') ? 'zlato' : c.includes('striebro') ? 'striebro' : c.includes('drevo') ? 'drevo' : c[0]); }
