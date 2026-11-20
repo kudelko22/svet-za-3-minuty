@@ -61,7 +61,7 @@ const DedCesta = {
   // zreteľný vstup na Cestu v hornej časti dedinky (vľavo pod nadpisom, oproti Stavať); počet = čakajúce odmeny
   vstup() {
     const c = typeof Dedinka !== 'undefined' && Dedinka.cestaStav(), n = ((c && c.dostupne) || 0) + Dedinka.cakajuTruhly().length;
-    return `<button class="btn maly ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
+    return `<button class="btn ds-cesta-vstup" data-cesta-vstup aria-label="Cesta mesiaca${n ? ', čaká ' + n + (n === 1 ? ' odmena' : n < 5 ? ' odmeny' : ' odmien') : ''}"><svg class="ds-cv-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 22c4-5-3-8 1-12 3-3 7-1 6-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="4" r="2.2" fill="var(--sun)" stroke="currentColor" stroke-width="1.6"/></svg>Cesta mesiaca${n ? `<b class="ds-cv-n">${n}</b>` : ''}</button>`;
   },
   klik(d) {
     if (d === 'cesta') { Zvuk.play('whoosh'); Prechod.spusti('Cesta mesiaca', () => { this.mes = null; st.view = 'cesta'; Render.nova = true; render(); scrollTo(0, 0); }); return true; }
