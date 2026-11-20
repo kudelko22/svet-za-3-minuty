@@ -9816,28 +9816,34 @@ const DedScena = {
   // chodníčky: [d, šírka]. Od dverí hlavného domu, hier a domčekov dieťaťa sieť k hlavnej ceste; kamienky (Ploty a cesty) sa spoja so susednými kamienkami
   // a s cestou, osamotené dostanú krátky zaoblený kúsok chodníka pod sebou. Kreslí ich krajina() pod všetky veci.
   chodniky() {
-    const out = [], f1 = v => v.toFixed(1), DX = (typeof dedinkaKresby !== 'undefined' && dedinkaKresby.DVERE_X) || {};
+    const out = [], f1 = v => v.toFixed(1), K = typeof dedinkaKresby !== 'undefined' ? dedinkaKresby : null;
+    // stred dverí z kresby (pri zrkadlení na druhej strane); budova bez dverí: stred jej prednej strany
+    const dedDx = (k, zrk) => { const c = this._dvere || (this._dvere = {}); if (!(k in c)) c[k] = (K && K.dvereX ? K.dvereX(k) : null) || 0; return zrk ? -c[k] : c[k]; };
     // dvere: hlavný dom, budovy hier (aj spiace) a domčeky dieťaťa; bod pred dverami (x, y) a mierka
     const dvere = [];
-    { const [dx, y, s] = DS_DOM; dvere.push({ x: DS_X + dx + (DX.domov || 0) * s, y, s }); }
-    this.miestaHier().forEach(m => { if (m.stav !== 'stavba') dvere.push({ x: m.x + (DX[m.h.id] || 0) * m.s, y: m.y, s: m.s }); });
+    { const [dx, y, s] = DS_DOM; dvere.push({ x: DS_X + dx + dedDx('domov') * s, y, s }); }
+    this.miestaHier().forEach(m => { if (m.stav !== 'stavba') dvere.push({ x: m.x + dedDx(m.h.id) * m.s, y: m.y, s: m.s }); });
     const d = typeof Dedinka !== 'undefined' ? Dedinka.ziskaj() : null, rady = typeof Dedinka !== 'undefined' ? Dedinka.rady() : 2, kamene = [];
     Object.entries((d && d.miesta) || {}).forEach(([kl, [typ, zrk]]) => {
       const vec = DED_VEC[typ], m = vec && dedMiesto(kl, vec.sirka); if (!m || m.rad > rady) return;
-      if (vec.sk === 'domcek' && typ !== 'stan') dvere.push({ x: m.x + (DX[typ] || 0) * m.s * (zrk ? -1 : 1), y: m.y, s: m.s });
+      if (vec.sk === 'domcek' && typ !== 'stan') dvere.push({ x: m.x + dedDx(dedKresba(typ) || typ, !!zrk) * m.s, y: m.y, s: m.s });
       if (typ === 'kamen_cesta') kamene.push(m);
     });
     // sieť chodníčkov (ako pri Primovom strome): vždy sa pripojí dvere najbližšie k sieti, buď k hlavnej ceste, alebo k bodu pred už pripojenými dverami.
     // Chodníček ide od dverí najprv kúsok dopredu a potom oblúkom k cieľu, takže sa napája plynulo a nikde nekončí tvrdým koncom.
-    const pred = v => ({ x: v.x, y: Math.min(DS_H + 8, v.y + 12 * v.s) }), siet = [], zvysok = dvere.slice();
+    const pred = v => ({ x: v.x, y: Math.min(DS_H + 8, v.y + 15 * v.s) }), siet = [], zvysok = dvere.slice();
     const kCeste = v => { const p = pred(v); return { d: Math.abs(p.x - dsCx(p.y)) - dsCw(p.y) / 2, t: { x: dsCx(p.y), y: p.y } }; };
     while (zvysok.length) {
       let naj = null;
       zvysok.forEach((v, i) => { const p = pred(v), c = kCeste(v); let m = { i, d: c.d, t: c.t };
-        siet.forEach(u => { const q = pred(u), dd = Math.hypot(q.x - p.x, (q.y - p.y) * 1.8); if (dd < m.d) m = { i, d: dd, t: q }; });
+        siet.forEach(u => { const q = pred(u), dd = Math.hypot(q.x - p.x, (q.y - p.y) * 1.8); if (dd < m.d) m = { i, d: dd, t: q, s: u.s }; });
         if (!naj || m.d < naj.d) naj = m; });
       const v = zvysok.splice(naj.i, 1)[0], p = pred(v), t = naj.t, w = 7 * v.s + 3;
-      out.push([`M${f1(v.x)} ${f1(v.y - 1)}C${f1(v.x)} ${f1(p.y + 6 * v.s)} ${f1(t.x + (p.x - t.x) * .45)} ${f1(t.y)} ${f1(t.x)} ${f1(t.y)}`, w]);
+      // od dverí najprv rovno dopredu (pred budovu, aby chodník nevychádzal spod steny); spojka potom ide od zadného bodu oblúkom k prednému
+      // a k nemu prichádza zboku vo výške jeho chodníka, takže nikdy nevedie popri stene prednej budovy
+      out.push([`M${f1(v.x)} ${f1(v.y - 2)}L${f1(p.x)} ${f1(p.y)}`, w]);
+      const [Z, P, sP] = p.y >= t.y ? [t, p, v.s] : [p, t, naj.s || v.s], zn = Math.sign(Z.x - P.x) || 1;
+      out.push([`M${f1(Z.x)} ${f1(Z.y)}C${f1(Z.x)} ${f1(Z.y + (P.y - Z.y) * .7)} ${f1(P.x + zn * 60 * sP)} ${f1(P.y)} ${f1(P.x)} ${f1(P.y)}`, w]);
       siet.push(v);
     }
     // kamienky spojí strom najkratších spojení (bez trojuholníkov); skupina blízko cesty sa napojí na cestu z najbližšieho kamienka

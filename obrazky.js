@@ -2086,12 +2086,14 @@ function trava(kluc, vnutri) {
   return [[-x, m], [x - 2, m * .85]].concat(w > 70 ? [[x * .6, m * .6]] : []).map(([a, k]) => `<path transform="translate(${a.toFixed(1)} 0) scale(${k.toFixed(2)})" d="${TRS}" fill="var(--dv-lis)" stroke="var(--dv-lis-d)" stroke-width="1.2"/>`).join('');
 }
 // chodníček od dverí: dolný okraj je otvorený (nekončí tvrdou čiarou), v dedinke naň plynule nadväzuje chodník k ceste (26-dedinka-scena.js)
-const cestickaKDveram = kluc => { if (!(kluc in DVERE_X)) return ''; const x = DVERE_X[kluc]; return `<path d="M${x - 6} 0L${x - 12} 10Q${x} 12 ${x + 12} 10L${x + 6} 0z" fill="var(--dv-cesta)" stroke="none"/><path d="M${x - 6} 0L${x - 12} 10M${x + 6} 0L${x + 12} 10" fill="none" stroke-width="1.6"/>`; };
+// stred dverí priamo z kresby (oblúkové dvere kreslí dvere(): M x-r 0 V… a r r 0 0 1 2r 0 V0z), inak DVERE_X; null = budova bez dverí
+const dvereVKresbe = (kluc, t) => { const m = /M(-?[\d.]+) 0V-?[\d.]+a([\d.]+) \2 0 0 1 [\d.]+ 0V0z/.exec(t || ''); return m ? +m[1] + +m[2] : kluc in DVERE_X ? DVERE_X[kluc] : null; };
+const cestickaKDveram = (kluc, t) => { const x = dvereVKresbe(kluc, t); if (x == null) return ''; return `<path d="M${x - 6} 0L${x - 12} 10Q${x} 12 ${x + 12} 10L${x + 6} 0z" fill="var(--dv-cesta)" stroke="none"/><path d="M${x - 6} 0L${x - 12} 10M${x + 6} 0L${x + 12} 10" fill="none" stroke-width="1.6"/>`; };
 const G = (x, y, s, telo, flip, kl, zem2, pred = '') => `<g class="dv dv-${kl}" transform="translate(${x} ${y})"><g transform="scale(${s})" stroke-width="${(2.2 / s).toFixed(2)}">${zem2}</g><g transform="scale(${flip ? -s : s} ${s})" stroke-width="${(2.2 / s).toFixed(2)}">${telo}</g>${pred ? `<g transform="scale(${s})" stroke-width="${(2.2 / s).toFixed(2)}">${pred}</g>` : ''}</g>`;
 function dedinkaVec(kluc, o = {}) {
   const t = telo(kluc, o); if (!t) return '';
   const vnutri = kluc.startsWith('nab.') || najdi(kluc)?.skupina === 'nab';
-  return G(o.x || 0, o.y || 0, o.s || 1, cestickaKDveram(kluc) + t, o.zrkadlo, kluc.replace(/W+/g, '-'), kluc === 'prazdne' ? '' : zem(kluc, vnutri), trava(kluc, vnutri));
+  return G(o.x || 0, o.y || 0, o.s || 1, cestickaKDveram(kluc, t) + t, o.zrkadlo, kluc.replace(/W+/g, '-'), kluc === 'prazdne' ? '' : zem(kluc, vnutri), trava(kluc, vnutri));
 }
 const kluce = () => Object.values(ZOZNAM).flat();
 /* rámček každej veci (x, y, šírka, výška), zmeraný z kresby */
@@ -2213,6 +2215,6 @@ function svg(kluc, o = {}) {
   const r = RAMCEK[kluc] || [-40, -100, 80, 106];
   return `<svg class="dv-svg" viewBox="${r[0] - 6} ${r[1]} ${r[2] + 12} ${r[3] + 12}" role="img" aria-label="${o.popis || kluc}" preserveAspectRatio="xMidYMax meet"><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${dedinkaVec(kluc, { ...o, x: 0, y: 0, s: 1 })}</g></svg>`;
 }
-return { DVERE_X, SKUPINY, ZOZNAM, OBLAKY: ['oblak1', 'oblak2', 'oblak3'], RAMCEK, VOLBY, volba, kluce, telo, dedinkaVec, svg, miesto, G, fc };
+return { DVERE_X, dvereX: kluc => { try { return dvereVKresbe(kluc, telo(kluc)); } catch (e) { return kluc in DVERE_X ? DVERE_X[kluc] : null; } }, SKUPINY, ZOZNAM, OBLAKY: ['oblak1', 'oblak2', 'oblak3'], RAMCEK, VOLBY, volba, kluce, telo, dedinkaVec, svg, miesto, G, fc };
 })();
 const dedinkaVec = dedinkaKresby.dedinkaVec, DEDINKA_ZOZNAM = dedinkaKresby.ZOZNAM, DEDINKA_VOLBY = dedinkaKresby.VOLBY;
