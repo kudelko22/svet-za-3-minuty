@@ -3411,6 +3411,8 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .kos-mini { width: 60px; height: 60px; margin: 0 -12px; filter: drop-shadow(0 2px 0 rgba(42, 35, 86, .18)); }
 .kosy-4 .kos-mini { width: 48px; height: 48px; margin: 0 -10px; }
 .kos-mini.prazdny { opacity: .92; }
+/* 5.1: v Mesačnom režime majú obrázky v hrách svetlý lem, inak tmavý obrys zanikne na tmavej karte */
+:root[data-rezim="mesacny"] .hra .kv-it, :root[data-rezim="mesacny"] .kos-mini { filter: drop-shadow(0 0 .8px #FFF6E3) drop-shadow(0 0 .8px #FFF6E3); }
 /* 5.1: pokojnejšia appka. Pohyb ostáva len tam, kde má dôvod (hlavné tlačidlo, odpočet, hra). Dôvody v opravy-51.md. */
 /* 1. kartičky, ikony a medaily nepodskakujú, keď nič nerobia */
 .act-e, .tile-e, .misia-obr, .medaila.velka, .odznak.ma .medaila, .dlazdica:not(.zamknuta) .hr-obr svg,
