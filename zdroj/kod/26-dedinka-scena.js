@@ -207,7 +207,7 @@ const DedScena = {
     return `<section class="ds${DedStav.zap ? ' dst-zap' : ''}" aria-label="Moja dedinka">
       <div class="ds-scena" id="ds-scena"><svg class="ds-svg" viewBox="0 ${DS_Y0} ${DS_W} ${DS_H - DS_Y0}" preserveAspectRatio="xMidYMax slice" role="group" aria-label="Dedinka"><g stroke-linejoin="round" stroke-linecap="round">
         ${this.krajina()}<g stroke="var(--ink)" stroke-width="2.2">${this.veci()}</g></g></svg></div>
-      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}`}
+      ${DedStav.zap ? DedStav.hore('Stavanie') + DedStav.suflik() : `<div class="ds-hore"><h1 class="ds-n">Moja dedinka</h1><button class="btn maly dve ds-vsetky" data-go="hry">${ikn('hry')}Všetky hry</button></div>${DedStav.tlacidlo()}${DedCesta.vstup()}`}
     </section>`;
   },
   // po vykreslení: výška scény podľa obrazovky, posun do strán (na strom alebo späť na miesto), hviezdy po hre
