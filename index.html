@@ -3325,7 +3325,11 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 /* Do košíkov */
 .kos-vec { justify-self: center; display: grid; justify-items: center; gap: 2px; min-width: 150px; padding: 12px 22px 8px; rotate: -1.5deg; }
 .kos-vec .kv-it { width: 104px; height: 104px; }
-.kos-vec.vlozena { animation: kosLet .55s ease-in both; }
+.kos-vec.vlozena .kv-it { opacity: 0; transition: opacity .08s; }
+.kos.ciel .kos-mini:last-child { animation: kosDopad .4s .44s var(--spring) both; }
+.kos.ciel .kos-obr { animation: kosHup .55s .46s ease-out; transform-origin: 50% 100%; }
+@keyframes kosDopad { from { opacity: 0; translate: 0 -14px; scale: .6; } }
+@keyframes kosHup { 30% { scale: 1.06 .92; } 60% { scale: .97 1.04; } }
 @keyframes kosLet { 40% { translate: 0 -10px; scale: 1.05; } to { translate: 0 120px; scale: .3; opacity: 0; } }
 .kosy { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .kosy-3 { grid-template-columns: repeat(3, 1fr); }
@@ -3340,7 +3344,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .kos-mini svg { width: 100%; height: 100%; display: block; }
 .kos-mini.prazdny { opacity: .45; animation: none; }
 .kos-obr { width: 100%; max-width: 110px; height: auto; display: block; position: relative; z-index: 2; }
-.kos.ciel { animation: okPop .5s var(--spring); background: var(--teal-l); }
+.kos.ciel { animation: okPop .5s .44s var(--spring) both; background: var(--teal-l); }
 .kosy-3 .kos-n { font-size: .78rem; padding: 3px 5px; }
 
 /* Kto sa skryl? */
@@ -3379,12 +3383,16 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .kosy-4 .vagon, .vlacik:has(.vagon:nth-child(4)) .vagon { min-width: 46px; font-size: 1.1rem; padding: 0 4px; }
 .vl-loko .kol { transform-box: fill-box; transform-origin: center; }
 .vl-dym { opacity: 0; }
-.trat.ide .vlacik { animation: vlakOdide 1.3s .25s cubic-bezier(.55, 0, .9, .55) both; }
-.trat.pride .vlacik { animation: vlakPride .95s cubic-bezier(.2, .75, .3, 1) both; }
-.trat.ide .kol, .trat.pride .kol, .trat.ide .vg-k, .trat.pride .vg-k { animation: kolToc .38s linear infinite; }
+/* vozidlá idú každé samo s malým oneskorením (--d), spriahadlá sa pritom jemne natiahnu a pri príchode pružne dobehnú; kolesá sa točia len počas jazdy */
+.trat.ide .vlacik > * { animation: vlakOdide 1.3s calc(.25s + var(--d, 0s)) cubic-bezier(.55, 0, .9, .55) both; }
+.trat.pride .vlacik > * { animation: vlakPride 1s calc(var(--d, 0s) * .6) both; }
+.trat.ide .kol, .trat.ide .vg-k { animation: kolOdide 1.3s calc(.25s + var(--d, 0s)) cubic-bezier(.55, 0, .9, .55) both; }
+.trat.pride .kol, .trat.pride .vg-k { animation: kolPride 1s calc(var(--d, 0s) * .6) cubic-bezier(.2, .75, .3, 1) both; }
+@keyframes kolOdide { 15% { rotate: -20deg; } to { rotate: 1500deg; } }
+@keyframes kolPride { from { rotate: -1100deg; } to { rotate: 0deg; } }
 .trat.ide .vl-dym, .trat.pride .vl-dym { opacity: 1; animation: vlDym .8s ease-out infinite; }
 @keyframes vlakOdide { 15% { translate: -5px 0; } to { translate: 105vw 0; } }
-@keyframes vlakPride { from { translate: -105vw 0; } }
+@keyframes vlakPride { from { translate: -105vw 0; animation-timing-function: cubic-bezier(.2, .7, .35, 1); } 82% { translate: 5px 0; animation-timing-function: ease-in-out; } to { translate: 0 0; } }
 @keyframes kolToc { to { rotate: 360deg; } }
 @keyframes vlDym { from { translate: 0 4px; opacity: .9; } to { translate: -10px -6px; opacity: 0; } }
 .slab-moz .kv-btn { min-width: 78px; font: 800 1.35rem/1 var(--fd); }
@@ -3394,7 +3402,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
   border-radius: 14px; background: #2F6B4F; box-shadow: 0 5px 0 var(--ink); rotate: -.8deg; }
 .tab-slovo { font: 800 2.5rem/1.1 var(--fd); color: #F4F8EE; letter-spacing: .02em; text-align: center; }
 .tab-medz { display: inline-block; min-width: .6em; height: 1.05em; margin: 0 .03em; vertical-align: -.12em; border-bottom: 4px dashed #F4F8EE; }
-.tab-medz.plna { min-width: 0; margin: 0; border-bottom-color: transparent; color: var(--sun); animation: pop .35s var(--spring); }
+.tab-medz.plna { min-width: 0; margin: 0; border-bottom-color: transparent; color: var(--sun); animation: pop .35s .4s var(--spring) both; }
 .krieda { position: absolute; right: 18px; bottom: 6px; width: 34px; height: 9px; border-radius: 3px; background: #F4F8EE; border: 2px solid var(--ink); rotate: -8deg; }
 .yps-moz { grid-template-columns: repeat(2, 1fr); }
 .yps-moz .kv-btn { min-height: 76px; font: 800 2.2rem/1 var(--fd); }
@@ -3431,7 +3439,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .hod-moz.slovom .kv-btn { font-size: 1.02rem; line-height: 1.2; padding: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .h51-ur, .h51-hraj, .kos-vec.vlozena, .kos-mini, .trat .vlacik, .trat .kol, .trat .vg-k, .vl-dym, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
+  .h51-ur, .h51-hraj, .kos-mini, .kos.ciel, .kos.ciel .kos-obr, .tab-medz.plna, .trat .vlacik > *, .trat .vlacik, .trat .kol, .trat .vg-k, .vl-dym, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
   .ces-sova, .hod-hod, .hod-min { transition: none; }
 }
 
@@ -3450,6 +3458,11 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 /* 5.1: v Mesačnom režime majú obrázky v hrách svetlý lem, inak tmavý obrys zanikne na tmavej karte */
 :root[data-rezim="mesacny"] .hra .kv-it, :root[data-rezim="mesacny"] .kos-mini { filter: drop-shadow(0 0 .8px #FFF6E3) drop-shadow(0 0 .8px #FFF6E3); }
 :root[data-rezim="mesacny"] .vagon:not(.plny) { border-color: #B9B3E6; }
+/* 5.1 drobnosti: pri správnej odpovedi sa hodiny zatrasú ako budík, Múdra doma poskočí */
+.h51-hodiny:has(.hod-moz .ok) .hod-karta { animation: hodCink .6s ease-out; }
+@keyframes hodCink { 20% { rotate: -3deg; } 40% { rotate: 3deg; } 60% { rotate: -2deg; } 80% { rotate: 1deg; } }
+.ces-pole.doma .ces-sova > g { animation: h51Hup .45s ease-in-out 2; }
+@media (prefers-reduced-motion: reduce) { .h51-hodiny .hod-karta, .ces-pole.doma .ces-sova > g { animation: none !important; } }
 /* 5.1: pokojnejšia appka. Pohyb ostáva len tam, kde má dôvod (hlavné tlačidlo, odpočet, hra). Dôvody v opravy-51.md. */
 /* 1. kartičky, ikony a medaily nepodskakujú, keď nič nerobia */
 .act-e, .tile-e, .misia-obr, .medaila.velka, .odznak.ma .medaila, .dlazdica:not(.zamknuta) .hr-obr svg,
@@ -6178,6 +6191,20 @@ const Hra51 = {
     const u = vs[h.uroven - 1]; return u ? `<p class="vysl-t">Úroveň ${h.uroven}: ${esc(u.n)}</p>` : '';
   },
 };
+// 5.1: let veci k cieľu (kópia nad stránkou), pri chybe len kúsok k cieľu a späť; bez pohybu pri prefers-reduced-motion
+const h51Pohyb = () => !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+function h51Let(z, ciel, o = {}) {
+  if (!z || !ciel || !z.animate || !h51Pohyb()) return;
+  const a = z.getBoundingClientRect(), c = ciel.getBoundingClientRect();
+  const dx = c.left + c.width / 2 - (a.left + a.width / 2), dy = c.top + c.height * (o.vyska || .5) - (a.top + a.height / 2);
+  if (o.spat) { z.animate([{ translate: '0 0' }, { translate: `${(dx * .35).toFixed(1)}px ${(dy * .35).toFixed(1)}px`, offset: .4 }, { translate: '0 0' }], { duration: 460, easing: 'ease-in-out' }); return; }
+  const k = z.cloneNode(true);
+  Object.assign(k.style, { position: 'fixed', left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px', margin: '0', zIndex: '60', pointerEvents: 'none', animation: 'none' });
+  k.setAttribute('aria-hidden', 'true'); document.body.appendChild(k);
+  const m = o.mierka || .45;
+  k.animate([{ transform: 'translate(0, 0) scale(1)' }, { transform: `translate(${(dx * .5).toFixed(1)}px, ${(dy * .5 - (o.obluk ?? 56)).toFixed(1)}px) scale(${((1 + m) / 2).toFixed(2)}) rotate(-8deg)`, offset: .5 },
+    { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${m})` }], { duration: o.ms || 520, easing: 'cubic-bezier(.45, 0, .55, 1)', fill: 'forwards' }).onfinish = () => k.remove();
+}
 // obrázok z kresieb hry „Čo je iné?“ (obrazky.js)
 const h51Obr = k => `<span class="kv-it">${ineSvg(INE_OBR[k]())}</span>`;
 const h51Velke = s => s.toLocaleUpperCase('sk');
@@ -6251,7 +6278,9 @@ const HRY51 = {
     klik(h, d, b) {
       if (d.h51 !== 'kos') return;
       const k = h.kola[h.i];
-      if (+d.k !== k.k) { Hra51.zle(h, b); return; }
+      const vec = document.querySelector('.kos-vec .kv-it');
+      if (+d.k !== k.k) { h51Let(vec, b, { spat: true, vyska: .7 }); Hra51.zle(h, b); return; }
+      h51Let(vec, b, { vyska: .62 });
       Hra51.dobre(h, KOS_PRECO[k.v] && h.uroven > 2 ? 2200 : 950);
       if (b && b.getBoundingClientRect) { const [x, y] = stred(b); FX.burst(x, y, 10, ['star', 'dot'], 5); }
     },
@@ -6300,7 +6329,7 @@ const HRY51 = {
     html(h) {
       const k = h.kola[h.i];
       return `<div class="card kv-prompt obraz slab-obr">${h51Obr(k.o)}</div>
-        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
+        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]};--d:${((k.sl.length - j) * .07).toFixed(2)}s"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
         <div class="kv-moz pismena slab-moz">${k.moz.map((m, j) => `<button class="btn dve kv-btn${h.vzate.includes(j) ? ' vzata' : ''}" data-h51="sl" data-j="${j}"${h.vzate.includes(j) ? ' disabled' : ''}>${esc(m)}</button>`).join('')}</div>`;
     },
     klik(h, d, b) {
@@ -6331,7 +6360,9 @@ const HRY51 = {
     klik(h, d, b) {
       if (d.h51 !== 'yp') return;
       const k = h.kola[h.i];
-      if (d.p !== k.p) { h.zle.push(d.p); Hra51.zle(h, b); Hra51.obnov(); return; }
+      const medz = document.querySelector('.tab-medz');
+      if (d.p !== k.p) { h51Let(b, medz, { spat: true }); h.zle.push(d.p); Hra51.zle(h, b); Hra51.obnov(); return; }
+      h51Let(b, medz, { mierka: .7, obluk: 30, ms: 460 });
       Hra51.dobre(h, 1900);
     },
   },
@@ -6356,7 +6387,7 @@ const HRY51 = {
       const sova = `<g class="ces-sova" style="transform:translate(${h.poz[0] * T + T / 2}px,${h.poz[1] * T + T / 2}px)"><g transform="translate(-19 -18) scale(.19)" stroke-width="12">${mudraCasti(h.odp ? 'oslava' : 'radost').hlava}</g></g>`;
       const sip = (s, a) => `<button class="btn dve ces-sip" data-h51="sip" data-s="${s}" aria-label="${a}"${h.ide || h.odp ? ' disabled' : ''}>${ikn('sipka')}</button>`;
       return `<p class="hadaj-otazka">${h.odp ? 'Si doma!' : k.hv && !h.hv ? 'Vezmi hviezdičku a choď domov' : 'Doveď Múdru k domčeku'}${k.min ? ` <small class="ces-min">plán najviac ${k.opt} krokov</small>` : ''}</p>
-        <div class="frame ces-pole"><svg viewBox="0 0 ${W} ${W}" class="ces-svg" aria-label="Mapa ${N} na ${N}"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${bunky}${cil}${hviezda}${sova}</g></svg></div>
+        <div class="frame ces-pole${h.odp ? ' doma' : ''}"><svg viewBox="0 0 ${W} ${W}" class="ces-svg" aria-label="Mapa ${N} na ${N}"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${bunky}${cil}${hviezda}${sova}</g></svg></div>
         ${k.plan ? `<div class="ces-plan" aria-label="Plán cesty">${h.plan.length ? h.plan.map((s, i) => `<span class="ces-krok${h.ide && i === h.ideI ? ' teraz' : ''}" style="--r:${CES_UHOL[s]}deg">${ikn('sipka')}</span>`).join('') : '<small>Ťukaj šípky a poskladaj plán cesty</small>'}</div>` : ''}
         <div class="ces-ovl"><div class="ces-kriz">${sip('h', 'Hore')}${sip('l', 'Vľavo')}${sip('p', 'Vpravo')}${sip('d', 'Dole')}</div>
           ${k.plan ? `<div class="ces-akcie"><button class="btn dve ces-zmaz" data-h51="zmaz"${!h.plan.length || h.ide || h.odp ? ' disabled' : ''} aria-label="Zmazať posledný krok">${ikn('spat')}</button><button class="btn ces-chod" data-h51="chod"${!h.plan.length || h.ide || h.odp ? ' disabled' : ''}>${ikn('hraj')}Choď</button></div>` : `<small class="ces-kroky">${h.kroky} ${slovoTahy(h.kroky).replace('ťah', 'krok')}</small>`}</div>`;

@@ -90,6 +90,20 @@ const Hra51 = {
     const u = vs[h.uroven - 1]; return u ? `<p class="vysl-t">Úroveň ${h.uroven}: ${esc(u.n)}</p>` : '';
   },
 };
+// 5.1: let veci k cieľu (kópia nad stránkou), pri chybe len kúsok k cieľu a späť; bez pohybu pri prefers-reduced-motion
+const h51Pohyb = () => !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+function h51Let(z, ciel, o = {}) {
+  if (!z || !ciel || !z.animate || !h51Pohyb()) return;
+  const a = z.getBoundingClientRect(), c = ciel.getBoundingClientRect();
+  const dx = c.left + c.width / 2 - (a.left + a.width / 2), dy = c.top + c.height * (o.vyska || .5) - (a.top + a.height / 2);
+  if (o.spat) { z.animate([{ translate: '0 0' }, { translate: `${(dx * .35).toFixed(1)}px ${(dy * .35).toFixed(1)}px`, offset: .4 }, { translate: '0 0' }], { duration: 460, easing: 'ease-in-out' }); return; }
+  const k = z.cloneNode(true);
+  Object.assign(k.style, { position: 'fixed', left: a.left + 'px', top: a.top + 'px', width: a.width + 'px', height: a.height + 'px', margin: '0', zIndex: '60', pointerEvents: 'none', animation: 'none' });
+  k.setAttribute('aria-hidden', 'true'); document.body.appendChild(k);
+  const m = o.mierka || .45;
+  k.animate([{ transform: 'translate(0, 0) scale(1)' }, { transform: `translate(${(dx * .5).toFixed(1)}px, ${(dy * .5 - (o.obluk ?? 56)).toFixed(1)}px) scale(${((1 + m) / 2).toFixed(2)}) rotate(-8deg)`, offset: .5 },
+    { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${m})` }], { duration: o.ms || 520, easing: 'cubic-bezier(.45, 0, .55, 1)', fill: 'forwards' }).onfinish = () => k.remove();
+}
 // obrázok z kresieb hry „Čo je iné?“ (obrazky.js)
 const h51Obr = k => `<span class="kv-it">${ineSvg(INE_OBR[k]())}</span>`;
 const h51Velke = s => s.toLocaleUpperCase('sk');
@@ -163,7 +177,9 @@ const HRY51 = {
     klik(h, d, b) {
       if (d.h51 !== 'kos') return;
       const k = h.kola[h.i];
-      if (+d.k !== k.k) { Hra51.zle(h, b); return; }
+      const vec = document.querySelector('.kos-vec .kv-it');
+      if (+d.k !== k.k) { h51Let(vec, b, { spat: true, vyska: .7 }); Hra51.zle(h, b); return; }
+      h51Let(vec, b, { vyska: .62 });
       Hra51.dobre(h, KOS_PRECO[k.v] && h.uroven > 2 ? 2200 : 950);
       if (b && b.getBoundingClientRect) { const [x, y] = stred(b); FX.burst(x, y, 10, ['star', 'dot'], 5); }
     },
@@ -212,7 +228,7 @@ const HRY51 = {
     html(h) {
       const k = h.kola[h.i];
       return `<div class="card kv-prompt obraz slab-obr">${h51Obr(k.o)}</div>
-        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
+        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]};--d:${((k.sl.length - j) * .07).toFixed(2)}s"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
         <div class="kv-moz pismena slab-moz">${k.moz.map((m, j) => `<button class="btn dve kv-btn${h.vzate.includes(j) ? ' vzata' : ''}" data-h51="sl" data-j="${j}"${h.vzate.includes(j) ? ' disabled' : ''}>${esc(m)}</button>`).join('')}</div>`;
     },
     klik(h, d, b) {
@@ -243,7 +259,9 @@ const HRY51 = {
     klik(h, d, b) {
       if (d.h51 !== 'yp') return;
       const k = h.kola[h.i];
-      if (d.p !== k.p) { h.zle.push(d.p); Hra51.zle(h, b); Hra51.obnov(); return; }
+      const medz = document.querySelector('.tab-medz');
+      if (d.p !== k.p) { h51Let(b, medz, { spat: true }); h.zle.push(d.p); Hra51.zle(h, b); Hra51.obnov(); return; }
+      h51Let(b, medz, { mierka: .7, obluk: 30, ms: 460 });
       Hra51.dobre(h, 1900);
     },
   },
@@ -268,7 +286,7 @@ const HRY51 = {
       const sova = `<g class="ces-sova" style="transform:translate(${h.poz[0] * T + T / 2}px,${h.poz[1] * T + T / 2}px)"><g transform="translate(-19 -18) scale(.19)" stroke-width="12">${mudraCasti(h.odp ? 'oslava' : 'radost').hlava}</g></g>`;
       const sip = (s, a) => `<button class="btn dve ces-sip" data-h51="sip" data-s="${s}" aria-label="${a}"${h.ide || h.odp ? ' disabled' : ''}>${ikn('sipka')}</button>`;
       return `<p class="hadaj-otazka">${h.odp ? 'Si doma!' : k.hv && !h.hv ? 'Vezmi hviezdičku a choď domov' : 'Doveď Múdru k domčeku'}${k.min ? ` <small class="ces-min">plán najviac ${k.opt} krokov</small>` : ''}</p>
-        <div class="frame ces-pole"><svg viewBox="0 0 ${W} ${W}" class="ces-svg" aria-label="Mapa ${N} na ${N}"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${bunky}${cil}${hviezda}${sova}</g></svg></div>
+        <div class="frame ces-pole${h.odp ? ' doma' : ''}"><svg viewBox="0 0 ${W} ${W}" class="ces-svg" aria-label="Mapa ${N} na ${N}"><g stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">${bunky}${cil}${hviezda}${sova}</g></svg></div>
         ${k.plan ? `<div class="ces-plan" aria-label="Plán cesty">${h.plan.length ? h.plan.map((s, i) => `<span class="ces-krok${h.ide && i === h.ideI ? ' teraz' : ''}" style="--r:${CES_UHOL[s]}deg">${ikn('sipka')}</span>`).join('') : '<small>Ťukaj šípky a poskladaj plán cesty</small>'}</div>` : ''}
         <div class="ces-ovl"><div class="ces-kriz">${sip('h', 'Hore')}${sip('l', 'Vľavo')}${sip('p', 'Vpravo')}${sip('d', 'Dole')}</div>
           ${k.plan ? `<div class="ces-akcie"><button class="btn dve ces-zmaz" data-h51="zmaz"${!h.plan.length || h.ide || h.odp ? ' disabled' : ''} aria-label="Zmazať posledný krok">${ikn('spat')}</button><button class="btn ces-chod" data-h51="chod"${!h.plan.length || h.ide || h.odp ? ' disabled' : ''}>${ikn('hraj')}Choď</button></div>` : `<small class="ces-kroky">${h.kroky} ${slovoTahy(h.kroky).replace('ťah', 'krok')}</small>`}</div>`;
