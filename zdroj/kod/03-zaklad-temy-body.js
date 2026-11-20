@@ -1,6 +1,11 @@
 // pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
 const staryOk = () => !S.get('stary-hotovo', false); // starý lokálny pokrok dostane len prvý účet na zariadení, potom sa už nepoužije
-const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
+const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []),
+  odznaky: S.get('odznaky', []), kedy: S.get('kedy', {}), chyby: S.get('chyby', []), vybrate: S.get('vybrate', []) }; // 5.1: aj odznaky a ich vyzdvihnutie
+// 5.1: z čoho dostane dieťa v účte pokrok: aktívne dieťa, už uložené dieťa, alebo (len prvé dieťa, raz na zariadení) starý lokálny pokrok
+const zakladPokroku = (u, id, stare) => id === st.dietaId ? st : stare || (u.prve && staryOk() && (STARY.body || STARY.done.length || STARY.odznaky.length) ? STARY : { body: 0, done: [], fav: [], dni: [] });
+const pokrokDieta = z => ({ body: Math.max(0, Math.round(z.body || 0)), done: [...(z.done || [])], fav: [...(z.fav || [])], dni: (z.dni || []).slice(-400), odznaky: [...(z.odznaky || [])],
+  kedy: { ...(z.kedy || {}) }, chyby: [...(z.chyby || [])], vybrate: [...(z.vybrate || [])] });
 const st = {
   meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [], dietaId: null, avatar: null,
   faza: 'nacitava', upravuje: null, view: 'domov', kat: '', skupina: '', q: '', flow: null, priatel: null, socTab: 'spravy', socTemy: false,

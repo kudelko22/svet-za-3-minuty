@@ -769,6 +769,37 @@ Auto.ovladaj("stop"); if (st.auto) chyby.push("auto stop");
   if (!SPR_RODIC.some(k => k.id === "rodicucet" && k.ak() === true)) chyby.push("rodic: sprievodca nema ponuku uctu rodica");
   if (typeof RodicVyzva.ukaz !== "function") chyby.push("rodic: chyba okno vyzvy"); { const f = st.flow; st.flow = {}; if (RodicVyzva.volno()) chyby.push("rodic: vyzva by sa ukazala pocas hry"); st.flow = f; }
   C.deti = staraD; C.rodic = staraR; st.upravuje = staraU; st.view = staraV; }
+/* UCET RODICA 5.1: povinny, PIN pri prepnuti dietata, prenos stareho pokroku */
+{ const ch = x => chyby.push("rodic51: " + x), zal = { C: window.Cloud, id: st.dietaId, faza: st.faza, toast: window.toast };
+  // starý lokálny pokrok (z čias bez účtu) prejde do prvého dieťaťa celý, aj odznaky a ich vyzdvihnutie; len raz
+  const S0 = { ...STARY }; Object.assign(STARY, { body: 120, done: ["t1", "t2"], fav: ["t1"], dni: ["2026-01-02", "2026-01-03"], odznaky: ["prva"], kedy: { t1: "2026-01-02" }, chyby: ["t2"], vybrate: ["prva"] });
+  S.set("stary-hotovo", false); st.dietaId = null;
+  { const p = pokrokDieta(zakladPokroku({ prve: true }, "nove1", undefined));
+    if (p.body !== 120 || p.done.join() !== "t1,t2" || p.fav.join() !== "t1" || p.dni.length !== 2 || p.odznaky.join() !== "prva" || p.kedy.t1 !== "2026-01-02" || p.chyby.join() !== "t2" || p.vybrate.join() !== "prva") ch("starý pokrok sa preniesol neúplne " + JSON.stringify(p));
+    p.done.push("x"); if (STARY.done.length !== 2) ch("prenos nekopíruje polia"); }
+  if (pokrokDieta(zakladPokroku({ prve: false }, "nove2", undefined)).body !== 0) ch("starý pokrok dostalo aj ďalšie dieťa");
+  S.set("stary-hotovo", true); if (pokrokDieta(zakladPokroku({ prve: true }, "nove3", undefined)).body !== 0) ch("starý pokrok sa preniesol druhýkrát");
+  Object.assign(STARY, S0);
+  { const stare = { body: 7, done: ["a"], odznaky: ["o"] }; if (pokrokDieta(zakladPokroku({}, "d9", stare)).odznaky.join() !== "o") ch("úprava dieťaťa stratila odznaky"); }
+  // výber dieťaťa
+  const vybrate = []; let toasty = 0; window.toast = () => toasty++;
+  window.Cloud = { deti: [{ id: "d1", meno: "A", vek: "mladsi", avatar: nahodnyAvatar(), body: 0 }, { id: "d2", meno: "B", vek: "starsi", avatar: nahodnyAvatar(), body: 0 }], pouzivatel: { email: "a@b.sk" }, rodic: { nacitane: false, profil: null }, vyber(id) { vybrate.push(id); } };
+  Rodic.zamkni(); Rodic.volny = false; Rodic.cakaDieta = null; st.dietaId = "d1";
+  if (Rodic.kontrolaVyberu("d2")) ch("bez internetu (profil nenačítaný) sa výber blokuje");
+  window.Cloud.rodic.nacitane = true;
+  if (!Rodic.kontrolaVyberu("d2") || st.faza !== "rodicTvorba" || Rodic.cakaDieta !== "d2") ch("bez účtu rodiča výber nejde na tvorbu účtu");
+  window.Cloud.rodic.profil = { pin: 1 }; Rodic.chod("vyber");
+  if (Rodic.kontrolaVyberu("d1")) ch("to isté dieťa pýta PIN");
+  if (!Rodic.kontrolaVyberu("d2") || st.faza !== "rodicPin" || typeof Rodic.po !== "function") ch("prepnutie na súrodenca nepýta PIN");
+  Rodic.po(); if (vybrate.join() !== "d2") ch("po PIN-e sa dieťa nevybralo");
+  Rodic.chod("vyber"); st.dietaId = null; if (Rodic.kontrolaVyberu("d2")) ch("prvý výber po prihlásení pýta PIN");
+  st.dietaId = "d1"; Rodic.volny = true; if (Rodic.kontrolaVyberu("d2") || Rodic.volny) ch("výber z odomknutého panelu pýta PIN alebo ostal voľný");
+  if (!Rodic.kontrolaVyberu("d2")) ch("voľné vybratie platí viackrát"); Rodic.chod("vyber");
+  Rodic.odomkni(); if (Rodic.kontrolaVyberu("d2")) ch("odomknutý rodič musí znova zadať PIN"); Rodic.zamkni();
+  window.Cloud.deti = window.Cloud.deti.slice(0, 1); if (Rodic.kontrolaVyberu("d1")) ch("jedno dieťa pýta PIN");
+  // okno výzvy: bez Neskôr
+  if (!RodicVyzva.ukaz.toString().includes("Zavolaj rodiča") || /neskor|Neskôr/.test(RodicVyzva.ukaz.toString())) ch("okno účtu rodiča sa dá odložiť");
+  window.toast = zal.toast; window.Cloud = zal.C; Rodic.cakaDieta = null; Rodic.volny = false; Rodic.zamkni(); Object.assign(st, { dietaId: zal.id, faza: zal.faza }); }
 /* BEZPECNOST 3.8 */
 { const zly = postavicka({ vlasy: "kratke", farbaVlasov: '"/><img src=x onerror=alert(1)>', koza: 'red', tricko: '#12', pozadie: '"><b>' }, true);
   if (/onerror|<img|<b>/.test(zly)) chyby.push("xss: postavicka pusti nebezpecnu farbu");

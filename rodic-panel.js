@@ -121,7 +121,7 @@ const RodicPanel = (() => {
     else if (d.rpPanel !== undefined) { zavri(); chod('rodic'); }
     else if (d.rpNastavenia !== undefined) chod('rodicNastavenia');
     else if (d.rpZamknut !== undefined) { zavri(); Rodic.zamkni(); chod('rodicPin'); }
-    else if (d.rpVyber !== undefined) { zavri(); Rodic.zamkni(); chod('vyber'); }
+    else if (d.rpVyber !== undefined) { zavri(); Rodic.zamkni(); chod('vyber'); Rodic.volny = true; }
     else if (d.rpHnitie) {
       const id = d.rpHnitie, ted = hnitieZapnute(id);
       C.rodicUloz({ nastavenia: { hnitie: { [id]: !ted } } }).then(() => { S.set('hnitie-' + id, !ted); Zvuk.play('tap'); toast(ted ? 'Vädnutie stromu je vypnuté.' : 'Vädnutie stromu je zapnuté.'); if (st.faza.startsWith('rodic')) renderTicho(); }, e => { Zvuk.play('bad'); toast(chyba(e)); });

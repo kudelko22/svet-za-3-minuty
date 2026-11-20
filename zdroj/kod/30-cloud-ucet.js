@@ -227,13 +227,12 @@ const Cloud = {
   ulozDieta(u) {
     const id = u.id || noveId(), stare = this.deti.find(x => x.id === id);
     if (stare && maRodica() && !Rodic.jeOdomknute()) u.vek = stare.vek; // vek mení len odomknutý rodič
-    const prazdne = { body: 0, done: [], fav: [], dni: [] };
-    const zaklad = id === st.dietaId ? st : stare || (u.prve && staryOk() && (STARY.body || STARY.done.length) ? STARY : prazdne);
+    const zaklad = zakladPokroku(u, id, stare);
     if (u.prve) S.set('stary-hotovo', true);
     S.set('pokrok-hotovo-' + this.pouzivatel.uid, true);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
-      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-400), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
+      ...pokrokDieta(zaklad),
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });

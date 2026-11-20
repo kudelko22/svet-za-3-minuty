@@ -126,7 +126,7 @@ const RodicVyzva = {
   volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !Novinky.caka && !document.querySelector('.novinky, .oslava'); },
   skontroluj() {
     const C = window.Cloud;
-    if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil || S.get('rodic-neskor-' + (C.pouzivatel ? C.pouzivatel.uid : ''), 0) > Date.now()) return;
+    if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil) return; // 5.1: účet rodiča je povinný, okno sa nedá odložiť
     this.caka = true;
     const skus = n => setTimeout(() => {
       const C2 = window.Cloud;
@@ -140,9 +140,8 @@ const RodicVyzva = {
     const el = document.createElement('div');
     el.className = 'novinky rodic-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Vytvor si účet rodiča');
     el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('hi')}<div><small>Pre rodiča</small><h2>Vytvor si účet rodiča</h2></div></div>
-      <p class="muted" style="margin:6px 4px 14px">Za vlastným PIN-om (4 číslice) nájdete prehľad všetkých detí a nastavenia. Deti ostanú pri učení a nič sa im nezmení.</p>
-      <button class="btn wide cta" data-rv="ano">Vytvoriť účet rodiča</button>
-      <button class="btn ghost wide" data-rv="neskor" style="margin-top:8px">Neskôr</button></div>`;
+      <p class="muted" style="margin:6px 4px 14px"><b>Zavolaj rodiča.</b> Bez účtu rodiča sa appka ďalej nedá používať. Za vlastným PIN-om (4 číslice) nájdete prehľad všetkých detí a nastavenia a PIN chráni aj prepínanie medzi deťmi. Deti ostanú pri učení a nič sa im nezmení.</p>
+      <button class="btn wide cta" data-rv="ano">Vytvoriť účet rodiča</button></div>`;
     document.body.appendChild(el);
     Zvuk.play('pop');
     const zavri = () => { el.classList.add('pryc'); setTimeout(() => el.remove(), 300); };
@@ -150,7 +149,7 @@ const RodicVyzva = {
       e.stopPropagation();
       const b = e.target.closest('[data-rv]'); if (!b) return;
       Zvuk.play('tap'); zavri();
-      if (b.dataset.rv === 'ano') Rodic.chod('rodicTvorba'); else S.set('rodic-neskor-' + ((window.Cloud.pouzivatel || {}).uid || ''), Date.now() + 3 * 864e5);
+      if (b.dataset.rv === 'ano') { Rodic.cakaDieta = st.dietaId; Rodic.chod('rodicTvorba'); }
     });
   },
 };

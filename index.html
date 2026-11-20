@@ -3403,6 +3403,14 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .hra .kv { display: grid; justify-items: stretch; gap: 14px; font: inherit; color: inherit; }
 .hra .kv svg { width: 100%; }
 .hra .kv .kv-it svg { height: 100%; }
+
+/* 5.1 doladenie Do košíkov: vzor v košíku je väčší a jasný (bol malý a vyblednutý), košík má farbu svojej skupiny */
+.kos { background: color-mix(in srgb, var(--kc) 14%, var(--card)); }
+.kos-n { align-self: center; }
+.kos-vnutri { min-height: 60px; margin: 6px 0 -20px; }
+.kos-mini { width: 60px; height: 60px; margin: 0 -12px; filter: drop-shadow(0 2px 0 rgba(42, 35, 86, .18)); }
+.kosy-4 .kos-mini { width: 48px; height: 48px; margin: 0 -10px; }
+.kos-mini.prazdny { opacity: .92; }
 /* 5.1: pokojnejšia appka. Pohyb ostáva len tam, kde má dôvod (hlavné tlačidlo, odpočet, hra). Dôvody v opravy-51.md. */
 /* 1. kartičky, ikony a medaily nepodskakujú, keď nič nerobia */
 .act-e, .tile-e, .misia-obr, .medaila.velka, .odznak.ma .medaila, .dlazdica:not(.zamknuta) .hr-obr svg,
@@ -4019,7 +4027,12 @@ function toast(text) { const t = document.getElementById('toast'); t.textContent
 
 // pokrok zo starších verzií (pred prihlasovaním) dostane prvé dieťa
 const staryOk = () => !S.get('stary-hotovo', false); // starý lokálny pokrok dostane len prvý účet na zariadení, potom sa už nepoužije
-const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []) };
+const STARY = { meno: S.get('meno', ''), vek: S.get('vek', 'mladsi'), body: S.get('body', 0), done: S.get('done', []), fav: S.get('fav', []), dni: S.get('dni', []),
+  odznaky: S.get('odznaky', []), kedy: S.get('kedy', {}), chyby: S.get('chyby', []), vybrate: S.get('vybrate', []) }; // 5.1: aj odznaky a ich vyzdvihnutie
+// 5.1: z čoho dostane dieťa v účte pokrok: aktívne dieťa, už uložené dieťa, alebo (len prvé dieťa, raz na zariadení) starý lokálny pokrok
+const zakladPokroku = (u, id, stare) => id === st.dietaId ? st : stare || (u.prve && staryOk() && (STARY.body || STARY.done.length || STARY.odznaky.length) ? STARY : { body: 0, done: [], fav: [], dni: [] });
+const pokrokDieta = z => ({ body: Math.max(0, Math.round(z.body || 0)), done: [...(z.done || [])], fav: [...(z.fav || [])], dni: (z.dni || []).slice(-400), odznaky: [...(z.odznaky || [])],
+  kedy: { ...(z.kedy || {}) }, chyby: [...(z.chyby || [])], vybrate: [...(z.vybrate || [])] });
 const st = {
   meno: '', vek: 'mladsi', fav: [], done: [], dni: [], body: 0, odznaky: [], kedy: {}, chyby: [], vybrate: [], dietaId: null, avatar: null,
   faza: 'nacitava', upravuje: null, view: 'domov', kat: '', skupina: '', q: '', flow: null, priatel: null, socTab: 'spravy', socTemy: false,
@@ -4099,7 +4112,19 @@ function noveUpravovanie(prve) {
 }
 // Účet rodiča (3.5): odomknutie PIN-om je len v pamäti, samo sa zamkne po 5 minútach nečinnosti, pri zmene dieťaťa a pri odhlásení
 const Rodic = {
-  odomknute: false, do: 0, MINUT: 5, po: null,
+  odomknute: false, do: 0, MINUT: 5, po: null, volny: false, cakaDieta: null,
+  // 5.1: výber dieťaťa. Účet rodiča je povinný: bez neho najprv tvorba (potom sa dieťa otvorí samo).
+  // Prepnutie na súrodenca chráni PIN. Bez PIN-u: prvý výber po prihlásení (rodič práve zadal heslo, st.dietaId ešte nie je),
+  // to isté dieťa znova, rodina s jedným dieťaťom (nie je na koho prepnúť), jedno vybratie hneď z odomknutého panelu rodiča.
+  // Bez internetu (profil rodiča sa nenačítal) sa nič neblokuje. Vráti text pre toast, keď sa výber zastavil, inak ''.
+  kontrolaVyberu(id) {
+    const C = window.Cloud, r = C && C.rodic;
+    if (!r || !r.nacitane) return '';
+    if (!r.profil) { this.cakaDieta = id; this.chod('rodicTvorba'); return 'Najprv rodič vytvorí svoj účet s PIN-om.'; }
+    const volny = this.volny; this.volny = false;
+    if (volny || this.jeOdomknute() || !st.dietaId || id === st.dietaId || (C.deti || []).length < 2) return '';
+    this.poOdomknuti(() => C.vyber(id)); return 'Iné dieťa vyberá rodič. Zadajte PIN.';
+  },
   // akcia len pre rodiča (odhlásenie): hneď, ak je panel odomknutý, inak najprv PIN a potom akcia
   poOdomknuti(fn) { if (this.jeOdomknute()) { fn(); return; } this.po = fn; this.chod('rodicPin'); },
   odomkni() { this.odomknute = true; this.do = Date.now() + this.MINUT * 60000; },
@@ -5858,7 +5883,7 @@ const KV_HRY = {
       const a = r % 6, b = (a + 1 + nahodne(5)) % 6, ci = nahodne(6), c = KV_FARBY[ci], d = KV_FARBY[(ci + 1 + nahodne(5)) % 6];
       const inyIdx = nahodne(4);
       const moz = Array.from({ length: 4 }, (_, i) => ({ z: i, html: i === inyIdx ? (r % 2 === 0 ? tvar(b, c) : tvar(a, d)) : tvar(a, c) }));
-      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [inyIdx], tr: 'skryty' };
+      return { prompt: '', otazka: 'Tri sú rovnaké. Ktorý je iný?', moz, sprav: [inyIdx], tr: 'skryty' };
     });
   },
   tien() {
@@ -5877,7 +5902,7 @@ const KV_HRY = {
     S.set('ine-bolo-' + kto, [...bolo, ...vyber].slice(-(vsetky.length - KV_KOL)));
     return vyber.map(i => {
       const x = INE_SADY[i], moz = mix(4).map(p => { const n = [...x.t, x.j][p]; return { z: n, nap: n, html: `<span class="kv-it">${ineSvg(INE_OBR[n]())}</span><small class="kv-nap">${esc(n)}</small>` }; });
-      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
+      return { prompt: '', otazka: 'Tri patria k sebe. Ktorý sem nepatrí?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
     });
   },
   poradie(mal) {
@@ -8016,7 +8041,7 @@ const RodicVyzva = {
   volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !Novinky.caka && !document.querySelector('.novinky, .oslava'); },
   skontroluj() {
     const C = window.Cloud;
-    if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil || S.get('rodic-neskor-' + (C.pouzivatel ? C.pouzivatel.uid : ''), 0) > Date.now()) return;
+    if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil) return; // 5.1: účet rodiča je povinný, okno sa nedá odložiť
     this.caka = true;
     const skus = n => setTimeout(() => {
       const C2 = window.Cloud;
@@ -8030,9 +8055,8 @@ const RodicVyzva = {
     const el = document.createElement('div');
     el.className = 'novinky rodic-okno'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Vytvor si účet rodiča');
     el.innerHTML = `<div class="nov-karta"><div class="nov-hlava">${owl('hi')}<div><small>Pre rodiča</small><h2>Vytvor si účet rodiča</h2></div></div>
-      <p class="muted" style="margin:6px 4px 14px">Za vlastným PIN-om (4 číslice) nájdete prehľad všetkých detí a nastavenia. Deti ostanú pri učení a nič sa im nezmení.</p>
-      <button class="btn wide cta" data-rv="ano">Vytvoriť účet rodiča</button>
-      <button class="btn ghost wide" data-rv="neskor" style="margin-top:8px">Neskôr</button></div>`;
+      <p class="muted" style="margin:6px 4px 14px"><b>Zavolaj rodiča.</b> Bez účtu rodiča sa appka ďalej nedá používať. Za vlastným PIN-om (4 číslice) nájdete prehľad všetkých detí a nastavenia a PIN chráni aj prepínanie medzi deťmi. Deti ostanú pri učení a nič sa im nezmení.</p>
+      <button class="btn wide cta" data-rv="ano">Vytvoriť účet rodiča</button></div>`;
     document.body.appendChild(el);
     Zvuk.play('pop');
     const zavri = () => { el.classList.add('pryc'); setTimeout(() => el.remove(), 300); };
@@ -8040,7 +8064,7 @@ const RodicVyzva = {
       e.stopPropagation();
       const b = e.target.closest('[data-rv]'); if (!b) return;
       Zvuk.play('tap'); zavri();
-      if (b.dataset.rv === 'ano') Rodic.chod('rodicTvorba'); else S.set('rodic-neskor-' + ((window.Cloud.pouzivatel || {}).uid || ''), Date.now() + 3 * 864e5);
+      if (b.dataset.rv === 'ano') { Rodic.cakaDieta = st.dietaId; Rodic.chod('rodicTvorba'); }
     });
   },
 };
@@ -8969,7 +8993,7 @@ document.addEventListener('click', e => {
     Hlas.stop(); Hra.zrus(); Zvuk.play('whoosh'); if (window.Cloud) window.Cloud.ulozHned();
     Object.assign(st, { flow: null, faza: 'vyber' }); render(); scrollTo(0, 0); return;
   }
-  if (d.dieta) { Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
+  if (d.dieta) { const k = Rodic.kontrolaVyberu(d.dieta); if (k) { Zvuk.play('whoosh'); toast(k); return; } Zvuk.play('start'); window.Cloud.vyber(d.dieta); return; }
   if (d.noveDieta !== undefined && maRodica() && !Rodic.jeOdomknute()) { Zvuk.play('whoosh'); toast('Nové dieťa pridáva rodič. Zadajte PIN.'); Rodic.chod('rodicPin'); return; }
   if (d.noveDieta !== undefined) { Zvuk.play('pop'); Object.assign(st, { upravuje: noveUpravovanie(false), faza: 'tvorba' }); render(); scrollTo(0, 0); return; }
   if (d.upravit !== undefined) {
@@ -10845,13 +10869,12 @@ const Cloud = {
   ulozDieta(u) {
     const id = u.id || noveId(), stare = this.deti.find(x => x.id === id);
     if (stare && maRodica() && !Rodic.jeOdomknute()) u.vek = stare.vek; // vek mení len odomknutý rodič
-    const prazdne = { body: 0, done: [], fav: [], dni: [] };
-    const zaklad = id === st.dietaId ? st : stare || (u.prve && staryOk() && (STARY.body || STARY.done.length) ? STARY : prazdne);
+    const zaklad = zakladPokroku(u, id, stare);
     if (u.prve) S.set('stary-hotovo', true);
     S.set('pokrok-hotovo-' + this.pouzivatel.uid, true);
     const d = {
       meno: u.meno.slice(0, 20), vek: u.vek, avatar: { ...u.avatar },
-      body: Math.max(0, Math.round(zaklad.body || 0)), done: [...(zaklad.done || [])], fav: [...(zaklad.fav || [])], dni: (zaklad.dni || []).slice(-400), odznaky: [...(zaklad.odznaky || [])], kedy: { ...(zaklad.kedy || {}) }, chyby: [...(zaklad.chyby || [])], vybrate: [...(zaklad.vybrate || [])],
+      ...pokrokDieta(zaklad),
       poradie: stare ? stare.poradie : Date.now(),
     };
     if (stare) Object.assign(stare, d); else this.deti.push({ id, ...d });

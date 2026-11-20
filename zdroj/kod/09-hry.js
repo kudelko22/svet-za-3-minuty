@@ -666,7 +666,7 @@ const KV_HRY = {
       const a = r % 6, b = (a + 1 + nahodne(5)) % 6, ci = nahodne(6), c = KV_FARBY[ci], d = KV_FARBY[(ci + 1 + nahodne(5)) % 6];
       const inyIdx = nahodne(4);
       const moz = Array.from({ length: 4 }, (_, i) => ({ z: i, html: i === inyIdx ? (r % 2 === 0 ? tvar(b, c) : tvar(a, d)) : tvar(a, c) }));
-      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [inyIdx], tr: 'skryty' };
+      return { prompt: '', otazka: 'Tri sú rovnaké. Ktorý je iný?', moz, sprav: [inyIdx], tr: 'skryty' };
     });
   },
   tien() {
@@ -685,7 +685,7 @@ const KV_HRY = {
     S.set('ine-bolo-' + kto, [...bolo, ...vyber].slice(-(vsetky.length - KV_KOL)));
     return vyber.map(i => {
       const x = INE_SADY[i], moz = mix(4).map(p => { const n = [...x.t, x.j][p]; return { z: n, nap: n, html: `<span class="kv-it">${ineSvg(INE_OBR[n]())}</span><small class="kv-nap">${esc(n)}</small>` }; });
-      return { prompt: '', otazka: 'Ktorý je iný?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
+      return { prompt: '', otazka: 'Tri patria k sebe. Ktorý sem nepatrí?', moz, sprav: [x.j], tr: 'skryty', tm: 'ine', x: x.x };
     });
   },
   poradie(mal) {
