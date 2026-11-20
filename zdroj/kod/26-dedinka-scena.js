@@ -1,24 +1,24 @@
 /* 5.1 Moja dedinka: scéna (obloha, kopce, rady miest, strom múdrosti na námestí, hlavný dom, miesta hier), presuny s obláčikmi
    a izba v hlavnom dome. Kresby vecí: obrazky.js (dedinkaVec), dáta: 25-dedinka-data.js (Dedinka), štýly: 61-dedinka-scena.css.
    Súradnice scény: šírka DS_W, výška DS_H, stred DS_X. Každá vec stojí pätou na (x, y) a má mierku s (vzadu menšia). */
-const DS_W = 1400, DS_H = 640, DS_X = 700, DS_Y0 = 100; // DS_Y0: horný kúsok oblohy sa neukazuje
+const DS_W = 1400, DS_H = 640, DS_X = 700, DS_Y0 = 84; // DS_Y0: horný kúsok oblohy sa neukazuje (slnko a mesiac sú celé pod ním)
 // 5.1 (20. 11.): scéna je širšia, aby budovy mali vzduch; DS_ROZ = rozostup do strán, dsSx prepočíta pôvodné x (scéna 1100) na nové
 const DS_ROZ = 1.27, dsSx = x => DS_X + (x - 550) * DS_ROZ;
 // rady miest (1 vzadu, 5 vpredu): päta y, mierka, polovica stredného pásu (cesta, námestie, hry), krok medzi stĺpcami
-const DS_RADY = { 1: [262, .6, 165, 56], 2: [330, .72, 190, 58], 3: [410, .85, 260, 71], 4: [492, .97, 295, 79], 5: [585, 1.1, 320, 86] };
+const DS_RADY = { 1: [262, .6, 196, 50], 2: [330, .72, 236, 54], 3: [410, .85, 340, 62], 4: [492, .97, 360, 72], 5: [585, 1.1, 380, 78] }; // stredný pás (g) patrí hrám
 // miesto r{rad}c{stĺpec}: stĺpce 1–4 vľavo od stredu (1 najďalej), 5–8 vpravo; široká vec (sirka 2) stojí medzi svojím a ďalším stĺpcom
 // 5.1: doplnkové miesta r{rad}d{n} (n od 1 zľava): medzi radmi, pri jazierku vľavo vzadu a v predných rohoch; len úzke veci; mimo hier, domu, stromu, cesty a smerovníka
 // rad: [päta, mierka, x…] alebo viac skupín za sebou; počty musia sedieť s DED_DOPLNKY (25-dedinka-data.js)
 const DS_DOPLNKY = {
-  2: [[296, .66, [42, 210, 270, 330, 390, 706, 766, 826, 886, 946, 1006]]],
-  3: [[370, .78, [42, 106, 170, 234, 850, 914, 978, 1042]]],
-  4: [[451, .91, [42, 118, 194, 270, 838, 914, 990]]],
-  5: [[539, 1.04, [42, 126, 210, 812, 874, 958, 1042]], [625, 1.14, [42, 114, 186, 826, 898, 970, 1042]]],
+  2: [[296, .66, [48, 291, 342, 393, 999, 1050, 1101, 1152, 1203, 1254, 1305]]],
+  3: [[370, .78, [48, 108, 168, 288, 1041, 1161, 1281, 1341]]],
+  4: [[451, .91, [48, 117, 186, 324, 1026, 1164, 1302]]],
+  5: [[539, 1.04, [48, 126, 204, 282, 1041, 1119, 1197]], [626, 1.14, [48, 135, 222, 1026, 1113, 1200, 1287]]],
 };
 function dedMiesto(kl, sirka = 1) {
   const m = /^r([1-5])(?:c([1-8])|d(\d{1,2}))$/.exec(kl); if (!m) return null;
   if (m[3]) { // doplnkové miesto: pevný bod, jemne rozhádzaný v y, aby nestáli ako pod pravítkom
-    let n = +m[3]; for (const [y, s, xs] of DS_DOPLNKY[m[1]] || []) { if (n <= xs.length) return { x: Math.round(dsSx(xs[n - 1])), y: y + ((n * 7) % 3 - 1) * 4, s, rad: +m[1] }; n -= xs.length; }
+    let n = +m[3]; for (const [y, s, xs] of DS_DOPLNKY[m[1]] || []) { if (n <= xs.length) return { x: xs[n - 1], y: y + ((n * 7) % 3 - 1) * 4, s, rad: +m[1] }; n -= xs.length; }
     return null;
   }
   const [y, s, g, k] = DS_RADY[m[1]], x = c => { const l = c <= 4, i = l ? 4 - c : c - 5; return DS_X + (l ? -1 : 1) * (g + (i + .5) * k); };
@@ -36,9 +36,10 @@ function dsZem(x, y, s, w) {
 }
 const DS_ZEM_SK = { domcek: 38, strom: 26, kvety: 20, plot: 26, zviera: 22, ozdoba: 24 };
 // pevné miesta hier (posun od stredu, päta, mierka); hra dostane miesto podľa poradia ceny vo svojom vekovom zozname
-const DS_HRY_MIESTA = [[-152, 410, .84], [152, 410, .84], [-116, 330, .72], [116, 330, .72], [-140, 502, .92], [176, 502, .95],
-  [-80, 268, .6], [84, 268, .6], [196, 600, 1.02], [-62, 230, .5], [62, 230, .5], [0, 212, .46],
-  [-200, 455, .88], [214, 455, .88], [-240, 376, .78], [232, 378, .78], [-118, 566, 1]]; // 5.1: miesta pre nové hry (09b-hry-51.js)
+// 5.1 (20. 11.): rozložené tak, aby sa budovy hier, hlavný dom, strom, truhlička a smerovník neprekrývali a nestáli na miestach dieťaťa (overené obdĺžnikmi)
+const DS_HRY_MIESTA = [[-150, 436, .84], [-95, 526, .95], [190, 440, .86], [110, 540, .95], [-205, 350, .74], [205, 350, .74], // prvé (najlacnejšie) hry vpredu pri strome
+  [-300, 464, .9], [250, 515, .93], [-300, 390, .8], [300, 410, .83], [-150, 292, .62], [150, 292, .62], [250, 600, 1.02],
+  [-128, 238, .5], [128, 238, .5], [-250, 240, .52], [0, 214, .46]]; // 5.1: miesta pre nové hry (09b-hry-51.js)
 const DS_DOM = [-230, 606, .98]; // hlavný dom vpredu vľavo od cesty, blízko stromu (na telefóne sú pri prvom pohľade oba)
 const DS_STROM = [0, 404, .64]; // strom múdrosti na námestí v strede (mierka kresby stromSvg)
 // voľby položenej veci: reťazec, znak i = i-tá voľba z DEDINKA_VOLBY[kľúč] (poradie kľúčov), '0' = základ, '1' = prvá hodnota, '2' = druhá…
@@ -63,7 +64,7 @@ const DedScena = {
     return vs.map((h, i) => {
       const [dx, y, s] = DS_HRY_MIESTA[i] || DS_HRY_MIESTA[DS_HRY_MIESTA.length - 1], ok = mam >= h.cena, spi = !ok && st.body >= h.cena;
       if (!ok && !spi) { if (dalsia) return null; dalsia = true; }
-      return { h, x: DS_X + dx * DS_ROZ, y, s, stav: ok ? 'ok' : spi ? 'spi' : 'stavba' };
+      return { h, x: DS_X + dx, y, s, stav: ok ? 'ok' : spi ? 'spi' : 'stavba' };
     }).filter(Boolean);
   },
   stromInfo() {
@@ -77,23 +78,33 @@ const DedScena = {
       <path d="M-14 -27.5l1.4 2.9 3.2.4-2.4 2.2.6 3.1-2.8-1.6-2.8 1.6.6-3.1-2.4-2.2 3.2-.4z" fill="var(--sun)" stroke-width="1.2"/>
       <text x="7" y="-17" text-anchor="middle" font-family="Grandstander, sans-serif" font-weight="800" font-size="12" fill="var(--dv-biela)" stroke="none">${cena}</text></g>`;
   },
-  // chodníčky: [d, šírka]. Od dverí hlavného domu, hier a domčekov dieťaťa oblúkom k hlavnej ceste; kamienky (Ploty a cesty) sa spoja so susednými kamienkami
+  // chodníčky: [d, šírka]. Od dverí hlavného domu, hier a domčekov dieťaťa sieť k hlavnej ceste; kamienky (Ploty a cesty) sa spoja so susednými kamienkami
   // a s cestou, osamotené dostanú krátky zaoblený kúsok chodníka pod sebou. Kreslí ich krajina() pod všetky veci.
   chodniky() {
     const out = [], f1 = v => v.toFixed(1), DX = (typeof dedinkaKresby !== 'undefined' && dedinkaKresby.DVERE_X) || {};
-    // blízko cesty: oblúkom až do cesty; ďalej od nej: krátky vyšliapaný chodníček bez obrysu (tretí údaj 1), ktorý sa zúži a stratí v tráve
-    const kCeste = (x, y, s, plny) => { const yt = Math.min(DS_H + 10, y + 12 * s), cx = dsCx(yt), w = 8 * s + 3, z = Math.sign(cx - x) || 1;
-      if (plny || Math.abs(cx - x) < 210 * s) { out.push([`M${f1(x)} ${f1(y - 1)}Q${f1(x)} ${f1(yt)} ${f1(x + (cx - x) * .5)} ${f1(yt)}T${f1(cx)} ${f1(yt)}`, w]); return; }
-      const x1 = x + z * 16 * s, y1 = y + 13 * s, x2 = x + z * 44 * s, y2 = y + 17 * s;
-      out.push([`M${f1(x)} ${f1(y - 1)}Q${f1(x)} ${f1(y1)} ${f1(x1)} ${f1(y1)}`, w, 1], [`M${f1(x1)} ${f1(y1)}Q${f1((x1 + x2) / 2)} ${f1(y1 + 2 * s)} ${f1(x2)} ${f1(y2)}`, w * .62, 1]); };
-    { const [dx, y, s] = DS_DOM; kCeste(DS_X + dx + (DX.domov || 0) * s, y, s, true); } // hlavný dom vždy až k ceste
-    this.miestaHier().forEach(m => { if (m.stav !== 'stavba' && m.h.id in DX) kCeste(m.x + DX[m.h.id] * m.s, m.y, m.s); });
+    // dvere: hlavný dom, budovy hier (aj spiace) a domčeky dieťaťa; bod pred dverami (x, y) a mierka
+    const dvere = [];
+    { const [dx, y, s] = DS_DOM; dvere.push({ x: DS_X + dx + (DX.domov || 0) * s, y, s }); }
+    this.miestaHier().forEach(m => { if (m.stav !== 'stavba') dvere.push({ x: m.x + (DX[m.h.id] || 0) * m.s, y: m.y, s: m.s }); });
     const d = typeof Dedinka !== 'undefined' ? Dedinka.ziskaj() : null, rady = typeof Dedinka !== 'undefined' ? Dedinka.rady() : 2, kamene = [];
     Object.entries((d && d.miesta) || {}).forEach(([kl, [typ, zrk]]) => {
       const vec = DED_VEC[typ], m = vec && dedMiesto(kl, vec.sirka); if (!m || m.rad > rady) return;
-      if (vec.sk === 'domcek' && typ in DX) kCeste(m.x + DX[typ] * m.s * (zrk ? -1 : 1), m.y, m.s);
+      if (vec.sk === 'domcek' && typ !== 'stan') dvere.push({ x: m.x + (DX[typ] || 0) * m.s * (zrk ? -1 : 1), y: m.y, s: m.s });
       if (typ === 'kamen_cesta') kamene.push(m);
     });
+    // sieť chodníčkov (ako pri Primovom strome): vždy sa pripojí dvere najbližšie k sieti, buď k hlavnej ceste, alebo k bodu pred už pripojenými dverami.
+    // Chodníček ide od dverí najprv kúsok dopredu a potom oblúkom k cieľu, takže sa napája plynulo a nikde nekončí tvrdým koncom.
+    const pred = v => ({ x: v.x, y: Math.min(DS_H + 8, v.y + 12 * v.s) }), siet = [], zvysok = dvere.slice();
+    const kCeste = v => { const p = pred(v); return { d: Math.abs(p.x - dsCx(p.y)) - dsCw(p.y) / 2, t: { x: dsCx(p.y), y: p.y } }; };
+    while (zvysok.length) {
+      let naj = null;
+      zvysok.forEach((v, i) => { const p = pred(v), c = kCeste(v); let m = { i, d: c.d, t: c.t };
+        siet.forEach(u => { const q = pred(u), dd = Math.hypot(q.x - p.x, (q.y - p.y) * 1.8); if (dd < m.d) m = { i, d: dd, t: q }; });
+        if (!naj || m.d < naj.d) naj = m; });
+      const v = zvysok.splice(naj.i, 1)[0], p = pred(v), t = naj.t, w = 7 * v.s + 3;
+      out.push([`M${f1(v.x)} ${f1(v.y - 1)}C${f1(v.x)} ${f1(p.y + 6 * v.s)} ${f1(t.x + (p.x - t.x) * .45)} ${f1(t.y)} ${f1(t.x)} ${f1(t.y)}`, w]);
+      siet.push(v);
+    }
     // kamienky spojí strom najkratších spojení (bez trojuholníkov); skupina blízko cesty sa napojí na cestu z najbližšieho kamienka
     const dl = (a, b) => Math.hypot(b.x - a.x, (b.y - a.y) * 1.6), hr = [], sk = kamene.map((_, i) => i), koren = i => sk[i] === i ? i : (sk[i] = koren(sk[i]));
     kamene.forEach((a, i) => kamene.forEach((b, j) => { if (j > i && dl(a, b) < 150 * Math.max(a.s, b.s)) hr.push([dl(a, b), i, j]); }));
@@ -176,8 +187,9 @@ const DedScena = {
     const luka = [[485, 470, .55, 'kvety'], [626, 532, .6, 'tulipany'], [672, 574, .7, 'ker'], [430, 560, .55, 'kvety']].map(([x0, y, s, k]) => { const x = dsSx(x0); return dsZem(x, y, s, 18) + dedinkaVec(k, { x, y, s }); }).join('');
     return `<defs><linearGradient id="ds-obzor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--dv-oblak)" stop-opacity="0"/><stop offset="1" stop-color="var(--dv-oblak)" stop-opacity=".55"/></linearGradient></defs>
       <rect x="-10" y="-10" width="${W + 20}" height="${H + 20}" fill="var(--dv-nebo)"/><rect x="-10" y="110" width="${W + 20}" height="120" fill="url(#ds-obzor)"/>
-      <g class="dv-den"><circle cx="${X + 165}" cy="112" r="28" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="${X + 165}" cy="112" r="41" fill="none" stroke="var(--sun)" stroke-width="5" stroke-dasharray=".1 12.5" stroke-linecap="round" opacity=".8"/></g>
-      <g class="dv-noc"><path d="M${X + 176} 88a26 26 0 1 0 14 44a21 21 0 0 1-14-44z" fill="var(--sun-l)" stroke="var(--ink)" stroke-width="2.5"/>${hv}</g>
+      <!-- slnko a mesiac: v doline medzi horami nad stromom, na telefóne vo voľnej oblohe pod tlačidlom Stavať (celé, nezakryté kopcom) -->
+      <g class="dv-den"><circle cx="${X - 20}" cy="147" r="19" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5"/><circle cx="${X - 20}" cy="147" r="27" fill="none" stroke="var(--sun)" stroke-width="5" stroke-dasharray=".1 10.5" stroke-linecap="round" opacity=".8"/></g>
+      <g class="dv-noc"><path transform="translate(${X - 20} 147) scale(.72)" d="M11 -24a26 26 0 1 0 14 44a21 21 0 0 1-14-44z" fill="var(--sun-l)" stroke="var(--ink)" stroke-width="2.5"/>${hv}</g>
       <path d="${hd} V240 H-30Z" fill="var(--ds-hora)"/>${sneh}
       <g class="ds-mrak" style="--t:46s">${dedinkaVec('oblak1', { x: dsSx(210), y: 116, s: .7 })}</g><g class="ds-mrak ds-mrak2" style="--t:58s">${dedinkaVec('oblak3', { x: dsSx(760), y: 70, s: .62 })}</g><g class="ds-mrak" style="--t:64s">${dedinkaVec('oblak2', { x: dsSx(980), y: 150, s: .45 })}</g>
       ${kopec(214, 34, 'var(--dv-kopec1)', 3)}
