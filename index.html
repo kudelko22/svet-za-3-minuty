@@ -3383,14 +3383,15 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .kosy-4 .vagon, .vlacik:has(.vagon:nth-child(4)) .vagon { min-width: 46px; font-size: 1.1rem; padding: 0 4px; }
 .vl-loko .kol { transform-box: fill-box; transform-origin: center; }
 .vl-dym { opacity: 0; }
-/* vozidlá idú každé samo s malým oneskorením (--d), spriahadlá sa pritom jemne natiahnu a pri príchode pružne dobehnú; kolesá sa točia len počas jazdy */
-.trat.ide .vlacik > * { animation: vlakOdide 1.3s calc(.25s + var(--d, 0s)) cubic-bezier(.55, 0, .9, .55) both; }
-.trat.pride .vlacik > * { animation: vlakPride 1s calc(var(--d, 0s) * .6) both; }
-.trat.ide .kol, .trat.ide .vg-k { animation: kolOdide 1.3s calc(.25s + var(--d, 0s)) cubic-bezier(.55, 0, .9, .55) both; }
-.trat.pride .kol, .trat.pride .vg-k { animation: kolPride 1s calc(var(--d, 0s) * .6) cubic-bezier(.2, .75, .3, 1) both; }
+/* celá súprava ide ako jeden celok (jeden posun skupiny, spriahadlá pevne); kolesá sa točia len počas jazdy, rovnaký čas ako posun */
+.trat.ide .vlacik { animation: vlakOdide 1.3s .25s cubic-bezier(.55, 0, .9, .55) both; }
+.trat.pride .vlacik { animation: vlakPride 1s both; }
+.trat.ide .kol, .trat.ide .vg-k { animation: kolOdide 1.3s .25s cubic-bezier(.55, 0, .9, .55) both; }
+.trat.pride .kol, .trat.pride .vg-k { animation: kolPride 1s cubic-bezier(.2, .75, .3, 1) both; }
 @keyframes kolOdide { 15% { rotate: -20deg; } to { rotate: 1500deg; } }
 @keyframes kolPride { from { rotate: -1100deg; } to { rotate: 0deg; } }
-.trat.ide .vl-dym, .trat.pride .vl-dym { opacity: 1; animation: vlDym .8s ease-out infinite; }
+.trat.ide .vl-dym { opacity: 1; animation: vlDym .8s ease-out infinite; }
+.trat.pride .vl-dym { animation: vlDym .8s ease-out 1.2; }
 @keyframes vlakOdide { 15% { translate: -5px 0; } to { translate: 105vw 0; } }
 @keyframes vlakPride { from { translate: -105vw 0; animation-timing-function: cubic-bezier(.2, .7, .35, 1); } 82% { translate: 5px 0; animation-timing-function: ease-in-out; } to { translate: 0 0; } }
 @keyframes kolToc { to { rotate: 360deg; } }
@@ -3439,7 +3440,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .hod-moz.slovom .kv-btn { font-size: 1.02rem; line-height: 1.2; padding: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .h51-ur, .h51-hraj, .kos-mini, .kos.ciel, .kos.ciel .kos-obr, .tab-medz.plna, .trat .vlacik > *, .trat .vlacik, .trat .kol, .trat .vg-k, .vl-dym, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
+  .h51-ur, .h51-hraj, .kos-mini, .kos.ciel, .kos.ciel .kos-obr, .tab-medz.plna,  .trat .vlacik, .trat .kol, .trat .vg-k, .vl-dym, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
   .ces-sova, .hod-hod, .hod-min { transition: none; }
 }
 
@@ -6329,7 +6330,7 @@ const HRY51 = {
     html(h) {
       const k = h.kola[h.i];
       return `<div class="card kv-prompt obraz slab-obr">${h51Obr(k.o)}</div>
-        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]};--d:${((k.sl.length - j) * .07).toFixed(2)}s"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
+        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
         <div class="kv-moz pismena slab-moz">${k.moz.map((m, j) => `<button class="btn dve kv-btn${h.vzate.includes(j) ? ' vzata' : ''}" data-h51="sl" data-j="${j}"${h.vzate.includes(j) ? ' disabled' : ''}>${esc(m)}</button>`).join('')}</div>`;
     },
     klik(h, d, b) {
