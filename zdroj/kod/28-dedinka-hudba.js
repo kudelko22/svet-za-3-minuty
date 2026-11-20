@@ -32,22 +32,34 @@ var DedHudba = (() => {
     [[0, 0, .3], [2, 1, .2], [4, 2, .17], [6, 1, .2]].forEach(([e, j, v]) => o.push({ t: e * OSMINA, f: hz(a[j]), d: 1.6, v }));
     return o;
   }
-  // jeden klavírny tón: harmonické s rôznym doznievaním, rýchly nábeh, tlmený filter
+  // jeden klavírny tón: struny mierne rozladené (zbor), nepatrne neharmonické alikvoty (kovový nádych strún), kladivko (šumový úder),
+  // dvojstupňový útlm (rýchly pokles po údere, potom dlhé doznievanie) a jas, ktorý po údere rýchlo klesá
+  const SUM = new WeakMap();
+  function sum(c) { let b = SUM.get(c); if (!b) { b = c.createBuffer(1, Math.floor(c.sampleRate * .06), c.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; SUM.set(c, b); } return b; }
   function klavir(c, ciel, t0, f, v) {
+    const nizky = f < 200, dz = Math.min(4.2, 1.2 + 3.2 * (200 / Math.max(f, 120)) ** .6), jas = Math.min(7000, f * (nizky ? 6 : 9));
     const g = c.createGain(), filt = c.createBiquadFilter();
-    filt.type = 'lowpass'; filt.frequency.value = Math.min(6000, f * 7); filt.Q.value = .3;
-    const dz = Math.min(3.2, DOZNENIE + 2.4 * (220 / Math.max(f, 110)));
-    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .006);
-    g.gain.exponentialRampToValueAtTime(v * .35, t0 + .25); g.gain.exponentialRampToValueAtTime(.0001, t0 + dz);
+    filt.type = 'lowpass'; filt.Q.value = .2; filt.frequency.setValueAtTime(jas, t0); filt.frequency.exponentialRampToValueAtTime(Math.max(f * 2.5, 500), t0 + .5);
+    g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + .004);
+    g.gain.exponentialRampToValueAtTime(v * .42, t0 + .18); g.gain.exponentialRampToValueAtTime(v * .2, t0 + .9); g.gain.exponentialRampToValueAtTime(.0001, t0 + dz);
     g.connect(filt); filt.connect(ciel);
-    [[1, 1], [2, .42], [3, .22], [4, .1], [5, .05]].forEach(([n, s], k) => {
-      const o = c.createOscillator(), h = c.createGain();
-      o.type = 'sine'; o.frequency.value = f * n * (k ? 1.0008 : 1);
-      h.gain.setValueAtTime(s, t0); if (k) h.gain.exponentialRampToValueAtTime(s * .05, t0 + dz / (1 + k * .5)); // vyššie harmonické doznejú rýchlejšie
+    const strun = nizky ? [0] : [-1.6, 1.6]; // cent
+    for (const ct of strun) for (let n = 1; n <= 7; n++) {
+      const fn = f * n * Math.sqrt(1 + .0004 * n * n) * Math.pow(2, ct / 1200);
+      if (fn > 9000) break;
+      const o = c.createOscillator(), h = c.createGain(), s = (strun.length === 1 ? 1 : .55) * (Math.sin(Math.PI * n * .12) ** 2 * 1.5 + .12) / n ** .85; // kladivko udiera pri 1/8 struny
+      o.type = 'sine'; o.frequency.value = fn;
+      h.gain.setValueAtTime(s, t0); h.gain.exponentialRampToValueAtTime(s * .08, t0 + dz / (1 + n * .55));
       o.connect(h); h.connect(g); o.start(t0); o.stop(t0 + dz + .1);
-    });
+    }
+    // úder kladivka: krátky tlmený šum
+    const b = c.createBufferSource(), bf = c.createBiquadFilter(), bg = c.createGain();
+    b.buffer = sum(c); bf.type = 'bandpass'; bf.frequency.value = Math.min(3500, f * 3); bf.Q.value = .8;
+    bg.gain.setValueAtTime(v * .5, t0); bg.gain.exponentialRampToValueAtTime(.0001, t0 + .05);
+    b.connect(bf); bf.connect(bg); bg.connect(ciel); b.start(t0); b.stop(t0 + .06);
   }
-  function takt(c, ciel, i, t0) { for (const n of tony(i % TAKT)) klavir(c, ciel, t0 + n.t, n.f, n.v); }
+  // človek nehrá presne: tóny sú o chvíľku posunuté a nie rovnako silné
+  function takt(c, ciel, i, t0) { for (const n of tony(i % TAKT)) klavir(c, ciel, t0 + n.t + Math.random() * .018, n.f, n.v * (.88 + Math.random() * .22)); }
   function dozvuk(c) {
     const len = Math.floor(c.sampleRate * 1.8), b = c.createBuffer(2, len, c.sampleRate);
     for (let k = 0; k < 2; k++) { const d = b.getChannelData(k); let p = 0; for (let i = 0; i < len; i++) { p = p * .6 + (Math.random() * 2 - 1) * .4; d[i] = p * Math.exp(-i / (c.sampleRate * .45)); } }
