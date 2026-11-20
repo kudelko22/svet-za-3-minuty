@@ -94,6 +94,19 @@ const Hra51 = {
 const h51Obr = k => `<span class="kv-it">${ineSvg(INE_OBR[k]())}</span>`;
 const h51Velke = s => s.toLocaleUpperCase('sk');
 
+// 5.1: lokomotíva Slabikového vláčika (pozerá doprava, za ňou vagóny so spriahadlami, všetko na koľajniciach)
+const SLAB_LOKO = `<svg class="vl-loko" viewBox="0 0 92 66" aria-hidden="true"><g stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+  <g class="vl-dym" stroke="none" fill="#fff"><circle cx="62" cy="9" r="5"/><circle cx="54" cy="5" r="3.6"/><circle cx="47" cy="3" r="2.6"/></g>
+  <path d="M59 28 v-10 h-3 v-5 h13 v5 h-3 v10" fill="#4A4566"/>
+  <path d="M28 27 h46 q9 0 9 9 v15 H28z" fill="var(--sky)"/><path d="M31 31 h40" stroke="#fff" stroke-width="2.4" opacity=".5"/><path d="M44 27 v24 M70 27 v24" stroke-width="2"/>
+  <path d="M47 27 q0 -6 5 -6 q5 0 5 6" fill="var(--sun)"/><circle cx="84" cy="35" r="3.2" fill="var(--sun)"/>
+  <path d="M3 51 V15 h28 v36z" fill="var(--coral)"/><path d="M0 14 h34" stroke-width="4.4"/><rect x="8" y="20" width="17" height="13" rx="2.4" fill="var(--h-nebo)" stroke-width="2.2"/>
+  <rect x="1" y="49" width="84" height="5" rx="2" fill="#4A4566"/><path d="M84 47 l7 10 h-9z" fill="#4A4566"/>
+  <g class="kol"><circle cx="16" cy="56" r="8.5" fill="#6E6890"/><path d="M16 48 v16 M8 56 h16" stroke-width="1.8"/><circle cx="16" cy="56" r="2.2" fill="var(--sun)" stroke-width="1.4"/></g>
+  <g class="kol"><circle cx="48" cy="58" r="6.5" fill="#6E6890"/><path d="M48 52 v12 M42 58 h12" stroke-width="1.8"/></g>
+  <g class="kol"><circle cx="68" cy="58" r="6.5" fill="#6E6890"/><path d="M68 52 v12 M62 58 h12" stroke-width="1.8"/></g>
+  <path class="vl-ojnica" d="M16 59 H68" stroke="var(--sun)" stroke-width="2.4"/><path d="M-4 52 h6" stroke-width="3"/>
+</g></svg>`;
 /* ---------- Do košíkov: triedenie do 2 až 4 košíkov ---------- */
 const KOS_SK = {
   zvierata: ['Zvieratá', ['pes', 'kôň', 'mačka', 'krava', 'prasa', 'ovca', 'zajac', 'slon', 'lev', 'žirafa']],
@@ -199,8 +212,7 @@ const HRY51 = {
     html(h) {
       const k = h.kola[h.i];
       return `<div class="card kv-prompt obraz slab-obr">${h51Obr(k.o)}</div>
-        <div class="vlacik${h.odp ? ' ide' : ''}" aria-label="Vláčik so slovom"><svg class="vl-loko" viewBox="0 0 70 62" aria-hidden="true"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"><path d="M6 50V24h26V8h12v16h6v26z" fill="var(--coral)"/><rect x="10" y="29" width="14" height="11" rx="2" fill="var(--h-nebo)" stroke-width="2.4"/><path d="M34 8h12" stroke-width="4"/><circle cx="16" cy="53" r="7" fill="var(--dk)"/><circle cx="38" cy="53" r="7" fill="var(--dk)"/><path d="M50 40h12" stroke-width="3"/></g></svg>
-          ${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b></span>`).join('')}</div>
+        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
         <div class="kv-moz pismena slab-moz">${k.moz.map((m, j) => `<button class="btn dve kv-btn${h.vzate.includes(j) ? ' vzata' : ''}" data-h51="sl" data-j="${j}"${h.vzate.includes(j) ? ' disabled' : ''}>${esc(m)}</button>`).join('')}</div>`;
     },
     klik(h, d, b) {

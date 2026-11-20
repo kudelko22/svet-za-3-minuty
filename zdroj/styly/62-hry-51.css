@@ -72,16 +72,31 @@
 /* Slabikový vláčik */
 .slab-obr { justify-self: center; padding: 10px 26px; }
 .slab-obr .kv-it { width: 110px; height: 110px; }
-.vlacik { display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 4px 6px; border-bottom: 4px solid var(--ink); position: relative; }
-.vlacik::after { content: ''; position: absolute; left: 0; right: 0; bottom: -10px; height: 4px; background: repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 16px); }
-.vl-loko { width: 64px; height: 57px; flex: none; }
-.vagon { position: relative; display: grid; place-items: center; min-width: 62px; height: 50px; padding: 0 6px; margin-bottom: 7px; border: var(--obrys); border-radius: 9px; background: var(--card);
-  border-style: dashed; font: 800 1.35rem/1 var(--fd); color: #2A2356; }
-.vagon::before, .vagon::after { content: ''; position: absolute; bottom: -11px; width: 13px; height: 13px; border-radius: 50%; background: var(--ink); }
-.vagon::before { left: 8px; } .vagon::after { right: 8px; }
+/* 5.1: trať cez celú šírku (podvaly a dve koľajnice), vláčik na nej; po poskladaní slova odíde doprava, nový príde zľava */
+.trat { --podval: #A9764A; --kolaj: #8F8BAE; position: relative; margin: 4px -18px 0; padding: 18px 10px 0; overflow: hidden; }
+:root[data-rezim="mesacny"] .trat { --podval: #6B4F3A; --kolaj: #6D6894; }
+.trat::before { content: ''; position: absolute; left: 0; right: 0; bottom: 1px; height: 10px; background: repeating-linear-gradient(90deg, var(--podval) 0 11px, transparent 11px 22px); }
+.trat::after { content: ''; position: absolute; left: 0; right: 0; bottom: 4px; height: 4px; background: var(--ink); box-shadow: 0 -5px 0 -1px var(--kolaj); }
+.vlacik { position: relative; z-index: 1; display: flex; align-items: flex-end; justify-content: center; gap: 9px; padding-bottom: 8px; }
+.vl-loko { width: 98px; height: 70px; flex: none; overflow: visible; margin-bottom: -1px; }
+.vagon { position: relative; display: grid; place-items: center; min-width: 54px; height: 46px; padding: 0 6px; margin-bottom: 12px; border: var(--obrys); border-radius: 9px 9px 6px 6px; background: var(--card);
+  border-style: dashed; font: 800 1.3rem/1 var(--fd); color: #2A2356; }
+.vagon::after { content: ''; position: absolute; right: -12px; bottom: 6px; width: 13px; height: 4px; border-radius: 2px; background: var(--ink); }
 .vagon.plny { background: var(--vc); border-style: solid; animation: okPop .4s var(--spring); }
-.vlacik.ide { animation: vlakIde 1.2s .25s ease-in both; }
-@keyframes vlakIde { 20% { translate: -6px 0; } to { translate: 120% 0; } }
+.vg-k { position: absolute; bottom: -15px; width: 16px; height: 16px; border: 2.5px solid var(--ink); border-radius: 50%; box-sizing: border-box;
+  background: linear-gradient(var(--ink) 0 0) center / 2px 100% no-repeat, linear-gradient(var(--ink) 0 0) center / 100% 2px no-repeat, #6E6890; }
+.vg-k:first-of-type { left: 6px; } .vg-k:last-of-type { right: 6px; }
+.kosy-4 .vagon, .vlacik:has(.vagon:nth-child(4)) .vagon { min-width: 46px; font-size: 1.1rem; padding: 0 4px; }
+.vl-loko .kol { transform-box: fill-box; transform-origin: center; }
+.vl-dym { opacity: 0; }
+.trat.ide .vlacik { animation: vlakOdide 1.3s .25s cubic-bezier(.55, 0, .9, .55) both; }
+.trat.pride .vlacik { animation: vlakPride .95s cubic-bezier(.2, .75, .3, 1) both; }
+.trat.ide .kol, .trat.pride .kol, .trat.ide .vg-k, .trat.pride .vg-k { animation: kolToc .38s linear infinite; }
+.trat.ide .vl-dym, .trat.pride .vl-dym { opacity: 1; animation: vlDym .8s ease-out infinite; }
+@keyframes vlakOdide { 15% { translate: -5px 0; } to { translate: 105vw 0; } }
+@keyframes vlakPride { from { translate: -105vw 0; } }
+@keyframes kolToc { to { rotate: 360deg; } }
+@keyframes vlDym { from { translate: 0 4px; opacity: .9; } to { translate: -10px -6px; opacity: 0; } }
 .slab-moz .kv-btn { min-width: 78px; font: 800 1.35rem/1 var(--fd); }
 
 /* I alebo Y? */
@@ -126,7 +141,7 @@
 .hod-moz.slovom .kv-btn { font-size: 1.02rem; line-height: 1.2; padding: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .h51-ur, .h51-hraj, .kos-vec.vlozena, .kos-mini, .vlacik.ide, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
+  .h51-ur, .h51-hraj, .kos-vec.vlozena, .kos-mini, .trat .vlacik, .trat .kol, .trat .vg-k, .vl-dym, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
   .ces-sova, .hod-hod, .hod-min { transition: none; }
 }
 
@@ -144,3 +159,4 @@
 .kos-mini.prazdny { opacity: .92; }
 /* 5.1: v Mesačnom režime majú obrázky v hrách svetlý lem, inak tmavý obrys zanikne na tmavej karte */
 :root[data-rezim="mesacny"] .hra .kv-it, :root[data-rezim="mesacny"] .kos-mini { filter: drop-shadow(0 0 .8px #FFF6E3) drop-shadow(0 0 .8px #FFF6E3); }
+:root[data-rezim="mesacny"] .vagon:not(.plny) { border-color: #B9B3E6; }

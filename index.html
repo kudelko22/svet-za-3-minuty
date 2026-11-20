@@ -3341,16 +3341,31 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 /* Slabikový vláčik */
 .slab-obr { justify-self: center; padding: 10px 26px; }
 .slab-obr .kv-it { width: 110px; height: 110px; }
-.vlacik { display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 4px 6px; border-bottom: 4px solid var(--ink); position: relative; }
-.vlacik::after { content: ''; position: absolute; left: 0; right: 0; bottom: -10px; height: 4px; background: repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 16px); }
-.vl-loko { width: 64px; height: 57px; flex: none; }
-.vagon { position: relative; display: grid; place-items: center; min-width: 62px; height: 50px; padding: 0 6px; margin-bottom: 7px; border: var(--obrys); border-radius: 9px; background: var(--card);
-  border-style: dashed; font: 800 1.35rem/1 var(--fd); color: #2A2356; }
-.vagon::before, .vagon::after { content: ''; position: absolute; bottom: -11px; width: 13px; height: 13px; border-radius: 50%; background: var(--ink); }
-.vagon::before { left: 8px; } .vagon::after { right: 8px; }
+/* 5.1: trať cez celú šírku (podvaly a dve koľajnice), vláčik na nej; po poskladaní slova odíde doprava, nový príde zľava */
+.trat { --podval: #A9764A; --kolaj: #8F8BAE; position: relative; margin: 4px -18px 0; padding: 18px 10px 0; overflow: hidden; }
+:root[data-rezim="mesacny"] .trat { --podval: #6B4F3A; --kolaj: #6D6894; }
+.trat::before { content: ''; position: absolute; left: 0; right: 0; bottom: 1px; height: 10px; background: repeating-linear-gradient(90deg, var(--podval) 0 11px, transparent 11px 22px); }
+.trat::after { content: ''; position: absolute; left: 0; right: 0; bottom: 4px; height: 4px; background: var(--ink); box-shadow: 0 -5px 0 -1px var(--kolaj); }
+.vlacik { position: relative; z-index: 1; display: flex; align-items: flex-end; justify-content: center; gap: 9px; padding-bottom: 8px; }
+.vl-loko { width: 98px; height: 70px; flex: none; overflow: visible; margin-bottom: -1px; }
+.vagon { position: relative; display: grid; place-items: center; min-width: 54px; height: 46px; padding: 0 6px; margin-bottom: 12px; border: var(--obrys); border-radius: 9px 9px 6px 6px; background: var(--card);
+  border-style: dashed; font: 800 1.3rem/1 var(--fd); color: #2A2356; }
+.vagon::after { content: ''; position: absolute; right: -12px; bottom: 6px; width: 13px; height: 4px; border-radius: 2px; background: var(--ink); }
 .vagon.plny { background: var(--vc); border-style: solid; animation: okPop .4s var(--spring); }
-.vlacik.ide { animation: vlakIde 1.2s .25s ease-in both; }
-@keyframes vlakIde { 20% { translate: -6px 0; } to { translate: 120% 0; } }
+.vg-k { position: absolute; bottom: -15px; width: 16px; height: 16px; border: 2.5px solid var(--ink); border-radius: 50%; box-sizing: border-box;
+  background: linear-gradient(var(--ink) 0 0) center / 2px 100% no-repeat, linear-gradient(var(--ink) 0 0) center / 100% 2px no-repeat, #6E6890; }
+.vg-k:first-of-type { left: 6px; } .vg-k:last-of-type { right: 6px; }
+.kosy-4 .vagon, .vlacik:has(.vagon:nth-child(4)) .vagon { min-width: 46px; font-size: 1.1rem; padding: 0 4px; }
+.vl-loko .kol { transform-box: fill-box; transform-origin: center; }
+.vl-dym { opacity: 0; }
+.trat.ide .vlacik { animation: vlakOdide 1.3s .25s cubic-bezier(.55, 0, .9, .55) both; }
+.trat.pride .vlacik { animation: vlakPride .95s cubic-bezier(.2, .75, .3, 1) both; }
+.trat.ide .kol, .trat.pride .kol, .trat.ide .vg-k, .trat.pride .vg-k { animation: kolToc .38s linear infinite; }
+.trat.ide .vl-dym, .trat.pride .vl-dym { opacity: 1; animation: vlDym .8s ease-out infinite; }
+@keyframes vlakOdide { 15% { translate: -5px 0; } to { translate: 105vw 0; } }
+@keyframes vlakPride { from { translate: -105vw 0; } }
+@keyframes kolToc { to { rotate: 360deg; } }
+@keyframes vlDym { from { translate: 0 4px; opacity: .9; } to { translate: -10px -6px; opacity: 0; } }
 .slab-moz .kv-btn { min-width: 78px; font: 800 1.35rem/1 var(--fd); }
 
 /* I alebo Y? */
@@ -3395,7 +3410,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .hod-moz.slovom .kv-btn { font-size: 1.02rem; line-height: 1.2; padding: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .h51-ur, .h51-hraj, .kos-vec.vlozena, .kos-mini, .vlacik.ide, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
+  .h51-ur, .h51-hraj, .kos-vec.vlozena, .kos-mini, .trat .vlacik, .trat .kol, .trat .vg-k, .vl-dym, .ces-hv, .ces-krok, .skr-kruh, .skr-x { animation: none !important; }
   .ces-sova, .hod-hod, .hod-min { transition: none; }
 }
 
@@ -3413,6 +3428,7 @@ body.ded-stav #top, body.ded-stav #nav { display: none; }
 .kos-mini.prazdny { opacity: .92; }
 /* 5.1: v Mesačnom režime majú obrázky v hrách svetlý lem, inak tmavý obrys zanikne na tmavej karte */
 :root[data-rezim="mesacny"] .hra .kv-it, :root[data-rezim="mesacny"] .kos-mini { filter: drop-shadow(0 0 .8px #FFF6E3) drop-shadow(0 0 .8px #FFF6E3); }
+:root[data-rezim="mesacny"] .vagon:not(.plny) { border-color: #B9B3E6; }
 /* 5.1: pokojnejšia appka. Pohyb ostáva len tam, kde má dôvod (hlavné tlačidlo, odpočet, hra). Dôvody v opravy-51.md. */
 /* 1. kartičky, ikony a medaily nepodskakujú, keď nič nerobia */
 .act-e, .tile-e, .misia-obr, .medaila.velka, .odznak.ma .medaila, .dlazdica:not(.zamknuta) .hr-obr svg,
@@ -6145,6 +6161,19 @@ const Hra51 = {
 const h51Obr = k => `<span class="kv-it">${ineSvg(INE_OBR[k]())}</span>`;
 const h51Velke = s => s.toLocaleUpperCase('sk');
 
+// 5.1: lokomotíva Slabikového vláčika (pozerá doprava, za ňou vagóny so spriahadlami, všetko na koľajniciach)
+const SLAB_LOKO = `<svg class="vl-loko" viewBox="0 0 92 66" aria-hidden="true"><g stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+  <g class="vl-dym" stroke="none" fill="#fff"><circle cx="62" cy="9" r="5"/><circle cx="54" cy="5" r="3.6"/><circle cx="47" cy="3" r="2.6"/></g>
+  <path d="M59 28 v-10 h-3 v-5 h13 v5 h-3 v10" fill="#4A4566"/>
+  <path d="M28 27 h46 q9 0 9 9 v15 H28z" fill="var(--sky)"/><path d="M31 31 h40" stroke="#fff" stroke-width="2.4" opacity=".5"/><path d="M44 27 v24 M70 27 v24" stroke-width="2"/>
+  <path d="M47 27 q0 -6 5 -6 q5 0 5 6" fill="var(--sun)"/><circle cx="84" cy="35" r="3.2" fill="var(--sun)"/>
+  <path d="M3 51 V15 h28 v36z" fill="var(--coral)"/><path d="M0 14 h34" stroke-width="4.4"/><rect x="8" y="20" width="17" height="13" rx="2.4" fill="var(--h-nebo)" stroke-width="2.2"/>
+  <rect x="1" y="49" width="84" height="5" rx="2" fill="#4A4566"/><path d="M84 47 l7 10 h-9z" fill="#4A4566"/>
+  <g class="kol"><circle cx="16" cy="56" r="8.5" fill="#6E6890"/><path d="M16 48 v16 M8 56 h16" stroke-width="1.8"/><circle cx="16" cy="56" r="2.2" fill="var(--sun)" stroke-width="1.4"/></g>
+  <g class="kol"><circle cx="48" cy="58" r="6.5" fill="#6E6890"/><path d="M48 52 v12 M42 58 h12" stroke-width="1.8"/></g>
+  <g class="kol"><circle cx="68" cy="58" r="6.5" fill="#6E6890"/><path d="M68 52 v12 M62 58 h12" stroke-width="1.8"/></g>
+  <path class="vl-ojnica" d="M16 59 H68" stroke="var(--sun)" stroke-width="2.4"/><path d="M-4 52 h6" stroke-width="3"/>
+</g></svg>`;
 /* ---------- Do košíkov: triedenie do 2 až 4 košíkov ---------- */
 const KOS_SK = {
   zvierata: ['Zvieratá', ['pes', 'kôň', 'mačka', 'krava', 'prasa', 'ovca', 'zajac', 'slon', 'lev', 'žirafa']],
@@ -6250,8 +6279,7 @@ const HRY51 = {
     html(h) {
       const k = h.kola[h.i];
       return `<div class="card kv-prompt obraz slab-obr">${h51Obr(k.o)}</div>
-        <div class="vlacik${h.odp ? ' ide' : ''}" aria-label="Vláčik so slovom"><svg class="vl-loko" viewBox="0 0 70 62" aria-hidden="true"><g stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"><path d="M6 50V24h26V8h12v16h6v26z" fill="var(--coral)"/><rect x="10" y="29" width="14" height="11" rx="2" fill="var(--h-nebo)" stroke-width="2.4"/><path d="M34 8h12" stroke-width="4"/><circle cx="16" cy="53" r="7" fill="var(--dk)"/><circle cx="38" cy="53" r="7" fill="var(--dk)"/><path d="M50 40h12" stroke-width="3"/></g></svg>
-          ${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b></span>`).join('')}</div>
+        <div class="trat${h.odp ? ' ide' : !h.krok ? ' pride' : ''}" aria-label="Vláčik so slovom"><div class="vlacik">${k.sl.map((s, j) => `<span class="vagon${j < h.krok ? ' plny' : ''}" style="--vc:${KV_FARBY[(j + 3) % 6]}"><b>${j < h.krok ? esc(s) : ''}</b><i class="vg-k"></i><i class="vg-k"></i></span>`).join('')}${SLAB_LOKO}</div></div>
         <div class="kv-moz pismena slab-moz">${k.moz.map((m, j) => `<button class="btn dve kv-btn${h.vzate.includes(j) ? ' vzata' : ''}" data-h51="sl" data-j="${j}"${h.vzate.includes(j) ? ' disabled' : ''}>${esc(m)}</button>`).join('')}</div>`;
     },
     klik(h, d, b) {
