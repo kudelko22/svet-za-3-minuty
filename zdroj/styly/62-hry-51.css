@@ -63,8 +63,7 @@
 .skr-pole { padding: 0; overflow: hidden; border-radius: 18px 20px 17px 21px; rotate: .5deg; }
 .frame .skr-svg { display: block; width: 100%; height: auto; aspect-ratio: auto; touch-action: manipulation; }
 .skr-vec { cursor: pointer; }
-.skr-vec:focus-visible { outline: none; }
-.skr-vec:focus-visible rect { stroke: var(--violet); stroke-width: 3; stroke-dasharray: 4 4; }
+.skr-vec:focus-visible { outline: 3px dashed var(--violet); outline-offset: 2px; }
 .skr-kruh { animation: skrKruh .45s var(--spring) both; transform-box: fill-box; transform-origin: center; }
 .skr-x { animation: pop .3s var(--spring) both; }
 @keyframes skrKruh { from { scale: .3; opacity: 0; } }
