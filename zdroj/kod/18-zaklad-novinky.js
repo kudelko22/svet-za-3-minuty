@@ -77,16 +77,23 @@ const Novinky = {
   skontroluj() {
     if (this.bolo || this.caka || st.faza !== 'appka' || !st.dietaId || st.flow || st.hra || st.auto || Sprievodca.el) return;
     // skúška premeny: adresa s ?premena (celá) alebo ?premena=tichy (len koniec); nič sa nezapisuje
-    const skuska = typeof Premena !== 'undefined' ? Premena.skuska() : '';
+    // 5.1: skúška úvodu do dedinky ?uvod51 (celý) alebo ?uvod51=tichy (len koniec); tiež sa nič nezapisuje
+    const skuskaP = typeof Premena !== 'undefined' ? Premena.skuska() : '';
+    const U = typeof Uvod51 !== 'undefined' ? Uvod51 : null, skuskaU = U && !skuskaP ? U.skuska() : '', skuska = skuskaP || skuskaU;
     const videl = S.get('videl-verziu', 0);
+    // zápis verzie; vo verzii 5.1 aj značka, že úvod do dedinky už netreba (aj pre nového používateľa a pri obyčajnom okne)
+    const zapis = () => { S.set('videl-verziu', VERZIA_APPKY); if (U) U.zapis(); };
     if (!skuska && videl >= VERZIA_APPKY) { this.bolo = true; return; }
     // nový používateľ (bez uloženej verzie a bez pokroku) novinky ani premenu nedostane: starú appku nepoznal
     const odkedy = videl || (st.done.length || st.body ? 21 : VERZIA_APPKY);
     const z = NOVINKY.filter(n => n.v > odkedy && n.v <= VERZIA_APPKY);
-    // premena 5.0: kto naposledy videl verziu pred 5.0 (alebo skúška); na konci len novinky 5.0
-    const premena = skuska || (typeof PREMENA_V !== 'undefined' && VERZIA_APPKY >= PREMENA_V && odkedy < PREMENA_V);
+    // úvod 5.1: raz na zariadenie vo verzii 5.1 pre toho, kto poznal staršiu verziu; má prednosť pred premenou 5.0
+    const uvod = !!skuskaU || (!skuska && !!U && U.caka(odkedy));
+    const zU = uvod ? NOVINKY.filter(n => n.v >= UVOD51_OD && n.v <= VERZIA_APPKY) : [];
+    // premena 5.0: kto naposledy videl verziu pred 5.0 (alebo skúška); na konci len novinky 5.0. Vo verzii 5.1 sa už nehrá.
+    const premena = !uvod && (!!skuska || (typeof PREMENA_V !== 'undefined' && VERZIA_APPKY >= PREMENA_V && odkedy < PREMENA_V && !(U && U.plati())));
     const z5 = premena ? NOVINKY.filter(n => n.v >= PREMENA_V) : [];
-    if (!z.length && !premena) { S.set('videl-verziu', VERZIA_APPKY); this.bolo = true; return; }
+    if (!z.length && !premena && !uvod) { zapis(); this.bolo = true; return; }
     this.caka = true;
     // okno sa ukáže až keď úplne zmizne úvodná obrazovka so sovičkou (najneskôr po 6 s ju zavrie samo)
     const t0 = Date.now();
@@ -95,10 +102,12 @@ const Novinky = {
       if (u && u.isConnected && Date.now() - t0 < 6000) { if (Date.now() - t0 > 4500) Uvod.skry(); setTimeout(skus, 120); return; }
       setTimeout(() => {
         this.caka = false;
-        if (this.bolo || document.querySelector('.novinky, .pm')) return;
-        if (premena && Premena.spusti(z5, { tichy: skuska === 'tichy' })) { this.bolo = true; if (!skuska) S.set('videl-verziu', VERZIA_APPKY); return; }
-        // premena zlyhala alebo nebola: obyčajné okno noviniek
-        try { const zz = z.length ? z : z5; if (zz.length) this.ukaz(zz); this.bolo = true; if (!skuska) S.set('videl-verziu', VERZIA_APPKY); } catch (e) { console.error('Čo je nové:', e); }
+        if (this.bolo || document.querySelector('.novinky, .pm, .ud')) return;
+        if (st.flow || st.hra || st.auto || Sprievodca.el || st.faza !== 'appka') return; // medzitým začala téma, hra či sprievodca: nabudúce
+        if (uvod && Uvod51.spusti(zU, { tichy: skuskaU === 'tichy' })) { this.bolo = true; if (!skuska) zapis(); return; }
+        if (premena && Premena.spusti(z5, { tichy: skuska === 'tichy' })) { this.bolo = true; if (!skuska) zapis(); return; }
+        // úvod či premena zlyhali alebo neboli: obyčajné okno noviniek
+        try { const zz = z.length ? z : z5.length ? z5 : zU; if (zz.length) this.ukaz(zz); this.bolo = true; if (!skuska) zapis(); } catch (e) { console.error('Čo je nové:', e); }
       }, 350);
     };
     setTimeout(skus, 300);
@@ -123,7 +132,7 @@ const Novinky = {
 // Okno „Vytvor si účet rodiča“ (3.5.1): pre účty bez rodiča, raz za spustenie appky, nikdy počas hry či kvízu; „Neskôr“ ho odloží na 3 dni
 const RodicVyzva = {
   bolo: false, caka: false,
-  volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !Novinky.caka && !document.querySelector('.novinky, .oslava'); },
+  volno() { return st.faza === 'appka' && st.dietaId && !st.flow && !st.hra && !st.auto && !Sprievodca.el && !Novinky.caka && !document.querySelector('.novinky, .oslava, .pm, .ud'); },
   skontroluj() {
     const C = window.Cloud;
     if (this.bolo || this.caka || !C || !C.rodic || !C.rodic.nacitane || C.rodic.profil) return; // 5.1: účet rodiča je povinný, okno sa nedá odložiť
