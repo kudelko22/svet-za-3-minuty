@@ -1988,7 +1988,8 @@ function trava(kluc, vnutri) {
   const w = (RAMCEK[kluc] || [0, 0, 40])[2], x = Math.max(9, w * .4), m = Math.min(.95, .5 + w / 190);
   return [[-x, m], [x - 2, m * .85]].concat(w > 70 ? [[x * .6, m * .6]] : []).map(([a, k]) => `<path transform="translate(${a.toFixed(1)} 0) scale(${k.toFixed(2)})" d="${TRS}" fill="var(--dv-lis)" stroke="var(--dv-lis-d)" stroke-width="1.2"/>`).join('');
 }
-const cestickaKDveram = kluc => kluc in DVERE_X ? `<path d="M${DVERE_X[kluc] - 6} 0L${DVERE_X[kluc] - 12} 10h24L${DVERE_X[kluc] + 6} 0z" fill="var(--dv-cesta)" stroke-width="1.6"/>` : '';
+// chodníček od dverí: dolný okraj je otvorený (nekončí tvrdou čiarou), v dedinke naň plynule nadväzuje chodník k ceste (26-dedinka-scena.js)
+const cestickaKDveram = kluc => { if (!(kluc in DVERE_X)) return ''; const x = DVERE_X[kluc]; return `<path d="M${x - 6} 0L${x - 12} 10Q${x} 12 ${x + 12} 10L${x + 6} 0z" fill="var(--dv-cesta)" stroke="none"/><path d="M${x - 6} 0L${x - 12} 10M${x + 6} 0L${x + 12} 10" fill="none" stroke-width="1.6"/>`; };
 const G = (x, y, s, telo, flip, kl, zem2, pred = '') => `<g class="dv dv-${kl}" transform="translate(${x} ${y})"><g transform="scale(${s})" stroke-width="${(2.2 / s).toFixed(2)}">${zem2}</g><g transform="scale(${flip ? -s : s} ${s})" stroke-width="${(2.2 / s).toFixed(2)}">${telo}</g>${pred ? `<g transform="scale(${s})" stroke-width="${(2.2 / s).toFixed(2)}">${pred}</g>` : ''}</g>`;
 function dedinkaVec(kluc, o = {}) {
   const t = telo(kluc, o); if (!t) return '';
@@ -2114,6 +2115,6 @@ function svg(kluc, o = {}) {
   const r = RAMCEK[kluc] || [-40, -100, 80, 106];
   return `<svg class="dv-svg" viewBox="${r[0] - 6} ${r[1]} ${r[2] + 12} ${r[3] + 12}" role="img" aria-label="${o.popis || kluc}" preserveAspectRatio="xMidYMax meet"><g stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">${dedinkaVec(kluc, { ...o, x: 0, y: 0, s: 1 })}</g></svg>`;
 }
-return { SKUPINY, ZOZNAM, OBLAKY: ['oblak1', 'oblak2', 'oblak3'], RAMCEK, VOLBY, volba, kluce, telo, dedinkaVec, svg, miesto, G, fc };
+return { DVERE_X, SKUPINY, ZOZNAM, OBLAKY: ['oblak1', 'oblak2', 'oblak3'], RAMCEK, VOLBY, volba, kluce, telo, dedinkaVec, svg, miesto, G, fc };
 })();
 const dedinkaVec = dedinkaKresby.dedinkaVec, DEDINKA_ZOZNAM = dedinkaKresby.ZOZNAM, DEDINKA_VOLBY = dedinkaKresby.VOLBY;

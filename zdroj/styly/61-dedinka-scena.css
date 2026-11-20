@@ -56,10 +56,14 @@ body.ded-v main.gut { padding-block: 0; gap: 0; }
 .ob-l { transform: translateX(-105%); } .ob-p { transform: translateX(105%); }
 .ob { position: absolute; left: var(--x); top: var(--y); width: var(--w); transform: translate(-50%, -50%); }
 .ob .dv-svg { display: block; width: 100%; height: auto; overflow: visible; }
-.ob-n { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.9); opacity: 0; transition: opacity .25s, transform .3s; font: 800 2rem/1.1 var(--fd); color: var(--text); white-space: nowrap; }
+/* názov cieľa: čitateľná tabuľka nad obláčikmi (deň aj noc), drží sa, kým sú obláčiky zatiahnuté */
+.ob-n { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.85); opacity: 0; transition: opacity .2s, transform .3s var(--spring, ease);
+  font: 800 clamp(1.7rem, 7vw, 2.4rem)/1.1 var(--fd); color: var(--text); white-space: nowrap; max-width: 92vw; overflow: hidden; text-overflow: ellipsis;
+  padding: 12px 26px 14px; border-radius: 999px; background: var(--card); border: 3px solid var(--ink); box-shadow: 0 5px 0 var(--ink), 0 10px 28px rgba(20, 16, 60, .25); }
 .ob-prechod.zatiahni .ob-l, .ob-prechod.zatiahni .ob-p { transform: none; }
 .ob-prechod.zatiahni .ob-zavoj { opacity: 1; }
-.ob-prechod.zatiahni .ob-n { opacity: 1; transform: translate(-50%, -50%); transition-delay: .3s; }
+.ob-prechod.zatiahni .ob-n { opacity: 1; transform: translate(-50%, -50%); transition-delay: .18s; }
+.ob-prechod.roztiahni .ob-n { transition-duration: .18s; }
 .ob-prechod.roztiahni .ob-str { transition: transform .7s cubic-bezier(.5, 0, .7, .4); }
 .ob-prechod.roztiahni .ob-zavoj { transition: opacity .35s ease; opacity: 0; }
 .ob-prechod.tiche .ob-str { display: none; }
