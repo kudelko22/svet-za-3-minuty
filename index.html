@@ -9679,7 +9679,7 @@ const DS_ZEM_SK = { domcek: 38, strom: 26, kvety: 20, plot: 26, zviera: 22, ozdo
 const DS_HRY_MIESTA = [[-152, 410, .84], [152, 410, .84], [-116, 330, .72], [116, 330, .72], [-140, 502, .92], [176, 502, .95],
   [-80, 268, .6], [84, 268, .6], [196, 600, 1.02], [-62, 230, .5], [62, 230, .5], [0, 212, .46],
   [-200, 455, .88], [214, 455, .88], [-240, 376, .78], [232, 378, .78], [-118, 566, 1]]; // 5.1: miesta pre nové hry (09b-hry-51.js)
-const DS_DOM = [-218 * DS_ROZ, 606, .98]; // hlavný dom vpredu vľavo od cesty
+const DS_DOM = [-230, 606, .98]; // hlavný dom vpredu vľavo od cesty, blízko stromu (na telefóne sú pri prvom pohľade oba)
 const DS_STROM = [0, 404, .64]; // strom múdrosti na námestí v strede (mierka kresby stromSvg)
 // voľby položenej veci: reťazec, znak i = i-tá voľba z DEDINKA_VOLBY[kľúč] (poradie kľúčov), '0' = základ, '1' = prvá hodnota, '2' = druhá…
 function dedVolby(kluc, r) {
@@ -9892,7 +9892,7 @@ const DedScena = {
     const pod = suf ? Math.max(0, Math.round(innerHeight - dole)) : 0;
     // mierka: podľa výšky, najviac 0,95 (na telefóne vidieť viac dedinky, hore pokračuje obloha); široký displej vyplní šírku. Izba má vlastný rozmer 800 × 480.
     const izba = st.view === 'izba', W = izba ? 800 : DS_W, vh = izba ? 480 : DS_H - DS_Y0, sx = sc.scrollLeft, sw = sc.scrollWidth;
-    let k = Math.min(h / vh, .95); if (k * W < sc.clientWidth) k = sc.clientWidth / W; if (izba && suf) k = Math.min(h / vh, sc.clientWidth / 560); // pri zariaďovaní izby skoro celá izba naraz (miesta sú v strede)
+    let k = Math.min(h / vh, sc.clientWidth < 600 ? sc.clientWidth / 372 : .95); // telefón: na šírku sa zmestí hlavný dom aj strom, vyšší telefón = menej prázdnej oblohy if (k * W < sc.clientWidth) k = sc.clientWidth / W; if (izba && suf) k = Math.min(h / vh, sc.clientWidth / 560); // pri zariaďovaní izby skoro celá izba naraz (miesta sú v strede)
     sc.style.height = (h + pod) + 'px'; sc.style.paddingBottom = pod + 'px'; svg.style.width = Math.round(k * W) + 'px'; svg.style.height = Math.min(h, Math.round(k * vh)) + 'px';
     if (sw && sc.scrollWidth !== sw) sc.scrollLeft = sx * sc.scrollWidth / sw; // pri zmene veľkosti ostane ten istý kus dedinky
     return sc;
@@ -9905,7 +9905,7 @@ const DedScena = {
       const n = this.navrat; this.navrat = null;
       const el = n && sc.querySelector(`[data-ded="hra:${n.id}"]`);
       if (el && el.getBoundingClientRect) { const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - s.left - sc.clientWidth / 2; }
-      else sc.scrollLeft = st.view === 'izba' ? (sc.scrollWidth - sc.clientWidth) / 2 : this.x != null ? this.x : (sc.scrollWidth - sc.clientWidth) / 2 - sc.scrollWidth * 60 / DS_W;
+      else sc.scrollLeft = st.view === 'izba' ? (sc.scrollWidth - sc.clientWidth) / 2 : this.x != null ? this.x : (sc.scrollWidth - sc.clientWidth) / 2 - sc.scrollWidth * 110 / DS_W; // prvý pohľad: hlavný dom a strom
       if (!sc._ds) { sc._ds = 1; sc.addEventListener('scroll', () => { if (st.view === 'dedinka') this.x = sc.scrollLeft; }, { passive: true }); }
       if (el && n.zisk > 0) setTimeout(() => this.zisk(el, n.zisk), tiche ? 50 : 700);
     } catch (e) { /* test bez prehliadača */ }
